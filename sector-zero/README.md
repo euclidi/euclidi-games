@@ -29,4 +29,4 @@ Serve the repository with a local HTTP server from its root (for example `python
 
 ## Limitations
 
-Irregular streets, passenger transfers, rail, deeper social systems, interior fidelity, full Recast integration, environmental integration and measured population performance require validation or development. The patch directory is not a playable release.
+The current source implements six bus routes, 18 buses, 32 architecture variants, road-dependent vehicle speeds and one-transfer journeys. Browser validation is pending. Irregular streets, rail, deeper social systems, interior fidelity, full Recast integration, environmental integration and measured population performance require validation or development. The patch directory is not a playable release.
