@@ -1,0 +1,196 @@
+// Sector Zero: urban fabric and transit. Keep the original simulation's 70-unit node grid.
+const D=[[0,1],[1,0],[0,-1],[-1,0]], N=70, edge=210;
+const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.z-b.z);
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const direction=(a,b)=>D.findIndex(d=>a.x+d[0]*N===b.x&&a.z+d[1]*N===b.z);
+function rectangle(x0,z0,x1,z1,reverse=false){
+ const p=[];for(let x=x0;x<x1;x+=N)p.push({x,z:z0});
+ for(let z=z0;z<z1;z+=N)p.push({x:x1,z});
+ for(let x=x1;x>x0;x-=N)p.push({x,z:z1});
+ for(let z=z1;z>z0;z-=N)p.push({x:x0,z});
+ return reverse?p.reverse():p;
+}
+export const lines=[
+ {name:"A / NORTH",color:0xc6a04f,nodes:rectangle(-210,-210,210,0)},
+ {name:"B / SOUTH",color:0x8ab9a1,nodes:rectangle(-210,0,210,210,true)},
+ {name:"C / WEST",color:0xb68d9e,nodes:rectangle(-210,-140,0,140)},
+ {name:"D / EAST",color:0x86a9c7,nodes:rectangle(0,-140,210,140,true)}
+];
+for(const l of lines)l.stops=l.nodes.map((p,i)=>{const d=D[direction(p,l.nodes[(i+1)%l.nodes.length])];return{x:p.x+d[0]*8+d[1]*6.5,z:p.z+d[1]*8-d[0]*6.5,dir:direction(p,l.nodes[(i+1)%l.nodes.length])}});
+const variants={
+ Housing:["Tenement","Row residences","Apartment tower","Workers' hostel","Courtyard flats"],
+ Market:["Covered market","Grocery","Fuel station","Canteen","Trading arcade"],
+ Factory:["Machine works","Processing plant","Power works","Assembly hall"],
+ Warehouse:["Freight depot","Cold store","Distribution centre"],
+ Authority:["Municipal hall","Police station","Records office"],
+ Clinic:["Hospital","Community clinic","Dispensary"]
+};
+export function prepare(w){
+ for(const b of w.buildings){const v=variants[b.type]||[b.type];b.architecture=v[(b.i*3+b.j*7+b.k)%v.length];}
+ if(w.transit?.revision===1)return w;
+ w.transit={revision:1,boardings:0,completed:0,abandoned:0,vehicleKm:0};
+ for(const c of w.citizens){delete c.ride;delete c.transitGoal;}
+ for(let k=0;k<12;k++){
+ const b=w.cars[w.cars.length-12+k],line=k%4,l=lines[line],i=Math.floor(Math.floor(k/4)*l.nodes.length/3),p=l.nodes[i],j=(i+1)%l.nodes.length;
+ Object.assign(b,{bus:true,line,nextStop:j,x:p.x,z:p.z,dir:direction(p,l.nodes[j]),progress:16,destX:l.nodes[j].x,destZ:l.nodes[j].z,speed:11,wait:0,dwell:0,atStop:-1,passengers:[],trips:0});
+ }
+ return w;
+}
+export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%l.nodes.length]}
+export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.dwell=1.5;b.progress=8;}
+export function gap(a,b){return a?.bus||b?.bus?8.8:5.3}
+export function signal(x,z,time,dir){
+ const arterialX=x===0||Math.abs(x)===210,arterialZ=z===0||Math.abs(z)===210;
+ const cycle=((time+(x/70+z/70+6)*.65)%6+6)%6;
+ const green=arterialX&&!arterialZ?4:arterialZ&&!arterialX?2:3;
+ return cycle<green?0:1;
+}
+function walkTo(c,p){
+ const gx=clamp(Math.round((c.x+210)/70),0,6)*70-210;
+ const gz=clamp(Math.round((c.z+210)/70),0,6)*70-210;
+ const px=clamp(Math.round((p.x+210)/70),0,6)*70-210;
+ const pz=clamp(Math.round((p.z+210)/70),0,6)*70-210;
+ const a=[{x:c.x,z:gz+7},{x:gx+7,z:gz+7},{x:gx+7,z:pz+7},{x:px+7,z:pz+7},{x:p.x,z:p.z}];
+ return a.filter((v,i)=>i===0||dist(v,a[i-1])>.01);
+}
+function itinerary(c,b){
+ const end=b.door, direct=dist(c,end);if(direct<145)return null;
+ let best=null,score=direct/Math.max(3,c.speed)-3;
+ for(let li=0;li<lines.length;li++){const l=lines[li],n=l.stops.length;
+ const from=l.stops.map((p,i)=>({i,d:dist(c,p)})).sort((a,b)=>a.d-b.d).slice(0,3);
+ const to=l.stops.map((p,i)=>({i,d:dist(end,p)})).sort((a,b)=>a.d-b.d).slice(0,3);
+ for(const a of from)for(const z of to){const count=(z.i-a.i+n)%n;if(!count||a.d>100||z.d>100)continue;
+ const cost=(a.d+z.d)/c.speed+count*(70/11+1.5)+12;
+ if(cost<score){score=cost;best={line:li,from:a.i,to:z.i,goal:c.goal,phase:"approach",since:0};}
+ }}
+ return best;
+}
+function resume(w,c,api){const r=c.ride;delete c.ride;c.transitGoal=c.goal;
+ if(!w.buildings[c.goal]){c.goal=c.home;c.activity="Resting"}
+ c.inside=-1;c.route=api.path(c,w.buildings[c.goal]);if(r?.phase==="riding"&&c.activity==="On bus")c.activity=r.activity;
+}
+export function before(w,dt,api){
+ prepare(w);
+ for(const b of w.cars)if(b.bus){b.dwell=Math.max(0,b.dwell-dt);b.speed=b.dwell>0?0:11;
+ b.passengers=b.passengers.filter(id=>{const c=w.citizens[id];if(!c||id===w.possessed||c.ride?.bus!==b.id){if(c?.ride?.bus===b.id)delete c.ride;return false}return true;});}
+}
+export function after(w,dt,api){
+ const buses=w.cars.filter(b=>b.bus);
+ for(const c of w.citizens){
+ if(c.id===w.possessed){delete c.ride;continue}
+ let r=c.ride;
+ if(r&&r.goal!==c.goal){if(r.phase==="riding"){r.goal=c.goal;r.cancel=true}else{delete c.ride;r=null;}}
+ if(!r&&c.inside<0&&c.route.length&&c.transitGoal!==c.goal){
+ c.transitGoal=c.goal;
+ if(c.id%4!==0&&w.buildings[c.goal]){r=itinerary(c,w.buildings[c.goal]);if(r){r.since=w.time;r.activity=c.activity;c.ride=r;c.route=walkTo(c,lines[r.line].stops[r.from]);}}
+ }
+ if(!r)continue;
+ if(r.phase==="approach"){const p=lines[r.line].stops[r.from];if(dist(c,p)<1.5){r.phase="waiting";r.since=w.time;c.route=[];c.x=p.x;c.z=p.z;}else if(!c.route.length||dist(c.route[c.route.length-1],p)>.1)c.route=walkTo(c,p);}
+ if(r.phase==="waiting"){const p=lines[r.line].stops[r.from];c.x=p.x;c.z=p.z;c.inside=-1;c.route=[];if(w.time-r.since>75){w.transit.abandoned++;resume(w,c,api);}}
+ if(r.phase==="riding"){const b=buses.find(x=>x.id===r.bus);if(!b){resume(w,c,api);continue}const p=api.carPosition(b);c.x=p.x;c.z=p.z;c.heading=p.a;c.inside=-1;c.route=[];}
+ }
+ for(const b of buses){
+ w.transit.vehicleKm+=b.speed*dt/1000;
+ if(b.dwell<=0||b.atStop<0)continue;
+ const p=lines[b.line].stops[b.atStop];
+ for(const id of [...b.passengers]){const c=w.citizens[id],r=c?.ride;if(!r||r.bus!==b.id){b.passengers=b.passengers.filter(x=>x!==id);continue;}
+ if(r.to===b.atStop||r.cancel){b.passengers=b.passengers.filter(x=>x!==id);c.x=p.x;c.z=p.z;w.transit.completed++;resume(w,c,api);}}
+ for(const c of w.citizens){if(b.passengers.length>=28)break;const r=c.ride;
+ if(r?.phase==="waiting"&&r.line===b.line&&r.from===b.atStop&&c.id!==w.possessed){
+ r.phase="riding";r.bus=b.id;b.passengers.push(c.id);c.route=[];w.transit.boardings++;api.note(w,c,"Boarded bus "+lines[b.line].name);}}
+ }
+}
+export function panel(w){
+ const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
+ let html='<h2>TRANSIT CONTROL</h2><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><h3>ROUTE NETWORK</h3>';
+ for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+l.stops.length+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.length*28+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/28 · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
+ return html+'<p>Bus riders choose routes by estimated travel time, walk to stops, wait, board and continue walking after alighting. Select a bus to locate it.</p>';
+}
+export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+lines[r.line].name+'</b></div>':'';}
+export function drawRoads(parent,{box,cyl,merge,mat,group}){
+ const asphalt=mat(0x373c3b),local=mat(0x454744),edgeMat=mat(0x76786c),white=mat(0xb9b7a2),yellow=mat(0xc6a662),dark=mat(0x28322f),glass=mat(0x576b65),steel=mat(0x68756d),green=mat(0x75946f),red=mat(0xa74c3d);
+ const kind=v=>v===0?"avenue":Math.abs(v)===210?"ring":Math.abs(v)===140?"collector":"local";
+ const width=v=>kind(v)==="avenue"?12.8:kind(v)==="ring"?12.2:kind(v)==="collector"?11.1:9.5;
+ for(let v=-210;v<=210;v+=70){const w=width(v),major=kind(v)!=="local";
+ for(let p=-175;p<=175;p+=70){box(parent,w,.03,57,v,.005,p,major?asphalt:local);box(parent,57,.03,w,p,.006,v,major?asphalt:local);
+ for(const side of [-1,1]){box(parent,.13,.025,56,v+side*(w/2-.25),.032,p,edgeMat);box(parent,56,.025,.13,p,.032,v+side*(w/2-.25),edgeMat);}
+ for(let j=-22;j<=22;j+=8){box(parent,.15,.02,3.8,v,.04,p+j,major?yellow:white);box(parent,3.8,.02,.15,p+j,.04,v,major?yellow:white);}
+ if(major){for(const side of [-1,1]){box(parent,.12,.025,42,v+side*4.4,.036,p,white);box(parent,42,.025,.12,p,.036,v+side*4.4,white);}}
+ }
+ for(let z=-210;z<=210;z+=70){box(parent,13,.03,13,v,.006,z,asphalt);
+ for(const s of [-1,1])for(let k=-3;k<=3;k+=1.3){box(parent,.65,.026,1.8,v+k,.043,z+s*5,white);box(parent,1.8,.026,.65,v+s*5,.043,z+k,white);}
+ cyl(parent,.11,.14,4.4,v+7,2.2,z+7,steel);box(parent,.55,1.35,.42,v+7,4.25,z+7,dark);box(parent,.28,.28,.08,v+7,4.6,z+6.75,red);box(parent,.28,.28,.08,v+7,4,z+6.75,green);
+ }}
+ const seen=new Set();
+ for(let li=0;li<lines.length;li++){const l=lines[li],color=mat(l.color);for(const p of l.stops){const d=D[p.dir],key=p.x+","+p.z;
+ if(seen.has(key))continue;seen.add(key);
+ // Shelter is on the sidewalk; it never intrudes into the traffic lane.
+ const x=p.x+d[1]*1.4,z=p.z-d[0]*1.4,h=d[0]!==0;
+ box(parent,h?6:2.1,.12,h?2.1:6,x,.12,z,dark);
+ box(parent,h?6:2.1,.2,h?2.1:6,x,2.75,z,steel);
+ for(const a of [-2.6,2.6]){box(parent,.13,2.6,.13,x+d[0]*a+d[1]*.75,1.4,z+d[1]*a-d[0]*.75,steel);}
+ box(parent,h?5.2:.12,1.65,h?.12:5.2,x+d[1]*.85,1.65,z-d[0]*.85,glass);
+ box(parent,h?3.7:.4,.16,h?.4:3.7,x,.65,z,dark);
+ cyl(parent,.08,.1,3.2,p.x+d[0]*3,1.65,p.z+d[1]*3,steel);
+ box(parent,h?.22:.8,.55,h?.8:.22,p.x+d[0]*3,3.05,p.z+d[1]*3,color);
+ // Paint the stop zone along the curb rather than over the moving lane.
+ box(parent,h?10:.25,.027,h?.25:10,p.x-d[1]*1.6,.048,p.z+d[0]*1.6,color);
+ }}
+ merge(parent);
+}
+export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,registry}){
+ const [facades,roof,steel,walk,dark,white,trim,glass,rust,black,door]=materials;
+ const base=group(),shell=group(),inside=group();parent.add(base,shell,inside);
+ const {x,z,w,l,h}=b, a=b.architecture;
+ const f=facades[(b.i+b.j+b.k)%facades.length];
+ const solid=(ww,hh,ll,xx=x,zz=z,y=0,m=f)=>{box(shell,ww,hh,ll,xx,y+hh/2+.5,zz,m);colliders.push({x:xx,z:zz,w:ww,l:ll,h:y+hh+.5});};
+ const slab=(ww,ll,yy,xx=x,zz=z,m=roof)=>box(shell,ww,.38,ll,xx,yy,zz,m);
+ const bands=(ww,ll,low,high,xx=x,zz=z)=>{for(let y=low;y<high;y+=4){for(const s of [-1,1]){box(shell,ww+.15,.15,.22,xx,y,zz+s*ll/2,steel);box(shell,.22,.15,ll+.15,xx+s*ww/2,y,zz,steel);}}};
+ const hvac=(xx,zz,y)=>{box(shell,3,1.3,3,xx,y+.7,zz,steel);box(shell,3.3,.2,3.3,xx,y+1.45,zz,dark)};
+ const chimney=(xx,zz,y,height)=>{cyl(shell,.65,1,height,xx,y+height/2,zz,rust);cyl(shell,.75,.75,.3,xx,y+height,zz,black)};
+ box(base,w+.7,.5,l+.7,x,.25,z,walk);
+ if(a==="Fuel station"){
+ solid(w,5,12,x,z-l/2+6,0,steel);slab(w+1,13,5.6,x,z-l/2+6);
+ const zz=z+7;slab(w-1,22,5.6,x,zz,white);
+ for(const dx of [-9,9])for(const dz of [-8,8])box(shell,.35,5.1,.35,x+dx,2.8,zz+dz,steel);
+ for(const dx of [-5,5]){box(shell,1.2,1.5,2,x+dx,1,zz,trim);box(shell,1.3,.45,2.1,x+dx,1.9,zz,glass);colliders.push({x:x+dx,z:zz,w:1.2,l:2,h:2});}
+ }else if(a==="Apartment tower"||a==="Municipal hall"||a==="Hospital"){
+ const low=6,high=Math.max(12,h+(a==="Apartment tower"?8:0));solid(w,low,l);slab(w+1,l+1,low+.6);
+ solid(w-7,high-low,l-10,x,z+1,low,f);slab(w-6,l-9,high+.6,x,z+1);bands(w-7,l-10,low+4,high,x,z+1);hvac(x,z,high+1);
+ if(a==="Hospital") {box(shell,5,.25,14,x,high+1,z,white);box(shell,14,.26,5,x,high+1,z,white);}
+ }else if(a==="Row residences"||a==="Courtyard flats"){
+ const height=Math.max(8,h*.65);solid(w,height,l);slab(w+1,l+1,height+.6);
+ for(const dx of [-7,0,7]){box(shell,6.8,1.4,l*.55,x+dx,height+1.2,z-5,roof);box(shell,.25,1.6,l*.55,x+dx-3.3,height+1.3,z-5,trim);}
+ for(let dz=-12;dz<=12;dz+=8)box(shell,2.6,1.6,2.6,x+5,height+1,z+dz,steel);
+ bands(w,l,4,height);
+ }else if(b.type==="Factory"||b.type==="Warehouse"){
+ const height=a==="Freight depot"?7:a==="Power works"?10:Math.max(7,h);
+ solid(w,height,l,x,z,0,steel);slab(w+1,l+1,height+.6);
+ if(b.type==="Factory"){for(let j=-1;j<=1;j++){const zz=z+j*10;const top=box(shell,w-2,2.5,5,x,height+1.5,zz,roof);top.rotation.x=-.24;}chimney(x+7,z+9,height+.5,a==="Power works"?20:10);if(a==="Processing plant")chimney(x-7,z+9,height+.5,8);}
+ else for(let dx of [-7,0,7]){box(shell,5,4,.3,x+dx,2.4,z-l/2-.15,dark);for(let y=1;y<4;y+=.6)box(shell,4.7,.08,.35,x+dx,y,z-l/2-.3,steel);}
+ hvac(x-5,z-8,height+1);
+ }else{
+ const height=b.type==="Market"?Math.max(6,h*.7):h;
+ solid(w,height,l,x,z,0,f);slab(w+1,l+1,height+.6);bands(w,l,4,height);hvac(x-5,z+5,height+1);
+ if(b.type==="Market"){for(let dx of [-7,0,7]){box(shell,6,1.1,.15,x+dx,2.3,z-l/2-.1,glass);box(shell,6.5,.22,3,x+dx,4,z-l/2-1,dx===0?rust:trim);}}
+ else for(let y=4;y<height;y+=4){box(shell,8,.25,2,x-4,y,z-l/2-1,roof);box(shell,8,.65,.13,x-4,y+.43,z-l/2-1.9,steel);}
+ }
+ box(shell,3.4,3.8,.22,x,2.35,z-l/2-.12,door);
+ sign(a.toUpperCase()+" "+String(b.id).padStart(2,"0"),x,z-l/2-.3,4.9,shell);
+ box(inside,w,.15,l,x,.55,z,roof);for(const dx of [-1,1])box(inside,.3,.8,l,x+dx*w/2,.95,z,f);
+ box(inside,w,.8,.3,x,.95,z+l/2,f);
+ for(let j=-1;j<=1;j++){box(inside,5,.8,2,x-6,1,z+j*9,steel);box(inside,4,.18,1.8,x-6,1.5,z+j*9,white);box(inside,1.8,1.2,1.8,x+6,1.2,z+j*9,dark);}
+ inside.visible=false;merge(base);merge(inside);const labels=shell.children.filter(o=>o.material?.isMeshBasicMaterial);for(const o of labels)shell.remove(o);merge(shell);for(const o of labels)shell.add(o);
+ registry.push({b,r:shell,interior:inside});
+}
+const busMeshes=new Map();
+export function drawBuses(cars,position,parent,{group,box,cyl,mat}){
+ for(const b of cars){if(!b.bus)continue;let m=busMeshes.get(b.id);if(!m){m=group();const paint=mat(lines[b.line].color),body=mat(0x9b9c87),window=mat(0x344d51),rubber=mat(0x222722),lights=mat(0xe8dec1),tail=mat(0xa74b40);
+ box(m,2.35,1.75,8.1,0,1.48,0,body);box(m,2.42,.4,8.2,0,.78,0,paint);box(m,2.3,.18,8.1,0,2.43,0,paint);
+ box(m,2.05,.75,.08,0,1.94,4.08,window);box(m,2.05,.7,.08,0,1.94,-4.08,window);
+ for(const s of [-1,1]){for(let z=-2.9;z<=2.9;z+=1.16)box(m,.055,.73,.96,s*1.185,1.95,z,window);
+ for(const z of [-2.7,2.65]){const wheel=cyl(m,.48,.48,.33,s*1.12,.5,z,rubber,12);wheel.rotation.z=Math.PI/2;}
+ box(m,.55,.2,.08,s*.72,.98,4.12,lights);box(m,.45,.2,.08,s*.72,.98,-4.12,tail);}
+ box(m,.07,1.55,1.1,1.19,1.42,2.45,window);parent.add(m);busMeshes.set(b.id,m);}
+ const p=position(b);m.position.set(p.x,0,p.z);m.rotation.y=p.a;
+ }}
