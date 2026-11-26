@@ -1,0 +1,156 @@
+name: Brick Breaker Stage 1 native validation
+on:
+  push:
+    paths:
+      - 'brick-breaker/**'
+      - '.github/workflows/brick-breaker-stage1.yml'
+  pull_request:
+    paths:
+      - 'brick-breaker/**'
+      - '.github/workflows/brick-breaker-stage1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-core -DBB_NATIVE=OFF -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-core --config Release --parallel 2
+      - run: ctest --test-dir build-core -C Release --output-on-failure --verbose
+  physics:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-physics -DBB_NATIVE=ON -DBB_GRAPHICS=OFF -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-physics --config Release --parallel 2
+      - run: ctest --test-dir build-physics -C Release --output-on-failure --verbose
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: physics-logs-${{ matrix.os }}
+          path: |
+            brick-breaker/build-physics/Testing/Temporary/
+            brick-breaker/build-physics/CMakeFiles/CMakeConfigureLog.yaml
+          if-no-files-found: warn
+  windows-graphics:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-native -DBB_NATIVE=ON -DBB_GRAPHICS=ON -A x64
+      - run: cmake --build build-native --config Release --parallel 2
+      - run: cmake --install build-native --config Release --prefix stage1-bin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brick-breaker-stage1-windows-diagnostics
+          path: brick-breaker/stage1-bin/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: graphics-configure-log
+          path: brick-breaker/build-native/CMakeFiles/CMakeConfigureLog.yaml
+          if-no-files-found: warn
+  asset-intake:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python tools/intake_assets.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: brick-breaker-asset-review
+          path: brick-breaker/asset-review/
+          if-no-files-found: warn
+  geometry:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-geometry -DBB_GEOMETRY=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-geometry --config Release --parallel 2
+      - run: ctest --test-dir build-geometry -C Release --output-on-failure --verbose
+  audio:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-audio -DBB_AUDIO=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-audio --config Release --parallel 2
+      - run: ctest --test-dir build-audio -C Release --output-on-failure --verbose
+  audio-assets:
+    needs: asset-intake
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: brick-breaker-asset-review
+          path: brick-breaker/asset-review
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy==2.2.6 soundfile==0.13.1
+      - run: python tools/prepare_audio.py asset-review/impact.zip audio-review
+      - run: cmake -S . -B build-audio-assets -DBB_AUDIO=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-audio-assets --config Release --parallel 2
+      - run: ./build-audio-assets/audio_tests audio-review
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brick-breaker-audio-review-pcm
+          path: brick-breaker/audio-review/
+  texture-review:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python tools/prepare_textures.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: brick-breaker-material-textures
+          path: brick-breaker/texture-review/
+          if-no-files-found: warn

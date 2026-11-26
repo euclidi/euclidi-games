@@ -1,0 +1,4 @@
+Original Stage 1 native configure failed at Box2D FetchContent:
+fatal: unable to access 'https://github.com/erincatto/box2d.git/': Could not resolve host: github.com
+Three clone attempts failed. CMake configure exit: 1.
+This is a summary of the original local log, not a new test run.
