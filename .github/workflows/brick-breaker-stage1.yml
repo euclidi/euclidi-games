@@ -98,3 +98,17 @@ jobs:
       - run: cmake -S . -B build-geometry -DBB_GEOMETRY=ON -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build-geometry --config Release --parallel 2
       - run: ctest --test-dir build-geometry -C Release --output-on-failure --verbose
+  audio:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-audio -DBB_AUDIO=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-audio --config Release --parallel 2
+      - run: ctest --test-dir build-audio -C Release --output-on-failure --verbose

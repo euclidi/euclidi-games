@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cstdint>
 #include "foundation.hpp"
+#include "material_transport.hpp"
 
 // GPU attachment and readback diagnostic, not production scene rendering.
 enum class TargetResult { pass, unsupported, fail };
@@ -58,6 +59,37 @@ static TargetResult validateTarget(){
     return pass?TargetResult::pass:TargetResult::fail;
 }
 
+
+static TargetResult validateMaterialTransport(){
+    namespace t=bb::transport;
+    constexpr auto format=bgfx::TextureFormat::RGBA8;
+    constexpr uint64_t flags=BGFX_TEXTURE_READ_BACK|BGFX_TEXTURE_BLIT_DST;
+    if(!bgfx::isTextureValid(0,false,1,format,flags)||!bgfx::isTextureValid(0,false,1,format,0)){
+        std::cout<<"Material transport unsupported\n";return TargetResult::unsupported;
+    }
+    auto dst=bgfx::createTexture2D(t::width,t::height,false,1,format,flags);
+    if(!bgfx::isValid(dst))return TargetResult::fail;
+    bool pass=true;
+    for(uint32_t epoch:{1u,2u}){
+        const auto expected=t::fixture(epoch);
+        auto src=bgfx::createTexture2D(t::width,t::height,false,1,format,0,bgfx::copy(expected.data(),uint32_t(expected.size())));
+        if(!bgfx::isValid(src)){pass=false;break;}
+        bgfx::TextureRegion source{},target{};source.handle=src;target.handle=dst;
+        bgfx::blit(3,target,source);bgfx::frame();
+        std::vector<uint8_t> actual(t::byte_count);
+        const uint32_t ready=bgfx::read(target,actual.data());
+        uint32_t frame=bgfx::frame();
+        while(int32_t(frame-ready)<0)frame=bgfx::frame();
+        const bool match=actual==expected;
+        std::cout<<"Material transport epoch="<<epoch<<" cells="<<t::cell_count
+                 <<" expected_hash="<<t::hash(expected)<<" gpu_hash="<<t::hash(actual)
+                 <<" byte_exact="<<match<<'\n';
+        pass=pass&&match;bgfx::destroy(src);bgfx::frame();
+    }
+    bgfx::destroy(dst);bgfx::frame();
+    return pass?TargetResult::pass:TargetResult::fail;
+}
+
 int main(int argc,char** argv){
     if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_GAMEPAD)){std::cerr<<SDL_GetError()<<'\n';return 1;}
     bool automated=argc>1&&std::string_view(argv[1])=="--smoke";
@@ -73,10 +105,13 @@ int main(int argc,char** argv){
     if(!ready){std::cerr<<"All GPU initialization attempts failed\n";SDL_DestroyWindow(window);SDL_Quit();return 4;}
     const auto* caps=bgfx::getCaps();std::cout<<"bgfx API: "<<BGFX_API_VERSION<<"\nRenderer: "<<bgfx::getRendererName(bgfx::getRendererType())<<" compute_supported="<<bool(caps->supported&BGFX_CAPS_COMPUTE)<<'\n';
     const auto targetResult=validateTarget();
+    const auto transportResult=validateMaterialTransport();
+    const char* transportLabel=transportResult==TargetResult::pass?"PASS":transportResult==TargetResult::unsupported?"UNSUPPORTED":"FAIL";
+    std::cout<<"Material transport: "<<transportLabel<<std::endl;
     const char* targetLabel=targetResult==TargetResult::pass?"PASS":targetResult==TargetResult::unsupported?"UNSUPPORTED":"FAIL";
     std::cout<<"Offscreen target: "<<targetLabel<<std::endl;
     bgfx::setDebug(BGFX_DEBUG_TEXT);bgfx::setViewClear(0,BGFX_CLEAR_COLOR,0x101217ff);
-    bool running=true;int frames=0;while(running){SDL_Event e;while(SDL_PollEvent(&e)){if(e.type==SDL_EVENT_QUIT||(e.type==SDL_EVENT_KEY_DOWN&&e.key.key==SDLK_ESCAPE))running=false;if(e.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED){SDL_GetWindowSizeInPixels(window,&width,&height);if(width>0&&height>0){bgfx::SwapChain sc;sc.width=width;sc.height=height;bgfx::reset(BGFX_RESET_VSYNC,&sc);}}}
-      if(width>0&&height>0){bgfx::setViewRect(0,0,0,uint16_t(std::min(width,65535)),uint16_t(std::min(height,65535)));bgfx::touch(0);bgfx::dbgTextClear();bgfx::dbgTextPrintf(1,1,0x0f,"BRICK BREAKER / STAGE 1 DIAGNOSTICS");bgfx::dbgTextPrintf(1,3,0x07,"Backend: %s | %dx%d",bgfx::getRendererName(bgfx::getRendererType()),width,height);bgfx::dbgTextPrintf(1,4,0x07,"Compute: %s | Input: Esc to exit",(caps->supported&BGFX_CAPS_COMPUTE)?"available":"unavailable");bgfx::dbgTextPrintf(1,5,0x07,"1280x720 attachment/readback: %s",targetLabel);bgfx::frame();++frames;}else SDL_Delay(16);if(automated&&frames>=120)running=false;}
-    bgfx::shutdown();SDL_DestroyWindow(window);SDL_Quit();std::cout<<"Rendered frames: "<<frames<<'\n';return frames==0?5:targetResult==TargetResult::fail?6:(automated&&targetResult==TargetResult::unsupported)?7:0;
+    bool running=true;int frames=0;while(running){SDL_Event e;while(SDL_PollEvent(&e)){if(e.type==SDL_EVENT_QUIT||(e.type==SDL_EVENT_KEY_DOWN&&e.key.key==SDLK_ESCAPE))running=false;if(e.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED){SDL_GetWindowSizeInPixels(window,&width,&height);if(width>0&&height>0){auto sc=init.swapChain;sc.width=width;sc.height=height;bgfx::reset(BGFX_RESET_VSYNC,&sc);}}}
+      if(width>0&&height>0){bgfx::setViewRect(0,0,0,uint16_t(std::min(width,65535)),uint16_t(std::min(height,65535)));bgfx::touch(0);bgfx::dbgTextClear();bgfx::dbgTextPrintf(1,1,0x0f,"BRICK BREAKER / STAGE 1 DIAGNOSTICS");bgfx::dbgTextPrintf(1,3,0x07,"Backend: %s | %dx%d",bgfx::getRendererName(bgfx::getRendererType()),width,height);bgfx::dbgTextPrintf(1,4,0x07,"Compute: %s | Input: Esc to exit",(caps->supported&BGFX_CAPS_COMPUTE)?"available":"unavailable");bgfx::dbgTextPrintf(1,5,0x07,"1280x720 attachment/readback: %s",targetLabel);bgfx::dbgTextPrintf(1,6,0x07,"CPU-GPU material payload: %s",transportLabel);bgfx::frame();++frames;}else SDL_Delay(16);if(automated&&frames>=120)running=false;}
+    bgfx::shutdown();SDL_DestroyWindow(window);SDL_Quit();std::cout<<"Rendered frames: "<<frames<<'\n';return frames==0?5:(targetResult==TargetResult::fail||transportResult==TargetResult::fail)?6:(automated&&(targetResult==TargetResult::unsupported||transportResult==TargetResult::unsupported))?7:0;
 }
