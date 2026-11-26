@@ -39,10 +39,11 @@ const variants={
  Clinic:["Hospital","Community clinic","Dispensary"]
 };
 export function prepare(w){
- if(w.transit?.revision===1&&w.buildings.every(b=>b.architecture))return w;
+ if(w.transit?.revision===1&&w.architectureRevision===2)return w;
  // Use a rolling subtype counter per functional category, with a deterministic offset.
  const count={};
  for(const b of w.buildings){const v=variants[b.type]||[b.type];const i=count[b.type]||0;b.architecture=v[i%v.length];count[b.type]=i+1;}
+ w.architectureRevision=2;
  if(w.transit?.revision===1)return w;
  w.transit={revision:1,boardings:0,completed:0,abandoned:0,vehicleKm:0,rerouted:0};
  for(const c of w.citizens){delete c.ride;delete c.transitGoal;}
@@ -116,9 +117,22 @@ export function after(w,dt,api){
  r.phase="riding";r.bus=b.id;b.passengers.push(c.id);c.route=[];w.transit.boardings++;api.note(w,c,"Boarded bus "+lines[b.line].name);}}
  }
 }
+export function networkMap(){
+ // Schematic based on the actual graph. Each shared route has its own colored track.
+ let html='<div style="position:relative;aspect-ratio:1;max-width:285px;margin:12px auto;background:#0d1412;border:1px solid #394c43" aria-label="Four bus routes across the seven by seven street network">';
+ const p=(v)=>8+(v+210)/420*84;
+ for(let j=0;j<7;j++){const v=8+j*14;html+='<i style="position:absolute;left:'+v+'%;top:8%;height:84%;width:1px;background:#415048"></i><i style="position:absolute;top:'+v+'%;left:8%;width:84%;height:1px;background:#415048"></i>';}
+ for(let li=0;li<lines.length;li++){const l=lines[li],color="#"+l.color.toString(16).padStart(6,"0"),off=(li-1.5)*1.15;
+ for(let i=0;i<l.nodes.length;i++){const a=l.nodes[i],b=l.nodes[(i+1)%l.nodes.length],horizontal=a.z===b.z;
+ const left=Math.min(p(a.x),p(b.x))+(horizontal?0:off),top=Math.min(p(a.z),p(b.z))+(horizontal?off:0);
+ html+='<i style="position:absolute;left:'+left+'%;top:'+top+'%;width:'+(horizontal?14:0.7)+'%;height:'+(horizontal?0.7:14)+'%;background:'+color+'"></i>';
+ html+='<i style="position:absolute;width:4px;height:4px;background:'+color+';left:calc('+(p(a.x)+off)+'% - 2px);top:calc('+(p(a.z)+off)+'% - 2px)"></i>';
+ }}
+ return html+'</div>';
+}
 export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
- let html='<h2>TRANSIT CONTROL</h2><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><h3>ROUTE NETWORK</h3>';
+ let html='<h2>TRANSIT CONTROL</h2><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap();
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+l.stops.length+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.length*28+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/28 · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
  return html+'<p>Bus riders choose routes by estimated travel time, walk to stops, wait, board and continue walking after alighting. Select a bus to locate it.</p>';
 }
@@ -183,23 +197,47 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  solid(w-7,high-low,l-10,x,z+1,low,f);slab(w-6,l-9,high+.6,x,z+1);bands(w-7,l-10,low+4,high,x,z+1);hvac(x,z,high+1);
  if(a==="Hospital") {box(shell,5,.25,14,x,high+1,z,white);box(shell,14,.26,5,x,high+1,z,white);}
  }else if(a==="Row residences"||a==="Courtyard flats"){
- const height=Math.max(8,h*.65);solid(w,height,l);slab(w+1,l+1,height+.6);
- for(const dx of [-7,0,7]){box(shell,6.8,1.4,l*.55,x+dx,height+1.2,z-5,roof);box(shell,.25,1.6,l*.55,x+dx-3.3,height+1.3,z-5,trim);}
- for(let dz=-12;dz<=12;dz+=8)box(shell,2.6,1.6,2.6,x+5,height+1,z+dz,steel);
- bands(w,l,4,height);
+ const height=Math.max(8,h*.65);
+ if(a==="Courtyard flats"){
+ solid(w,height,12,x,z-l/2+6);slab(w+.6,12.6,height+.6,x,z-l/2+6);
+ for(const s of [-1,1]){solid(7,height,l-12,x+s*(w-7)/2,z+6);slab(7.5,l-11.5,height+.6,x+s*(w-7)/2,z+6);}
+ box(base,w-15,.13,l-15,x,.56,z+7,roof);for(let dz=-3;dz<13;dz+=8)box(base,3,.6,1.3,x,.8,z+dz,trim);
+ }else{
+ for(let j=-1;j<=1;j++){const xx=x+j*7.5,hh=height+(j===0?2:0),ll=l-(j===1?3:0);solid(7.15,hh,ll,xx,z+(l-ll)/2);
+ const top=box(shell,7.5,1.2,ll+.4,xx,hh+1,z+(l-ll)/2,roof);top.rotation.z=j===0?.12:-.12;
+ box(shell,5,.24,2.1,xx,3.9,z-l/2-1,trim);box(shell,2.3,2.8,.14,xx,1.9,z-l/2-.13,door);}
+ }
+ }else if(a==="Covered market"){
+ const height=5.5;solid(w,4,8,x,z+l/2-4,0,steel);slab(w+1,l+1,height,x,z,roof);
+ for(const dx of [-10,10])for(const dz of [-15,-5,5,15]){box(shell,.38,5.2,.38,x+dx,2.9,z+dz,steel);colliders.push({x:x+dx,z:z+dz,w:.38,l:.38,h:5.2});}
+ for(const dx of [-6,6])for(let dz=-12;dz<=8;dz+=6){box(shell,4,1.05,2.5,x+dx,1,z+dz,trim);box(shell,4.2,.12,2.7,x+dx,1.6,z+dz,white);box(shell,4.5,.15,3.4,x+dx,3.4,z+dz,((dz+12)/6)%2?rust:roof);colliders.push({x:x+dx,z:z+dz,w:4,l:2.5,h:1.6});}
+ box(shell,w,1,.25,x,4.8,z-l/2-.1,steel);
+ }else if(a==="Trading arcade"){
+ solid(w,7,l);slab(w+1,l+1,7.6);for(let j=-1;j<=1;j++){const xx=x+j*6;const canopy=box(shell,5.5,.45,l-4,xx,8.6,z,glass);canopy.rotation.z=j*.15;}
+ for(let j=-1;j<=1;j++){box(shell,6.7,2.3,.15,x+j*7,2.4,z-l/2-.15,glass);box(shell,7,.3,3.6,x+j*7,4.1,z-l/2-1.7,steel);}
  }else if(b.type==="Factory"||b.type==="Warehouse"){
  const height=a==="Freight depot"?7:a==="Power works"?10:Math.max(7,h);
  solid(w,height,l,x,z,0,steel);slab(w+1,l+1,height+.6);
- if(b.type==="Factory"){for(let j=-1;j<=1;j++){const zz=z+j*10;const top=box(shell,w-2,2.5,5,x,height+1.5,zz,roof);top.rotation.x=-.24;}chimney(x+7,z+9,height+.5,a==="Power works"?20:10);if(a==="Processing plant")chimney(x-7,z+9,height+.5,8);}
+ if(b.type==="Factory"){for(let j=-1;j<=1;j++){const zz=z+j*10;const top=box(shell,w-2,2.5,5,x,height+1.5,zz,roof);top.rotation.x=-.24;}chimney(x+7,z+9,height+.5,a==="Power works"?20:10);if(a==="Processing plant"){chimney(x-7,z+9,height+.5,8);for(const dx of [-6,6]){cyl(shell,3,3,5,x+dx,height+3,z-6,steel,12);cyl(shell,2.95,3,.5,x+dx,height+5.7,z-6,roof,12);}}
+ if(a==="Power works"){for(const dx of [-6,0,6]){cyl(shell,1.6,1.8,4,x+dx,height+2.5,z-9,steel);box(shell,4,.5,1,x+dx,height+4.7,z-9,trim);}}
+ if(a==="Assembly hall")for(let j=-1;j<=1;j++)box(shell,4,.35,8,x+j*6,height+2.8,z,glass);}
  else for(let dx of [-7,0,7]){box(shell,5,4,.3,x+dx,2.4,z-l/2-.15,dark);for(let y=1;y<4;y+=.6)box(shell,4.7,.08,.35,x+dx,y,z-l/2-.3,steel);}
+ if(a==="Cold store"){for(const dx of [-6,0,6]){box(shell,4,2.2,3,x+dx,height+1.6,z-6,steel);for(let j=-1;j<=1;j++)box(shell,.25,.18,2.8,x+dx+j,height+2.8,z-6,dark);}}
  hvac(x-5,z-8,height+1);
  }else{
  const height=b.type==="Market"?Math.max(6,h*.7):h;
  solid(w,height,l,x,z,0,f);slab(w+1,l+1,height+.6);bands(w,l,4,height);hvac(x-5,z+5,height+1);
- if(b.type==="Market"){for(let dx of [-7,0,7]){box(shell,6,1.1,.15,x+dx,2.3,z-l/2-.1,glass);box(shell,6.5,.22,3,x+dx,4,z-l/2-1,dx===0?rust:trim);}}
+ if(b.type==="Market"){for(let dx of [-7,0,7]){box(shell,6,1.1,.15,x+dx,2.3,z-l/2-.1,glass);box(shell,6.5,.22,a==="Canteen"?4:2,x+dx,4,z-l/2-1,dx===0?rust:trim);}
+ if(a==="Canteen"){for(const dx of [-7,7]){box(base,3,.14,1.7,x+dx,.85,z-l/2-2,roof);for(const s of [-1,1])box(base,3,.15,.4,x+dx,.45,z-l/2-2+s*1.2,steel);}}
+ if(a==="Grocery"){box(shell,6,3,.2,x+7,2.1,z+l/2+.15,steel);for(let j=0;j<5;j++)box(shell,5.8,.08,.25,x+7,1+j*.5,z+l/2+.25,dark);}
+ }
+ else if(a==="Police station"){for(const dx of [-7,7]){box(shell,5.2,3.6,.21,x+dx,2.3,z-l/2-.15,dark);box(shell,5.5,.3,.35,x+dx,4.2,z-l/2-.3,white);}box(shell,3,.3,3,x,height+1,z,steel);cyl(shell,.08,.08,6,x,height+4,z,steel);}
+ else if(a==="Records office"){for(let j=-2;j<=2;j++)box(shell,.4,height+.2,.55,x+j*4.6,height/2+.5,z-l/2-.32,steel);}
+ else if(a==="Workers' hostel"){for(const dx of [-5,5]){cyl(shell,2.3,2.3,2.5,x+dx,height+2,z+6,steel,12);cyl(shell,2.35,2.35,.2,x+dx,height+3.4,z+6,roof,12);}}
+ else if(a==="Community clinic"||a==="Dispensary"){box(shell,4,.3,3.3,x,4.4,z-l/2-1.5,white);box(shell,1.8,.45,.16,x,3.8,z-l/2-3,trim);}
  else for(let y=4;y<height;y+=4){box(shell,8,.25,2,x-4,y,z-l/2-1,roof);box(shell,8,.65,.13,x-4,y+.43,z-l/2-1.9,steel);}
  }
- box(shell,3.4,3.8,.22,x,2.35,z-l/2-.12,door);
+ if(a!=="Covered market")box(shell,3.4,3.8,.22,x,2.35,z-l/2-.12,door);
  sign(a.toUpperCase()+" "+String(b.id).padStart(2,"0"),x,z-l/2-.3,4.9,shell);
  box(inside,w,.15,l,x,.55,z,roof);for(const dx of [-1,1])box(inside,.3,.8,l,x+dx*w/2,.95,z,f);
  box(inside,w,.8,.3,x,.95,z+l/2,f);
