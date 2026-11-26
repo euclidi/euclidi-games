@@ -24,6 +24,8 @@ jobs:
         run: |
           npm install --no-save --no-package-lock three@0.180.0 @dimforge/rapier3d-compat@0.17.3 playwright@1.51.1
           npx playwright install --with-deps chromium
+      - name: Raster asset mesh tests
+        run: node --test backyard-astronaut/v2/art.test.mjs
       - name: Local bundle and browser smoke test
         run: |
           mkdir -p "$RUNNER_TEMP/site" screenshots
@@ -42,7 +44,7 @@ jobs:
             await page.goto('http://127.0.0.1:8766/v2/');
             await page.waitForFunction(()=>document.documentElement.dataset.gameReady==='true',{},{timeout:60000});
             await page.waitForTimeout(1000);
-            let s=await page.evaluate(()=>window.baV2.snapshot());assert(s.webgl&&s.rapier&&s.draws>5);
+            let s=await page.evaluate(()=>window.baV2.snapshot());assert(s.webgl&&s.rapier&&s.draws>5);assert(s.art.some(a=>a.kind==='capsule'&&a.N>=44&&a.faces>100));console.log(JSON.stringify(s.art));
             await page.keyboard.down('w');await page.waitForTimeout(600);await page.keyboard.up('w');let t=await page.evaluate(()=>window.baV2.snapshot());assert(Math.hypot(t.player[0]-s.player[0],t.player[2]-s.player[2])>.5);
             await page.locator('#save').click();await page.locator('#load').click();assert((await page.evaluate(()=>window.baV2.snapshot())).parts[0].id===s.parts[0].id);
             assert.equal(errors.length,0,errors.join('; '));console.log('PASS actual WebGL2, Rapier, movement and save/load smoke test');
