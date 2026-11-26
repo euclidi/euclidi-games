@@ -1,0 +1,33 @@
+name: Brick Breaker Stage 1 native validation
+on:
+  push:
+    paths:
+      - 'brick-breaker/**'
+      - '.github/workflows/brick-breaker-stage1.yml'
+  workflow_dispatch:
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DBB_NATIVE=ON -DCMAKE_BUILD_TYPE=Release
+      - name: Compile
+        run: cmake --build build --config Release --parallel 2
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure
+      - name: Package diagnostics (Windows)
+        if: runner.os == 'Windows'
+        run: cmake --install build --config Release --prefix stage1-bin
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Windows'
+        with:
+          name: brick-breaker-stage1-windows-diagnostics
+          path: brick-breaker/stage1-bin/

@@ -1,0 +1,8 @@
+PASS exact 120 Hz over one second
+PASS variable frame duration exact accumulation
+PASS stall cap and explicit dropped time
+PASS reject negative time
+PASS letterbox 16:9
+PASS portrait viewport
+PASS minimized viewport
+PASS approved configuration
