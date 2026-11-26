@@ -112,3 +112,27 @@ jobs:
       - run: cmake -S . -B build-audio -DBB_AUDIO=ON -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build-audio --config Release --parallel 2
       - run: ctest --test-dir build-audio -C Release --output-on-failure --verbose
+  audio-assets:
+    needs: asset-intake
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: brick-breaker-asset-review
+          path: brick-breaker/asset-review
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy==2.2.6 soundfile==0.13.1
+      - run: python tools/prepare_audio.py asset-review/impact.zip audio-review
+      - run: cmake -S . -B build-audio-assets -DBB_AUDIO=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-audio-assets --config Release --parallel 2
+      - run: ./build-audio-assets/audio_tests audio-review
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brick-breaker-audio-review-pcm
+          path: brick-breaker/audio-review/
