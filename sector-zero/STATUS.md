@@ -1,14 +1,16 @@
 # Sector Zero — Current status
 
-**Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
+**Snapshot:** 2026-11-26, urban infrastructure commit [ca12a4f](https://github.com/euclidi/euclidi-games/commit/ca12a4f5466fe2f55f0b3db3b20ec21353e42d77).
 
 **Lifecycle:** Active — city simulation.
 
 ## Implemented / source-inspected
 
-Existing city runtime, camera fix, observation tools, transit overlay with weighted grid routing, 23 architecture variants and four bus routes served by 12 vehicles. Static bundled browser build.
+Existing city runtime, camera fix, observation tools, transit overlay with weighted grid routing with local congestion penalties, three road speed classes, 32 architecture variants and six bus routes served by 18 vehicles. Includes two limited-stop express loops, 28/40-passenger capacities, one-transfer itineraries and saved-rider migration. Static bundled browser build.
 
 ## Validation evidence
+
+Urban module: 599 passing logic assertions in an isolated JavaScript runtime, including boarding, transfer, alighting and old-rider migration. Sampled 1,296 origin/destination pairs: 398 direct bus itineraries and 98 with a transfer; the rest chose walking. Browser rendering and actual Pages deployment for this revision are unverified.
 
 Catalog Chromium boot/camera smoke passed in the 631fb3e audit; no full city-day or mobile performance certification for this exact revision.
 
@@ -18,7 +20,7 @@ Tests are limited to their stated coverage. Browser startup is not full gameplay
 
 ## Outstanding and unverified
 
-Irregular streets, passenger transfers, rail, deeper social systems, interior fidelity, full Recast integration, environmental integration and measured population performance require validation or development. The patch directory is not a playable release.
+Irregular streets, integrated transfer performance, rail, deeper social systems, interior fidelity, full Recast integration, environmental integration and measured population performance require validation or development. The patch directory is not a playable release.
 
 ## Next work
 
