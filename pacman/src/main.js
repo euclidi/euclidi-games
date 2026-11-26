@@ -1,5 +1,5 @@
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import {rows,engine} from './core.js';
 import {arcadeAudio as audio} from './arcade-audio.js';
 import {deathFrame,deathPixels,skirtRow,DEATH_HOLD} from './fidelity.js';
