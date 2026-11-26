@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]/"asset-review"
 ROOT.mkdir(exist_ok=True)
 PACKS=[
  ("industrial","https://opengameart.org/sites/default/files/kenney_pixelplatformerindustrialexpansion.zip","https://opengameart.org/content/pixel-platformer-industrial-expansion"),
- ("impact","https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip","https://kenney.nl/assets/impact-sounds")
+ ("impact","https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip","https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx")
 ]
 records=[]
 errors=[]
