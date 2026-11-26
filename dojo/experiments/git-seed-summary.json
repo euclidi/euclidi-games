@@ -1,0 +1,38 @@
+{
+  "controller": "01D-git",
+  "seed": 20261126,
+  "results": [
+    {
+      "id": "git-seed-1",
+      "score": 23.78,
+      "recoveries": 1,
+      "falls": 4,
+      "holdout": [
+        {
+          "id": "holdout-head",
+          "fallen": false,
+          "score": 84.56
+        },
+        {
+          "id": "holdout-low-friction",
+          "fallen": false,
+          "score": 76.77
+        }
+      ]
+    },
+    {
+      "id": "git-seed-2",
+      "score": 7.58,
+      "recoveries": 0,
+      "falls": 5
+    },
+    {
+      "id": "git-seed-3",
+      "score": 6.35,
+      "recoveries": 0,
+      "falls": 5
+    }
+  ],
+  "trials": 17,
+  "deterministic": true
+}
