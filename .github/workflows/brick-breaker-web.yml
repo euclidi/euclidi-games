@@ -2,6 +2,8 @@ name: Brick Breaker web playtest
 on:
   push:
     paths: ['brick-breaker/**', '.github/workflows/brick-breaker-web.yml', 'index.html']
+  pull_request:
+    paths: ['brick-breaker/**', '.github/workflows/brick-breaker-web.yml']
   workflow_dispatch:
 permissions:
   contents: read
