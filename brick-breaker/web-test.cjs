@@ -1,0 +1,11 @@
+const {chromium}=require('playwright');
+(async()=>{const browser=await chromium.launch({headless:true,args:['--no-sandbox']});try{const page=await browser.newPage({viewport:{width:1280,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:8765/brick-breaker/?test=1');await page.waitForFunction(()=>window.BrickBreaker?.snapshot().state==='ready',{},{timeout:45000});
+const snap=()=>page.evaluate(()=>BrickBreaker.snapshot());
+const check=(v,m)=>{if(!v)throw Error(m);console.log('PASS',m)};
+let s=await snap();check(s.bricks>50&&s.lives===3&&s.hz===120,'initial physical world');await page.locator('#launch').click();check((await snap()).state==='playing','launch');
+await page.evaluate(()=>{BrickBreaker.test.hit();BrickBreaker.test.advance(90)});s=await snap();check(s.stats.contacts>0,'actual ball-brick contact');
+await page.evaluate(()=>{BrickBreaker.test.clear()});check((await snap()).state==='upgrade','clear chamber upgrade');await page.locator('#choices button').first().click();check((await snap()).wave===2,'next chamber');
+await page.evaluate(()=>BrickBreaker.test.lose());check((await snap()).lives===2,'ball loss consumes life');
+await page.locator('#mode').selectOption('endless');await page.locator('#new').click();check((await snap()).mode==='endless','endless mode');await page.locator('#mode').selectOption('expedition');await page.locator('#new').click();check((await snap()).mode==='expedition','expedition mode');
+await page.reload();await page.waitForFunction(()=>window.BrickBreaker);check((await snap()).scrap>0,'persistent scrap');await page.screenshot({path:'brick-breaker-desktop.png'});await page.setViewportSize({width:390,height:844});await page.screenshot({path:'brick-breaker-mobile.png'});check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'mobile fits');check(errors.length===0,'no uncaught errors: '+errors.join('; '));
+}finally{await browser.close()}})().catch(e=>{console.error(e);process.exit(1)});
