@@ -35,7 +35,7 @@ static TargetResult validateTarget(){
         bgfx::setViewRect(render,0,0,w,h);
         bgfx::setViewClear(render,BGFX_CLEAR_COLOR,rgba);
         bgfx::touch(render);bgfx::frame();
-        bgfx::TextureRegion dst{readback},src{bgfx::getTexture(target)};
+        bgfx::TextureRegion dst{},src{};dst.handle=readback;src.handle=bgfx::getTexture(target);
         bgfx::blit(copy,dst,src);bgfx::frame();
         const uint32_t ready=bgfx::read(dst,bytes.data());
         // Retain the destination buffer until the asynchronous GPU read completes.
@@ -60,7 +60,7 @@ static TargetResult validateTarget(){
 }
 
 
-static TargetResult validateMaterialTransport(){
+static TargetResult validateMaterialTransport(const char* atlasPath){
     namespace t=bb::transport;
     constexpr auto format=bgfx::TextureFormat::RGBA8;
     constexpr uint64_t flags=BGFX_TEXTURE_READ_BACK|BGFX_TEXTURE_BLIT_DST;
@@ -70,8 +70,15 @@ static TargetResult validateMaterialTransport(){
     auto dst=bgfx::createTexture2D(t::width,t::height,false,1,format,flags);
     if(!bgfx::isValid(dst))return TargetResult::fail;
     bool pass=true;
-    for(uint32_t epoch:{1u,2u}){
-        const auto expected=t::fixture(epoch);
+    std::vector<uint8_t> atlas;
+    if(atlasPath){
+        std::ifstream f(atlasPath,std::ios::binary|std::ios::ate);
+        if(!f||f.tellg()!=std::streamoff(t::byte_count)){std::cerr<<"Invalid atlas size or path\n";bgfx::destroy(dst);return TargetResult::fail;}
+        atlas.resize(t::byte_count);f.seekg(0);
+        if(!f.read(reinterpret_cast<char*>(atlas.data()),std::streamsize(atlas.size()))){bgfx::destroy(dst);return TargetResult::fail;}
+    }
+    for(uint32_t epoch=1;epoch<=(atlasPath?3u:2u);++epoch){
+        const auto expected=epoch==3?atlas:t::fixture(epoch);
         auto src=bgfx::createTexture2D(t::width,t::height,false,1,format,0,bgfx::copy(expected.data(),uint32_t(expected.size())));
         if(!bgfx::isValid(src)){pass=false;break;}
         bgfx::TextureRegion source{},target{};source.handle=src;target.handle=dst;
@@ -92,7 +99,12 @@ static TargetResult validateMaterialTransport(){
 
 int main(int argc,char** argv){
     if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_GAMEPAD)){std::cerr<<SDL_GetError()<<'\n';return 1;}
-    bool automated=argc>1&&std::string_view(argv[1])=="--smoke";
+    bool automated=false;const char* atlasPath=nullptr;
+    for(int i=1;i<argc;++i){
+        if(std::string_view(argv[i])=="--smoke")automated=true;
+        else if(std::string_view(argv[i])=="--atlas"&&i+1<argc)atlasPath=argv[++i];
+        else{std::cerr<<"Usage: runtime_probe [--smoke] [--atlas material-atlas.rgba]\n";SDL_Quit();return 8;}
+    }
     auto* window=SDL_CreateWindow("Brick Breaker | Stage 1 GPU diagnostics",bb::Settings::width,bb::Settings::height,SDL_WINDOW_RESIZABLE|SDL_WINDOW_HIGH_PIXEL_DENSITY);
     if(!window){std::cerr<<SDL_GetError()<<'\n';SDL_Quit();return 2;}
     auto* hwnd=SDL_GetPointerProperty(SDL_GetWindowProperties(window),SDL_PROP_WINDOW_WIN32_HWND_POINTER,nullptr);
@@ -105,7 +117,7 @@ int main(int argc,char** argv){
     if(!ready){std::cerr<<"All GPU initialization attempts failed\n";SDL_DestroyWindow(window);SDL_Quit();return 4;}
     const auto* caps=bgfx::getCaps();std::cout<<"bgfx API: "<<BGFX_API_VERSION<<"\nRenderer: "<<bgfx::getRendererName(bgfx::getRendererType())<<" compute_supported="<<bool(caps->supported&BGFX_CAPS_COMPUTE)<<'\n';
     const auto targetResult=validateTarget();
-    const auto transportResult=validateMaterialTransport();
+    const auto transportResult=validateMaterialTransport(atlasPath);
     const char* transportLabel=transportResult==TargetResult::pass?"PASS":transportResult==TargetResult::unsupported?"UNSUPPORTED":"FAIL";
     std::cout<<"Material transport: "<<transportLabel<<std::endl;
     const char* targetLabel=targetResult==TargetResult::pass?"PASS":targetResult==TargetResult::unsupported?"UNSUPPORTED":"FAIL";

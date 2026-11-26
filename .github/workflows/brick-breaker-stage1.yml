@@ -136,3 +136,21 @@ jobs:
         with:
           name: brick-breaker-audio-review-pcm
           path: brick-breaker/audio-review/
+  texture-review:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python tools/prepare_textures.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: brick-breaker-material-textures
+          path: brick-breaker/texture-review/
+          if-no-files-found: warn
