@@ -4,9 +4,15 @@ on:
     paths:
       - 'brick-breaker/**'
       - '.github/workflows/brick-breaker-stage1.yml'
+  pull_request:
+    paths:
+      - 'brick-breaker/**'
+      - '.github/workflows/brick-breaker-stage1.yml'
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
-  native:
+  core:
     strategy:
       fail-fast: false
       matrix:
@@ -17,17 +23,68 @@ jobs:
         working-directory: brick-breaker
     steps:
       - uses: actions/checkout@v4
-      - name: Configure
-        run: cmake -S . -B build -DBB_NATIVE=ON -DCMAKE_BUILD_TYPE=Release
-      - name: Compile
-        run: cmake --build build --config Release --parallel 2
-      - name: Test
-        run: ctest --test-dir build -C Release --output-on-failure
-      - name: Package diagnostics (Windows)
-        if: runner.os == 'Windows'
-        run: cmake --install build --config Release --prefix stage1-bin
+      - run: cmake -S . -B build-core -DBB_NATIVE=OFF -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-core --config Release --parallel 2
+      - run: ctest --test-dir build-core -C Release --output-on-failure --verbose
+  physics:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-physics -DBB_NATIVE=ON -DBB_GRAPHICS=OFF -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-physics --config Release --parallel 2
+      - run: ctest --test-dir build-physics -C Release --output-on-failure --verbose
       - uses: actions/upload-artifact@v4
-        if: runner.os == 'Windows'
+        if: always()
+        with:
+          name: physics-logs-${{ matrix.os }}
+          path: |
+            brick-breaker/build-physics/Testing/Temporary/
+            brick-breaker/build-physics/CMakeFiles/CMakeConfigureLog.yaml
+          if-no-files-found: warn
+  windows-graphics:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-native -DBB_NATIVE=ON -DBB_GRAPHICS=ON -A x64
+      - run: cmake --build build-native --config Release --parallel 2
+      - run: cmake --install build-native --config Release --prefix stage1-bin
+      - uses: actions/upload-artifact@v4
         with:
           name: brick-breaker-stage1-windows-diagnostics
           path: brick-breaker/stage1-bin/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: graphics-configure-log
+          path: brick-breaker/build-native/CMakeFiles/CMakeConfigureLog.yaml
+          if-no-files-found: warn
+  asset-intake:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python tools/intake_assets.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: brick-breaker-asset-review
+          path: brick-breaker/asset-review/
+          if-no-files-found: warn
