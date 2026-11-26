@@ -1,5 +1,33 @@
-# Unified V2 preview
-This is a separate first implementation, not a validated replacement for Alpha 0.3. The preview uses pinned CDN versions of Three.js and Rapier; the CI runner installs pinned packages and tests a local dependency bundle. There is no software renderer fallback.
-Controls: WASD or touch pad to walk, drag to orbit the camera, wheel/zoom buttons. E to collect a nearby part; carry it to the pad, R rotates the socket, E mounts. Q drops or detaches. Find an engine and fuel tank, board with F, use throttle and pitch or orbit assist. Zoom out / trajectory overlay in flight. Space toggles thrust. Save/load is local storage. 
-Implemented: independent raster slices for parts and character; textured terrain and planets; same scene, same spacecraft and part IDs; local Rapier rigid-body contact for walking and salvage; numerical 3D vector gravity/flight with moving moon and orbital elements; optional coast trajectory; manual and assisted flight; local save; keyboard/touch; synthesized engine audio.
-Not implemented or validated: full authored art and animation, terrain curvature continuity far from launch area, TypeScript/Vite production bundle, physical attachment joints, collision geometry matching each part, 3-axis torque and angular dynamics, staging, planetary terrain landing, lunar landing, robust progression, controller, IndexedDB, complete orbital reference tests, solar system beyond home planet and moon, verified physical flyby, mobile performance, desktop package, in-chat companion. Flight is point-mass RK4 with local radial/tangential attitude control, not a six-degree-of-freedom rigid spacecraft. Crash recovery resets to pad. Preview is not guaranteed to initialize until browser CI is green. 
+# Backyard Astronaut — V2
+
+Same-scene exploration, salvage, assembly and flight with stable spacecraft identity.
+
+**Status:** Active — experimental unified build.
+
+[Open browser build](https://euclidi.github.io/euclidi-games/backyard-astronaut/v2/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
+
+## Documentation
+
+- [Development specification](SPEC.md) — scope, architecture and acceptance criteria.
+- [Roadmap](ROADMAP.md) — outstanding work in priority order.
+- [Current status](STATUS.md) — implementation and actual validation evidence.
+
+## Controls
+
+WASD/touch, E collect/mount, R socket rotation, Q drop/detach, F board, space thrust, camera orbit and flight controls.
+
+## Runtime
+
+Pinned Three.js and Rapier CDN modules; local dependency bundle in CI; custom raster volumes and point-mass RK4 flight.
+
+Serve the repository with a local HTTP server from its root (for example `python3 -m http.server 8000`) and open `http://localhost:8000/backyard-astronaut/v2/`. Use the hosted build for normal play. CDN-dependent builds need network access; 3D builds need a supported graphics context. Do not open module-based games via file://.
+
+## Supporting records
+
+- [Parent approved architecture](../ARCHITECTURE_V2.md)
+- [Parent roadmap](../ROADMAP.md)
+- [V2 model revision](MODEL_REVISION.md)
+
+## Limitations
+
+Point-mass flight is not full six-axis rigid-body dynamics; joints, staging, full solar system, landing, robust progression, mobile/controller, IndexedDB and fully bundled production remain incomplete.

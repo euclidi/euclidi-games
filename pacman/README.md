@@ -1,12 +1,33 @@
-# Maze Arcade / 1980 — PAC-MAN Git revision 1.4.1
+# PAC-MAN — Maze Arcade / 1980
 
-Self-contained Phaser 3 / WebGL / Vite browser game, reconstructed from revision 1.4. This is not a byte-identical export of the previous hosted build. No hosting or deployment settings are changed.
+Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-## Run
-Node 22 recommended. In this directory run npm install, npm test, npm run build, npm run dev. Open the local address printed by Vite.
+**Status:** Active — Git revision 1.4.x.
 
-## Included
-Original 28 x 31 maze topology, 240 pellets and 4 energizers, authentic/advanced/hybrid targeting, 60 Hz movement, scores and lives, fruit, simplified intermissions, persistent high scores, bitmap HUD and generated textures, 224 x 288 display, large drag-sensitive mobile D-pad, keyboard/swipe/gamepad input, scanlines, dedicated death sequence, integrated 16-effect wavetable audio.
+[Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
+
+## Documentation
+
+- [Development specification](SPEC.md) — scope, architecture and acceptance criteria.
+- [Roadmap](ROADMAP.md) — outstanding work in priority order.
+- [Current status](STATUS.md) — implementation and actual validation evidence.
+
+## Controls
+
+Start, arrow keys/WASD, directional pad or swipe; mode, pause, sound and CRT toggles.
+
+## Runtime
+
+Local 224×288 Canvas bitmap compositor, JS game logic, synthesized Web Audio, optional Vite packaging. No Phaser runtime or CDN needed for static play.
+
+Serve the repository with a local HTTP server from its root (for example `python3 -m http.server 8000`) and open `http://localhost:8000/pacman/`. Use the hosted build for normal play. CDN-dependent builds need network access; 3D builds need a supported graphics context. Do not open module-based games via file://.
+
+## Supporting records
+
+- [Maze logic](src/core.js)
+- [Bitmap compositor](src/bitmap-runtime.js)
+- [Regression suite](test.mjs)
 
 ## Limitations
-Unofficial recreation. Sprites, bitmap typography, maze outlines, timing and synthesized sounds are not verified 1:1 with the original ROM. No original sound ROM or recordings are bundled, and no manual audio pack is required. Intermission visuals and fruit art are simplified. The logic audit was run against the reconstructed core; browser rendering, sound playback, installation and production build have not been verified in this Git revision.
+
+No ROM or official recordings bundled; sprite, audio, timing and intermission fidelity not certified 1:1. Intermissions/fruit simplified; measured device and listening tests remain.

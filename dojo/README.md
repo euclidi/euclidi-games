@@ -1,21 +1,33 @@
-# DOJO X — Stage 1D Git reconstruction
+# Dojo X
 
-Play from the Euclidi Games site at `./dojo/`. No Vercel dependency. The earlier combat build is preserved at `legacy/dojo-ix.html`.
+Develop recognizable emergent fighting motion through physical articulated bodies, recorded experiments and replay, rather than scripted hit outcomes.
 
-The current static optimizer is a reconstruction of Stage 1D, not a byte-for-byte recovery of the previous hosted build. The bundled MIT p2.js 0.7.1 engine drives 21 rigid bodies and 20 motorized joints at 120 Hz. The seed archive records 17 actual trials, three configurations, and two held-out tests, with 20 Hz motion replays. The baseline repeat produced identical replay samples.
+**Status:** Active — Stage 1D physical-controller research; Stage 2 gated.
 
-Run `node dojo/tests.cjs` from the repository root for deterministic replay regression.
+[Open browser build](https://euclidi.github.io/euclidi-games/dojo/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
-## Files
+## Documentation
 
-- index.html / app.js: replay, ratings, storage, and search controls
-- physics.js / optimizer.js: physical controller and worker search
-- p2.min.js: local MIT engine
-- seed.json: full initial trial archive
-- experiments/: previous test results and Git build summary
-- legacy/: prior combat simulator
+- [Development specification](SPEC.md) — scope, architecture and acceptance criteria.
+- [Roadmap](ROADMAP.md) — outstanding work in priority order.
+- [Current status](STATUS.md) — implementation and actual validation evidence.
 
-## Development gate
+## Controls
 
-Stage 1 is not approved. No Stage 2 until explicit approval of the physical body controller. Preserve failed experiments; physical fitness is separate from visual ratings. Planar only, self-collision disabled, recovery often fails, mobile performance and live browser operation unverified. User-generated experiments are stored in browser IndexedDB and can be exported; Git does not sync browser-local data. No background search after closing the page. Commit source and regression evidence before publishing.
+Choose a configuration and replay; Play, frame step, speed, diagnostics, Optimize from best, save ratings, export/import.
 
+## Runtime
+
+Bundled MIT p2.js 0.7.1, 21 rigid bodies, 20 motorized joints, planar 120 Hz physics, Web Worker optimizer, Canvas replay, IndexedDB.
+
+Serve the repository with a local HTTP server from its root (for example `python3 -m http.server 8000`) and open `http://localhost:8000/dojo/`. Use the hosted build for normal play. CDN-dependent builds need network access; 3D builds need a supported graphics context. Do not open module-based games via file://.
+
+## Supporting records
+
+- [Earlier combat build](legacy/dojo-ix.html)
+- [Experiment evidence](experiments/git-seed-summary.json)
+- [Physical controller](physics.js)
+
+## Limitations
+
+Planar prototype, self-collision disabled, recovery often fails; numerical score does not prove believable motion. Full striking/contact/combinations and approved Stage 1 acceptance remain incomplete.
