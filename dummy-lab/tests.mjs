@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {ACTIONS,triangle,angle,inside,PALM_WIDTH,PALM_DEPTH,nextAction} from './math.js';
+test('28 unique action entries',()=>assert.equal(new Set(ACTIONS).size,28));
+test('IK triangle preserves segment length for reachable distances',()=>{for(let i=1;i<560;i++){const x=triangle(.30,.26,i/1000);assert(Math.abs(Math.hypot(x.along,x.height)-.30)<1e-9);assert(Math.abs(Math.hypot(x.distance-x.along,x.height)-.26)<1e-9);}});
+test('hand dimensions',()=>{assert.equal(PALM_WIDTH,.142);assert.equal(PALM_DEPTH,.078);});
+test('collision clearance',()=>{const obstacles=[{x:-2.78,z:4.12,w:3.42,d:.91},{x:2.45,z:4.15,w:2.18,d:.91},{x:-3.35,z:5,w:.62,d:.65},{x:-2.12,z:5.02,w:.62,d:.65},{x:2.45,z:5.05,w:.62,d:.65},{x:-4.8,z:6.5,w:1.28,d:.62},{x:4.88,z:6.36,w:.84,d:.94}];for(let i=0;i<=400;i++)assert(!inside(0,3.65+i*(7.05-3.65)/400,obstacles));assert(inside(-2.78,4.12,obstacles));});
+test('angle wrapping and reproducible seed',()=>{assert(Math.abs(angle(0,Math.PI*2))<1e-9);assert.equal(nextAction(723),nextAction(723));});
