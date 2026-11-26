@@ -7,7 +7,7 @@ This is an ordered development backlog, not a declaration that milestones are co
 ## Priorities
 
 - [ ] Recover or modularize the bundled source without replacing the city; add reproducible build and state migration tests.
-- [ ] Validate road hierarchy, routing, passenger journeys and traffic at population scale; extend transit, then irregular streets.
+- [ ] Validate expanded six-line transit, transfer journeys and differentiated roads at population scale; replace the fixed grid with irregular streets, then develop rail.
 - [ ] Integrate solar/weather/emissive lighting, local sound and authored city assets; audit camera and controls.
 - [ ] Complete interiors, undercity, economy/social depth and persistence; measure frame time and run long autonomous playthroughs.
 
