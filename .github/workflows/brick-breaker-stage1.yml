@@ -88,3 +88,13 @@ jobs:
           name: brick-breaker-asset-review
           path: brick-breaker/asset-review/
           if-no-files-found: warn
+  geometry:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: brick-breaker
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-geometry -DBB_GEOMETRY=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-geometry --config Release --parallel 2
+      - run: ctest --test-dir build-geometry -C Release --output-on-failure --verbose
