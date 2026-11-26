@@ -2,6 +2,19 @@
 const D=[[0,1],[1,0],[0,-1],[-1,0]], N=70, edge=210;
 const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.z-b.z);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const roadRank=v=>v===0||Math.abs(v)===210?0:Math.abs(v)===140?1:2;
+const linkCost=(x,z,dir)=>[.76,.92,1.12][roadRank(dir%2===0?x:z)];
+const nodeIndex=(x,z)=>(z+210)/70*7+(x+210)/70;
+const potentials=new Map();
+function distances(dx,dz){
+ const key=dx+","+dz;if(potentials.has(key))return potentials.get(key);
+ const cost=Array(49).fill(Infinity),done=new Set();cost[nodeIndex(dx,dz)]=0;
+ for(let step=0;step<49;step++){let n=-1;for(let j=0;j<49;j++)if(!done.has(j)&&(n<0||cost[j]<cost[n]))n=j;if(n<0||!Number.isFinite(cost[n]))break;done.add(n);let x=n%7*70-210,z=Math.floor(n/7)*70-210;
+ for(let d=0;d<4;d++){const a=x+D[d][0]*70,b=z+D[d][1]*70;if(Math.abs(a)>210||Math.abs(b)>210)continue;const j=nodeIndex(a,b);cost[j]=Math.min(cost[j],cost[n]+linkCost(a,b,d));}}
+ potentials.set(key,cost);return cost;
+}
+export function carScore(x,z,dir,dx,dz,prev){const a=x+D[dir][0]*70,b=z+D[dir][1]*70;return distances(dx,dz)[nodeIndex(a,b)]+linkCost(x,z,dir)+(dir===(prev+2)%4?.55:dir===prev?0:.05);}
+
 const direction=(a,b)=>D.findIndex(d=>a.x+d[0]*N===b.x&&a.z+d[1]*N===b.z);
 function rectangle(x0,z0,x1,z1,reverse=false){
  const p=[];for(let x=x0;x<x1;x+=N)p.push({x,z:z0});
@@ -26,9 +39,12 @@ const variants={
  Clinic:["Hospital","Community clinic","Dispensary"]
 };
 export function prepare(w){
- for(const b of w.buildings){const v=variants[b.type]||[b.type];b.architecture=v[(b.i*3+b.j*7+b.k)%v.length];}
+ if(w.transit?.revision===1&&w.buildings.every(b=>b.architecture))return w;
+ // Use a rolling subtype counter per functional category, with a deterministic offset.
+ const count={};
+ for(const b of w.buildings){const v=variants[b.type]||[b.type];const i=count[b.type]||0;b.architecture=v[i%v.length];count[b.type]=i+1;}
  if(w.transit?.revision===1)return w;
- w.transit={revision:1,boardings:0,completed:0,abandoned:0,vehicleKm:0};
+ w.transit={revision:1,boardings:0,completed:0,abandoned:0,vehicleKm:0,rerouted:0};
  for(const c of w.citizens){delete c.ride;delete c.transitGoal;}
  for(let k=0;k<12;k++){
  const b=w.cars[w.cars.length-12+k],line=k%4,l=lines[line],i=Math.floor(Math.floor(k/4)*l.nodes.length/3),p=l.nodes[i],j=(i+1)%l.nodes.length;
@@ -86,7 +102,7 @@ export function after(w,dt,api){
  }
  if(!r)continue;
  if(r.phase==="approach"){const p=lines[r.line].stops[r.from];if(dist(c,p)<1.5){r.phase="waiting";r.since=w.time;c.route=[];c.x=p.x;c.z=p.z;}else if(!c.route.length||dist(c.route[c.route.length-1],p)>.1)c.route=walkTo(c,p);}
- if(r.phase==="waiting"){const p=lines[r.line].stops[r.from];c.x=p.x;c.z=p.z;c.inside=-1;c.route=[];if(w.time-r.since>75){w.transit.abandoned++;resume(w,c,api);}}
+ if(r.phase==="waiting"){const p=lines[r.line].stops[r.from],d=D[p.dir];const slot=(c.id%11)-5;const row=Math.floor(c.id/11)%3;c.x=p.x+d[0]*slot*.58+d[1]*row*.45;c.z=p.z+d[1]*slot*.58-d[0]*row*.45;c.inside=-1;c.route=[];if(w.time-r.since>75){w.transit.abandoned++;resume(w,c,api);}}
  if(r.phase==="riding"){const b=buses.find(x=>x.id===r.bus);if(!b){resume(w,c,api);continue}const p=api.carPosition(b);c.x=p.x;c.z=p.z;c.heading=p.a;c.inside=-1;c.route=[];}
  }
  for(const b of buses){
@@ -94,7 +110,7 @@ export function after(w,dt,api){
  if(b.dwell<=0||b.atStop<0)continue;
  const p=lines[b.line].stops[b.atStop];
  for(const id of [...b.passengers]){const c=w.citizens[id],r=c?.ride;if(!r||r.bus!==b.id){b.passengers=b.passengers.filter(x=>x!==id);continue;}
- if(r.to===b.atStop||r.cancel){b.passengers=b.passengers.filter(x=>x!==id);c.x=p.x;c.z=p.z;w.transit.completed++;resume(w,c,api);}}
+ if(r.to===b.atStop||r.cancel){b.passengers=b.passengers.filter(x=>x!==id);c.x=p.x;c.z=p.z;if(r.cancel)w.transit.rerouted=(w.transit.rerouted||0)+1;else w.transit.completed++;resume(w,c,api);}}
  for(const c of w.citizens){if(b.passengers.length>=28)break;const r=c.ride;
  if(r?.phase==="waiting"&&r.line===b.line&&r.from===b.atStop&&c.id!==w.possessed){
  r.phase="riding";r.bus=b.id;b.passengers.push(c.id);c.route=[];w.transit.boardings++;api.note(w,c,"Boarded bus "+lines[b.line].name);}}
@@ -102,11 +118,13 @@ export function after(w,dt,api){
 }
 export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
- let html='<h2>TRANSIT CONTROL</h2><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><h3>ROUTE NETWORK</h3>';
+ let html='<h2>TRANSIT CONTROL</h2><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><h3>ROUTE NETWORK</h3>';
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+l.stops.length+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.length*28+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/28 · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
  return html+'<p>Bus riders choose routes by estimated travel time, walk to stops, wait, board and continue walking after alighting. Select a bus to locate it.</p>';
 }
 export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+lines[r.line].name+'</b></div>':'';}
+const signalGroups=new Map();
+export function updateSignals(time){for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;}}
 export function drawRoads(parent,{box,cyl,merge,mat,group}){
  const asphalt=mat(0x373c3b),local=mat(0x454744),edgeMat=mat(0x76786c),white=mat(0xb9b7a2),yellow=mat(0xc6a662),dark=mat(0x28322f),glass=mat(0x576b65),steel=mat(0x68756d),green=mat(0x75946f),red=mat(0xa74c3d);
  const kind=v=>v===0?"avenue":Math.abs(v)===210?"ring":Math.abs(v)===140?"collector":"local";
@@ -119,7 +137,13 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  }
  for(let z=-210;z<=210;z+=70){box(parent,13,.03,13,v,.006,z,asphalt);
  for(const s of [-1,1])for(let k=-3;k<=3;k+=1.3){box(parent,.65,.026,1.8,v+k,.043,z+s*5,white);box(parent,1.8,.026,.65,v+s*5,.043,z+k,white);}
- cyl(parent,.11,.14,4.4,v+7,2.2,z+7,steel);box(parent,.55,1.35,.42,v+7,4.25,z+7,dark);box(parent,.28,.28,.08,v+7,4.6,z+6.75,red);box(parent,.28,.28,.08,v+7,4,z+6.75,green);
+ const ax=v===0||Math.abs(v)===210,az=z===0||Math.abs(z)===210,key=(v+z)+":"+(ax&&!az?4:az&&!ax?2:3);
+ let sig=signalGroups.get(key);if(!sig){sig={x:v,z,phases:[group(),group()]};signalGroups.set(key,sig);parent.add(...sig.phases);}
+ for(const approach of [0,1]){const sx=v+(approach===0?7:-7),sz=z+(approach===0?7:-7);cyl(parent,.11,.14,4.4,sx,2.2,sz,steel);box(parent,approach===0?.55:.42,1.35,approach===0?.42:.55,sx,4.25,sz,dark);
+ for(let phase=0;phase<2;phase++){const go=phase===approach,g=sig.phases[phase];
+ for(const side of [-1,1]){const xx=sx+(approach===1?side*.23:0),zz=sz+(approach===0?side*.23:0);
+ box(g,approach===0?.28:.08,.28,approach===0?.08:.28,xx,go?4:4.6,zz,go?green:red);}}}
+
  }}
  const seen=new Set();
  for(let li=0;li<lines.length;li++){const l=lines[li],color=mat(l.color);for(const p of l.stops){const d=D[p.dir],key=p.x+","+p.z;
@@ -136,7 +160,7 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  // Paint the stop zone along the curb rather than over the moving lane.
  box(parent,h?10:.25,.027,h?.25:10,p.x-d[1]*1.6,.048,p.z+d[0]*1.6,color);
  }}
- merge(parent);
+ merge(parent);for(const s of signalGroups.values())for(const phase of s.phases)merge(phase);updateSignals(420);
 }
 export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,registry}){
  const [facades,roof,steel,walk,dark,white,trim,glass,rust,black,door]=materials;
