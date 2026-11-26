@@ -34,7 +34,7 @@ export const lines=[
  {name:"F / CROSSTOWN EXPRESS",color:0xb4b0d9,nodes:rectangle(-210,0,210,70,true),express:true}
 ];
 for(const l of lines){
- l.stops=l.nodes.map((p,i)=>{const d=D[direction(p,l.nodes[(i+1)%l.nodes.length])];return{x:p.x+d[0]*13+d[1]*6.5,z:p.z+d[1]*13-d[0]*6.5,dir:direction(p,l.nodes[(i+1)%l.nodes.length]),active:!l.express||i%2===0||p.x===0&&p.z===0}});
+ l.stops=l.nodes.map((p,i)=>{const d=D[direction(p,l.nodes[(i+1)%l.nodes.length])];return{x:p.x+d[0]*8+d[1]*6.5,z:p.z+d[1]*8-d[0]*6.5,dir:direction(p,l.nodes[(i+1)%l.nodes.length]),active:!l.express||i%2===0||p.x===0&&p.z===0}});
  l.speed=l.express?14:11;
 }
 const capacity=b=>b.line>=4?40:28;
@@ -58,7 +58,7 @@ export function prepare(w){
  if(w.transit?.revision===3)return w;
  const prev=w.transit||{};
  w.transit={revision:3,boardings:prev.boardings||0,completed:prev.completed||0,abandoned:prev.abandoned||0,vehicleKm:prev.vehicleKm||0,rerouted:prev.rerouted||0,transfers:0};
- for(const c of w.citizens){delete c.ride;delete c.transitGoal;}
+ for(const c of w.citizens){if(c.ride)c.transitMigration=true;delete c.ride;delete c.transitGoal;}
  const fleet=Math.min(18,w.cars.length);
  for(let k=0;k<fleet;k++){
  const b=w.cars[w.cars.length-fleet+k],line=k%lines.length,l=lines[line],i=Math.floor(Math.floor(k/lines.length)*l.nodes.length/3),p=l.nodes[i],j=(i+1)%l.nodes.length;
@@ -67,7 +67,7 @@ export function prepare(w){
  return w;
 }
 export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%l.nodes.length]}
-export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.dwell=lines[b.line].stops[b.atStop].active?1.8:0;b.progress=b.dwell?13:0;}
+export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.dwell=lines[b.line].stops[b.atStop].active?1.8:0;b.progress=b.dwell?8:0;}
 export function gap(a,b){return a?.bus||b?.bus?10.5:5.8}
 export function signal(x,z,time,dir){
  const arterialX=x===0||Math.abs(x)===210,arterialZ=z===0||Math.abs(z)===210;
@@ -105,6 +105,7 @@ function resume(w,c,api){const r=c.ride;delete c.ride;c.transitGoal=c.goal;
 }
 export function before(w,dt,api){
  prepare(w);
+ for(const c of w.citizens)if(c.transitMigration){delete c.transitMigration;if(c.id!==w.possessed)resume(w,c,api);}
  congestion.clear();
  for(const b of w.cars){const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
  for(const b of w.cars)if(b.bus){b.dwell=Math.max(0,b.dwell-dt);b.speed=b.dwell>0?0:Math.min(lines[b.line].speed,roadSpeed(b.x,b.z,b.dir)+2)*(w.rain?.82:1);
