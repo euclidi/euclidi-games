@@ -206,7 +206,18 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  const {x,z,w,l,h}=b, a=b.architecture;
  const f=facades[(b.i*3+b.j*5+b.k+b.id)%facades.length];
  const masonry=b.id%3===0?rust:b.id%3===1?f:steel;
- const solid=(ww,hh,ll,xx=x,zz=z,y=0,m=f)=>{box(shell,ww,hh,ll,xx,y+hh/2+.5,zz,m);colliders.push({x:xx,z:zz,w:ww,l:ll,h:y+hh+.5});};
+ const walls=[];
+ const solid=(ww,hh,ll,xx=x,zz=z,y=0,m=f)=>{box(shell,ww,hh,ll,xx,y+hh/2+.5,zz,m);colliders.push({x:xx,z:zz,w:ww,l:ll,h:y+hh+.5});walls.push({x:xx,z:zz,w:ww,l:ll,bottom:y+.5,top:y+hh+.5});};
+ // Recess the frame into the actual wall face and keep the glass inside its perimeter.
+ const frontWindow=(ww,hh,xx,yy,front)=>{
+  box(shell,ww+.18,hh+.18,.16,xx,yy,front-.025,steel);
+  box(shell,ww,hh,.055,xx,yy,front-.115,glass);
+ };
+ const sideWindow=(ww,hh,zz,yy,face,side)=>{
+  box(shell,.16,hh+.18,ww+.18,face+side*.025,yy,zz,steel);
+  box(shell,.055,hh,ww,face+side*.115,yy,zz,glass);
+ };
+ const wallDoor=(xx,front,ww=2.6)=>{box(shell,ww+.22,3.6,.2,xx,2.3,front-.035,steel);box(shell,ww,3.35,.08,xx,2.3,front-.15,door);};
  const slab=(ww,ll,yy,xx=x,zz=z,m=roof)=>box(shell,ww,.38,ll,xx,yy,zz,m);
  const bands=(ww,ll,low,high,xx=x,zz=z)=>{for(let y=low;y<high;y+=4){for(const s of [-1,1]){box(shell,ww+.15,.15,.22,xx,y,zz+s*ll/2,steel);box(shell,.22,.15,ll+.15,xx+s*ww/2,y,zz,steel);}}};
  const hvac=(xx,zz,y)=>{box(shell,3,1.3,3,xx,y+.7,zz,steel);box(shell,3.3,.2,3.3,xx,y+1.45,zz,dark)};
@@ -221,22 +232,24 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  const levels=a==="Micro flats"?5:a==="Brutalist terrace"?3:4,hh=4.1;
  for(let i=0;i<levels;i++){const ww=w-i*(a==="Brutalist terrace"?3:1),ll=l-i*2.3,zz=z+i*.8;
  solid(ww,hh,ll,x,zz,i*hh,i%2?f:masonry);slab(ww+.7,ll+.7,(i+1)*hh+.5,x,zz);
- for(let k=-Math.floor(ww/5);k<=Math.floor(ww/5);k++){const xx=x+k*2.3;if(Math.abs(xx-x)>ww/2-1.3)continue;box(shell,1.45,1.7,.13,xx,i*hh+2.8,zz-ll/2-.08,glass);}
+ for(let k=-Math.floor(ww/5);k<=Math.floor(ww/5);k++){const xx=x+k*2.3;if(Math.abs(xx-x)>ww/2-1.3)continue;if(i!==0||Math.abs(xx-x)>2)frontWindow(1.45,1.7,xx,i*hh+2.8,zz-ll/2);}
  if(a!=="Micro flats")for(const side of [-1,1]){box(shell,ww*.68,.22,1.5,x,(i+1)*hh-.2,zz+side*(ll/2+.65),roof);box(shell,ww*.68,.7,.12,x,(i+1)*hh+.2,zz+side*(ll/2+1.3),steel);}
  }hvac(x,z,levels*hh+.9);
  }else if(a==="Duplex courts"){
- for(const side of [-1,1]){const xx=x+side*6.1,hh=side<0?8.5:10.5;solid(10.5,hh,l-6,xx,z+2,0,masonry);slab(11,l-5.5,hh+.65,xx,z+2);for(let j=0;j<2;j++)for(let k of [-2.8,2.8])box(shell,1.7,1.6,.13,xx+k,2.8+j*4,z-(l-6)/2+1.91,glass);}
+ for(const side of [-1,1]){const xx=x+side*6.1,hh=side<0?8.5:10.5;solid(10.5,hh,l-6,xx,z+2,0,masonry);slab(11,l-5.5,hh+.65,xx,z+2);for(let j=0;j<2;j++)for(let k of [-2.8,2.8])frontWindow(1.7,1.6,xx+k,2.8+j*4,z+2-(l-6)/2);wallDoor(xx,z+2-(l-6)/2,1.7);}
  box(base,2.2,.12,l-4,x,.57,z,roof);
  }else if(a==="Night bazaar"||a==="Corner shops"){
  solid(w,5.5,10,x,z+10,0,masonry);slab(w+.5,11,6.2,x,z+10);
- for(let j=-1;j<=1;j++){const xx=x+j*7;box(shell,6.4,.23,11,xx,3.9,z-7,j===0?rust:trim);for(const k of [-2.7,2.7])box(shell,.15,3.7,.15,xx+k,2,z-12,steel);box(shell,5.1,.95,2.6,xx,1,z-8,roof);for(let k=-2;k<=2;k++)box(shell,.65,.35,.75,xx+k*.9,1.65,z-8,k%2?trim:rust);}
+ for(let j=-1;j<=1;j++){const xx=x+j*7;box(shell,6.4,.23,11,xx,3.9,z-7,j===0?rust:trim);for(const k of [-2.7,2.7])for(const dz of [-12,-2])box(shell,.15,3.55,.15,xx+k,2.125,z+dz,steel);box(shell,5.1,.95,2.6,xx,1,z-8,roof);for(let k=-2;k<=2;k++)box(shell,.65,.35,.75,xx+k*.9,1.65,z-8,k%2?trim:rust);}
  }else if(a==="Department store"){
  solid(w,6,l,x,z,0,masonry);solid(w-4,7,l-5,x,z,6,steel);slab(w+.4,l+.5,6.7);slab(w-3,l-4,13.65);
- for(let k=-3;k<=3;k++){box(shell,2.5,3,.13,x+k*3,2.75,z-l/2-.1,glass);box(shell,2.1,4.8,.13,x+k*2.6,9.8,z-(l-5)/2-.1,glass);}
+ for(let k=-3;k<=3;k++){if(k!==0)frontWindow(2.5,3,x+k*3,2.75,z-l/2);frontWindow(2.1,4.8,x+k*2.6,9.8,z-(l-5)/2); }
  hvac(x,z,14);
  }else if(a==="Apartment tower"||a==="Municipal hall"||a==="Hospital"){
  const low=6,high=Math.max(12,h+(a==="Apartment tower"?8:0));solid(w,low,l);slab(w+1,l+1,low+.6);
  solid(w-7,high-low,l-10,x,z+1,low,f);slab(w-6,l-9,high+.6,x,z+1);bands(w-7,l-10,low+4,high,x,z+1);hvac(x,z,high+1);
+ for(let yy=low+2.5;yy+1.15<high+.5;yy+=4){for(let j=-2;j<=2;j++)frontWindow(1.8,1.9,x+j*2.85,yy,z+1-(l-10)/2);for(let side of [-1,1])for(let zz=z+1-(l-10)/2+3;zz<z+1+(l-10)/2-2;zz+=4.7)sideWindow(2.1,1.9,zz,yy,x+side*(w-7)/2,side);}
+ for(const dx of [-7,7])frontWindow(3.8,2.3,x+dx,2.8,z-l/2);
  if(a==="Hospital") {box(shell,5,.25,14,x,high+1,z,white);box(shell,14,.26,5,x,high+1,z,white);}
  }else if(a==="Row residences"||a==="Courtyard flats"){
  const height=Math.max(8,h*.65);
@@ -247,16 +260,16 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  }else{
  for(let j=-1;j<=1;j++){const xx=x+j*7.5,hh=height+(j===0?2:0),ll=l-(j===1?3:0);solid(7.15,hh,ll,xx,z+(l-ll)/2);
  const top=box(shell,7.5,1.2,ll+.4,xx,hh+1,z+(l-ll)/2,roof);top.rotation.z=j===0?.12:-.12;
- box(shell,5,.24,2.1,xx,3.9,z-l/2-1,trim);box(shell,2.3,2.8,.14,xx,1.9,z-l/2-.13,door);}
+ box(shell,5,.24,2.1,xx,3.9,z-l/2-1,trim);wallDoor(xx,z-l/2,2.1);for(let yy=6;yy+1<hh+.5;yy+=4)for(const dx of [-1.7,1.7])frontWindow(1.2,1.6,xx+dx,yy,z-l/2);}
  }
  }else if(a==="Covered market"){
  const height=5.5;solid(w,4,8,x,z+l/2-4,0,steel);slab(w+1,l+1,height,x,z,roof);
  for(const dx of [-10,10])for(const dz of [-15,-5,5,15]){box(shell,.38,5.2,.38,x+dx,2.9,z+dz,steel);colliders.push({x:x+dx,z:z+dz,w:.38,l:.38,h:5.2});}
  for(const dx of [-6,6])for(let dz=-12;dz<=8;dz+=6){box(shell,4,1.05,2.5,x+dx,1,z+dz,trim);box(shell,4.2,.12,2.7,x+dx,1.6,z+dz,white);box(shell,4.5,.15,3.4,x+dx,3.4,z+dz,((dz+12)/6)%2?rust:roof);colliders.push({x:x+dx,z:z+dz,w:4,l:2.5,h:1.6});}
- box(shell,w,1,.25,x,4.8,z-l/2-.1,steel);
+ box(shell,w,1,.25,x,4.85,z-l/2-.1,steel);
  }else if(a==="Trading arcade"){
  solid(w,7,l);slab(w+1,l+1,7.6);for(let j=-1;j<=1;j++){const xx=x+j*6;const canopy=box(shell,5.5,.45,l-4,xx,8.6,z,glass);canopy.rotation.z=j*.15;}
- for(let j=-1;j<=1;j++){box(shell,6.7,2.3,.15,x+j*7,2.4,z-l/2-.15,glass);box(shell,7,.3,3.6,x+j*7,4.1,z-l/2-1.7,steel);}
+ for(let j=-1;j<=1;j++){if(j!==0)frontWindow(6.2,2.3,x+j*7,2.4,z-l/2);box(shell,7,.3,3.6,x+j*7,4.1,z-l/2-1.7,steel);}
  }else if(b.type==="Factory"||b.type==="Warehouse"){
  const height=a==="Freight depot"?7:a==="Power works"?10:Math.max(7,h);
  solid(w,height,l,x,z,0,steel);slab(w+1,l+1,height+.6);
@@ -269,24 +282,51 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  }else{
  const height=b.type==="Market"?Math.max(6,h*.7):h;
  solid(w,height,l,x,z,0,f);slab(w+1,l+1,height+.6);bands(w,l,4,height);hvac(x-5,z+5,height+1);
- if(b.type==="Market"){for(let dx of [-7,0,7]){box(shell,6,1.1,.15,x+dx,2.3,z-l/2-.1,glass);box(shell,6.5,.22,a==="Canteen"?4:2,x+dx,4,z-l/2-1,dx===0?rust:trim);}
+ if(b.type==="Market"){for(let dx of [-7,0,7]){if(dx!==0)frontWindow(6,1.6,x+dx,2.5,z-l/2);box(shell,6.5,.22,a==="Canteen"?4:2,x+dx,4,z-l/2-1,dx===0?rust:trim);}
  if(a==="Canteen"){for(const dx of [-7,7]){box(base,3,.14,1.7,x+dx,.85,z-l/2-2,roof);for(const s of [-1,1])box(base,3,.15,.4,x+dx,.45,z-l/2-2+s*1.2,steel);}}
  if(a==="Grocery"){box(shell,6,3,.2,x+7,2.1,z+l/2+.15,steel);for(let j=0;j<5;j++)box(shell,5.8,.08,.25,x+7,1+j*.5,z+l/2+.25,dark);}
  }
  else if(a==="Police station"){for(const dx of [-7,7]){box(shell,5.2,3.6,.21,x+dx,2.3,z-l/2-.15,dark);box(shell,5.5,.3,.35,x+dx,4.2,z-l/2-.3,white);}box(shell,3,.3,3,x,height+1,z,steel);cyl(shell,.08,.08,6,x,height+4,z,steel);}
- else if(a==="Records office"){for(let j=-2;j<=2;j++)box(shell,.4,height+.2,.55,x+j*4.6,height/2+.5,z-l/2-.32,steel);}
+ else if(a==="Records office"){for(let j of [-2,-1,1,2])box(shell,.4,height+.2,.55,x+j*4.6,height/2+.5,z-l/2-.22,steel);}
  else if(a==="Workers' hostel"){for(const dx of [-5,5]){cyl(shell,2.3,2.3,2.5,x+dx,height+2,z+6,steel,12);cyl(shell,2.35,2.35,.2,x+dx,height+3.4,z+6,roof,12);}}
  else if(a==="Community clinic"||a==="Dispensary"){box(shell,4,.3,3.3,x,4.4,z-l/2-1.5,white);box(shell,1.8,.45,.16,x,3.8,z-l/2-3,trim);}
  else for(let y=4;y<height;y+=4){box(shell,8,.25,2,x-4,y,z-l/2-1,roof);box(shell,8,.65,.13,x-4,y+.43,z-l/2-1.9,steel);}
  }
- if(!["Covered market","Night bazaar","Corner shops","Duplex courts"].includes(a))box(shell,3.4,3.8,.22,x,2.35,z-l/2-.12,door);
- if(["Tenement","Workers' hostel","Records office","Police station","Community clinic","Dispensary"].includes(a)){
- for(let y=4;y<h-.7;y+=3.9)for(let k=-3;k<=3;k++){const xx=x+k*2.85;box(shell,1.65,1.9,.12,xx,y,z-l/2-.08,glass);box(shell,1.9,.16,.25,xx,y-1,z-l/2-.15,steel);}
- for(const side of [-1,1])for(let zz=z-l/2+4;zz<z+l/2-2;zz+=5.4)for(let y=4;y<h-.7;y+=4.1)box(shell,.12,1.75,2.25,x+side*(w/2+.08),y,zz,glass);
+ // Choose a real facade, not the nominal parcel edge. Multi-volume buildings have
+ // different frontages, and open structures use their actual canopy fascia.
+ const frontage=walls.slice().sort((p,q)=>(p.z-p.l/2)-(q.z-q.l/2)||Math.abs(p.x-x)-Math.abs(q.x-x))[0];
+ const front=frontage.z-frontage.l/2;
+ if(!["Covered market","Duplex courts","Row residences","Night bazaar","Corner shops"].includes(a)&&b.type!=="Warehouse")wallDoor(frontage.x,front,2.6);
+ if(["Tenement","Workers' hostel","Records office","Police station","Community clinic","Dispensary","Courtyard flats"].includes(a)){
+ const wall=frontage;
+ for(let y=6.5;y+1.15<wall.top;y+=4){
+  const xs=a==="Records office"?[-6.9,-2.3,2.3,6.9]:[-8.55,-5.7,-2.85,0,2.85,5.7,8.55];
+  for(const dx of xs)if(Math.abs(dx)+1<wall.w/2)frontWindow(1.6,1.75,wall.x+dx,y,front);
+  for(const side of [-1,1])for(let zz=wall.z-wall.l/2+3;zz<wall.z+wall.l/2-2;zz+=5.4)sideWindow(2.1,1.75,zz,y,wall.x+side*wall.w/2,side);
+ }
  }
  if(a==="Foundry"||a==="Fabrication yard"){const height=Math.max(7,h);for(let j=-1;j<=1;j++){const xx=x+j*6;box(shell,4.7,3.6,.16,xx,2.5,z-l/2-.15,dark);for(let k=0;k<5;k++)box(shell,4.5,.09,.22,xx,1+k*.65,z-l/2-.25,steel);}if(a==="Foundry")chimney(x-6,z+8,height+.5,15);else for(let k=-1;k<=1;k++)box(shell,3.2,1.5,6,x+k*6,height+1,z+7,rust);}
-
- sign(a.toUpperCase()+" "+String(b.id).padStart(2,"0"),x,z-l/2-.3,4.9,shell);
+ // Small, physically mounted signs. The backing plate intersects the facade,
+ // the lettering plane sits just beyond the plate; no detached parcel labels.
+ const open=a==="Covered market";
+ const signX=open?x:frontage.x,face=open?z-l/2-.225:front;
+ const signW=Math.min(open?w-2:frontage.w-1.1,b.type==="Housing"?5.9:9.4);
+ const signH=open?.72:.84;
+ const signY=open?4.85:Math.min(frontage.top-signH/2-.12,4.85);
+ const label=(b.type==="Housing"?String(b.id).padStart(2,"0"):a.toUpperCase()+" "+String(b.id).padStart(2,"0"));
+ box(shell,signW+.16,signH+.12,.18,signX,signY,face-.035,dark);
+ sign(label,signX,face-.14,signY,shell);
+ const lettering=shell.children[shell.children.length-1],texture=lettering?.material?.map,canvas=texture?.image;
+ if(lettering?.scale&&canvas?.getContext){
+  lettering.scale.set(signW/12,signH/3,1);
+  canvas.width=1024;canvas.height=Math.max(96,Math.round(1024*signH/signW));
+  const ctx=canvas.getContext("2d");ctx.fillStyle="#17221e";ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle="#829382";ctx.lineWidth=3;ctx.strokeRect(2,2,canvas.width-4,canvas.height-4);
+  let size=Math.floor(canvas.height*.72);ctx.font="bold "+size+"px monospace";
+  while(size>10&&ctx.measureText(label).width>canvas.width-30){size--;ctx.font="bold "+size+"px monospace";}
+  ctx.fillStyle="#f1ead3";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(label,canvas.width/2,canvas.height/2);
+  texture.magFilter=1003;texture.minFilter=1008;texture.generateMipmaps=true;texture.anisotropy=8;texture.needsUpdate=true;
+ }
  box(inside,w,.15,l,x,.55,z,roof);for(const dx of [-1,1])box(inside,.3,.8,l,x+dx*w/2,.95,z,f);
  box(inside,w,.8,.3,x,.95,z+l/2,f);
  for(let j=-1;j<=1;j++){box(inside,5,.8,2,x-6,1,z+j*9,steel);box(inside,4,.18,1.8,x-6,1.5,z+j*9,white);box(inside,1.8,1.2,1.8,x+6,1.2,z+j*9,dark);}
