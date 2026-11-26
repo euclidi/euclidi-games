@@ -1,49 +1,104 @@
-name: Publish PAC-MAN to GitHub Pages
+name: Catalog game audit
 on:
   push:
     branches: [main]
-    paths:
-      - 'pacman/**'
-      - '.github/workflows/pacman-pages.yml'
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: catalog-audit
+  cancel-in-progress: true
 jobs:
-  build:
+  audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - uses: actions/configure-pages@v5
-      - name: Install, test and build
-        working-directory: pacman
+      - name: Test game logic
         run: |
-          npm install --no-audit --no-fund
-          npm test
-          npm run build -- --base=/euclidi-games/pacman/
-      - name: Assemble site
+          node --test pacman/test.mjs dummy-lab/tests.mjs
+          node dojo/tests.cjs
+          diff dummy-lab/math.js dummy-lab-w18/math.js
+      - name: Validate catalog entry paths
         run: |
-          mkdir -p site/pacman
-          cp -r pacman/dist/. site/pacman/
-          printf '<!doctype html><html lang="en"><meta charset="utf-8"><title>Euclidi Games</title><body style="background:#000;color:#fff;font-family:monospace"><h1>Euclidi Games</h1><a style="color:#ff0" href="./pacman/">Play PAC-MAN</a></body></html>' > site/index.html
-          touch site/.nojekyll
-      - uses: actions/upload-pages-artifact@v3
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlsplit, unquote
+          class Catalog(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links=set()
+              def handle_starttag(self, tag, attrs):
+                  h=dict(attrs).get('href','')
+                  if tag=='a' and h.startswith('./') and h!='./':
+                      self.links.add(unquote(urlsplit(h).path))
+          c=Catalog()
+          c.feed(Path('index.html').read_text())
+          assert c.links, 'Catalog has no launch links'
+          for link in sorted(c.links):
+              p=Path(link)
+              if p.is_dir(): p=p/'index.html'
+              assert p.is_file(), f'Missing launch target: {link}'
+              print('PASS', link)
+          PY
+      - name: Install browser test runner
+        run: |
+          npm install --no-save --no-package-lock playwright@1.51.1
+          npx playwright install --with-deps chromium
+      - name: Browser launch and control smoke tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/site"
+          ln -s "$GITHUB_WORKSPACE" "$RUNNER_TEMP/site/euclidi-games"
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/site" > "$RUNNER_TEMP/http.log" 2>&1 &
+          SERVER=$!
+          trap 'kill "$SERVER" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8765/euclidi-games/ >/dev/null; then break; fi
+            sleep 1
+          done
+          mkdir -p audit-artifacts
+          node --input-type=module <<'JS'
+          import { chromium } from 'playwright';
+          import assert from 'node:assert/strict';
+          const base='http://127.0.0.1:8765/euclidi-games/';
+          const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+          const checks=[
+            ['catalog','',async p=>{await p.locator('.game').first().waitFor();const n=await p.locator('.game').count();assert(n>0);await p.locator('#search').fill('no-result-xyz');assert.equal(await p.locator('.game:visible').count(),0);await p.locator('#search').fill('');assert.equal(await p.locator('.game:visible').count(),n)}],
+            ['sector-zero','sector-zero/',async p=>{await p.locator('#game canvas').first().waitFor({timeout:60000});await p.locator('#boot').waitFor({state:'hidden',timeout:60000});await p.locator('#right').click()}],
+            ['dummy-lab','dummy-lab-w18/',async p=>{await p.locator('#load').waitFor({state:'hidden',timeout:60000});await p.locator('canvas').first().waitFor();await p.waitForFunction(()=>document.querySelector('#state')?.textContent.includes('FPS'));await p.locator('#actions').click()}],
+            ['dummy-legacy','dummy-lab/',async p=>{await p.locator('#load').waitFor({state:'hidden',timeout:60000});await p.locator('canvas').first().waitFor()}],
+            ['sanctuary','sanctuary/',async p=>{await p.locator('#load').waitFor({state:'hidden',timeout:60000});await p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('DAY'));await p.locator('#journalBtn').click()}],
+            ['dojo','dojo/',async p=>{await p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Persistent archive ready'));await p.locator('#next').click();await p.locator('#play').click()}],
+            ['dojo-legacy','dojo/legacy/dojo-ix.html',async p=>{await p.waitForFunction(()=>typeof window.__test==='function');const state=await p.evaluate(()=>window.__test());assert(state.fighters.every(f=>f.finite));assert(!state.err)}],
+            ['pacman','pacman/',async p=>{await p.waitForFunction(()=>document.documentElement.dataset.gameReady==='true');await p.locator('#boot').waitFor({state:'hidden'});await p.locator('#start').click();await p.keyboard.press('ArrowLeft')}],
+            ['backyard-astronaut','backyard-astronaut/',async p=>{await p.waitForFunction(()=>window.audit?.ready&&window.gameAudit);await p.locator('[data-mode=build]').click();assert.equal(await p.evaluate(()=>window.gameAudit.mode),'build');await p.locator('[data-mode=yard]').click();assert.equal(await p.evaluate(()=>window.gameAudit.mode),'yard')}]
+          ];
+          let failures=0;
+          for(const [name,path,check] of checks){
+            const page=await browser.newPage({viewport:{width:1280,height:800}});
+            const errors=[];
+            page.on('pageerror',e=>errors.push(e.message));
+            page.on('response',r=>{if(r.status()>=400&&r.url().startsWith(base)&&!r.url().endsWith('favicon.ico'))errors.push('HTTP '+r.status()+' '+r.url())});
+            try{
+              const response=await page.goto(base+path,{waitUntil:'domcontentloaded',timeout:60000});
+              assert(response?.ok(), 'Page HTTP '+response?.status());
+              await check(page);
+              await page.waitForTimeout(800);
+              assert.equal(errors.length,0,errors.join('\n'));
+              console.log('PASS '+name);
+            }catch(e){failures++;console.error('FAIL '+name+': '+e.message+' '+errors.join('; '))}
+            finally{await page.screenshot({path:'audit-artifacts/'+name+'.png',timeout:10000}).catch(()=>{});await page.close()}
+          }
+          await browser.close();
+          if(failures)process.exitCode=1;
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          path: site
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          name: catalog-browser-screenshots
+          path: audit-artifacts/
+          if-no-files-found: ignore
