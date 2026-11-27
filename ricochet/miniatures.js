@@ -1,4 +1,4 @@
-import {canvasModel,jewel,lights,portrait} from "./materials.js";
+import {canvasModel,jewel,lights,portrait} from "./materials.js?v=6";
 import {roster} from "./characters.js";
 import {rng} from "./levels.js";
 const palette=[["#233e42","#47685b","#829274","#c1b996"],["#18384b","#315e70","#608b92","#a0c3c6"],["#332933","#66504c","#ad8058","#d6b17a"],["#29374f","#526f91","#89a6c8","#d5e2e9"],["#29283f","#544866","#8a7896","#c6b9d1"]];
