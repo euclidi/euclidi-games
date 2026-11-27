@@ -54,9 +54,20 @@ function pedestrianPath(from,to){
  const {a,b,t,start}=best,route=[a.projected,a.corner];let k=start;
  for(let j=0;j<196&&t.next[k]>=0;j++){k=t.next[k];route.push({x:coord[k%14],z:coord[Math.floor(k/14)]});}
  route.push(b.projected,{x:to.x,z:to.z});
- const out=[];let prev={x:from.x,z:from.z};
- for(const p of route){if(dist(prev,p)<.001)continue;const cross=crossing(prev,p);out.push({x:p.x,z:p.z,...(cross?{cross}: {})});prev=p;}
- return out;
+ const out=[];let prev={x:from.x,z:from.z},last=prev;
+ const push=(p,metadata)=>{if(dist(last,p)<.001)return;out.push({x:p.x,z:p.z,...(metadata?{cross:metadata}:{})});last=p;};
+ for(const p of route){if(dist(prev,p)<.001)continue;
+  const dx=p.x-prev.x,dz=p.z-prev.z,horizontal=Math.abs(dz)<.001,vertical=Math.abs(dx)<.001;
+  const cross=crossing(prev,p),lane=.67;
+  const sidewalk=horizontal&&coord.some(v=>Math.abs(v-p.z)<.001)||vertical&&coord.some(v=>Math.abs(v-p.x)<.001);
+  if(sidewalk&&Math.abs(dx)+Math.abs(dz)>2.5){
+   const ox=vertical?Math.sign(dz)*lane:0,oz=horizontal?-Math.sign(dx)*lane:0;
+   const a={x:prev.x+ox,z:prev.z+oz},b={x:p.x+ox,z:p.z+oz};
+   push(a);push(b,cross?{...cross,a,b}:null);
+  }else push(p,cross);
+  prev=p;
+ }
+ push({x:to.x,z:to.z});return out;
 }
 function carRect(b,progress=b.progress){
  const d=D[b.dir],x=b.x+d[0]*progress+d[1]*CAR_LINE,z=b.z+d[1]*progress-d[0]*CAR_LINE;
@@ -119,7 +130,7 @@ function moveCrowd(w,dt,api){
    const p=c.route[0],dx=p.x-c.x,dz=p.z-c.z,len=Math.hypot(dx,dz);
    if(len<.025){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.05)st.cross=null;continue;}
    if(p.cross&&!st.cross){
-    if(signal(p.cross.x,p.cross.z,w.time,0)===p.cross.axis||!crossClear(w,p.cross)){c.walkStatus="WAITING FOR CROSSWALK";break;}
+    if(signal(p.cross.x,p.cross.z,w.time,0)===p.cross.axis||!crossClear(w,p.cross)||!occ.free(c,p.x,p.z)){c.walkStatus="WAITING FOR CROSSWALK";break;}
     st.cross=p.cross;phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
    }
    const step=Math.min(.32,budget,len),ux=dx/len,uz=dz/len;
@@ -128,7 +139,7 @@ function moveCrowd(w,dt,api){
    if(!can(x,z)){
     let found=false;
     if(st.cross||offRoad(c.x,c.z))for(const side of [1,-1]){const xx=c.x+uz*step*side+ux*step*.2,zz=c.z-ux*step*side+uz*step*.2;
-     const permitted=st.cross?(st.cross.axis===0?Math.abs(zz-st.cross.a.z)<=.88:Math.abs(xx-st.cross.a.x)<=.88):offRoad(xx,zz);
+     const permitted=st.cross?(st.cross.axis===0?Math.abs(zz-(nearestGrid(st.cross.a.z)+(st.cross.a.z<nearestGrid(st.cross.a.z)?-SIDE:SIDE)))<=.96:Math.abs(xx-(nearestGrid(st.cross.a.x)+(st.cross.a.x<nearestGrid(st.cross.a.x)?-SIDE:SIDE)))<=.96):offRoad(xx,zz);
      if(permitted&&can(xx,zz)&&Math.hypot(xx-p.x,zz-p.z)<len+1.0){x=xx;z=zz;found=true;break;}}
     if(!found){c.walkStatus="YIELDING";break;}
    }
