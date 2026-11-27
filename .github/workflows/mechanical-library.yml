@@ -34,7 +34,7 @@ jobs:
         run: |
           BASE=https://euclidi.github.io/euclidi-games/
           for i in $(seq 1 30); do
-            if curl -fsS "${BASE}library/library.js?v=8" -o /tmp/published.js && cmp -s /tmp/published.js library/library.js; then break; fi
+            if curl -fsS "${BASE}library/library.js?v=9" -o /tmp/published.js && cmp -s /tmp/published.js library/library.js; then break; fi
             sleep 10
           done
           cmp /tmp/published.js library/library.js
