@@ -7,7 +7,7 @@ const congestion=new Map(),keyOf=(x,z,d)=>x+","+z+","+d;
 const SIDE=8,PERSON=.76,STOP=20,CAR_LINE=2.5;
 const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
-const phaseLocks=new Set(),junctions=new Map();
+const phaseLocks=new Set(),junctions=new Map(),transitPriority=new Map();
 const nodeKey=(x,z)=>x+","+z;
 const solids=[],streetSolids=[];
 const stopControlled=(x,z)=>roadRank(x)===2&&roadRank(z)===2;
@@ -151,6 +151,7 @@ function driveTraffic(w,dt){
  const key=b=>keyOf(b.x,b.z,b.dir);
  const add=b=>{const k=key(b);if(!lanes.has(k))lanes.set(k,[]);lanes.get(k).push(b);};
  for(const b of cars)add(b);
+ transitPriority.clear();for(const b of cars){if(!b.bus||b.wait<=8||b.progress<stopLine(b)-.05)continue;const d=D[b.dir],x=b.x+d[0]*70,z=b.z+d[1]*70,k=nodeKey(x,z),p=transitPriority.get(k);if(!phaseLocks.has(k)&&!junctions.has(k)&&(!p||b.wait>p.wait))transitPriority.set(k,b);}
  for(const [k,b] of junctions)if(!cars.includes(b)||!((nodeKey(b.x,b.z)===k&&b.progress<14)||(nodeKey(b.x+D[b.dir][0]*70,b.z+D[b.dir][1]*70)===k&&b.progress>stopLine(b))))junctions.delete(k);
  const approach=b=>b.progress>=stopLine(b)-.05;
  const list=cars.slice().sort((a,b)=>{
@@ -174,7 +175,7 @@ function driveTraffic(w,dt){
   const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
   if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
-   if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2||b.bus&&b.wait>8)&&dir!==undefined){
+   if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2)&&dir!==undefined){
     junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
    }
   }
@@ -394,7 +395,8 @@ export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%
 export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.pendingStop=lines[b.line].stops[b.atStop].active;b.dwell=0;b.progress=0;}
 export function gap(a,b){return a?.bus||b?.bus?10.5:5.8}
 export function signal(x,z,time,dir){
- if(phaseLocks.has(nodeKey(x,z)))return -1;
+ const key=nodeKey(x,z);if(phaseLocks.has(key))return -1;
+ const priority=transitPriority.get(key);if(priority)return priority.dir%2;
  const arterialX=x===0||Math.abs(x)===210,arterialZ=z===0||Math.abs(z)===210;
  const cycle=((time+(x/70+z/70+6)*.85)%8+8)%8;
  const green=arterialX&&!arterialZ?5:arterialZ&&!arterialX?3:4;
