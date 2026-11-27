@@ -18,7 +18,7 @@ Attach props to the Ranger's hand slots, align the model pivots in your engine, 
 
 ## FPS and projectiles
 
-- [WRAD arms](wrad-arms/) includes a 50-joint skinned GLB, an editable Blender IK rig, and two texture variants. Use the Blender file to pose and bake viewmodel clips. Give the viewmodel its own camera-space rig and lighting.
+- [WRAD arms](wrad-arms/) includes a 50-joint skinned GLB, an editable Blender IK rig, and two texture variants. The upstream blend file was saved in Blender 5.1. The GLB imported in Blender 4.2.9. Use the IK rig to pose and bake viewmodel clips. Give the viewmodel its own camera-space rig and lighting.
 - [Kenney blasters and foam projectile](../kenney/blaster-kit/) and [Stein firearm art FBXs](../stein-classic-weapons-1024/) are existing game props. Match each viewmodel's pose and prop socket in the target game.
 - [arcade-projectile.mjs](arcade-projectile.mjs) tracks a virtual projectile in game coordinates. Supply origin, velocity, optional acceleration and lifetime. Step it on your fixed game tick with a scene query callback returning null for a miss or a hit with a fraction from zero to one. The module returns hit or expiration state and contact position. Put impact effects, sound, and game rules in the caller.
 
