@@ -190,5 +190,21 @@
       1280,
       800
     ]
+  },
+  "voidrunner": {
+    "file": "covers/voidrunner-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1038,
+      585
+    ],
+    "route": "./voidrunner/",
+    "selector": "#vr21scene",
+    "sha256": "a54b932e3335b02c85ba20049158fb0d3cc44c7e67c03986db3e487a21c541c0",
+    "source": "45fbc3a0f1e0775badd0ec0fb98373c225595f83",
+    "viewport": [
+      1280,
+      800
+    ]
   }
 }

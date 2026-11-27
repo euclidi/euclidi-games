@@ -15,3 +15,6 @@ Retains Earth flight, reentry, walking, swimming/dive, five environmental powers
 
 ## Next
 Restore multi-body data and continuous navigation, validate GPU, replace body and environment placeholders with audited assets and preserve all cumulative mechanics. No unrelated games changed.
+
+## Catalog registration
+Source commit: 45fbc3a0f1e0775badd0ec0fb98373c225595f83. Actual captured cover is registered in covers/manifest.json, with matching public route and a capture recipe. Candidate is labeled Earth development build, not complete multi-world release. Pages publication and hosted runtime still unconfirmed at commit time.

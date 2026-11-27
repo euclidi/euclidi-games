@@ -6,6 +6,7 @@ const base=process.env.COVER_BASE||'http://127.0.0.1:8765/euclidi-games/';
 const out=process.env.COVER_OUTPUT||'cover-captures';
 const source=process.env.GITHUB_SHA||'local';
 const recipes={
+  "voidrunner":{slug:"voidrunner",selector:"#vr21scene",prepare:async p=>{await p.waitForFunction(()=>document.querySelector('#vr21')?.inspect?.().mapReady,null,{timeout:60000});for(let i=0;i<3;i++)await p.locator('#vr21quality').click();await p.waitForTimeout(1200);}},
   "creatture":{slug:"creatture",selector:"#stage",prepare:async p=>{await p.locator('#name').filter({hasText:'Primordium'}).waitFor({timeout:60000});for(const n of ['Membrane','Nutrients','Water','Light','Minerals','Muscle','Nerves','Microbes','Spores','Heat','Catalyst','Resonance'])await p.getByRole('button',{name:n,exact:true}).click();await p.waitForTimeout(1600);}},
   "sector zero":{slug:"sector-zero",selector:"#game canvas",prepare:async p=>{await p.locator('#boot').waitFor({state:'hidden',timeout:60000});await p.locator('#right').click();}},
   "dummy lab":{slug:"dummy-lab",selector:"canvas",prepare:async p=>{await p.locator('#load').waitFor({state:'hidden',timeout:60000});await p.waitForFunction(()=>document.querySelector('#state')?.textContent.includes('FPS'),null,{timeout:60000});}},
