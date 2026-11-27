@@ -1,6 +1,6 @@
 /* SNAKE LCD Organic v0.1 — direct WebGL 2 pixel renderer */
 (function boot(){
-  const $=id=>document.getElementById(id),W=480,H=320,version="0.1.6",key="snake-lcd-v1",clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),fmt=n=>String(Math.floor(n)).padStart(4,"0");
+  const $=id=>document.getElementById(id),W=480,H=320,version="0.1.7",key="snake-lcd-v1",clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),fmt=n=>String(Math.floor(n)).padStart(4,"0");
   const palettes={olive:["#aab77c","#25351f"],gameboy:["#9bbc0f","#0f380f"],graphite:["#c0c3bc","#252a28"],amber:["#ceba82","#4b341d"],ice:["#b5cdd5","#274353"],inverse:["#26332b","#b8d3af"]};
   const base={mode:"classic",movement:"grid",food:"pellets",habitat:"arcade",growth:"instant",boundary:"wall",obstacles:0,speed:96,sensitivity:1,difficulty:"normal",species:"grass",pattern:"diamond",initialSize:5,palette:"auto",grid:.16,presentation:"auto",paper:"#aab77c",ink:"#25351f",contrast:1,ghost:.02,pixel:1,control:"pad",sound:true,music:true,organicAudio:true,ambience:true,preyAudio:true,volume:.35,reduced:matchMedia("(prefers-reduced-motion: reduce)").matches};
   let store={};try{store=JSON.parse(localStorage.getItem(key)||"{}")||{}}catch{}
@@ -146,5 +146,5 @@
   }
   function frame(ms){requestAnimationFrame(frame);let dt=Math.min(.05,(ms-(last||ms))/1000);last=ms;gamepad();if(running&&game&&bootTime>0){bootTime=Math.max(0,bootTime-dt);$("bootTitle").textContent=bootTime>.48?"SNAKE":"READY";$("bootHint").textContent=bootTime>.48?"LCD-01 / CLASSIC":"GET READY";$("classicBoot").hidden=bootTime<=0;}else if(running&&game){acc+=dt;while(acc>=1/120){game.step(1/120);acc-=1/120;let event=game.consume();if(event&&event!=="death")tone(event);if(game.s.dead){finish();break}}if(running){best[game.cfg.mode]=Math.max(best[game.cfg.mode]||0,game.s.score);if(game.s.age-saveAt>4){saveAt=game.s.age;snapshot();save()}}updateHUD()}soundscape.update(ctx,game,cfg,running&&bootTime===0&&!settingOpen());if(settingOpen()&&!$("settingsPreview").hidden){if(ms-previewLast>32||!previewGame)renderPreview(ms)}else render(game||idle);window.__snake={version,mode:game?.cfg.mode,presentation:game?presentation(game):null,booting:bootTime>0,running,score:game?.s.score||0,state:game?.s,renderer}}
   requestAnimationFrame(frame);
-  if(location.protocol==="https:"&&"serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=0.1.6").catch(()=>{});
+  if(location.protocol==="https:"&&"serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=0.1.7").catch(()=>{});
 })();

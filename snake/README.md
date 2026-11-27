@@ -1,6 +1,6 @@
 # SNAKE — LCD Organic
 
-Version 0.1.6, experimental compatibility build. [Play](https://euclidi.github.io/euclidi-games/snake/).
+Version 0.1.7, experimental compatibility build. [Play](https://euclidi.github.io/euclidi-games/snake/).
 
 Classic grid Snake and continuous organic hunting/survival share a monochrome dot-matrix display. Custom games mix movement, prey, environment and growth. Prey flees, the snake grows, and hunger affects survival. Original indexed pixel masks, procedural body rasterization and synthesized audio; no third-party assets.
 
