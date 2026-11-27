@@ -1,0 +1,59 @@
+{
+  "method": "Actual posed body triangles and all weighted official helper vertices. Requested clearance 3 mm. Point checks only; no garment edge/triangle collision, self collision, or visual test.",
+  "results": {
+    "neutral": {
+      "helper-tights": {
+        "vertices": 2674,
+        "initialPenetrations": 18,
+        "projected": 234,
+        "failures": 0,
+        "minimumClearanceMetres": 0.003000121134519525,
+        "maxCorrectionMetres": 0.02534368820138219
+      },
+      "helper-skirt": {
+        "vertices": 720,
+        "initialPenetrations": 2,
+        "projected": 11,
+        "failures": 0,
+        "minimumClearanceMetres": 0.0030009999999999586,
+        "maxCorrectionMetres": 0.003795343954092477
+      }
+    },
+    "wide": {
+      "helper-tights": {
+        "vertices": 2674,
+        "initialPenetrations": 26,
+        "projected": 234,
+        "failures": 0,
+        "minimumClearanceMetres": 0.00300012113451958,
+        "maxCorrectionMetres": 0.025343688201381786
+      },
+      "helper-skirt": {
+        "vertices": 720,
+        "initialPenetrations": 4,
+        "projected": 14,
+        "failures": 0,
+        "minimumClearanceMetres": 0.003000999999999957,
+        "maxCorrectionMetres": 0.0069076686703657105
+      }
+    },
+    "shift": {
+      "helper-tights": {
+        "vertices": 2674,
+        "initialPenetrations": 35,
+        "projected": 259,
+        "failures": 1,
+        "minimumClearanceMetres": 0.0004974748279200137,
+        "maxCorrectionMetres": 0.019633129945335486
+      },
+      "helper-skirt": {
+        "vertices": 720,
+        "initialPenetrations": 1,
+        "projected": 12,
+        "failures": 0,
+        "minimumClearanceMetres": 0.003000999999999979,
+        "maxCorrectionMetres": 0.0032347064594378063
+      }
+    }
+  }
+}
