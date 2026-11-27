@@ -1,14 +1,14 @@
 name: Innuendo Town browser QA
 on:
   push:
-    branches: [dev/innuendo-town]
+    branches: [dev/innuendo-town, fix/innuendo-town-sprites]
     paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
   pull_request:
     branches: [main]
     paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   smoke:
     runs-on: ubuntu-24.04
@@ -34,3 +34,13 @@ jobs:
           name: innuendo-town-qa
           path: town-*.png
           if-no-files-found: ignore
+      - name: Refresh corrected game cover
+        if: github.event_name == 'push' && github.ref == 'refs/heads/fix/innuendo-town-sprites'
+        run: |
+          python3 -m pip install --break-system-packages Pillow
+          python3 innuendo-town/qa/package_preview.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add covers/manifest.json covers/innuendo-town-gameplay.webp
+          git commit -m "Refresh Innuendo Town cover from tested sprite correction"
+          git push origin HEAD:fix/innuendo-town-sprites
