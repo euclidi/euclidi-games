@@ -12,6 +12,7 @@ const nodeKey=(x,z)=>x+","+z;
 const solids=[],streetSolids=[];
 const stopControlled=(x,z)=>roadRank(x)===2&&roadRank(z)===2;
 const streetLabels=[];let streetLabelGroup=null,streetLampMaterial=null;
+let surfaceRoot=null,lowerRoot=null,streetKit=null;const rebuiltBlocks=new WeakSet();
 const inventory={};
 const walkState=new WeakMap();
 let currentWorld=null;
@@ -246,7 +247,7 @@ const transfers=lines.map((l,i)=>lines.map((m,j)=>i===j?[]:l.stops.flatMap((p,a)
 // Two underground shuttle corridors, sharing an interchange at Central.
 const metroStations=new Map();
 function station(x,z,name){
- const key=nodeKey(x,z);if(!metroStations.has(key))metroStations.set(key,{key,name,nx:x,nz:z,x:x+15,z:z+10.5,dir:3});
+ const key=nodeKey(x,z);if(!metroStations.has(key))metroStations.set(key,{key,name,nx:x,nz:z,x:x+15,z:z+10.5,dir:3,shaft:{x:x+15,z:z+13.2,w:7.0,l:2.65}});
  return metroStations.get(key);
 }
 const metroLines=[
@@ -446,6 +447,32 @@ export function panel(w){
 export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
 const signalGroups=new Map();
 export function updateSignals(time){const hour=((time%1440)+1440)%1440/60,night=hour<6||hour>=19;if(streetLampMaterial?.emissive){streetLampMaterial.emissive.setHex(night&&!currentWorld?.blackout?0xe6c98a:0x000000);streetLampMaterial.emissiveIntensity=night&&!currentWorld?.blackout?0.75:0;}for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
+// Split solid terrain around real shaft openings, rather than painting stairs on it.
+function cutTiles(bounds,holes){
+ let tiles=[bounds];
+ for(const h of holes){const out=[];for(const a of tiles){
+  const x0=Math.max(a.x0,h.x-h.w/2),x1=Math.min(a.x1,h.x+h.w/2),z0=Math.max(a.z0,h.z-h.l/2),z1=Math.min(a.z1,h.z+h.l/2);
+  if(x1<=x0||z1<=z0){out.push(a);continue;}
+  for(const q of [{x0:a.x0,x1:x0,z0:a.z0,z1:a.z1},{x0:x1,x1:a.x1,z0:a.z0,z1:a.z1},{x0,x1,z0:a.z0,z1:z0},{x0,x1,z0:z1,z1:a.z1}])if(q.x1-q.x0>.001&&q.z1-q.z0>.001)out.push(q);
+ }tiles=out;}return tiles;
+}
+function tileTerrain(g,box,bounds,y,h,material,holes=[...metroStations.values()].map(p=>p.shaft)){
+ for(const q of cutTiles(bounds,holes))box(g,q.x1-q.x0,h,q.z1-q.z0,(q.x0+q.x1)/2,y,(q.z0+q.z1)/2,material);
+}
+function replaceSurface(parent,kit){
+ surfaceRoot=parent.parent;lowerRoot=surfaceRoot?.parent?.children.find(o=>o!==surfaceRoot&&o.isGroup&&o.visible===false);streetKit=kit;
+ if(!surfaceRoot)return;
+ const ground=surfaceRoot.children.find(o=>o.isMesh&&o.geometry?.parameters?.width===445);
+ if(ground){surfaceRoot.remove(ground);const material=ground.material;ground.geometry.dispose();tileTerrain(surfaceRoot,kit.box,{x0:-222.5,x1:222.5,z0:-222.5,z1:222.5},-.17,.25,material);}
+}
+function replaceBlock(parent,b,box,group,merge,material){
+ if(rebuiltBlocks.has(parent)||!parent.parent||parent.parent!==surfaceRoot)return;
+ rebuiltBlocks.add(parent);const legacy=parent.children[0];if(!legacy?.isGroup)return;
+ parent.remove(legacy);legacy.traverse?.(o=>{if(o.isMesh)o.geometry.dispose()});
+ const block=group();parent.add(block);const x=-175+b.i*70,z=-175+b.j*70;
+ tileTerrain(block,box,{x0:x-28.5,x1:x+28.5,z0:z-28.5,z1:z+28.5},.08,.22,material);
+ merge(block);
+}
 // Roadside assets are laid out against curb coordinates; collision footprints stay
 // out of the two sidewalk lanes. Sign planes are generated once using the existing
 // Three.js sign factory, then attached to their physical backing plates.
@@ -481,10 +508,10 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
    const side=axis===0?1:-1,curb=roadHalf(v)+.37,local=roadRank(v)===2;
    // Pavement is physically continuous between intersection aprons.
    for(const q of [-1,1]){
-    const p0=oriented(axis,v,p,q,roadHalf(v)+.18),p1=oriented(axis,v,p,q,8.0);
+    const p0=oriented(axis,v,p,q,roadHalf(v)+.18),p1=oriented(axis,v,p,q,(roadHalf(v)+9.2)/2);
     B(axis===0?.29:54,.13,axis===0?54:.29,p0.x,.065,p0.z,m.concrete);
-    B(axis===0?2.0:54,.07,axis===0?54:2.0,p1.x,.035,p1.z,m.stone);
-    for(let k=-24;k<=24;k+=6){const a=oriented(axis,v,p+k,q,8);B(axis===0?1.94:.025,.012,axis===0?.025:1.94,a.x,.077,a.z,m.concrete);}
+    const walkWidth=9.2-roadHalf(v);B(axis===0?walkWidth:54,.07,axis===0?54:walkWidth,p1.x,.035,p1.z,m.stone);
+    for(let k=-24;k<=24;k+=6){const a=oriented(axis,v,p+k,q,(roadHalf(v)+9.2)/2);B(axis===0?walkWidth-.06:.025,.012,axis===0?.025:walkWidth-.06,a.x,.077,a.z,m.concrete);}
     const drain=oriented(axis,v,p-19,q,roadHalf(v)-.28);B(axis===0?.36:1.0,.025,axis===0?1:.36,drain.x,.045,drain.z,m.black);for(let j=-3;j<=3;j++)B(axis===0?.31:.035,.019,axis===0?.035:.31,drain.x+(axis===1?j*.13:0),.061,drain.z+(axis===0?j*.13:0),m.iron);count("storm drains");
    }
    const a=oriented(axis,v,p-12,side,curb);lamp(axis,a.x,a.z,side);
@@ -531,11 +558,17 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
  }
  // Subway entrance stair shafts are placed in the open setback at block corners.
  for(const p of metroStations.values()){
-  const x=p.x,z=p.nz+13.2;
-  B(7.8,.14,3.7,x,.08,z,m.concrete);B(6.9,.05,2.8,x,.16,z,m.black);
-  for(let i=0;i<11;i++){const xx=x-3.1+i*.56;B(.52,.028,2.25,xx,.25-i*.008,z,i<5?m.stone:m.iron);}
-  for(const side of [-1,1]){const zz=z+side*1.55;B(7.3,.25,.16,x,.23,zz,m.concrete);for(let k=-3;k<=3;k+=1.5)pole(x+k,zz,1.12,.055,m.rail);B(7.2,.07,.075,x,1.1,zz,m.rail);footprint(x,zz,7.2,.19);}
-  B(.2,1.1,2.85,x+3.5,.58,z,m.iron);footprint(x+3.5,z,.24,2.85);
+  const {x,z,w,l}=p.shaft,depth=3.2;
+  for(const side of [-1,1]){
+   B(w+.6,.24,.35,x,.16,z+side*(l/2+.175),m.concrete);
+   B(w+.1,depth,.17,x,-depth/2,z+side*(l/2+.08),m.stone);
+   for(let k=-3;k<=3;k+=1.5)pole(x+k,z+side*(l/2+.23),1.12,.055,m.rail);
+   B(w+.5,.07,.075,x,1.1,z+side*(l/2+.23),m.rail);footprint(x,z+side*(l/2+.23),w+.5,.19);
+  }
+  for(let i=0;i<16;i++){const run=w/16,top=-i*depth/16;B(run+.015,.18,l-.12,x-w/2+run*(i+.5),top-.09,z,m.stone);B(.035,.024,l-.18,x-w/2+run*(i+.05),top+.013,z,m.yellow);}
+  B(.18,depth,l+.3,x+w/2+.09,-depth/2,z,m.black);B(.2,1.1,l+.3,x+w/2+.1,.58,z,m.iron);footprint(x+w/2+.1,z,.24,l+.3);
+  B(1.5,.2,l,x+w/2-.75,-depth-.1,z,m.stone);
+  footprint(x,z,w-.15,l-.12); // surface navigation goes around open shaft
   const px=x-3.45,pz=z+1.55;pole(px,pz,3.2,.11,m.green);B(.52,.52,.52,px,3.15,pz,m.lamp);
   plate("METRO",x,2.9,z+1.55,3.8,.58,0,m.green,"#315b49");for(const xx of [x-1.85,x+1.85])pole(xx,z+1.55,2.9,.07,m.iron);
   plate(p.name.toUpperCase(),x,2.2,z+1.55,3.8,.42,0,m.black,"#252d2b");plate(metroLines.map((l,i)=>l.stops.includes(p)?"M"+(i+1):"").filter(Boolean).join(" / "),x,1.57,z+1.55,1.7,.38,0,m.blue,"#465d78");count("subway entrances");
@@ -555,30 +588,43 @@ function attachStreetLabels(sign){
 }
 export function drawRoads(parent,{box,cyl,merge,mat,group}){
  signalGroups.clear();
+ replaceSurface(parent,{box,cyl,merge,mat,group});
  const asphalt=mat(0x373c3b),local=mat(0x454744),edgeMat=mat(0x76786c),white=mat(0xb9b7a2),yellow=mat(0xc6a662),dark=mat(0x28322f),glass=mat(0x576b65),steel=mat(0x68756d),green=mat(0x75946f),red=mat(0xa74c3d);
  const kind=v=>v===0?"avenue":Math.abs(v)===210?"ring":Math.abs(v)===140?"collector":"local";
  const width=v=>kind(v)==="avenue"?13:kind(v)==="ring"?13:kind(v)==="collector"?11.5:8.5;
  for(let v=-210;v<=210;v+=70){const w=width(v),major=kind(v)!=="local";
- for(let p=-175;p<=175;p+=70){box(parent,w,.03,57,v,.005,p,major?asphalt:local);box(parent,57,.03,w,p,.006,v,major?asphalt:local);
+ for(let p=-175;p<=175;p+=70){box(parent,w,.03,70,v,.005,p,major?asphalt:local);box(parent,70,.03,w,p,.006,v,major?asphalt:local);
  for(const side of [-1,1]){box(parent,.13,.025,56,v+side*(w/2-.25),.032,p,edgeMat);box(parent,56,.025,.13,p,.032,v+side*(w/2-.25),edgeMat);}
- for(let j=-22;j<=22;j+=8){box(parent,.15,.02,3.8,v,.04,p+j,major?yellow:white);box(parent,3.8,.02,.15,p+j,.04,v,major?yellow:white);}
- if(kind(v)==="avenue"||kind(v)==="ring"){for(let j=-20;j<=20;j+=10){box(parent,.22,.025,5,v-.35,.041,p+j,yellow);box(parent,5,.025,.22,p+j,.041,v-.35,yellow);}}
+ for(let j=-20;j<=20;j+=8){if(kind(v)!=="avenue"&&kind(v)!=="ring"){box(parent,.15,.02,3.8,v,.04,p+j,yellow);box(parent,3.8,.02,.15,p+j,.04,v,yellow);}}
+ if(kind(v)==="avenue"||kind(v)==="ring"){for(const q of [-.18,.18]){box(parent,.12,.025,44,v+q,.041,p,yellow);box(parent,44,.025,.12,p,.041,v+q,yellow);}}
  if(kind(v)==="local"){for(const side of [-1,1])for(let j=-18;j<=18;j+=12){box(parent,.09,.025,5.2,v+side*3.8,.043,p+j,white);box(parent,5.2,.025,.09,p+j,.043,v+side*3.8,white);}}
- if(major){for(const side of [-1,1]){box(parent,.12,.025,42,v+side*4.4,.036,p,white);box(parent,42,.025,.12,p,.036,v+side*4.4,white);}}
+ 
  }
- for(let z=-210;z<=210;z+=70){box(parent,13,.03,13,v,.006,z,asphalt);
+ for(let z=-210;z<=210;z+=70){box(parent,roadHalf(v)*2,.031,roadHalf(z)*2,v,.007,z,asphalt);
  for(const s of [-1,1]){for(let k=-roadHalf(v)+.5;k<roadHalf(v);k+=1.2)box(parent,.58,.026,2,v+k,.043,z+s*SIDE,white);for(let k=-roadHalf(z)+.5;k<roadHalf(z);k+=1.2)box(parent,2,.026,.58,v+s*SIDE,.043,z+k,white);
  // Right-hand traffic: a stop bar covers only the incoming lane.
- if(Math.abs(z+s*70)<=210)box(parent,roadHalf(v)-.3,.026,.22,v-s*roadHalf(v)/2,.044,z+s*(SIDE+1.2),white);
- if(Math.abs(v+s*70)<=210)box(parent,.22,.026,roadHalf(z)-.3,v+s*(SIDE+1.2),.044,z+s*roadHalf(z)/2,white);
+ if(Math.abs(z+s*70)<=210)box(parent,roadHalf(v)-.3,.026,.22,v-s*CAR_LINE,.044,z+s*(SIDE+1.2),white);
+ if(Math.abs(v+s*70)<=210)box(parent,.22,.026,roadHalf(z)-.3,v+s*(SIDE+1.2),.044,z+s*CAR_LINE,white);
  }
  if(stopControlled(v,z))continue;
  const ax=v===0||Math.abs(v)===210,az=z===0||Math.abs(z)===210,key=nodeKey(v,z);
  let sig=signalGroups.get(key);if(!sig){sig={x:v,z,phases:[group(),group(),group()]};signalGroups.set(key,sig);parent.add(...sig.phases);}
- for(const approach of [0,1]){const sx=v+(approach===0?7:-7),sz=z+(approach===0?7:-7);cyl(parent,.11,.14,4.4,sx,2.2,sz,steel);box(parent,approach===0?.55:.42,1.35,approach===0?.42:.55,sx,4.25,sz,dark);
- for(let phase=0;phase<3;phase++){const go=phase===approach,g=sig.phases[phase];
- for(const side of [-1,1]){const xx=sx+(approach===1?side*.23:0),zz=sz+(approach===0?side*.23:0);
- box(g,approach===0?.28:.08,.28,approach===0?.08:.28,xx,go?4:4.6,zz,go?green:red);}}}
+ // Four approach-facing suspended heads, each on an anchored cantilever mast.
+ for(let dir=0;dir<4;dir++){
+  const d=D[dir],right={x:d[1],z:-d[0]},start={x:v-d[0]*70,z:z-d[1]*70};if(Math.abs(start.x)>210||Math.abs(start.z)>210)continue;
+  const half=roadHalf(dir%2===0?v:z),base={x:v-d[0]*11.2+right.x*(half+.55),z:z-d[1]*11.2+right.z*(half+.55)};
+  const head={x:v-d[0]*6.25+right.x*CAR_LINE,z:z-d[1]*6.25+right.z*CAR_LINE};
+  const top=7.1,armStart={x:base.x+d[0]*4.95,z:base.z+d[1]*4.95};
+  cyl(parent,.13,.21,.35,base.x,.175,base.z,steel);cyl(parent,.12,.17,top,base.x,top/2,base.z,steel,10);
+  const arm=(a,b,y)=>{const dx=b.x-a.x,dz=b.z-a.z,o=box(parent,.18,.18,Math.hypot(dx,dz)+.12,(a.x+b.x)/2,y,(a.z+b.z)/2,steel);o.rotation.y=Math.atan2(dx,dz);};
+  arm(base,armStart,top);arm(armStart,head,top);box(parent,.11,.52,.11,head.x,top-.26,head.z,steel);
+  box(parent,dir%2===0?.55:.35,1.24,dir%2===0?.35:.55,head.x,6.02,head.z,dark);
+  for(let lamp=0;lamp<3;lamp++){
+   const y=6.43-lamp*.4,fx=head.x-d[0]*.20,fz=head.z-d[1]*.20;
+   const rim=cyl(parent,.19,.19,.14,fx,y,fz,dark,12);rim.rotation.x=Math.PI/2;rim.rotation.y=dir%2?Math.PI/2:0;rim.rotation.order="YXZ";
+   for(let phase=0;phase<3;phase++){const lit=phase===dir%2?lamp===2:lamp===0,material=lit?(lamp===0?red:green):dark;const lens=cyl(sig.phases[phase],.142,.142,.035,fx-d[0]*.084,y,fz-d[1]*.084,material,12);lens.rotation.x=Math.PI/2;lens.rotation.y=dir%2?Math.PI/2:0;lens.rotation.order="YXZ";}
+  }
+ }
 
  }}
  drawInfrastructure(parent,{box,cyl,merge,mat,group});
@@ -586,7 +632,7 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  for(let li=0;li<lines.length;li++){const l=lines[li],color=mat(l.color);for(const p of l.stops){const d=D[p.dir],key=p.x+","+p.z;
  if(!p.active||seen.has(key))continue;seen.add(key);
  // Shelter is on the sidewalk; it never intrudes into the traffic lane.
- const rank=roadHalf(hRoad(p)),offset=rank+.52-SIDE,x=p.x+d[1]*offset,z=p.z-d[0]*offset,h=d[0]!==0;
+ const rank=roadHalf(hRoad(p)),offset=rank+.75-SIDE,x=p.x+d[1]*offset,z=p.z-d[0]*offset,h=d[0]!==0;
  box(parent,h?6:1.1,.12,h?1.1:6,x,.12,z,dark);
  box(parent,h?6:1.4,.2,h?1.4:6,x,2.75,z,steel);
  for(const a of [-2.6,2.6]){box(parent,.13,2.6,.13,x+d[0]*a-d[1]*.27,1.4,z+d[1]*a+d[0]*.27,steel);}
@@ -594,7 +640,7 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  box(parent,h?3.7:.38,.16,h?.38:3.7,x,.65,z,dark);for(const a of [-1.35,1.35])box(parent,.14,.55,.14,x+d[0]*a,.34,z+d[1]*a,steel);
  const px=x+d[0]*3.2,pz=z+d[1]*3.2;cyl(parent,.08,.1,3.2,px,1.6,pz,steel);
  box(parent,h?.95:.14,.78,h?.14:.95,px,3.05,pz,color);
- const names=lines.filter(l=>l.stops.some(q=>q.active&&q.x===p.x&&q.z===p.z)).map(l=>l.name[0]).join(" ");const face=(p.dir+1)%4,normal=D[face];streetLabels.push({text:"BUS "+names,x:px+normal[0]*.08,y:3.05,z:pz+normal[1]*.08,w:.86,h:.64,dir:face,bg:"#334c50",fg:"#f2e9d3"});inventory["bus shelters"]=(inventory["bus shelters"]||0)+1;
+ const names=lines.filter(l=>l.stops.some(q=>q.active&&q.x===p.x&&q.z===p.z)).map(l=>l.name[0]).join(" ");const face=p.dir%2===0?1:0,normal=D[face];streetLabels.push({text:"BUS "+names,x:px+normal[0]*.08,y:3.05,z:pz+normal[1]*.08,w:.86,h:.64,dir:face,bg:"#334c50",fg:"#f2e9d3"});inventory["bus shelters"]=(inventory["bus shelters"]||0)+1;
  // Paint the stop zone along the curb rather than over the moving lane.
  box(parent,h?10:.25,.027,h?.25:10,p.x-d[1]*1.6,.048,p.z+d[0]*1.6,color);
  if(roadRank(hRoad(p))===0){const xx=p.x-d[1]*(SIDE-5.2),zz=p.z+d[0]*(SIDE-5.2);box(parent,h?14:2.4,.019,h?2.4:14,xx,.028,zz,mat(0x4e5551));for(const k of [-6.8,6.8])box(parent,h?.18:2.4,.024,h?2.4:.18,xx+d[0]*k,.051,zz+d[1]*k,white);inventory["bus pullouts"]=(inventory["bus pullouts"]||0)+1;}
@@ -604,6 +650,7 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
 export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,registry}){
  attachStreetLabels(sign);
  const [facades,roof,steel,walk,dark,white,trim,glass,rust,black,door]=materials;
+ replaceBlock(parent,b,box,group,merge,walk);
  const base=group(),shell=group(),inside=group();parent.add(base,shell,inside);
  const {x,z,w,l,h}=b, a=b.architecture;
  const f=facades[(b.i*3+b.j*5+b.k+b.id)%facades.length];
