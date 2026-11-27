@@ -1,10 +1,12 @@
-# Dummy Lab — W1.10 — Roadmap
+# Dummy Lab — W1.11 — Roadmap
 
 Updated 2026-11-26. Active — current catalog release.
 
 This is an ordered development backlog, not a declaration that milestones are complete. Internal sequencing does not introduce approval stops; explicit project gates and archive restrictions remain binding.
 
 ## Priorities
+
+- [ ] Run W1.11 browser and Rapier integration checks; observe repeated gait, trip, falls, recovery, grip, throw and all previous actions. Add joint limits, force-based grasp, active balance and contact-based get-up.
 
 - [ ] Test mobile orientation, simultaneous touch and physical controller compatibility and measure performance.
 

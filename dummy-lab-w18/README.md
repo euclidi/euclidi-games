@@ -1,8 +1,8 @@
-# Dummy Lab — W1.10
+# Dummy Lab — W1.11
 
 Observe an autonomous articulated humanoid from a furnished laboratory, inspect its behavior and interact with it from the observation area.
 
-**Status:** W1.10 mobile and controller revision; browser and visual verification pending. Existing URL retained.
+**Status:** W1.11 hybrid locomotion and physical interactions revision; browser and visual verification pending. Existing URL retained.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/dummy-lab-w18/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -29,3 +29,7 @@ Serve the repository with a local HTTP server from its root (for example `python
 ## Limitations
 
 Body remains kinematic; environment uses Rapier but powered balancing, physical falls and contact-driven actions are not certified. Visual hand alignment and room fidelity still need human review; mobile performance unmeasured.
+
+## Physical tests
+
+Open Actions, select a rubber ball, block or cylinder and Spawn; choose pick up item, carry item, throw item or drop item. Nudge tests balance correction; Shove triggers dynamic fall; recover returns to standing. Empty chamber on reset. Normal gait uses a reduced-order model and falls use Rapier bodies. See STATUS for limits.

@@ -1,0 +1,3 @@
+import assert from 'node:assert/strict';import {stepProfile,captureOffset,spring} from './dynamics.js';
+for(let i=0;i<=1000;i++){const u=i/1000,p=stepProfile(u);assert(p.swing>=0&&p.swing<=1&&p.lift>=0&&p.lift<=1.00001&&p.load>=.5&&p.load<=1.00001);if(u<.16||u>.86)assert(p.lift<1e-7)}
+for(let i=0;i<8;i++){let x=0,v=0;const target=(i-4)*.3;for(let j=0;j<480;j++)[x,v]=spring(x,v,target,0,1/120);assert(Math.abs(x-target)<.001&&Math.abs(v)<.001)}assert(captureOffset(1)>0&&captureOffset(-1)<0&&captureOffset(0)===0);console.log('gait phase and spring checks passed');

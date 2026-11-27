@@ -1,4 +1,4 @@
-# Dummy Lab — W1.10 — Development specification
+# Dummy Lab — W1.11 — Development specification
 
 **Revision:** documentation baseline, 2026-11-26. **Lifecycle:** Active — current catalog release.
 
@@ -17,6 +17,8 @@ Observe an autonomous articulated humanoid from a furnished laboratory, inspect 
 Neutral posture must use mirrored anatomical thumb orientation, relaxed finger cascade, inward-facing palms, lightly flexed knees and stable foot contacts. Explicit contact poses override the neutral wrist frame.
 
 Responsive portrait and landscape, safe-area layout, analog multitouch movement/look, and standard controller input are required; nonstandard right-stick axes configurable. Physical hardware testing separate.
+
+Locomotion targets: continuous weight transfer, foot roll and articulated toes, velocity-based arm counter-swing, balance recovery, physically simulated falls, procedural get-up, grasp/carry/throw using actual rigid bodies, and continuity across actions. Reduced-order hybrid controller is an intermediate implementation; full force-driven balance remains a target.
 
 ## Technology and assets
 

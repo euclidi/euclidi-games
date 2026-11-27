@@ -1,0 +1,3 @@
+export function stepProfile(u){u=Math.max(0,Math.min(1,u));const v=Math.max(0,Math.min(1,(u-.16)/.70)),s=v*v*(3-2*v);return {swing:s,lift:Math.sin(Math.PI*v)**1.45,load:u<.16?.5+.5*u/.16:u>.86?1-.5*(u-.86)/.14:1}}
+export function captureOffset(v,h=.86){return v/Math.sqrt(9.81/Math.max(.3,h))}
+export function spring(x,v,target,targetV,dt,k=42,d=12,maxA=8){const a=Math.max(-maxA,Math.min(maxA,k*(target-x)+d*(targetV-v)));v+=a*dt;return [x+v*dt,v]}
