@@ -11,3 +11,7 @@ Direct WebGL2/GLSL pixel presentation and JS simulation supplied as a provisiona
 ## Display and handheld amendment (2026-11-27)
 
 Sharper indexed LCD sampling with minimal default persistence; convincing molded handheld chassis, automatic touch/mobile detection, safe-area viewport fitting in portrait and landscape, orientation-driven chassis tilt with permission, neutral calibration and reduced-motion support. Display and control plane remain stationary to preserve clarity and input alignment. Tilt is cosmetic only.
+
+## Hardware/UI amendment (2026-11-27)
+
+Compact categorized settings with live display/audio controls and next-game configuration, in-game setup, adjustable stronger full-device motion with orientation calibration and perspective-correct input. Industrial handheld materials and original bitmap microtexture; preserve indexed LCD rendering and mobile fit.
