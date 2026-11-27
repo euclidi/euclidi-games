@@ -7,3 +7,6 @@ Wall fixtures now render before the foreground miners, with illumination in a se
 - Actor alpha masks participate in light ray intersections; foreground actors are composited separately from wall lights.
 - Updated helmet, workwear, boots, torch and track bitmap clusters; material wear and rock strata shading revised.
 - Core unchanged. Syntax checked and a deterministic 180-second core run completed (2,439 excavated cells, 224 credits, six supports). Browser visual verification and deployed Pages verification are still pending.
+
+## 0.4 preview — offline 3D-to-pixel-art pipeline
+Nine model sources and a SpriteKiln baking workflow are committed. The runtime loads full-frame 128-pixel atlases, aligns actors using ground pivots and headlamp sockets, and renders at twice the previous backing resolution. Missing assets use a visible labeled legacy fallback. The core excavation simulation is unchanged. The model specifications, generated atlases, workflow execution, browser visuals and Pages deployment have not yet been verified; do not call the new art complete or approved.
