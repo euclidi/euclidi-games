@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.5.5.
+**Lifecycle:** Active — Git revision 1.5.6.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.5.6 — fitted original artwork
+
+Redrawn pixel clusters, rounded custom body, face landmarks separated from headwear, fitted wearable bases and single-ear headphones. Classic default unchanged. Reference-style rotation remains for vertical directions. Added enlarged preview and native-raster sample. Direction/mouth anchor and minimum attachment-overlap checks passed; actual sprite comparison produced. Live browser/device playtest pending.
 
 ## Revision 1.5.5 — high-density cosmetic artwork
 

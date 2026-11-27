@@ -13,31 +13,29 @@ export const PAC_SIZE=40,PAC_LOGICAL=20;
 export function pacTransform(x,y,d){return d===0?[y,39-x]:d===1?[39-x,y]:d===2?[39-y,x]:[x,y]}
 const widths=[6,10,12,12,14,14,14,14,14,14,12,12,10,6];
 export function pacBody(d=3,f=0){let cells=[];for(let y=0;y<14;y++)for(let x=0;x<14;x++){if(x<(14-widths[y])/2||x>=(14+widths[y])/2)continue;let a=x-6.5,b=y-6.5,k=Math.atan2(b,a)-[-Math.PI/2,Math.PI,Math.PI/2,0][d];k=Math.atan2(Math.sin(k),Math.cos(k));if(f===0||Math.abs(k)>[0,.32,.73][f])for(let dy=0;dy<2;dy++)for(let dx=0;dx<2;dx++)cells.push([6+x*2+dx,6+y*2+dy])}return cells}
-const rgb={k:'#171822',w:'#fff8e7',b:'#5ce4ff',B:'#268cb9',d:'#1e344d',r:'#a3224e',R:'#ee3c69',p:'#ffadc5',n:'#62213c',c:'#20396e',C:'#4774c9',L:'#a8d0f8',g:'#985219',G:'#e7a42c',Y:'#ffe58e',j:'#e63b62',v:'#45306f',V:'#8658c9',s:'#8b94aa',S:'#c4d0df',h:'#434d68',a:'#ff8f3e'};
+
+// Individually raster-authored headwear with shared 28px head and face landmarks.
+const ink={K:'#18141d',W:'#fff7dc',R:'#df3155',r:'#8c183d',P:'#ff8e9e',p:'#ffcfba',C:'#31598d',c:'#182c50',L:'#81b9e5',l:'#c9e9f5',G:'#e8a02b',g:'#92501c',Y:'#ffe5a0',V:'#754ab0',v:'#3a285d',S:'#b6c6d2',s:'#68788b',H:'#333b4c',h:'#171d2d',T:'#4ac4ce',t:'#236f83',A:'#f4c55b'};
 const eyes={
- dot:[16,12,['.kkk.','kkkkk','kkkkk','.kkk.']],
- bright:[16,10,['..www..','.wwwww.','wwwwkkw','wwwkkkw','wwwkkkw','.wwkkw.','..www..']],
- visor:[12,11,['.dddddddd.','dBBBBBBBBd','dBbbBBBBBd','dBBBBBBBBd','.dddddddd.']],
- angry:[15,11,['kk.....','.kkk...','..kkkk.','..wwkkk','..wwkkk','...kkk.']],
- glasses:[12,11,['.kkkkkkkk.','kwwwkwwwkk','kwbwkwbwkk','kwwwkwwwkk','.kkk.kkk..']]
+ dot:[18,12,['.KKK.','KKKKK','KKKKK','.KKK.']],
+ bright:[15,12,['..KKK..','.KWWWK.','KWWWWKK','KWWWKKK','KWWKKKK','.KWWKK.','..KKK..']],
+ visor:[13,12,['.hhhhhhhhhh.','hTTTTTTTTTTh','hTllTTTTTTTh','htttttttttth','.hhhhhhhhhh.']],
+ angry:[14,12,['KK......','.KKK....','..KKKK..','..KWWKK.','..KWKKK.','...KKK..']],
+ glasses:[13,12,['.KKKKKKKKKK.','KWlWKKWlWKKK','KWWWKKWWWKKK','KWWWKKWWWKKK','.KKKK.KKKK..']]
 };
 const wear={
- bow:[3,3,['...RRR......','..RppRR.....','..RRrRR.RR..','.rRRRrRRRpR.','RRRpRrRRRRR.','RppRRnRRrR..','RRRrR..rr...','.rrr........']],
- cap:[9,0,['.....cccccc.....','...ccCCCCCCcc...','..cCCCLCCCCCCc..','.cCCLLCCCCCCCCc.','.cCCCCCCCCCCCCC.','cccccccccccccccc','........cccccccccccc','.........cccccccccc.']],
- crown:[8,0,['Y.....Y.....Y','GY...YGY...YG','GGY..GGG..YGG','GGGY.GGG.YGGG','GGGGGGGGGGGGG','gGgjGGjGGjgGg','ggggggggggggg']],
- band:[8,7,['..rRRRRRRRRRRr..','.rRRppRRRRRRRRr.','rRRRRRRRRRRRRRRr','.rrrrrrrrrrrrrr.']],
- wizard:[5,0,['........vVv.........','.......vVVVv........','......vVVVVv........','.....vVVYVVVv.......','....vVVVVVVVv.......','...vVVVVVVVVVv......','..vvvvvvvvvvvvv.....','.vvvvvvvvvvvvvvvvvv.','vvvvvvvvvvvvvvvvvvvv']],
- headphones:[5,4,['.......hhhhhh.......','.....hhSSSSSShh.....','....hSS......SSh....','...hSS........SSh...','..hhS..........Shh..','..hhh..........hhh..','..hSh..........hSh..','..hSh..........hSh..','..hhh..........hhh..']],
- helmet:[6,1,['......hhhhhhhh......','....hhSSSSSSSShh....','...hSSSSSSSSSSSSh...','..hSSSLLSSSSSSSSSh..','.hSSSSSSSSSSSSSSSSh.','hSSSSSSSSSSSSSSSSSSh','hhhhhhhhhhhhhhhhhhhh','..hhhhhhhhhhhhhhhh..']]
+ bow:[4,5,['...rrr.......','..rRRRr..rr..','.rRPRRRrrRRr.','rRPPPRRRRPRRr','rRRPRRPrRRRRr','.rRRRrrrRRRr.','..rrr...rrr..']],
+ cap:[8,2,['.....cccccccc....','...ccCCCCCCCCcc..','..cCCCLLCCCCCCCc.','.cCCCLCCCCCCCCCCc','.cCCCCCCCCCCCCCCc','.cCCCCCCCCCCCCCCc','..ccccccccccccccc','.......cCCCCCCCCCCCCc','........cccccccccccc.']],
+ crown:[11,2,['Yg...Yg...Yg...Yg','YGg..YGg..YGg..YG','YGGg.YGGg.YGGg.YG','YGGGGGGGGGGGGGGYG','YGGGGGGGGGGGGGGYG','gGGRGGRGGRGGRGGGg','gYYYYYYYYYYYYYYYg','ggggggggggggggggg']],
+ band:[8,6,['.....rrrrrrrrrr.....','...rRRRRRRRRRRRRr...','..rRRPPPRRRRRRRRRr..','.rRRRRRRRRRRRRRRRRr.','..rrrrrrrrrrrrrrrr..']],
+ wizard:[7,0,['.........vv..........','........vVVv.........','.......vVVVVv........','......vVVAVVVv.......','.....vVVVVVVVVv......','....vVVVVVVVVVVv.....','...vVVVVVVVVVVVVv....','..vGGGGGGGGGGGGGGv...','.vvvvvvvvvvvvvvvvvvv.','vvvvvvvvvvvvvvvvvvvvv','..vvvvvvvvvvvvvvvvv..']],
+ headphones:[5,6,['.......hhhhhhh.......','.....hhSSSSSSShh.....','....hSS.......SSh....','...hSS.........SSh...','..hSS...........Sh...','..hS.................','..hS.................','.hhh.................','hSSSh................','hSLSh................','hSSSh................','hSSSh................','hSSSh................','.hhh.................']],
+ helmet:[7,3,['.......hhhhhhhh.......','.....hhSSSSSSSShh.....','...hhSSSSSSSSSSSShh...','..hSSLLSSSSSSSSSSSSh..','.hSSLLSSSSSSSSSSSSSSh.','hSSSSSSSSSSSSSSSSSSSSh','hSSSSSSSSSSSSSSSSSSSSh','hssssssssssssssssssssh','.hhhhhhhhhhhhhhhhhhhh.']]
 };
-// Each wearable is drawn as a real pixel cluster, with shared attachment landmarks.
-const common=new Set(pacBody(3,2).map(([x,y])=>y*40+x));
-export function pacLayers(value,d=3,f=0){
- const p=normalizePac(value),[base,dark,light]=PALETTES[p.color],body=pacBody(d,f),occupied=new Set(body.map(([x,y])=>y*40+x)),inside=(x,y)=>x>=0&&x<40&&y>=0&&y<40&&occupied.has(y*40+x),basePixels=[];
- for(let [x,y] of body){let col=base;if(p.finish==='shaded'){if(x+y>=46)col=dark;else if(x+y<=24)col=light}else if(p.finish==='outline'&&(!inside(x-1,y)||!inside(x+1,y)||!inside(x,y-1)||!inside(x,y+1)))col=dark;else if(p.finish==='stripe'&&Math.abs(x+y-27)<=1)col=light;basePixels.push([x,y,col])}
- const stamp=(spec,clip=false)=>{if(!spec)return [];const [ox,oy,rows]=spec,out=[];rows.forEach((row,dy)=>[...row].forEach((v,dx)=>{if(v==='.')return;let x=ox+dx,y=oy+dy;if(clip&&!common.has(y*40+x))return;let [a,b]=pacTransform(x,y,d);if(a>=0&&a<40&&b>=0&&b<40)out.push([a,b,rgb[v]])}));return out};
- let face=stamp(eyes[p.eyes],true),eyeSet=new Set(face.map(([x,y])=>y*40+x));
- return {body:basePixels,eyes:face,accessory:stamp(wear[p.accessory],p.accessory==='band').filter(([x,y])=>!eyeSet.has(y*40+x))}
-}
-export function pacPixels(value,d=3,f=0){let layers=pacLayers(value,d,f),cells=new Map();for(let layer of [layers.body,layers.accessory,layers.eyes])for(let [x,y,c] of layer)cells.set(y*40+x,c);return [...cells].map(([k,color])=>[k%40,k/40|0,color])}
+function customBody(d,f){let out=[];for(let y=6;y<34;y++)for(let x=6;x<34;x++){let a=x-19.5,b=y-19.5;if(a*a+b*b>196)continue;if(f&&Math.abs(Math.atan2(b,a))<[0,.37,.71][f])continue;out.push(pacTransform(x,y,d))}return out}
+export function pacLayers(value,d=3,f=0){const p=normalizePac(value),[base,dark,light]=PALETTES[p.color],classic=p.eyes==='none'&&p.accessory==='none'&&p.finish==='flat',body=classic?pacBody(d,f):customBody(d,f),occupied=new Set(body.map(([x,y])=>y*40+x)),inside=(x,y)=>occupied.has(y*40+x)&&x>=0&&x<40&&y>=0&&y<40;
+let basePixels=body.map(([x,y])=>{let c=base;if(p.finish==='shaded'){if(x+y>46)c=dark;else if(x+y<26)c=light}else if(p.finish==='outline'&&(!inside(x-1,y)||!inside(x+1,y)||!inside(x,y-1)||!inside(x,y+1)))c=dark;else if(p.finish==='stripe'&&Math.abs(x+y-29)<2)c=light;return [x,y,c]});
+const stamp=(art)=>{if(!art)return [];let [ox,oy,rows]=art,out=[];for(let j=0;j<rows.length;j++)for(let i=0;i<rows[j].length;i++){let c=ink[rows[j][i]];if(!c)continue;let [x,y]=pacTransform(ox+i,oy+j,d);if(x>=0&&x<40&&y>=0&&y<40)out.push([x,y,c])}return out};
+const face=stamp(eyes[p.eyes]),accessory=stamp(wear[p.accessory]);return {body:basePixels,eyes:face,accessory}}
+export function pacPixels(value,d=3,f=0){let l=pacLayers(value,d,f),cells=new Map();for(let layer of [l.body,l.accessory,l.eyes])for(let [x,y,c] of layer)cells.set(y*40+x,c);return [...cells].map(([k,c])=>[k%40,k/40|0,c])}
 export function paintPac(ctx,value,d,f){ctx.clearRect(0,0,40,40);for(let [x,y,color] of pacPixels(value,d,f)){ctx.fillStyle=color;ctx.fillRect(x,y,1,1)}}

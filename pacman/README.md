@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.5.5.
+**Status:** Active — Git revision 1.5.6.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
