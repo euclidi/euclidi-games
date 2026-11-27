@@ -35,6 +35,8 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [Creatture](creatture/README.md) | Active — validated 0.1.8 development preview; full R3 outstanding | [Spec](creatture/SPEC.md) · [Roadmap](creatture/ROADMAP.md) · [Status](creatture/STATUS.md) |
 
+| [Atlantis](atlantis/README.md) | Migration — source recovery, not published | [Spec](atlantis/SPEC.md) · [Roadmap](atlantis/ROADMAP.md) · [Status](atlantis/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
