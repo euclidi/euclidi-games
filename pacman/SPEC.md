@@ -15,6 +15,8 @@ Unofficial browser recreation of classic arcade maze gameplay, with selectable a
 - A dedicated arcade-style starting menu with mode, sound, CRT settings, new game and in-session return/resume without losing progress.
 - Keyboard, swipe, controller and large touch pad with yellow input feedback, selectable red arcade joystick and touch-control visibility toggle; persistent high scores, accessible controls and responsive scaling.
 
+- Persistent settings screen: gameplay rules, volume/music/sirens, controls, CRT strength and accessibility preferences; separate score records for altered rules.
+
 ## Technology and assets
 
 Local 224×288 Canvas bitmap compositor, JS game logic, synthesized Web Audio, optional Vite packaging. No Phaser runtime or CDN needed for static play.
