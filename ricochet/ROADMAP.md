@@ -7,3 +7,5 @@
 - Verify deployment and update status with test evidence. No item here is claimed complete.
 
 - Playtest and tune final-target camera, scoring-channel transitions, boss balance, music mix and professional GUI on desktop/mobile. Expand boss sprites into independently authored characters and finish soundtrack quality audit.
+
+- Replace interim analytic portraits and layered dioramas with individually modeled, offline Blender-rendered assets; add animated character reactions, true normal-map lighting/reflection pass and high-resolution authored backgrounds. Validate full game and visual performance on desktop/mobile.
