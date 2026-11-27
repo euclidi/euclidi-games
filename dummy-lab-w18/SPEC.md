@@ -1,4 +1,4 @@
-# Dummy Lab — W1.9 — Development specification
+# Dummy Lab — W1.10 — Development specification
 
 **Revision:** documentation baseline, 2026-11-26. **Lifecycle:** Active — current catalog release.
 
@@ -15,6 +15,8 @@ Observe an autonomous articulated humanoid from a furnished laboratory, inspect 
 - Furnished observation room, chamber glass, computers, chairs and props; controlled exposure, shadows, first-person and free camera, input and sound.
 
 Neutral posture must use mirrored anatomical thumb orientation, relaxed finger cascade, inward-facing palms, lightly flexed knees and stable foot contacts. Explicit contact poses override the neutral wrist frame.
+
+Responsive portrait and landscape, safe-area layout, analog multitouch movement/look, and standard controller input are required; nonstandard right-stick axes configurable. Physical hardware testing separate.
 
 ## Technology and assets
 

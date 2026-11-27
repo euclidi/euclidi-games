@@ -1,10 +1,12 @@
-# Dummy Lab — W1.9 — Roadmap
+# Dummy Lab — W1.10 — Roadmap
 
 Updated 2026-11-26. Active — current catalog release.
 
 This is an ordered development backlog, not a declaration that milestones are complete. Internal sequencing does not introduce approval stops; explicit project gates and archive restrictions remain binding.
 
 ## Priorities
+
+- [ ] Test mobile orientation, simultaneous touch and physical controller compatibility and measure performance.
 
 - [ ] Visually inspect W1.9 neutral posture and hand orientation; regress all contact and transition poses.
 

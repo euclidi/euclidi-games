@@ -1,8 +1,8 @@
-# Dummy Lab — W1.9
+# Dummy Lab — W1.10
 
 Observe an autonomous articulated humanoid from a furnished laboratory, inspect its behavior and interact with it from the observation area.
 
-**Status:** W1.9 stance revision; browser and visual verification pending. Existing URL retained.
+**Status:** W1.10 mobile and controller revision; browser and visual verification pending. Existing URL retained.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/dummy-lab-w18/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -14,7 +14,7 @@ Observe an autonomous articulated humanoid from a furnished laboratory, inspect 
 
 ## Controls
 
-WASD or touch pad; camera, exposure, speed, resolution and Actions controls on screen.
+WASD/arrows + drag to look; Q/E free-camera elevation. Touch: left analog pad and drag scene to look, UP/DOWN in free camera. Standard gamepad: left stick move, right stick look, LB/RB elevation, A noise, B camera, X slow motion, Y/Start Actions. In Actions: D-pad up/down, A play, B close, X auto. Alternate right-stick axes and touch settings under Controls / gamepad.
 
 ## Runtime
 
