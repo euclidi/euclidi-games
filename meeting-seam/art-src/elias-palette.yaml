@@ -1,0 +1,11 @@
+# Wren palette (example side-scroller character, CC0). Index 0 = outline/darkest.
+# Used together with gothic (fx_*, steel, gold, flame). Warm and light for a cozy platformer;
+# hue shift: shadows lean cool/violet, highlights warm/yellow.
+ramps:
+  coat: ["#141d20", "#293d43", "#405b60", "#648084", "#8aa5a3", "#bdd0c7"]
+  scarf:   ["#2a0c12", "#7a1f22", "#b03826", "#da5a30", "#f08a48", "#ffc27c"]   # warm red-orange accent
+  felt: ["#102729", "#254849", "#386767", "#548a83", "#7bafa1", "#b3d1bc"]
+  leather: ["#170d0e", "#36201c", "#543226", "#764a32", "#986846", "#b88a60"]   # boots, belt, satchel, grip
+  skin:    ["#2a1514", "#7a4636", "#b8765c", "#dc9e7c", "#f0c4a0", "#fbe2c6"]   # warm fair skin
+  hair:    ["#22140e", "#5e3a1c", "#93622c", "#c08f44", "#e0b866", "#f6e0a0"]   # honey blond
+  pants: ["#151b20", "#2b373b", "#40545a", "#536b72", "#748c90", "#a3b5b5"]
