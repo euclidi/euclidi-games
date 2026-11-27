@@ -27,3 +27,9 @@ Irregular streets, integrated transfer performance, rail, deeper social systems,
 Recover or modularize the bundled source without replacing the city; add reproducible build and state migration tests.
 
 [Roadmap](ROADMAP.md) · [Specification](SPEC.md)
+
+## Facade correction — 2026-11-26
+
+[Implementation commit d504d25](https://github.com/euclidi/euclidi-games/commit/d504d25cbc214d6677c2504a956ff693ae2cea95). Signs now use actual wall or canopy fascia anchors with physical backing plates, smaller residential number plaques, and 1024-pixel-wide lettering textures with mipmaps. Framed front and side windows align to their own wall volumes, including stepped towers and row houses. Corrected canopy attachment offsets.
+
+Isolated geometry audit: 128 building configurations (32 subtypes at four heights), 2,522 framed windows, 15,138 passing assertions covering geometry dimensions, sign backing attachment, texture configuration, and window-frame/wall placement. These tests use mock rendering primitives; live WebGL rendering, text legibility at camera distances, device performance, and GitHub Pages deployment remain unverified.
