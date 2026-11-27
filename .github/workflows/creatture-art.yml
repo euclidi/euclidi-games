@@ -5,7 +5,7 @@ on:
     paths: ['creatture/tools/render_assets.py', '.github/workflows/creatture-art.yml']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   art-build:
     runs-on: ubuntu-24.04
@@ -47,3 +47,25 @@ jobs:
           name: creatture-art-browser-evidence
           path: creatture/test-results
           if-no-files-found: ignore
+      - name: Stage validated static package on isolated ref
+        if: success()
+        env:
+          GIT_AUTHOR_NAME: Euclidi Games CI
+          GIT_AUTHOR_EMAIL: actions@users.noreply.github.com
+          GIT_COMMITTER_NAME: Euclidi Games CI
+          GIT_COMMITTER_EMAIL: actions@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          release="$RUNNER_TEMP/creatture-package"
+          mkdir -p "$release/creatture" "$RUNNER_TEMP/source"
+          cp -a dist/. "$release/creatture/"
+          for doc in README.md SPEC.md ROADMAP.md STATUS.md; do cp "$doc" "$release/creatture/$doc"; done
+          git -C "$GITHUB_WORKSPACE" archive "$GITHUB_SHA" creatture | tar -x -C "$RUNNER_TEMP/source"
+          mv "$RUNNER_TEMP/source/creatture" "$release/creatture/source"
+          printf '{"source_commit":"%s","validation_run":"%s","status":"development-preview"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > "$release/creatture/BUILD.json"
+          export GIT_INDEX_FILE="$RUNNER_TEMP/creatture-package.index"
+          git --git-dir="$GITHUB_WORKSPACE/.git" --work-tree="$release" -C "$release" add -f -- creatture
+          tree=$(git -C "$GITHUB_WORKSPACE" write-tree)
+          commit=$(printf 'Validated Creatture development package %s\n' "$GITHUB_SHA" | git -C "$GITHUB_WORKSPACE" commit-tree "$tree" -p "$GITHUB_SHA")
+          git -C "$GITHUB_WORKSPACE" push origin "$commit:refs/heads/creatture-package-${GITHUB_SHA:0:7}"
+          printf 'Package commit: %s\n' "$commit"
