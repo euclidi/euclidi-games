@@ -78,7 +78,7 @@ function walk(dt){
  r.head.rotation.y=.09*Math.sin(clock*.9);if(u>=1){plants[s.i].copy(s.end);step=null;stepRoll[s.i]=0}
  return false;
 }
-function act(dt,ctx){const t=age,span=durations[action],f=smooth(t/.35)*smooth((span-t)/.35),w=Math.sin(t*3),rep=(1-Math.cos(t*3))/2;const relaxed=relaxedActions.has(action);for(const p of plants)p.y=groundProbe(R,world,p);velocity.multiplyScalar(Math.exp(-dt*8));center.x+=(velocity.x+disturbance.x)*dt;center.z+=(velocity.z+disturbance.z)*dt;disturbance.multiplyScalar(Math.exp(-dt*2.7));pose(relaxed?.895:.83,relaxed);const world=(x,y,z)=>r.body.localToWorld(V(x,y,z));const hand=(i,x,y,z)=>armIK(r,i,world(x,y,z));const both=(y,z,x=.28)=>{for(let i=0;i<2;i++)hand(i,r.arms[i].s*x,y,z);};const flex=(v)=>r.arms.forEach(a=>curl(a,v,.04));
+function act(dt,ctx){const t=age,span=durations[action],f=smooth(t/.35)*smooth((span-t)/.35),w=Math.sin(t*3),rep=(1-Math.cos(t*3))/2;const relaxed=relaxedActions.has(action);for(const p of plants)p.y=groundProbe(R,world,p);velocity.multiplyScalar(Math.exp(-dt*8));center.x+=(velocity.x+disturbance.x)*dt;center.z+=(velocity.z+disturbance.z)*dt;disturbance.multiplyScalar(Math.exp(-dt*2.7));pose(relaxed?.895:.83,relaxed);const bodyPoint=(x,y,z)=>r.body.localToWorld(V(x,y,z));const hand=(i,x,y,z)=>armIK(r,i,bodyPoint(x,y,z));const both=(y,z,x=.28)=>{for(let i=0;i<2;i++)hand(i,r.arms[i].s*x,y,z);};const flex=(v)=>r.arms.forEach(a=>curl(a,v,.04));
 switch(action){
 case 'pick up item':{
  if(!item||!lab.has(item)||(lab.held&&!gripStage)){if(lab.held)hand(1,.30,.35,.27);break}
