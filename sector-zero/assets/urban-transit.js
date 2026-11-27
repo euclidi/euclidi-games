@@ -431,6 +431,7 @@ export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
  let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","STOP SIGN","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap();
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+served(l)+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.reduce((n,b)=>n+capacity(b),0)+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/'+capacity(b)+' · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
+ html+='<h3>STREET INFRASTRUCTURE</h3>'+Object.entries(inventory).map(([name,n])=>'<div class="stat"><span>'+name.toUpperCase()+'</span><b>'+n+'</b></div>').join('');
  html+='<h3>UNDERGROUND METRO</h3><div class="stat"><span>STATIONS / TRAINS</span><b>'+metroStations.size+' / '+w.metro.trains.length+'</b></div><div class="stat"><span>WAITING</span><b>'+w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting").length+'</b></div><div class="stat"><span>ON BOARD</span><b>'+w.metro.trains.reduce((n,t)=>n+t.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS / COMPLETED</span><b>'+w.metro.boardings+' / '+w.metro.completed+'</b></div>';
  for(const l of metroLines){html+='<h3 style="color:'+l.color+'">'+l.name+'</h3><p>'+l.stops.map(p=>p.name).join(' · ')+'</p>';}
  return html+'<p>Local loops and limited-stop express services support one transfer. Riders compare estimated trip time with walking and queue in arrival order. Select a bus to locate it.</p>';
@@ -438,7 +439,108 @@ export function panel(w){
 export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
 const signalGroups=new Map();
 export function updateSignals(time){for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
+// Roadside assets are laid out against curb coordinates; collision footprints stay
+// out of the two sidewalk lanes. Sign planes are generated once using the existing
+// Three.js sign factory, then attached to their physical backing plates.
+function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
+ streetLabels.length=0;streetSolids.length=0;for(const k of Object.keys(inventory))delete inventory[k];
+ const g=group();parent.add(g);streetLabelGroup=group();parent.add(streetLabelGroup);
+ const m={iron:mat(0x535e59),black:mat(0x292e2c),wood:mat(0x77634d),concrete:mat(0x969487),stone:mat(0x797c71),red:mat(0xa73c32),yellow:mat(0xb7a35f),white:mat(0xd7d5c4),blue:mat(0x465d78),green:mat(0x3b6855),copper:mat(0x78654a),wire:mat(0x252925),glass:mat(0x586d70),lamp:mat(0xe3d9ad),rail:mat(0x86928f)};
+ const count=k=>inventory[k]=(inventory[k]||0)+1;
+ const footprint=(x,z,w,l)=>streetSolids.push({x,z,w,l});
+ const B=(w,h,l,x,y,z,material)=>box(g,w,h,l,x,y,z,material);
+ const C=(a,b,h,x,y,z,material,n=12)=>cyl(g,a,b,h,x,y,z,material,n);
+ const pole=(x,z,h=.0,r=.085,material=m.iron)=>C(r*.85,r,h,x,h/2,z,material);
+ const plate=(text,x,y,z,w,h,dir,color,bg,fg="#f5f3de")=>{
+  const alongX=dir%2===0;B(alongX?w:.1,h,alongX?.1:w,x,y,z,color);
+  const d=D[dir];streetLabels.push({text,x:x+d[0]*.058,y,z:z+d[1]*.058,w:w-.08,h:h-.08,dir,bg,fg});
+ };
+ const wire=(a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,length=Math.hypot(dx,dy,dz);const o=B(.034,.034,length,(a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2,m.wire);o.rotation.y=Math.atan2(dx,dz);o.rotation.x=-Math.atan2(dy,Math.hypot(dx,dz));o.rotation.order="YXZ";};
+ const streetName=(v,axis)=>v===0?(axis===0?"CENTRAL AVE":"UNION BLVD"):Math.abs(v)===210?(v<0?"NORTH":"SOUTH")+" RING":(axis===0?"AV ":"ST ")+String(v/70+4).padStart(2,"0");
+ const oriented=(axis,v,p,side,offset)=>axis===0?{x:v+side*offset,z:p}:{x:p,z:v+side*offset};
+ function bench(axis,x,z){
+  const h=axis===1;for(let j=0;j<4;j++)B(h?2.35:.12,.11,h?.12:2.35,x+(h?0:(j-1.5)*.14),.48,z+(h?(j-1.5)*.14:0),m.wood);
+  for(const a of [-.85,.85]){B(h?.11:.5,.46,h?.5:.11,x+(h?a:0),.25,z+(h?0:a),m.iron);B(h?.11:.1,.48,h?.1:.11,x+(h?a:-.22),.72,z+(h?-.22:a),m.iron);}
+  for(const y of [.68,.85,1.02])B(h?2.35:.09,.12,h?.09:2.35,x+(h?0:-.23),y,z+(h?-.23:0),m.wood);
+  footprint(x,z,h?2.4:.65,h?.65:2.4);count("benches");
+ }
+ function hydrant(x,z){C(.18,.24,.54,x,.33,z,m.red);C(.24,.2,.12,x,.65,z,m.red);C(.13,.24,.13,x,.77,z,m.red);C(.085,.085,.085,x,.88,z,m.yellow);const o=C(.095,.095,.52,x,.43,z,m.red);o.rotation.z=Math.PI/2;for(const side of [-1,1]){const cap=C(.13,.13,.075,x+side*.27,.43,z,m.yellow,8);cap.rotation.z=Math.PI/2;}footprint(x,z,.56,.44);count("hydrants");}
+ function bin(x,z){C(.25,.22,.7,x,.36,z,m.green);C(.28,.28,.09,x,.74,z,m.iron);B(.25,.025,.14,x,.794,z,m.black);footprint(x,z,.56,.56);count("bins");}
+ function cabinet(x,z){B(.54,.12,.55,x,.06,z,m.concrete);B(.44,.86,.45,x,.55,z,m.green);B(.03,.6,.32,x+.231,.55,z,m.iron);B(.045,.06,.08,x+.25,.54,z,m.black);for(let j=0;j<4;j++)B(.045,.027,.19,x+.25,.25+j*.06,z,m.black);footprint(x,z,.55,.55);count("utility cabinets");}
+ function lamp(axis,x,z,side){pole(x,z,5.8,.10);C(.16,.21,.24,x,.12,z,m.concrete);const dx=axis===0?-side:0,dz=axis===1?-side:0;B(axis===0?1.35:.13,.13,axis===1?1.35:.13,x+dx*.62,5.76,z+dz*.62,m.iron);B(axis===0?.66:.36,.16,axis===1?.66:.36,x+dx*1.3,5.72,z+dz*1.3,m.iron);B(axis===0?.55:.27,.045,axis===1?.55:.27,x+dx*1.3,5.62,z+dz*1.3,m.lamp);footprint(x,z,.3,.3);count("streetlights");}
+ for(let axis=0;axis<2;axis++)for(let v=-210;v<=210;v+=70){
+  for(let p=-175;p<=175;p+=70){
+   const side=axis===0?1:-1,curb=roadHalf(v)+.37,local=roadRank(v)===2;
+   // Pavement is physically continuous between intersection aprons.
+   for(const q of [-1,1]){
+    const p0=oriented(axis,v,p,q,roadHalf(v)+.18),p1=oriented(axis,v,p,q,8.0);
+    B(axis===0?.29:54,.13,axis===0?54:.29,p0.x,.065,p0.z,m.concrete);
+    B(axis===0?2.0:54,.07,axis===0?54:2.0,p1.x,.035,p1.z,m.stone);
+    for(let k=-24;k<=24;k+=6){const a=oriented(axis,v,p+k,q,8);B(axis===0?1.94:.025,.012,axis===0?.025:1.94,a.x,.077,a.z,m.concrete);}
+    const drain=oriented(axis,v,p-19,q,roadHalf(v)-.28);B(axis===0?.36:1.0,.025,axis===0?1:.36,drain.x,.045,drain.z,m.black);for(let j=-3;j<=3;j++)B(axis===0?.31:.035,.019,axis===0?.035:.31,drain.x+(axis===1?j*.13:0),.061,drain.z+(axis===0?j*.13:0),m.iron);count("storm drains");
+   }
+   const a=oriented(axis,v,p-12,side,curb);lamp(axis,a.x,a.z,side);
+   const h=oriented(axis,v,p+13,-side,curb);hydrant(h.x,h.z);
+   if(local){const a=oriented(axis,v,p+1,side,roadHalf(v)+1.05);bench(axis,a.x,a.z);const b=oriented(axis,v,p+3.8,side,roadHalf(v)+1.05);bin(b.x,b.z);}
+   if((p+175)/70%2===0){const a=oriented(axis,v,p-5,-side,curb);cabinet(a.x,a.z);}
+   const man=oriented(axis,v,p+4,1,1.05);C(.46,.46,.025,man.x,.046,man.z,m.iron,16);C(.37,.37,.019,man.x,.066,man.z,m.black,16);for(const k of [-.18,0,.18])B(.47,.016,.04,man.x,.081,man.z+k,m.iron);count("manholes");
+   if(p===-105||p===105){const a=oriented(axis,v,p+17,-side,curb);pole(a.x,a.z,2.8);plate(roadRank(v)===0?"SPEED 35":local?"SPEED 20":"SPEED 25",a.x,2.5,a.z,1.05,.88,axis===0?0:1,m.white,"#d4d8cd","#202622");footprint(a.x,a.z,.18,.18);count("speed signs");}
+  }
+  // Overhead distribution lines: wood poles, crossarms, insulators, sagging conductors, transformer cans.
+  if(roadRank(v)!==0){
+   const side=axis===0?-1:1,offset=roadHalf(v)+.4,height=axis===0?10.0:11.4,anchors=[];
+   for(let p=-190;p<=190;p+=38){
+    const a=oriented(axis,v,p,side,offset);
+    // Keep pole feet outside intersection crosswalks and maintain a clear walking lane.
+    if(Math.abs(p-nearestGrid(p))<12)continue;
+    pole(a.x,a.z,height,.18,m.wood);B(axis===0?2.1:.18,.19,axis===0?.18:2.1,a.x,height-.55,a.z,m.wood);
+    for(const shift of [-.8,0,.8]){const xx=a.x+(axis===0?shift:0),zz=a.z+(axis===1?shift:0);C(.085,.095,.18,xx,height-.33,zz,m.concrete,8);C(.13,.13,.07,xx,height-.26,zz,m.iron,8);}
+    if(anchors.length%3===0){const dx=axis===0?side*.38:0,dz=axis===1?side*.38:0;C(.28,.28,1.1,a.x+dx,height-2,a.z+dz,m.iron);C(.31,.31,.12,a.x+dx,height-1.43,a.z+dz,m.black);B(.5,.11,.5,a.x,height-2.5,a.z,m.iron);count("transformers");}
+    footprint(a.x,a.z,.4,.4);anchors.push(a);count("utility poles");
+   }
+   for(let j=1;j<anchors.length;j++)for(const shift of [-.8,0,.8]){
+    const a=anchors[j-1],b=anchors[j];let prev=null;for(let k=0;k<=8;k++){const t=k/8,q={x:a.x+(b.x-a.x)*t+(axis===0?shift:0),z:a.z+(b.z-a.z)*t+(axis===1?shift:0),y:height-.21-1.25*4*t*(1-t)};if(prev)wire(prev,q);prev=q;}count("wire spans");
+   }
+  }
+ }
+ for(let x=-210;x<=210;x+=70)for(let z=-210;z<=210;z+=70){
+  const sx=x+(x===210?-1:1)*(roadHalf(x)+.4),sz=z+(z===210?-1:1)*11.6;
+  pole(sx,sz,3.2);plate(streetName(x,0),sx,3.18,sz,2.1,.39,0,m.green,"#315b49");plate(streetName(z,1),sx,2.75,sz,2.1,.39,1,m.green,"#315b49");footprint(sx,sz,.2,.2);count("street name posts");
+  if(stopControlled(x,z)){
+   for(let dir=0;dir<4;dir++){
+    const d=D[dir],a={x:x-d[0]*11.5+d[1]*(roadHalf(dir%2===0?x:z)+.4),z:z-d[1]*11.5-d[0]*(roadHalf(dir%2===0?x:z)+.4)};
+    pole(a.x,a.z,2.65);const o=C(.66,.66,.075,a.x,2.68,a.z,m.red,8);o.rotation.x=Math.PI/2;o.rotation.y=dir%2?Math.PI/2:0;o.rotation.order="YXZ";const n=D[(dir+2)%4];streetLabels.push({text:"STOP",x:a.x+n[0]*.045,y:2.68,z:a.z+n[1]*.045,w:.86,h:.35,dir:(dir+2)%4,bg:"#a73c32",fg:"#ffffff"});plate("ALL WAY",a.x,1.95,a.z,.8,.32,(dir+2)%4,m.white,"#e7e3d8","#252525");footprint(a.x,a.z,.19,.19);count("stop signs");
+   }
+  }
+  // Crossing request posts and bollards are placed on the curb, not the walking path.
+  if(!stopControlled(x,z)){const px=x+(x===210?-1:1)*(roadHalf(x)+.4),pz=z+(z===210?-1:1)*13.8;pole(px,pz,1.35,.06);B(.19,.24,.16,px,1.22,pz,m.yellow);B(.12,.12,.19,px,1.22,pz,m.black);footprint(px,pz,.2,.2);count("crossing posts");}
+ }
+ // Subway entrance stair shafts are placed in the open setback at block corners.
+ for(const p of metroStations.values()){
+  const x=p.x,z=p.nz+13.2;
+  B(7.8,.14,3.7,x,.08,z,m.concrete);B(6.9,.05,2.8,x,.16,z,m.black);
+  for(let i=0;i<11;i++){const xx=x-3.1+i*.56;B(.58,.12,2.25,xx,.16-i*.14,z,m.stone);}
+  for(const side of [-1,1]){const zz=z+side*1.55;B(7.3,.25,.16,x,.23,zz,m.concrete);for(let k=-3;k<=3;k+=1.5)pole(x+k,zz,1.12,.055,m.rail);B(7.2,.07,.075,x,1.1,zz,m.rail);footprint(x,zz,7.2,.19);}
+  B(.2,1.1,2.85,x+3.5,.58,z,m.iron);footprint(x+3.5,z,.24,2.85);
+  const px=x-3.45,pz=z+1.55;pole(px,pz,3.2,.11,m.green);B(.52,.52,.52,px,3.15,pz,m.lamp);
+  plate("METRO",x,2.9,z+1.55,3.8,.58,0,m.green,"#315b49");for(const xx of [x-1.85,x+1.85])pole(xx,z+1.55,2.9,.07,m.iron);
+  plate(p.name.toUpperCase(),x,2.2,z+1.55,3.8,.42,0,m.black,"#252d2b");count("subway entrances");
+ }
+ merge(g);
+}
+function attachStreetLabels(sign){
+ if(!streetLabelGroup||!streetLabels.length)return;
+ for(const p of streetLabels){
+  sign(p.text,p.x,p.z,p.y,streetLabelGroup);
+  const o=streetLabelGroup.children.at(-1),tex=o?.material?.map,canvas=tex?.image;
+  if(!o?.scale||!canvas?.getContext)continue;
+  o.scale.set(p.w/12,p.h/3,1);o.rotation.y=[0,Math.PI/2,Math.PI,-Math.PI/2][p.dir];
+  canvas.width=512;canvas.height=Math.max(64,Math.round(512*p.h/p.w));const ctx=canvas.getContext("2d");ctx.fillStyle=p.bg;ctx.fillRect(0,0,canvas.width,canvas.height);let size=Math.floor(canvas.height*.73);ctx.font="bold "+size+"px monospace";while(size>10&&ctx.measureText(p.text).width>canvas.width-14){size--;ctx.font="bold "+size+"px monospace";}ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=p.fg;ctx.fillText(p.text,canvas.width/2,canvas.height/2);tex.magFilter=1003;tex.minFilter=1008;tex.generateMipmaps=true;tex.anisotropy=8;tex.needsUpdate=true;
+ }
+ streetLabels.length=0;
+}
 export function drawRoads(parent,{box,cyl,merge,mat,group}){
+ signalGroups.clear();
  const asphalt=mat(0x373c3b),local=mat(0x454744),edgeMat=mat(0x76786c),white=mat(0xb9b7a2),yellow=mat(0xc6a662),dark=mat(0x28322f),glass=mat(0x576b65),steel=mat(0x68756d),green=mat(0x75946f),red=mat(0xa74c3d);
  const kind=v=>v===0?"avenue":Math.abs(v)===210?"ring":Math.abs(v)===140?"collector":"local";
  const width=v=>kind(v)==="avenue"?13:kind(v)==="ring"?13:kind(v)==="collector"?11.5:8.5;
@@ -456,6 +558,7 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  if(Math.abs(z+s*70)<=210)box(parent,roadHalf(v)-.3,.026,.22,v-s*roadHalf(v)/2,.044,z+s*(SIDE+1.2),white);
  if(Math.abs(v+s*70)<=210)box(parent,.22,.026,roadHalf(z)-.3,v+s*(SIDE+1.2),.044,z+s*roadHalf(z)/2,white);
  }
+ if(stopControlled(v,z))continue;
  const ax=v===0||Math.abs(v)===210,az=z===0||Math.abs(z)===210,key=nodeKey(v,z);
  let sig=signalGroups.get(key);if(!sig){sig={x:v,z,phases:[group(),group(),group()]};signalGroups.set(key,sig);parent.add(...sig.phases);}
  for(const approach of [0,1]){const sx=v+(approach===0?7:-7),sz=z+(approach===0?7:-7);cyl(parent,.11,.14,4.4,sx,2.2,sz,steel);box(parent,approach===0?.55:.42,1.35,approach===0?.42:.55,sx,4.25,sz,dark);
@@ -464,24 +567,27 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  box(g,approach===0?.28:.08,.28,approach===0?.08:.28,xx,go?4:4.6,zz,go?green:red);}}}
 
  }}
- const seen=new Set();
+ drawInfrastructure(parent,{box,cyl,merge,mat,group});
+ const seen=new Set(),hRoad=p=>p.dir%2===0?nearestGrid(p.x):nearestGrid(p.z);
  for(let li=0;li<lines.length;li++){const l=lines[li],color=mat(l.color);for(const p of l.stops){const d=D[p.dir],key=p.x+","+p.z;
  if(!p.active||seen.has(key))continue;seen.add(key);
  // Shelter is on the sidewalk; it never intrudes into the traffic lane.
- const x=p.x+d[1]*1.4,z=p.z-d[0]*1.4,h=d[0]!==0;
- box(parent,h?6:2.1,.12,h?2.1:6,x,.12,z,dark);
- box(parent,h?6:2.1,.2,h?2.1:6,x,2.75,z,steel);
- for(const a of [-2.6,2.6]){box(parent,.13,2.6,.13,x+d[0]*a+d[1]*.75,1.4,z+d[1]*a-d[0]*.75,steel);}
- box(parent,h?5.2:.12,1.65,h?.12:5.2,x+d[1]*.85,1.65,z-d[0]*.85,glass);
- box(parent,h?3.7:.4,.16,h?.4:3.7,x,.65,z,dark);
- cyl(parent,.08,.1,3.2,p.x+d[0]*3,1.65,p.z+d[1]*3,steel);
- box(parent,h?.22:.8,.55,h?.8:.22,p.x+d[0]*3,3.05,p.z+d[1]*3,color);
+ const rank=roadHalf(hRoad(p)),offset=rank+.52-SIDE,x=p.x+d[1]*offset,z=p.z-d[0]*offset,h=d[0]!==0;
+ box(parent,h?6:1.1,.12,h?1.1:6,x,.12,z,dark);
+ box(parent,h?6:1.4,.2,h?1.4:6,x,2.75,z,steel);
+ for(const a of [-2.6,2.6]){box(parent,.13,2.6,.13,x+d[0]*a-d[1]*.27,1.4,z+d[1]*a+d[0]*.27,steel);}
+ box(parent,h?5.2:.12,1.65,h?.12:5.2,x-d[1]*.28,1.65,z+d[0]*.28,glass);
+ box(parent,h?3.7:.38,.16,h?.38:3.7,x,.65,z,dark);for(const a of [-1.35,1.35])box(parent,.14,.55,.14,x+d[0]*a,.34,z+d[1]*a,steel);
+ const px=x+d[0]*3.2,pz=z+d[1]*3.2;cyl(parent,.08,.1,3.2,px,1.6,pz,steel);
+ box(parent,h?.95:.14,.78,h?.14:.95,px,3.05,pz,color);
+ const names=lines.filter(l=>l.stops.some(q=>q.active&&q.x===p.x&&q.z===p.z)).map(l=>l.name[0]).join(" ");const face=(p.dir+1)%4,normal=D[face];streetLabels.push({text:"BUS "+names,x:px+normal[0]*.08,y:3.05,z:pz+normal[1]*.08,w:.86,h:.64,dir:face,bg:"#334c50",fg:"#f2e9d3"});inventory["bus shelters"]=(inventory["bus shelters"]||0)+1;
  // Paint the stop zone along the curb rather than over the moving lane.
  box(parent,h?10:.25,.027,h?.25:10,p.x-d[1]*1.6,.048,p.z+d[0]*1.6,color);
  }}
  merge(parent);for(const s of signalGroups.values())for(const phase of s.phases)merge(phase);updateSignals(420);
 }
 export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,registry}){
+ attachStreetLabels(sign);
  const [facades,roof,steel,walk,dark,white,trim,glass,rust,black,door]=materials;
  const base=group(),shell=group(),inside=group();parent.add(base,shell,inside);
  const {x,z,w,l,h}=b, a=b.architecture;
