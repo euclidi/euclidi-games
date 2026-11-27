@@ -17,8 +17,10 @@ def reset():
         if m.users==0: bpy.data.materials.remove(m)
     scene=bpy.context.scene
     scene.render.engine='CYCLES'
-    scene.cycles.samples=20
-    scene.cycles.use_denoising=True
+    scene.cycles.samples=64
+    scene.cycles.use_denoising=False
+    scene.cycles.use_adaptive_sampling=True
+    scene.cycles.adaptive_threshold=0.025
     scene.render.image_settings.file_format='PNG'
     scene.render.image_settings.color_mode='RGBA'
     scene.render.resolution_percentage=100
@@ -175,7 +177,7 @@ def panorama(i):
     ob=camera(sc,(0,0,1.3),(0,-1,1.3));ob.data.type='PANO'
     if hasattr(ob.data,'panorama_type'):ob.data.panorama_type='EQUIRECTANGULAR'
     elif hasattr(ob.data,'cycles'):ob.data.cycles.panorama_type='EQUIRECTANGULAR'
-    sc.render.film_transparent=False;sc.render.resolution_x=1024;sc.render.resolution_y=512;sc.cycles.samples=12
+    sc.render.film_transparent=False;sc.render.resolution_x=1024;sc.render.resolution_y=512;sc.cycles.samples=48
     sc.render.image_settings.color_mode='RGB';sc.render.filepath=str(OUT/f'habitat-{i}.png')
     bpy.ops.render.render(write_still=True)
 

@@ -30,3 +30,6 @@ Added resource-conserving companion population (cap 16), inherited genomes, pare
 
 ## 0.1.5 — original offline asset pipeline
 Added Blender Cycles script for twelve individually constructed element-object renders and six panoramic habitat plates, plus runtime texture and icon loading and an art-enabled build workflow. These are first-pass original parametric assets, not a verified finished art library. Local Blender is unavailable; images are not claimed rendered, visually audited or approved until the art CI produces evidence. Primary creature sculpt assets and authored animation library are still missing.
+
+## Art CI correction
+Development checks for d42fc33 passed, including ecology tests, WASM and Chromium smoke tests. Art job 45981987178 installed Blender successfully but its Cycles build lacks OpenImageDenoiser; the first image failed before output. Disable unsupported denoising and increase sampling (64 for icons, 48 for panoramas). Rendered art remains unverified until the new art workflow completes.
