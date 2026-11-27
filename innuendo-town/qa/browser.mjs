@@ -4,12 +4,25 @@ const browser=await chromium.launch({headless:true});
 try {
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8080/innuendo-town/');
+ await page.goto('http://127.0.0.1:8080/innuendo-town/?qa=1');
  await page.locator('#boot').waitFor({state:'hidden',timeout:30000});
  assert.equal(await page.locator('#canvas canvas').count(),1);
  await page.screenshot({path:'town-desktop.png'});
  await page.locator('#canvas canvas').screenshot({path:'town-cover.png'});
- await page.keyboard.down('d');await page.waitForTimeout(450);await page.keyboard.up('d');
+ const state=()=>page.evaluate(()=>window.townQA());
+ const first=await state();
+ assert.equal(first.vehicles.length,8);
+ const frames={'yellow-down':[272,234,16,22],'red-down':[272,266,16,22],'green-left':[336,256,32,16],'green-right':[336,272,32,16]};
+ for(const c of first.vehicles){assert.deepEqual([c.cutX,c.cutY,c.width,c.height],frames[c.frame]);assert.equal(c.angle,c.color==='green'?0:c.dir<0?90:-90)}
+ for(const [key,dir,col,axis,sign] of [['s','down',24,'y',1],['w','up',25,'y',-1],['a','left',23,'x',-1],['d','right',26,'x',1]]){
+  const before=await state();await page.keyboard.down(key);
+  await page.waitForFunction(({dir,col,axis,sign,before})=>{const p=window.townQA().player;return p.dir===dir&&p.frame%27===col&&(p[axis]-before[axis])*sign>5},{dir,col,axis,sign,before:before.player},{timeout:4000});
+  await page.screenshot({path:'town-facing-'+dir+'.png'});
+  await page.keyboard.up(key);await page.waitForTimeout(180);
+  const idle=(await state()).player;assert.equal(idle.dir,dir);assert.equal(idle.frame, idle.look*81+col);
+ }
+ const after=await state();assert.ok(after.vehicles.some((c,i)=>Math.abs(c.x-first.vehicles[i].x)>10));
+ await page.locator('#canvas canvas').screenshot({path:'town-cover.png'});
  await page.locator('[data-tab=contacts]').click();
  assert.equal(await page.locator('#panel .entry').count(),16);
  await page.locator('[data-tab=directory]').click();

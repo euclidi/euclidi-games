@@ -21,8 +21,11 @@ manifest.write_text(json.dumps(m,indent=2,sort_keys=True)+'\n')
 index=root/'index.html'
 s=index.read_text()
 card='<article class="game" data-category="Simulation" data-name="innuendo town" style="--ink:#e4c68d;--cover:#29282a"><a class="cover" href="./innuendo-town/" aria-label="Open Innuendo Town" data-cover-kind="gameplay"><img src="./covers/innuendo-town-gameplay.webp" alt="Innuendo Town gameplay screenshot" width="800" height="500" loading="lazy" decoding="async"></a><div class="info"><div class="meta"><span>Simulation</span><span>V0.5 · Playtest build</span></div><h2>Innuendo Town</h2><p>Explore an eccentric town, work at ridiculous businesses and navigate misunderstandings, gossip and social consequences.</p><div class="actions"><a class="play" href="./innuendo-town/" aria-label="Play Innuendo Town">Play <span aria-hidden="true">▶</span></a></div></div><nav class="project-docs" aria-label="Innuendo Town documentation"><a href="https://github.com/euclidi/euclidi-games/blob/main/innuendo-town/README.md">About</a><a href="https://github.com/euclidi/euclidi-games/blob/main/innuendo-town/SPEC.md">Spec</a><a href="https://github.com/euclidi/euclidi-games/blob/main/innuendo-town/ROADMAP.md">Roadmap</a><a href="https://github.com/euclidi/euclidi-games/blob/main/innuendo-town/STATUS.md">Status</a></nav></article>'
-assert 'data-name="innuendo town"' not in s
+import re
 marker='</div><p id="empty" hidden>'
 assert s.count(marker)==1
-index.write_text(s.replace(marker,card+marker))
+if 'data-name="innuendo town"' not in s: index.write_text(s.replace(marker,card+marker))
+else:
+    assert 'V0.5.1 · Playtest build' in s
+    print('Existing game card retained; refreshing gameplay cover only.')
 print('Packaged actual gameplay cover and one catalog card.')
