@@ -17,3 +17,7 @@ New project checklist:
 5. Run the documentation audit (`python3 tools/check_project_docs.py`) and game tests. Review Pages deployment and actual game functionality before certifying a release.
 
 CI rejects missing or empty required documents and missing documentation links for catalog cards. This is a reporting check, not a configured GitHub branch-protection or Pages publication gate; administrators may make it required in repository settings. Content accuracy remains a human/agent review responsibility.
+
+## Return navigation
+
+All playable entries must include a real, clearly labeled catalog link with `data-catalog-return` and `aria-label="Back to game catalog"`. Use `../` for top-level games, `../../` for two-level releases, or an appropriate relative path resolving to the catalog root. Integrate with existing UI and verify touch/keyboard navigation; the link must not cover gameplay or depend on browser history. Run `python3 tools/check_catalog_returns.py`; CI checks all registered launch paths and top-level game directories, including archives.
