@@ -12,3 +12,6 @@ Candidate extensions: seed, energy cap, geometry-sized contacts, pocket clearanc
 
 ## Acceptance
 Finite simulation and deterministic replay; real WebGL browser tests on desktop/mobile, controls, round flow, visual contact review, genuine gameplay screenshot, accessible catalog return, documentation and version, deployment verification. Full 3D fidelity remains a separate criterion.
+
+## 0.7.1 additions
+Experimental mode, persistent condition/credits and paid repair, 30 Hz recorded state scrubbing/playback, pause, keyboard and basic gamepad launch. These are browser-line extensions, not full native-scope completion.

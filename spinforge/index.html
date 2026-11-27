@@ -16,10 +16,11 @@
 @media(max-height:510px){#sf6{height:100dvh;max-height:none;min-height:300px}#sf6 .head{min-height:33px;padding:3px 6px}#sf6 .logo{font-size:13px}#sf6 .logo small{font-size:7px}#sf6 .foot{padding:4px 6px;gap:3px}#sf6 .tab{padding:3px}#sf6 .opt{min-height:32px;padding:2px;gap:1px}#sf6 .opt small{font-size:7px}#sf6 .action{padding:5px}#sf6 .spec{display:none}#sf6 .announcement{top:16%;padding:5px}#sf6 .announcement b{font-size:13px}}
 @media(max-width:440px){#sf6 .logo{font-size:13px;letter-spacing:0}#sf6 .logo small{letter-spacing:0}#sf6 .toolbar{gap:3px}#sf6 .tool{padding:4px 3px;font-size:9px}#sf6 .score{font-size:15px;padding:0}#sf6 .gauge{padding:4px}#sf6 .gauge b{font-size:9px}#sf6 .centerhead{padding:4px 2px;font-size:9px}#sf6 .tab{font-size:9px}#sf6 .opt b{font-size:9px}#sf6 .opt small{font-size:7px}#sf6 .action{min-width:90px;font-size:10px;padding:7px 5px}}
 #sf6 .head,#sf6 .toolbar{flex-wrap:wrap}#sf6 .catalog{color:#d7dfe4;font-size:10px;white-space:nowrap}#sf6 button:focus-visible,#sf6 a:focus-visible{outline:2px solid #ffe0a7;outline-offset:2px}
+#sf6 .lab,#sf6 .work{display:flex;flex-wrap:wrap;align-items:center;gap:6px}#sf6 .lab button,#sf6 .work button{background:#283b4b;border:1px solid #567384;padding:5px 7px}#sf6 .lab input{min-width:80px;flex:1;accent-color:#ecc684}#sf6 .lab[hidden]{display:none}#sf6 .tool:disabled,#sf6 .opt:disabled,#sf6 .work button:disabled{opacity:.5}#sf6 .work span{flex:1}#sf6 .work{color:#b6c8d3}
 </style>
-<header class="head"><div class="logo">SPINFORGE VII<small>COMPETITION LAB / v0.7.0</small></div><a class="catalog" href="../" data-catalog-return aria-label="Back to game catalog">← Catalog</a><div class="toolbar"><button class="tool" id="sf6-arena">CYCLONE</button><button class="tool" id="sf6-camera">TRACK</button><button class="tool" id="sf6-speed">1×</button><span class="score" id="sf6-score">0 : 0</span><button class="tool" id="sf6-audio">SFX</button><button class="tool" id="sf6-info">DATA</button></div></header>
+<header class="head"><div class="logo">SPINFORGE VII<small>COMPETITION LAB / v0.7.1</small></div><a class="catalog" href="../" data-catalog-return aria-label="Back to game catalog">← Catalog</a><div class="toolbar"><button class="tool" id="sf6-mode">CPU DUEL</button><button class="tool" id="sf6-pause">PAUSE</button><button class="tool" id="sf6-arena">CYCLONE</button><button class="tool" id="sf6-camera">TRACK</button><button class="tool" id="sf6-speed">1×</button><span class="score" id="sf6-score">0 : 0</span><button class="tool" id="sf6-audio">SFX</button><button class="tool" id="sf6-info">DATA</button></div></header>
 <div class="viewport" id="sf6-view"><canvas id="sf6-backup" class="backup"></canvas><div class="three" id="sf6-three"></div><div class="gauges"><div class="gauge"><b id="sf6-pname">RAPTOR / YOU</b><small id="sf6-prole">ATTACK / FLAT</small><div class="meter"><i id="sf6-pomega"></i></div><div class="meter hull"><i id="sf6-php"></i></div></div><span class="centerhead" id="sf6-timer">ROUND 1</span><div class="gauge cpu"><b id="sf6-ename">AEGIS / CPU</b><small id="sf6-erole">DEFENSE / BALL</small><div class="meter"><i id="sf6-eomega"></i></div><div class="meter hull"><i id="sf6-ehp"></i></div></div></div><div class="announcement" id="sf6-announce"><b>READY TO LAUNCH</b><small>SWIPE ACROSS THE STADIUM</small></div><div class="telemetry" id="sf6-telemetry"></div><div class="launchLine" id="sf6-line"></div><div class="bottomhud"><span class="pill" id="sf6-event">COMPETITION BOWL / 3 POCKETS</span><span class="pill" id="sf6-renderstatus">3D LOADING / 2D BACKUP</span></div></div>
-<div class="foot"><div class="tabs"><button class="tab active" data-part="blade">BLADE / RAPTOR</button><button class="tab" data-part="disc">DISC / MID</button><button class="tab" data-part="driver">DRIVER / FLAT</button></div><div class="options" id="sf6-options"></div><div class="bar"><div class="hint" id="sf6-hint"><b>SWIPE TO LAUNCH</b> · Tap the arena to steer when charged.</div><button class="action" id="sf6-action">LET IT RIP</button></div><div class="spec"><span id="sf6-stats"><strong>ATK 5</strong> · DEF 3 · STA 3</span><span id="sf6-round">ROUND 1 · FIRST TO 2</span></div></div>
+<div class="foot"><div class="lab" id="sf6-replay" hidden><button id="sf6-playback">PLAY REPLAY</button><label for="sf6-scrub">REPLAY</label><input id="sf6-scrub" type="range" min="0" max="0" value="0" step="1"><output id="sf6-replaytime">0.00s</output><button id="sf6-exitreplay">LIVE</button></div><div class="work"><span id="sf6-wallet">WORKSHOP / 120 CR</span><button id="sf6-repair">REPAIR</button></div><div class="tabs"><button class="tab active" data-part="blade">BLADE / RAPTOR</button><button class="tab" data-part="disc">DISC / MID</button><button class="tab" data-part="driver">DRIVER / FLAT</button></div><div class="options" id="sf6-options"></div><div class="bar"><div class="hint" id="sf6-hint"><b>SWIPE TO LAUNCH</b> · Tap the arena to steer when charged.</div><button class="action" id="sf6-action">LET IT RIP</button></div><div class="spec"><span id="sf6-stats"><strong>ATK 5</strong> · DEF 3 · STA 3</span><span id="sf6-round">ROUND 1 · FIRST TO 2</span></div></div>
 <script>
 function createPhysics(seed){
 'use strict';
@@ -35,7 +36,7 @@ const discs=[{name:'LIGHT',mass:.77,inertia:.79,attack:1.08,guard:.87},{name:'MI
 const drivers=[{name:'FLAT',traction:1.25,torque:.126,steer:1.32},{name:'BALL',traction:.83,torque:.085,steer:.8},{name:'NEEDLE',traction:.63,torque:.062,steer:.48},{name:'TAPER',traction:1,torque:.104,steer:1}];
 const stadiums=[{name:'CYCLONE',note:'Outer speed groove · three escape pockets'},{name:'CRATER',note:'Central mound · counter-sloped basin'},{name:'CLASSIC',note:'Smooth banked competition bowl'}];
 const pockets=[PI/4,11*PI/12,19*PI/12],pocketWidth=.30;
-const S={blades,discs,drivers,stadiums,pockets,pocketWidth,arena:0,configuration:{blade:0,disc:1,driver:0},score:[0,0],round:1,phase:'ready',time:0,limit:50,tops:[],event:'AWAITING LAUNCH',effects:[],winner:-1,finish:'',steerTarget:null,charge:1,autoCPU:true,mode:'duel',condition:1,recording:[],recordTicks:0,debug:{collisions:0,wallHits:0,railSeconds:0,energyAtLastImpact:0}};
+const S={blades,discs,drivers,stadiums,pockets,pocketWidth,arena:0,configuration:{blade:0,disc:1,driver:0},score:[0,0],round:1,phase:'ready',time:0,limit:65,tops:[],event:'AWAITING LAUNCH',effects:[],winner:-1,finish:'',steerTarget:null,charge:1,autoCPU:true,mode:'duel',condition:1,recording:[],recordTicks:0,debug:{collisions:0,wallHits:0,railSeconds:0,energyAtLastImpact:0}};
 function gauss(r,c,w){return Math.exp(-Math.pow((r-c)/w,2))}
 S.height=function(r){r=Math.max(0,r);const base=-.30+.017*r*r+.00016*r**4;
  if(S.arena===0)return base+.16*gauss(r,3.55,.39)-.27*gauss(r,4.52,.43)+.09*gauss(r,5.25,.24);
@@ -88,8 +89,8 @@ function collide(a,b){if(a.falling||b.falling)return;let dx=b.x-a.x,dz=b.z-a.z,d
  a.vx-=tx*jt*imA;a.vz-=tz*jt*imA;b.vx+=tx*jt*imB;b.vz+=tz*jt*imB;
  a.omega+=ra*jt/a.p.inertia;b.omega+=rb*jt/b.p.inertia;
  if(a.impactCD<=0&&b.impactCD<=0){
-  const damageA=.0044*jn*jn/a.p.mass*b.p.attack/a.p.guard;
-  const damageB=.0044*jn*jn/b.p.mass*a.p.attack/b.p.guard;
+  const damageA=.013*jn*jn/a.p.mass*b.p.attack/a.p.guard;
+  const damageB=.013*jn*jn/b.p.mass*a.p.attack/b.p.guard;
   a.health-=damageA;b.health-=damageB;
   let torque=jn*.20;
   a.leanVX+=nz*torque/a.p.mass;a.leanVZ-=nx*torque/a.p.mass;b.leanVX-=nz*torque/b.p.mass;b.leanVZ+=nx*torque/b.p.mass;
@@ -121,7 +122,7 @@ S.step=function(dt){if(S.phase!=='battle')return;const t0=S.tops[0],t1=S.tops[1]
  let speed=len(t.vx,t.vz);if(speed>8.8){t.vx*=8.8/speed;t.vz*=8.8/speed}
  t.x+=t.vx*dt;t.z+=t.vz*dt;
  // Bearing drag + low-speed scrubbing. Angular momentum, not a reset RPM, is authoritative.
- let wobble=len(t.leanX,t.leanZ),torque=tip.torque/(t.p.stamina)*(groove?.91:1)+.065*Math.max(0,wobble-.2)+.04*(1-cl(t.health,0,1));
+ let wobble=len(t.leanX,t.leanZ),torque=(.045+tip.torque)/(t.p.stamina)*(groove?.91:1)+.065*Math.max(0,wobble-.2)+.04*(1-cl(t.health,0,1));
  t.omega=Math.sign(t.omega)*Math.max(0,Math.abs(t.omega)-torque/t.p.inertia*dt);
  t.spin=cl(Math.abs(t.omega)/27,0,1.1);t.phaseAngle+=t.omega*dt;
  t.impactCD=Math.max(0,t.impactCD-dt);t.wallCD=Math.max(0,t.wallCD-dt);
@@ -150,6 +151,23 @@ const $=id=>root.querySelector('#sf6-'+id),sim=createPhysics(),PI=Math.PI,TAU=PI
 const v=$('view'),fallback=$('backup'),fc=fallback.getContext('2d'),colors=sim.blades.map(b=>b.color);
 let T=null,ren=null,scene=null,cam=null,stadium=null,models=[],sparks=[],debris=[],shockwaves=[],cameraMode=0,clock=0,last=0,acc=0,paused=false,rate=1,part='blade',showData=false,drag=null,uiStamp=0,cameraLook=null,cameraPos=null,sound=false,ac=null,viewportW=480,viewportH=370;
 let mats=null,lights=null,environment=null,particleGeo=null,particleMats=null;
+const SAVE='euclidi.spinforge.v7';let wallet={credits:120,wear:{},configuration:null,arena:0};
+try{let p=JSON.parse(localStorage.getItem(SAVE)||'null');if(p&&Number.isFinite(p.credits)&&p.wear&&typeof p.wear==='object'){wallet=p;wallet.credits=Math.max(0,Math.floor(p.credits));}}catch(e){}
+const valid=(n,max)=>Number.isInteger(n)&&n>=0&&n<max;
+if(wallet.configuration&&['blade','disc','driver'].every(k=>valid(wallet.configuration[k],4)))sim.configuration={...wallet.configuration};
+if(valid(wallet.arena,3))sim.arena=wallet.arena;
+const keyOf=c=>[c.blade,c.disc,c.driver].join(':');
+function save(){wallet.configuration={...sim.configuration};wallet.arena=sim.arena;try{localStorage.setItem(SAVE,JSON.stringify(wallet))}catch(e){}}
+function applyCondition(){const w=wallet.wear[keyOf(sim.configuration)];sim.condition=sim.mode==='experimental'?1:Number.isFinite(w)?cl(w,.15,1):1;}
+applyCondition();sim.reset();
+let replayIndex=-1,replayPlaying=false,replayClock=0,gamepadLatch=false,paidRound=false;
+function resetRound(newMatch=false){applyCondition();sim.reset(newMatch);replayIndex=-1;replayPlaying=false;paidRound=false;paused=false;$('pause').textContent='PAUSE';save()}
+function repairCost(){return Math.ceil((1-sim.condition)*60)}
+function syncWorkshop(){const cost=repairCost();$('wallet').textContent=sim.mode==='experimental'?'EXPERIMENT · NO ECONOMY':'WORKSHOP · '+wallet.credits+' CR · CONDITION '+Math.round(sim.condition*100)+'%';$('repair').textContent=cost?'REPAIR '+cost+' CR':'REPAIRED';$('repair').disabled=sim.phase!=='ready'||cost===0||wallet.credits<cost||sim.mode==='experimental'}
+function award(){if(paidRound||sim.mode!=='duel')return;paidRound=true;const a=sim.tops[0];wallet.credits+=sim.winner===0?30:10;wallet.wear[keyOf(a.c)]=cl(a.health,.15,1);applyCondition();save();syncWorkshop()}
+function replayUI(){const available=sim.phase==='match'||sim.phase==='result';$('replay').hidden=!available;$('scrub').max=Math.max(0,sim.recording.length-1);if(replayIndex<0){$('scrub').value=$('scrub').max;$('replaytime').textContent=sim.time.toFixed(2)+'s'}$('playback').textContent=replayPlaying?'PAUSE REPLAY':'PLAY REPLAY'}
+function stopReplay(){replayIndex=-1;replayPlaying=false;replayUI();for(let i=0;i<models.length;i++){models[i].root.visible=!(sim.finish==='BURST FINISH'&&sim.winner!==i);models[i].shadow.visible=models[i].root.visible;}}
+
 function color(v){return typeof v==='string'?parseInt(v.slice(1),16):v}
 function play(freq=200,dur=.075,vol=.018){if(!sound)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();const o=ac.createOscillator(),g=ac.createGain(),time=ac.currentTime;o.type='triangle';o.frequency.setValueAtTime(freq,time);o.frequency.exponentialRampToValueAtTime(Math.max(45,freq*.52),time+dur);g.gain.setValueAtTime(vol,time);g.gain.exponentialRampToValueAtTime(.0001,time+dur);o.connect(g);g.connect(ac.destination);o.start(time);o.stop(time+dur+.015)}catch(e){sound=false}}
 function Q(c,m=.7,r=.32){return new T.MeshStandardMaterial({color:c,metalness:m,roughness:r,envMapIntensity:1.25})}
@@ -270,7 +288,7 @@ function handleEffects(){if(!sim.effects.length)return;for(const e of sim.effect
  else if(e.type==='land'){sparkAt(e.x,e.z,4,.35)}
  else if(e.type==='pocket'){play(390,.17,.026)}
  else if(e.type==='launch'){play(220,.18,.037)}
- else if(e.type==='finish'){if(e.why==='BURST FINISH')fragmentBurst(e.loser);play(e.winner===0?560:270,.24,.036);updateUI();}
+ else if(e.type==='finish'){if(e.why==='BURST FINISH')fragmentBurst(e.loser);award();play(e.winner===0?560:270,.24,.036);updateUI();}
  }}
 function animateEffects(dt){for(const p of sparks){p.mesh.position.x+=p.vx*dt;p.mesh.position.z+=p.vz*dt;p.mesh.position.y+=p.vy*dt;p.vy-=12*dt;p.time-=dt;p.mesh.scale.multiplyScalar(Math.max(.4,1-1.6*dt))}
  sparks=sparks.filter(p=>{if(p.time>0)return true;scene.remove(p.mesh);return false});
@@ -318,7 +336,7 @@ function resize(){const bounds=v.getBoundingClientRect();viewportW=Math.max(230,
 function buttonPart(){const names={blade:sim.blades,disc:sim.discs,driver:sim.drivers};
  root.querySelectorAll('[data-part]').forEach(btn=>{let p=btn.dataset.part;btn.classList.toggle('active',p===part);btn.textContent=p.toUpperCase()+' / '+names[p][sim.configuration[p]].name});
  $('options').innerHTML=names[part].map((item,i)=>'<button class="opt '+(sim.configuration[part]===i?'active':'')+'" data-option="'+i+'"><b>'+item.name+'</b><small>'+(part==='blade'?item.role:part==='disc'?(i===0?'AGILITY':i===1?'BALANCED':i===2?'IMPACT':'GYRO'):(i===0?'AGGRESSIVE':i===1?'STABLE':i===2?'ENDURANCE':'BALANCED'))+'</small></button>').join('');
- root.querySelectorAll('[data-option]').forEach(btn=>btn.addEventListener('click',()=>{if(sim.phase!=='ready')return;sim.configuration[part]=+btn.dataset.option;if(sim.phase==='ready'){sim.reset();rebuildModels()}buttonPart();updateUI();play(450,.05,.014)}));}
+ root.querySelectorAll('[data-option]').forEach(btn=>{btn.disabled=sim.phase!=='ready';btn.addEventListener('click',()=>{if(sim.phase!=='ready')return;sim.configuration[part]=+btn.dataset.option;if(sim.phase==='ready'){resetRound();rebuildModels()}buttonPart();updateUI();play(450,.05,.014)})});}
 function updateUI(){let p=sim.tops[0],e=sim.tops[1],conf=sim.configuration,prop=sim.topProps(conf);$('score').textContent=sim.score.join(' : ');$('arena').textContent=sim.stadiums[sim.arena].name;
  $('pname').textContent=sim.blades[conf.blade].name+' / YOU';$('prole').textContent=sim.blades[conf.blade].role+' / '+sim.drivers[conf.driver].name;
  $('ename').textContent=sim.blades[e.c.blade].name+' / CPU';$('erole').textContent=sim.blades[e.c.blade].role+' / '+sim.drivers[e.c.driver].name;
@@ -326,7 +344,7 @@ function updateUI(){let p=sim.tops[0],e=sim.tops[1],conf=sim.configuration,prop=
  const result=sim.phase==='result'||sim.phase==='match';let announcement=sim.phase==='ready'?'READY TO LAUNCH':sim.phase==='battle'?'LET IT RIP!':sim.phase==='match'?(sim.winner===0?'MATCH VICTORY':'MATCH DEFEAT'):(sim.winner===0?'ROUND WON':'ROUND LOST');
  $('announce').innerHTML='<b>'+announcement+'</b><small>'+(result?sim.finish:sim.phase==='ready'?'SWIPE TO SET POWER AND TRAJECTORY':'SPIN / MOMENTUM / BANKING / POCKETS')+'</small>'; $('announce').style.display=sim.phase==='battle'&&sim.time>1.1?'none':'block';
  $('action').textContent=sim.phase==='ready'?'LET IT RIP':sim.phase==='battle'?'BATTLING':sim.phase==='match'?'REMATCH':'NEXT ROUND';$('action').disabled=sim.phase==='battle';
- $('hint').innerHTML=sim.phase==='ready'?'<b>SWIPE ARENA</b> for launch direction and power.':sim.phase==='battle'?'<b>TAP ARENA</b> for friction-limited lean. Spin funds the force.':'<b>'+sim.finish+'</b> · '+(sim.winner===0?'YOU SCORE':'CPU SCORES');buttonPart();}
+ $('hint').innerHTML=sim.phase==='ready'?'<b>SWIPE ARENA</b> for launch direction and power.':sim.phase==='battle'?(sim.mode==='experimental'?'<b>OBSERVE</b> · Launch-only autonomous experiment.':'<b>TAP ARENA</b> for friction-limited lean. Spin funds the force.'):'<b>'+sim.finish+'</b> · '+(sim.winner===0?'YOU SCORE':'CPU SCORES');buttonPart();syncWorkshop();replayUI();$('arena').disabled=sim.phase!=='ready';$('mode').disabled=sim.phase==='battle';}
 function syncHud(){const [a,b]=sim.tops;$('pomega').style.width=cl(a.spin*100,0,100)+'%';$('php').style.width=cl(a.health*100,0,100)+'%';$('eomega').style.width=cl(b.spin*100,0,100)+'%';$('ehp').style.width=cl(b.health*100,0,100)+'%';
  $('timer').textContent=sim.phase==='battle'?Math.ceil(Math.max(0,sim.limit-sim.time))+' SEC':'ROUND '+sim.round;
  $('event').textContent=sim.event+' · '+(sim.inGroove(Math.hypot(a.x,a.z))?'OUTER SPEED GROOVE':sim.stadiums[sim.arena].name)+' · STEER '+Math.round(sim.charge*100)+'%';
@@ -342,26 +360,34 @@ function bindUI(){v.addEventListener('pointerdown',e=>{e.preventDefault();try{v.
  v.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId)return;let d=drag;drag=null;pointerDraw();let end=pointerPos(e),dx=end.x-d.x,dy=end.y-d.y,dist=Math.hypot(dx,dy),wx=dx,wz=dy;
  if(T&&cam){const f=new T.Vector3();cam.getWorldDirection(f);f.y=0;f.normalize();const right={x:-f.z,z:f.x};wx=right.x*dx+f.x*(-dy);wz=right.z*dx+f.z*(-dy)}
  if(dist<6)return;if(sim.launch(wx,wz,cl(dist/150,.2,1)))updateUI();});v.addEventListener('pointercancel',()=>{drag=null;pointerDraw()});
- $('action').addEventListener('click',()=>{if(sim.phase==='ready'){sim.launch(1,.2,.84)}else{sim.next();rebuildModels()}updateUI()});
- $('arena').addEventListener('click',()=>{if(sim.phase!=='ready')return;sim.arena=(sim.arena+1)%3;if(T)buildStadium();sim.reset();rebuildModels();updateUI()});
+ $('action').addEventListener('click',()=>{if(sim.phase==='ready'){sim.launch(1,.2,.84)}else if(sim.phase==='match'||sim.phase==='result'){const match=sim.phase==='match';stopReplay();if(!match)sim.round++;resetRound(match);rebuildModels()}updateUI()});
+ $('mode').addEventListener('click',()=>{if(sim.phase==='battle')return;stopReplay();sim.mode=sim.mode==='duel'?'experimental':'duel';sim.autoCPU=sim.mode==='duel';$('mode').textContent=sim.autoCPU?'CPU DUEL':'EXPERIMENT';resetRound(true);rebuildModels();updateUI()});
+ $('repair').addEventListener('click',()=>{const cost=repairCost();if(sim.phase!=='ready'||sim.mode!=='duel'||!cost||wallet.credits<cost)return;wallet.credits-=cost;wallet.wear[keyOf(sim.configuration)]=1;resetRound();rebuildModels();updateUI()});
+ $('pause').addEventListener('click',()=>{paused=!paused;$('pause').textContent=paused?'RESUME':'PAUSE'});
+ $('scrub').addEventListener('input',()=>{replayPlaying=false;replayIndex=+$('scrub').value;replayClock=0;replayUI()});
+ $('playback').addEventListener('click',()=>{if(!sim.recording.length)return;if(replayIndex<0||replayIndex>=sim.recording.length-1)replayIndex=0;replayPlaying=!replayPlaying;replayClock=0;replayUI()});
+ $('exitreplay').addEventListener('click',stopReplay);
+ $('arena').addEventListener('click',()=>{if(sim.phase!=='ready')return;sim.arena=(sim.arena+1)%3;if(T)buildStadium();resetRound();rebuildModels();updateUI()});
  $('camera').addEventListener('click',()=>{cameraMode=(cameraMode+1)%3;$('camera').textContent=['TRACK','OVERHEAD','STADIUM'][cameraMode]});
  $('speed').addEventListener('click',()=>{rate=rate===1?.5:1;$('speed').textContent=rate===1?'1×':'½×'});
  $('audio').addEventListener('click',()=>{sound=!sound;$('audio').textContent=sound?'SFX ON':'SFX';if(sound)play(470,.08,.018)});
  $('info').addEventListener('click',()=>{showData=!showData;$('info').textContent=showData?'HIDE':'DATA';syncHud()});
  root.querySelectorAll('[data-part]').forEach(el=>el.addEventListener('click',()=>{part=el.dataset.part;buttonPart()}));
  window.addEventListener('resize',resize);if(window.ResizeObserver)new ResizeObserver(resize).observe(v);
- window.addEventListener('keydown',e=>{if(!root.isConnected)return;if((e.key===' '||e.key==='Enter')&&document.activeElement===root){e.preventDefault();$('action').click()}});
+ window.addEventListener('keydown',e=>{if(!root.isConnected)return;if(e.target.matches?.('button,a,input,select,textarea'))return;if(e.code==='Space'){e.preventDefault();$('action').click()}else if(e.code==='KeyP'){$('pause').click()}else if(e.code==='KeyC'){$('camera').click()}});
 }
-function frame(now){const dt=Math.min(.05,(now-last)/1000||.016);last=now;clock+=dt;acc+=dt*rate;let steps=0;
+function frame(now){const dt=Math.min(.05,(now-last)/1000||.016);last=now;if(!paused)clock+=dt;acc+=paused?0:dt*rate;let steps=0;
  while(acc>=1/120&&steps<7){sim.step(1/120);acc-=1/120;steps++}
- handleEffects();if(T&&ren)renderThree(dt);else renderFallback();if(now-uiStamp>145){uiStamp=now;syncHud();if(sim.phase==='battle'&&sim.time>1.1)$('announce').style.display='none'}requestAnimationFrame(frame)}
+ handleEffects();let pad;try{pad=navigator.getGamepads?.()[0]}catch(e){}if(pad){const pressed=!!pad.buttons[0]?.pressed;if(pressed&&!gamepadLatch){if(sim.phase==='ready'){let x=pad.axes[0]||0,z=pad.axes[1]||0;sim.launch(x,z,cl(Math.hypot(x,z),.35,1));updateUI()}else if(sim.phase!=='battle')$('action').click()}gamepadLatch=pressed}else gamepadLatch=false;
+ if(replayPlaying&&replayIndex>=0){replayClock+=dt*rate;while(replayClock>=1/30&&replayIndex<sim.recording.length-1){replayClock-=1/30;replayIndex++}if(replayIndex>=sim.recording.length-1){replayPlaying=false;replayUI()}}
+ const live=sim.tops,liveTime=sim.time,frameData=sim.recording[replayIndex];if(frameData){sim.tops=frameData.tops;sim.time=frameData.time;for(let i=0;i<models.length;i++){models[i].root.visible=frameData.tops[i].health>0;models[i].shadow.visible=models[i].root.visible}$('scrub').value=replayIndex;$('replaytime').textContent=frameData.time.toFixed(2)+'s';}if(T&&ren)renderThree(paused?0:dt);else renderFallback();sim.tops=live;sim.time=liveTime;if(now-uiStamp>145){uiStamp=now;syncHud();if(sim.phase==='battle'&&sim.time>1.1)$('announce').style.display='none'}requestAnimationFrame(frame)}
 async function init3D(){try{T=await import('./vendor/three.module.min.js')}catch(e){T=null;$('renderstatus').textContent='DIAGNOSTIC BACKUP · LOCAL LIBRARY FAILED';return}
  try{ren=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});ren.outputColorSpace=T.SRGBColorSpace;ren.toneMapping=T.ACESFilmicToneMapping;ren.toneMappingExposure=1.22;ren.shadowMap.enabled=true;ren.shadowMap.type=T.PCFShadowMap;
  $('three').appendChild(ren.domElement);cam=new T.PerspectiveCamera(46,1,.1,160);initScene();resize();fallback.style.display='none';$('renderstatus').textContent='THREE.JS · PHYSICS LIVE';}
  catch(err){console.error('Three.js scene error',err);if(ren){ren.dispose();ren.domElement.remove()}ren=null;T=null;$('renderstatus').textContent='2D BACKUP · WEBGL UNAVAILABLE';}}
 // Deterministic physics runs immediately; the visual engine is an enhancement, not a prerequisite for playing.
 resize();buttonPart();updateUI();bindUI();requestAnimationFrame(frame);init3D();
-window.__spinforge7={sim,launch:(dx=1,dz=0,p=.8)=>{let result=sim.launch(dx,dz,p);updateUI();return result},step:(n=120)=>{for(let i=0;i<n;i++)sim.step(1/120);handleEffects();syncHud()},state:()=>({phase:sim.phase,round:sim.round,score:[...sim.score],replayFrames:sim.recording.length,mode:sim.mode,arena:sim.stadiums[sim.arena].name,finish:sim.finish,collisions:sim.debug.collisions,tops:sim.tops.map(t=>({x:t.x,z:t.z,omega:t.omega,spin:t.spin,health:t.health,falling:t.falling}))})};
+window.__spinforge7={sim,launch:(dx=1,dz=0,p=.8)=>{let result=sim.launch(dx,dz,p);updateUI();return result},step:(n=120)=>{for(let i=0;i<n;i++)sim.step(1/120);handleEffects();syncHud()},state:()=>({phase:sim.phase,round:sim.round,score:[...sim.score],replayFrames:sim.recording.length,mode:sim.mode,credits:wallet.credits,arena:sim.stadiums[sim.arena].name,finish:sim.finish,collisions:sim.debug.collisions,tops:sim.tops.map(t=>({x:t.x,z:t.z,omega:t.omega,spin:t.spin,health:t.health,falling:t.falling}))})};
 })();
 
 </script></div></body></html>
