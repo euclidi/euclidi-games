@@ -13,7 +13,11 @@ export const SETTINGS=[
  {id:'scan',group:'DISPLAY',label:'CRT scanline strength',values:['light','normal','strong'],def:'normal',help:'When CRT is enabled'},
  {id:'motion',group:'DISPLAY',label:'Menu animation',values:[true,false],def:true},
  {id:'blink',group:'DISPLAY',label:'Pellet flashing',values:[true,false],def:true},
- {id:'autoPause',group:'DISPLAY',label:'Auto-pause on tab switch',values:[true,false],def:true}
+ {id:'autoPause',group:'DISPLAY',label:'Auto-pause on tab switch',values:[true,false],def:true},
+ {id:'padSlot',group:'GAMEPAD',label:'Controller',values:['auto','0','1','2','3'],labels:['Auto','1','2','3','4'],def:'auto'},
+ {id:'mapping',group:'GAMEPAD',label:'Input mapping',values:['auto','standard','legacy'],labels:['Auto','Standard','Legacy'],def:'auto'},
+ {id:'deadzone',group:'GAMEPAD',label:'Stick deadzone',values:['low','normal','high'],def:'normal'},
+ {id:'rumble',group:'GAMEPAD',label:'Vibration',values:[true,false],def:true}
 ];
 export function normalizeSettings(input){let out={};for(const s of SETTINGS)out[s.id]=s.values.includes(input?.[s.id])?input[s.id]:s.def;return out}
 export function scoreKey(mode,settings){const s=normalizeSettings(settings);return 'maze-high-'+mode+(s.lives===3&&s.bonus===10000&&s.difficulty==='arcade'?'':'-'+s.lives+'-'+s.bonus+'-'+s.difficulty)}

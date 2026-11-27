@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.4.5.
+**Status:** Active — Git revision 1.4.6.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -14,7 +14,7 @@ Unofficial browser recreation of classic arcade maze gameplay, with selectable a
 
 ## Controls
 
-The title menu opens first. Choose a ghost AI mode, sound and CRT preferences before starting. Enter/Space or controller Start/A starts a game; Left/Right changes mode. In play, use arrows/WASD, swipe, D-pad or controller. Escape or Main Menu suspends the current session; Resume Game returns to it. Mode selection applies to new games. CONTROL cycles between a yellow-feedback D-pad, a four-way red ball-top joystick, and hidden touch controls. The setting is saved; keyboard, swipe and physical gamepad remain available. SETTINGS provides 15 persistent gameplay, audio, control and display options, plus fullscreen and restore defaults. Starting lives, bonus threshold and ghost speed apply to new games; non-default rule sets have separate high scores.
+The title menu opens first. Choose a ghost AI mode, sound and CRT preferences before starting. Enter/Space or controller Start/A starts a game; Left/Right changes mode. In play, use arrows/WASD, swipe, D-pad or controller. Escape or Main Menu suspends the current session; Resume Game returns to it. Mode selection applies to new games. CONTROL cycles between a yellow-feedback D-pad, a four-way red ball-top joystick, and hidden touch controls. The setting is saved; keyboard, swipe and physical gamepad remain available. SETTINGS provides five compact tabs with 19 persistent gameplay, audio, control and display options, plus fullscreen and restore defaults. Starting lives, bonus threshold and ghost speed apply to new games; non-default rule sets have separate high scores.
 
 ## Runtime
 
@@ -31,3 +31,5 @@ Serve the repository with a local HTTP server from its root (for example `python
 ## Limitations
 
 No ROM or official recordings bundled; sprite, audio, timing and intermission fidelity not certified 1:1. Intermissions/fruit simplified; measured device and listening tests remain.
+
+Gamepad: browser Gamepad API, standard/legacy mappings, device slot, deadzone and optional supported vibration. D-pad/stick navigates title; A confirms, Start starts/pauses, Back/Select opens menu, B returns, LB/RB switches settings tabs. Legacy mapping is a fallback, not native Windows DirectInput or the GTA GInput plugin.
