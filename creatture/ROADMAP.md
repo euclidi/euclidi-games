@@ -6,3 +6,5 @@
 5. Produce original Blender meshes, materials, bakes, morph sequences, continuous organ attachment, animations, distinct environments and original audio; inspect geometry and materials at production camera. Obtain cover approval.
 6. Complete controller, accessibility/settings, time controls, save migration, inspection layers and all internal development tools.
 7. Measure desktop/mobile performance, perform actual playtests, test deterministic replay and audit all 49 acceptance items. Register root catalog/documentation/launch tests, publish only tested build; verify Pages version and direct URL. Do not reduce approved scope.
+
+Transport/repair/cue systems now have a first implementation; verify and extend them to real physiological pathways, region-specific differentiation and complete neural behavior. All previous requirements remain outstanding until validated.

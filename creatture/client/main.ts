@@ -9,7 +9,7 @@ const marks=['◉','❋','≈','✳','◇','≋','⋔','∴','⁕','♨','⊕','
 const worlds=['Primordium','Abyss','Mycelium','Silica','Prosthesis','Communion'];
 const colors=[0x9ba16e,0x6196a0,0xb8ab87,0x8293b6,0xa89370,0xaab980];
 const grounds=[0x454a31,0x243d4d,0x504333,0x454657,0x55534c,0x394b35];
-type State={world_id:number,environment:{name:string,water:number,light:number,temperature:number},seed:number,genome:number[],organs:number[],used:boolean[],history:number[],tissue:number[],nutrient:number,reserve:number,biomass:number,waste:number,input_mass:number,hydration:number,stress:number,learned:number,neural:number,generation:number,parents:number[],turn:number,tick:number,outcome:string,position:number[],velocity:number[]};
+type State={network:{pools:number[],integrity:number[],flux:number[],regions:number[],activation:number[],association:number[],stimulus:number,habituation:number,action:number},world_id:number,environment:{name:string,water:number,light:number,temperature:number},seed:number,genome:number[],organs:number[],used:boolean[],history:number[],tissue:number[],nutrient:number,reserve:number,biomass:number,waste:number,input_mass:number,hydration:number,stress:number,learned:number,neural:number,generation:number,parents:number[],turn:number,tick:number,outcome:string,position:number[],velocity:number[]};
 type Saved={id:number,name:string,json:string};
 let engine:Engine,state:State,mode='puzzle',paused=false,inspection=false,seed=1731,archive:Saved[]=[],db:IDBDatabase|null=null;
 const select=(id:string)=>el<HTMLSelectElement>(id);
@@ -37,6 +37,8 @@ for(const side of [-1,1]){
  const dot=new THREE.Mesh(new THREE.SphereGeometry(.072,24,16),pupil);dot.position.set(side*.22,.19,.57);dot.scale.z=.5;eyes.add(dot);pupils.push(dot);
 }
 const internal=new THREE.Group();body.add(internal);internal.visible=false;
+const edges=[[0,1],[0,2],[0,4],[0,9],[1,5],[1,7],[1,10],[2,3],[2,5],[2,6],[4,5],[5,6],[6,10],[6,11],[7,8],[8,3],[9,10]];
+const pipes=edges.map(()=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(.011,.011,1,8),new THREE.MeshStandardMaterial({color:0x9b655b,transparent:true,opacity:.8}));internal.add(m);return m;});
 const organMeshes=names.map((_,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.09,18,12),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(i/12,.52,.56),roughness:.48}));internal.add(m);return m;});
 let tissueFrame=0;let pose=new Array(12).fill(0);let previousWorld=-1;
 function makeHabitat(id:number){
@@ -59,7 +61,7 @@ function ui(){
  el('turn').textContent=String(state.turn).padStart(2,'0')+(mode==='puzzle'?' / 12':' introductions');
  el('log').textContent=state.history.length?'Last introduced: '+names[state.history.at(-1)!]:'Introduce an element to begin.';
  for(let i=0;i<12;i++){const b=el<HTMLButtonElement>('element-'+i);b.disabled=mode==='archive'||(mode==='puzzle'&&state.used[i]);b.title=names[i]+' · development '+state.organs[i].toFixed(2);}
- el('readout').textContent=['Genome '+state.seed+' · generation '+state.generation,'Parents: '+(state.parents.join(', ')||'none'),'Tick '+state.tick,'Reserve '+state.reserve.toFixed(3),'Nutrients '+state.nutrient.toFixed(3),'Biomass '+state.biomass.toFixed(3),'Waste '+state.waste.toFixed(3),'Mass residual '+(state.input_mass-state.reserve-state.nutrient-state.biomass-state.waste).toExponential(2),'Hydration '+state.hydration.toFixed(2),'Stress '+state.stress.toFixed(2),'Association '+state.learned.toFixed(3),'Neural activity '+state.neural.toFixed(3),'Tissue peak '+Math.max(...state.tissue).toFixed(3),'',...names.map((n,i)=>n.padEnd(10)+' '+state.organs[i].toFixed(2))].join('\n');
+ el('readout').textContent=['Genome '+state.seed+' · generation '+state.generation,'Parents: '+(state.parents.join(', ')||'none'),'Tick '+state.tick,'Reserve '+state.reserve.toFixed(3),'Nutrients '+state.nutrient.toFixed(3),'Biomass '+state.biomass.toFixed(3),'Waste '+state.waste.toFixed(3),'Mass residual '+(state.input_mass-state.reserve-state.nutrient-state.biomass-state.waste-state.network.pools.reduce((a,b)=>a+b,0)).toExponential(2),'Hydration '+state.hydration.toFixed(2),'Stress '+state.stress.toFixed(2),'Association '+state.learned.toFixed(3),'Neural activity '+state.neural.toFixed(3),'Cue response '+state.network.activation[2].toFixed(3),'Habituation '+state.network.habituation.toFixed(3),'Conditioning '+state.network.association[0].toFixed(3),'Behavior: '+['Feed','Withdraw','Investigate','Approach cue','Rest','Explore'][state.network.action],'Transport '+state.network.flux.reduce((a,b)=>a+Math.abs(b),0).toFixed(4),'Tissue peak '+Math.max(...state.tissue).toFixed(3),'',...names.map((n,i)=>n.padEnd(10)+' '+state.organs[i].toFixed(2)+' | supply '+state.network.pools[i].toFixed(3)+' | intact '+Math.round(state.network.integrity[i]*100)+'%')].join('\n');
 }
 function envUI(){for(const [id,key] of [['water','water'],['heat','temperature'],['light','light']] as const)el<HTMLInputElement>(id).value=String(state.environment[key]);}
 function reset(id:number){engine?.free();engine=new Engine(id,seed++);read();pose.fill(0);envUI();ui();}
@@ -78,6 +80,8 @@ select('mode').onchange=()=>{mode=select('mode').value;el('experiment').hidden=m
 el('inspect').onclick=()=>{inspection=!inspection;internal.visible=inspection;skin.opacity=inspection?.27:1;skin.depthWrite=!inspection;el('panel').hidden=!inspection;el('inspect').setAttribute('aria-pressed',String(inspection));};
 el('camera').onclick=()=>{orbit.enabled=!orbit.enabled;el('camera').textContent=orbit.enabled?'Return to composition':'Inspect camera';if(!orbit.enabled){camera.position.set(4.5,3.3,7.5);orbit.target.set(0,.85,0);orbit.update();}};
 el('sound').onclick=async()=>{if(audio){await audio.close();audio=null;}else{audio=new AudioContext();await audio.resume();tone(0);}el('sound').textContent=audio?'Sound on':'Sound off';el('sound').setAttribute('aria-pressed',String(!!audio));};
+el('cue').onclick=()=>{if(mode==='free'){engine.stimulate(1);read();ui();}};
+el('damage').onclick=()=>{if(mode==='free'){engine.damage(site,.65);read();ui();}};
 el('pause').onclick=()=>{paused=!paused;el('pause').textContent=paused?'Resume':'Pause';};
 for(const id of ['water','light','heat'])el(id).oninput=()=>{if(mode==='free'){engine.environment(...(['water','light','heat'].map(x=>Number(el<HTMLInputElement>(x).value)) as [number,number,number]));read();ui();}};
 function archiveUI(){const s=select('samples');s.replaceChildren();archive.forEach(a=>s.add(new Option(a.name,String(a.id))));}
@@ -85,7 +89,7 @@ function selected(){return archive.find(x=>x.id===Number(select('samples').value
 function openDB():Promise<void>{return new Promise((resolve,reject)=>{const q=indexedDB.open('creatture-v1',1);q.onupgradeneeded=()=>q.result.createObjectStore('specimens',{keyPath:'id'});q.onerror=()=>reject(q.error);q.onsuccess=()=>{db=q.result;const r=db.transaction('specimens').objectStore('specimens').getAll();r.onerror=()=>reject(r.error);r.onsuccess=()=>{archive=r.result;archiveUI();resolve();};};});}
 el('save').onclick=()=>{if(!db){el('log').textContent='Persistence unavailable.';return;}const item={id:Date.now(),name:state.environment.name+' / '+state.seed+' · G'+state.generation,json:engine.snapshot()};const tx=db.transaction('specimens','readwrite');tx.objectStore('specimens').put(item);tx.oncomplete=()=>{archive.push(item);archiveUI();el('log').textContent='Specimen preserved.';};tx.onerror=()=>el('log').textContent='Preservation failed.';};
 el('restore').onclick=()=>{const s=selected();if(s&&engine.restore(s.json)){read();select('world').value=String(state.world_id);envUI();ui();}};
-el('transfer').onclick=()=>{const s=selected();const id=Number(select('world').value);if(s&&engine.restore(s.json)&&engine.transfer(id)){select('mode').value='free';select('mode').dispatchEvent(new Event('change'));read();envUI();ui();}};
+el('transfer').onclick=()=>{const s=selected();const id=Number(select('world').value);const before=engine.snapshot();if(s&&engine.restore(s.json)&&engine.transfer(id)){select('mode').value='free';select('mode').dispatchEvent(new Event('change'));read();envUI();ui();}else{engine.restore(before);read();ui();el('log').textContent='Transfer rejected: habitat tolerance or invalid specimen.';}};
 el('breed').onclick=()=>{const s=selected();if(s&&engine.breed(s.json,seed++)){read();select('mode').value='free';select('mode').dispatchEvent(new Event('change'));envUI();ui();}};
 document.addEventListener('keydown',e=>{if((e.target as HTMLElement).matches('input,select,button'))return;const keys='1234567890-=';const i=keys.indexOf(e.key);if(i>=0)introduce(i);});
 let last=performance.now(),acc=0;let time=0;const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -112,7 +116,8 @@ function draw(now:number){
    surface.update();
   }
   eyes.visible=pose[6]>.09;eyes.scale.setScalar(Math.min(1.3,.55+pose[6]*.32));const blink=!reduced&&Math.pow(Math.max(0,Math.cos(t*1.16+state.genome[2]*5)),42);eyeLids.forEach((e,i)=>{e.scale.y=.93*(1-.92*Number(blink));pupils[i].visible=Number(blink)<.7;pupils[i].position.x=(i?1:-1)*.22+Math.sin(t*.8)*.018;});
-  organMeshes.forEach((m,i)=>{m.visible=a[i]>.03;m.scale.setScalar(.65+a[i]*.35);m.position.set(Math.cos(i*2.4)*.26,Math.sin(i*1.2)*.22,Math.sin(i*2.4)*.23);});
+  organMeshes.forEach((m,i)=>{m.visible=a[i]>.03;m.scale.setScalar((.65+a[i]*.35)*(.6+.4*state.network.integrity[i]));m.position.set(Math.cos(i*2.4)*.26,Math.sin(i*1.2)*.22,Math.sin(i*2.4)*.23);});
+  pipes.forEach((m,i)=>{const [x,y]=edges[i],p=organMeshes[x].position,q=organMeshes[y].position,d=q.clone().sub(p);m.visible=a[x]>.03&&a[y]>.03;m.position.copy(p).add(q).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());m.scale.set(1+Math.abs(state.network.flux[i])*500,d.length(),1+Math.abs(state.network.flux[i])*500);m.material.color.setHex(state.network.flux[i]>=0?0xc58b6d:0x6399b1);});
   orbit.update();renderer.render(scene,camera);
  }requestAnimationFrame(draw);
 }

@@ -1,6 +1,8 @@
 use serde::{Serialize,Deserialize};
 use wasm_bindgen::prelude::*;
 use rapier3d::prelude::*;
+mod biology;
+use biology::Network;
 const N:usize=12;
 const SIDE:usize=12;
 const TISSUE:usize=SIDE*SIDE;
@@ -14,7 +16,7 @@ fn world(id:usize)->World {
 }
 #[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]
 struct Specimen {
- version:u32, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, position:[f64;3], velocity:[f64;3]
+ version:u32, network:Network, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, position:[f64;3], velocity:[f64;3]
 }
 fn rng(s:&mut u32)->f64{*s=s.wrapping_mul(1664525).wrapping_add(1013904223);*s as f64/4294967296.}
 fn bounded(x:f64)->f64{x.clamp(0.,1.)}
@@ -22,16 +24,16 @@ impl Specimen {
  fn new(id:usize,mut seed:u32)->Self{
   let original=seed; let mut genome=[0.;8];for x in &mut genome{*x=0.25+rng(&mut seed)*0.5;}
   let env=world(id);
-  Self{version:1,world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),position:[0.,0.7,0.],velocity:[0.;3]}
+  Self{version:2,network:Network::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),position:[0.,0.7,0.],velocity:[0.;3]}
  }
  fn valid(&self)->bool {
-  self.version==1 && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
+  self.version==2 && self.network.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
   self.genome.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=1.) &&
   self.organs.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=MAX) &&
   self.available.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=8.) &&
   self.tissue.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=1.) &&
   [self.nutrient,self.reserve,self.biomass,self.waste,self.input_mass].iter().all(|x|x.is_finite()&&*x>=0.) &&
-  (self.nutrient+self.reserve+self.biomass+self.waste-self.input_mass).abs()<1e-6 &&
+  (self.nutrient+self.reserve+self.network.mass()+self.biomass+self.waste-self.input_mass).abs()<1e-6 &&
   [self.hydration,self.stress,self.learned,self.environment.water,self.environment.temperature,self.environment.light,self.environment.mineral,self.environment.diffusion].iter().all(|x|x.is_finite()&&*x>=0.&&*x<=1.) &&
   self.position.iter().chain(self.velocity.iter()).all(|x|x.is_finite()&&x.abs()<100.)
  }
@@ -61,11 +63,13 @@ impl Specimen {
   let supports=[1.,0.5+0.15*a[0],0.55+0.15*a[0],0.35+env.light*0.5,0.25+env.mineral*0.5+0.12*a[0],0.12+0.25*a[1]+0.14*a[4],0.1+0.24*a[5]+0.1*a[2],0.25+0.18*a[1],0.2+0.15*a[7]+env.water*0.25,0.45+0.12*a[0],0.3+0.08*a[6],0.15+0.3*a[6]];
   let intake=self.nutrient.min(0.025*(0.3+a[1]+a[7]*0.3));
   self.nutrient-=intake;self.reserve+=intake;
+  self.network.transport(&a,&mut self.reserve);
+  self.network.repair(&a,&mut self.waste);
   for i in 0..N{
    if self.available[i]>0. && self.organs[i]<MAX {
     let desired=0.013*self.available[i].min(2.)*supports[i]*(0.5+self.genome[i%8])*(1.-self.stress*0.5);
-    let delta=desired.min(MAX-self.organs[i]).min(self.reserve/0.14);
-    self.organs[i]+=delta;self.reserve-=delta*0.14;self.biomass+=delta*0.14;
+    let delta=(desired*self.network.integrity[i]).min(MAX-self.organs[i]).min(self.network.pools[i]/0.14);
+    self.organs[i]+=delta;self.network.pools[i]-=delta*0.14;self.biomass+=delta*0.14;
    }
   }
   let spend=self.reserve.min(0.002+0.001*a.iter().sum::<f64>()+0.002*self.stress);
@@ -83,7 +87,8 @@ impl Specimen {
   }
   let reward=bounded(self.reserve*0.4-self.stress);
   self.learned=bounded(self.learned+0.012*self.organs[6]*(reward-self.learned));
-  self.neural=(0.52*self.neural+0.45*self.learned+0.2*self.genome[4]-0.3*self.stress).tanh();
+  self.network.neural_step(&self.genome,self.organs[6]*self.network.integrity[6],self.reserve.min(1.),self.stress);
+  self.neural=self.network.activation[2];
  }
  fn classify(&mut self){
   if self.turn<12 {self.outcome.clear();return;}
@@ -112,7 +117,7 @@ impl ContactWorld{
  fn step(&mut self,s:&mut Specimen){
   let b=&mut self.bodies[self.body];
   let p=*b.translation();let v=*b.linvel();
-  let water=s.environment.water as f32;let motor=(s.organs[5]*s.reserve.min(1.)*(1.-s.stress)) as f32;
+  let water=s.environment.water as f32;let motor=(s.organs[5]*s.network.integrity[5]*s.reserve.min(1.)*(1.-s.stress)) as f32;
   let phase=(s.tick as f32)*0.19;
   let steer=vector![phase.sin()*motor-p.x*0.12-v.x*0.25,(water*9.0-1.)*b.mass(),phase.cos()*motor-p.z*0.12-v.z*0.25];
   b.reset_forces(false);b.add_force(steer,true);
@@ -131,9 +136,11 @@ impl Engine{
  pub fn introduce(&mut self,i:usize,dose:f64,site:usize,puzzle:bool)->bool{self.state.introduce(i,dose,site,puzzle)}
  pub fn advance(&mut self,ticks:u32){for _ in 0..ticks.min(100){self.state.bio_step();for _ in 0..12{self.physics.step(&mut self.state);}}self.state.classify();}
  pub fn environment(&mut self,water:f64,light:f64,temperature:f64){if [water,light,temperature].iter().all(|v|v.is_finite()){self.state.environment.water=bounded(water);self.state.environment.light=bounded(light);self.state.environment.temperature=bounded(temperature);}}
+ pub fn stimulate(&mut self,strength:f64){self.state.network.cue(strength);}
+ pub fn damage(&mut self,site:usize,amount:f64){self.state.network.damage(site,amount);}
  pub fn snapshot(&self)->String{serde_json::to_string(&self.state).unwrap_or_default()}
  pub fn restore(&mut self,json:&str)->bool{if let Ok(s)=serde_json::from_str::<Specimen>(json){if s.valid(){self.physics=ContactWorld::new(s.position,s.velocity);self.state=s;return true;}}false}
- pub fn transfer(&mut self,id:usize)->bool{if id>=6{return false;}self.state.world_id=id;self.state.environment=world(id);true}
+ pub fn transfer(&mut self,id:usize)->bool{if id>=6{return false;}let target=world(id);let tolerance=0.28+0.4*self.state.genome[1]+0.08*self.state.organs[0];if (target.temperature-self.state.environment.temperature).abs()>tolerance{return false;}self.state.world_id=id;self.state.environment=world(id);true}
  pub fn breed(&mut self,other:&str,mut seed:u32)->bool{
   if let Ok(p)=serde_json::from_str::<Specimen>(other){if p.valid()&&self.state.reserve>0.1&&p.generation<1000{
    let original=seed;let mut child=Specimen::new(self.state.world_id,original);
@@ -149,5 +156,6 @@ mod tests{
  #[test]fn deterministic_and_mass_balance(){for w in 0..6{let mut a=Specimen::new(w,7);let mut b=a.clone();for i in 0..N{assert!(a.introduce(i,1.,72,true));assert!(b.introduce(i,1.,72,true));assert_eq!(a,b);assert!(a.valid());}assert!(!a.introduce(0,1.,0,true));assert!(!a.outcome.is_empty());}}
  #[test]fn order_changes_anatomy(){let mut a=Specimen::new(0,3);let mut b=a.clone();for i in 0..N{a.introduce(i,1.,72,true);b.introduce(N-1-i,1.,72,true);}assert_ne!(a.organs,b.organs);}
  #[test]fn starvation_nonnegative(){let mut a=Specimen::new(0,9);for _ in 0..10000{a.bio_step();}assert!(a.valid());}
+ #[test]fn damaged_organs_restrict_growth(){let mut a=Specimen::new(0,9);let mut b=a.clone();a.network.damage(Network::region_for(5),1.);a.introduce(5,1.,72,true);b.introduce(5,1.,72,true);assert!(a.organs[5]<b.organs[5]);assert!(a.valid());assert!(b.valid());}
  #[test]fn physical_contact_finite(){let mut a=Engine::new(0,3);a.advance(30);assert!(a.state.valid());assert!(a.state.position[1]>0.2);}
 }
