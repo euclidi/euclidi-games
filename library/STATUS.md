@@ -6,3 +6,5 @@ Revision 1.1.1 source review corrected front sector orientation, transfer belt/l
 Revision 1.1.2 assigns stable physical sectors to catalog categories, groups All/search results by sector, and returns the delivered box along the transfer path before reindexing. Future additional categories are allocated sectors, but spacing has not been visually validated beyond the current inventory.
 
 V1.2 replaces the occluding drum roof with an open annular frame, adds fitted enamel enclosure parts, service panels, actual 3D cable routing, fasteners, trim, motor detailing and transfer guards; rebalances camera, box inspection scale and operator-console materials. Printed cover graphics remain provisional (except existing artwork). Browser and visual review are not certified.
+
+V1.2.1 adds static geometry batching with the upstream Three.js BufferGeometryUtils (same MIT license), correct roller spin axis, threaded lead screw, box-centred inspection rotation, contact-aligned telescoping ejector and mobile camera tracking of the retrieval mechanism. Actual GPU frame rate and screenshot appearance remain unverified.

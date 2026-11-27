@@ -15,7 +15,8 @@ for(const [engine,name] of [[chromium,'chromium'],[firefox,'firefox']]){
  assert(await p.locator('body').evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await p.waitForFunction(()=>Number(document.body.dataset.frames)>0);
  await p.screenshot({path:'audit-artifacts/'+name+'-'+width+'-initial.png',fullPage:true});
- console.log('INITIAL RENDER',name,width,count);
+ assert(Number(await p.locator('body').getAttribute('data-batched'))>0,'Fixed hardware must be batched');
+ console.log('INITIAL RENDER',name,width,count,'draw calls',await p.locator('body').getAttribute('data-drawcalls'));
  const a=await p.locator('body').getAttribute('data-drum');await p.locator('[data-cat="Arcade"]').click();
  await p.waitForFunction(()=>!document.getElementById('retrieve').disabled);
  await p.waitForFunction(a=>document.body.dataset.drum!==a,a);
