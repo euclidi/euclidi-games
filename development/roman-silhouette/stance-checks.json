@@ -1,0 +1,41 @@
+{
+  "method": "Actual imported rig data and skinning adapter. Numeric only; no browser or anatomical visual test. Floor is aligned by global minimum; stance does not establish center of mass or individual sole contact.",
+  "results": {
+    "neutral": {
+      "minY": -1.4734741204947e-17,
+      "maxY": 1.691,
+      "leftFootMinY": -1.4734741204947e-17,
+      "rightFootMinY": -1.4734741204947e-17,
+      "ankleError": 4.000000782168349e-17,
+      "boneErr": 9.71445146547012e-17,
+      "repeat": 0,
+      "groundCorrection": 1.4734741204947e-17,
+      "allFinite": true,
+      "ankleSeparation": 0.23000000000000007
+    },
+    "wide": {
+      "minY": -1.4734741204947e-17,
+      "maxY": 1.675,
+      "leftFootMinY": -1.4734741204947e-17,
+      "rightFootMinY": -1.4734741204947e-17,
+      "ankleError": 3.9792583043516565e-17,
+      "boneErr": 1.1102230246251565e-16,
+      "repeat": 0,
+      "groundCorrection": 1.4734741204947e-17,
+      "allFinite": true,
+      "ankleSeparation": 0.46
+    },
+    "shift": {
+      "minY": 1.3020834410681913e-17,
+      "maxY": 1.6618342580746965,
+      "leftFootMinY": 1.3020834410681913e-17,
+      "rightFootMinY": 1.7955428810445537e-16,
+      "ankleError": 1.9429051161140558e-16,
+      "boneErr": 8.326672684688674e-17,
+      "repeat": 0,
+      "groundCorrection": -1.3020834410681913e-17,
+      "allFinite": true,
+      "ankleSeparation": 0.29999999999999993
+    }
+  }
+}
