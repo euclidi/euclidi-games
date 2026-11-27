@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.4.x.
+**Status:** Active — Git revision 1.4.3.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -14,7 +14,7 @@ Unofficial browser recreation of classic arcade maze gameplay, with selectable a
 
 ## Controls
 
-Start, arrow keys/WASD, directional pad or swipe; mode, pause, sound and CRT toggles.
+The title menu opens first. Choose a ghost AI mode, sound and CRT preferences before starting. Enter/Space or controller Start/A starts a game; Left/Right changes mode. In play, use arrows/WASD, swipe, D-pad or controller. Escape or Main Menu suspends the current session; Resume Game returns to it. Mode selection applies to new games.
 
 ## Runtime
 
