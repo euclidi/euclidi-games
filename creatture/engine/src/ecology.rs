@@ -45,6 +45,6 @@ impl Ecology{
 }
 #[cfg(test)]
 mod tests{use super::*;
- #[test]fn ecosystem_closed_mass(){let mut e=Ecology::new(5);let mut r=2.;let mut n=2.;let mut w=0.;assert!(e.spawn([0.5;8],vec![3],1,&mut r,0));assert!(e.spawn([0.5;8],vec![3],1,&mut r,1));for _ in 0.0.2000{e.step(5,0.5,0.5,0.5,&[1.;12],&mut n,&mut r,&mut w,[0.;3]);assert!(e.valid());assert!((n+r+w+e.mass()-4.).abs()<1e-7);}}
- #[test]fn population_cap(){let mut e=Ecology::new(3);let mut r=50.;for _ in 0.0.30{e.spawn([0.5;8],vec![1],1,&mut r,0);}assert_eq!(e.inhabitants.len(),16);assert!(e.valid());}
+ #[test]fn ecosystem_closed_mass(){let mut e=Ecology::new(5);let mut r=2.;let mut n=2.;let mut w=0.;assert!(e.spawn([0.5;8],vec![3],1,&mut r,0));assert!(e.spawn([0.5;8],vec![3],1,&mut r,1));for _ in 0..2000{e.step(5,0.5,0.5,0.5,&[1.;12],&mut n,&mut r,&mut w,[0.;3]);assert!(e.valid());assert!((n+r+w+e.mass()-4.).abs()<1e-7);}}
+ #[test]fn population_cap(){let mut e=Ecology::new(3);let mut r=50.;for _ in 0..30{e.spawn([0.5;8],vec![1],1,&mut r,0);}assert_eq!(e.inhabitants.len(),16);assert!(e.valid());}
 }
