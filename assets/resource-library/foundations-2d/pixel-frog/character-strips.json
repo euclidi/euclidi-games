@@ -1,0 +1,128 @@
+{
+  "frame_size_px": [
+    32,
+    32
+  ],
+  "characters": {
+    "Mask Dude": {
+      "Double Jump": {
+        "path_in_zip": "Free/Main Characters/Mask Dude/Double Jump (32x32).png",
+        "frame_count": 6
+      },
+      "Fall": {
+        "path_in_zip": "Free/Main Characters/Mask Dude/Fall (32x32).png",
+        "frame_count": 1
+      },
+      "Hit": {
+        "path_in_zip": "Free/Main Characters/Mask Dude/Hit (32x32).png",
+        "frame_count": 7
+      },
+      "Idle": {
+        "path_in_zip": "Free/Main Characters/Mask Dude/Idle (32x32).png",
+        "frame_count": 11
+      },
+      "Jump": {
+        "path_in_zip": "Free/Main Characters/Mask Dude/Jump (32x32).png",
+        "frame_count": 1
+      },
+      "Run": {
+        "path_in_zip": "Free/Main Characters/Mask Dude/Run (32x32).png",
+        "frame_count": 12
+      },
+      "Wall Jump": {
+        "path_in_zip": "Free/Main Characters/Mask Dude/Wall Jump (32x32).png",
+        "frame_count": 5
+      }
+    },
+    "Ninja Frog": {
+      "Double Jump": {
+        "path_in_zip": "Free/Main Characters/Ninja Frog/Double Jump (32x32).png",
+        "frame_count": 6
+      },
+      "Fall": {
+        "path_in_zip": "Free/Main Characters/Ninja Frog/Fall (32x32).png",
+        "frame_count": 1
+      },
+      "Hit": {
+        "path_in_zip": "Free/Main Characters/Ninja Frog/Hit (32x32).png",
+        "frame_count": 7
+      },
+      "Idle": {
+        "path_in_zip": "Free/Main Characters/Ninja Frog/Idle (32x32).png",
+        "frame_count": 11
+      },
+      "Jump": {
+        "path_in_zip": "Free/Main Characters/Ninja Frog/Jump (32x32).png",
+        "frame_count": 1
+      },
+      "Run": {
+        "path_in_zip": "Free/Main Characters/Ninja Frog/Run (32x32).png",
+        "frame_count": 12
+      },
+      "Wall Jump": {
+        "path_in_zip": "Free/Main Characters/Ninja Frog/Wall Jump (32x32).png",
+        "frame_count": 5
+      }
+    },
+    "Pink Man": {
+      "Double Jump": {
+        "path_in_zip": "Free/Main Characters/Pink Man/Double Jump (32x32).png",
+        "frame_count": 6
+      },
+      "Fall": {
+        "path_in_zip": "Free/Main Characters/Pink Man/Fall (32x32).png",
+        "frame_count": 1
+      },
+      "Hit": {
+        "path_in_zip": "Free/Main Characters/Pink Man/Hit (32x32).png",
+        "frame_count": 7
+      },
+      "Idle": {
+        "path_in_zip": "Free/Main Characters/Pink Man/Idle (32x32).png",
+        "frame_count": 11
+      },
+      "Jump": {
+        "path_in_zip": "Free/Main Characters/Pink Man/Jump (32x32).png",
+        "frame_count": 1
+      },
+      "Run": {
+        "path_in_zip": "Free/Main Characters/Pink Man/Run (32x32).png",
+        "frame_count": 12
+      },
+      "Wall Jump": {
+        "path_in_zip": "Free/Main Characters/Pink Man/Wall Jump (32x32).png",
+        "frame_count": 5
+      }
+    },
+    "Virtual Guy": {
+      "Double Jump": {
+        "path_in_zip": "Free/Main Characters/Virtual Guy/Double Jump (32x32).png",
+        "frame_count": 6
+      },
+      "Fall": {
+        "path_in_zip": "Free/Main Characters/Virtual Guy/Fall (32x32).png",
+        "frame_count": 1
+      },
+      "Hit": {
+        "path_in_zip": "Free/Main Characters/Virtual Guy/Hit (32x32).png",
+        "frame_count": 7
+      },
+      "Idle": {
+        "path_in_zip": "Free/Main Characters/Virtual Guy/Idle (32x32).png",
+        "frame_count": 11
+      },
+      "Jump": {
+        "path_in_zip": "Free/Main Characters/Virtual Guy/Jump (32x32).png",
+        "frame_count": 1
+      },
+      "Run": {
+        "path_in_zip": "Free/Main Characters/Virtual Guy/Run (32x32).png",
+        "frame_count": 12
+      },
+      "Wall Jump": {
+        "path_in_zip": "Free/Main Characters/Virtual Guy/Wall Jump (32x32).png",
+        "frame_count": 5
+      }
+    }
+  }
+}

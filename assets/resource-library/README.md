@@ -4,10 +4,12 @@ This library collects reusable, licensed building blocks. Most entries are sourc
 
 ## Browse by need
 
+- [Male and female ragdolls, archery, FPS arms, and arcade projectiles](foundations-3d/fps-and-archery/README.md)
 - [3D characters, locomotion/combat animation, weapons, props, environments, and extraction tooling](foundations-3d/README.md)
 - [2D characters, platformer art, tiles, and particles](foundations-2d/README.md)
 - [Footsteps, impacts, interface, RPG, sci-fi, and music cues](foundations-audio/README.md)
 - [Icon and UI source packs](foundations-ui/README.md)
+- [Prototype grids and PBR surfaces](foundations-materials/README.md)
 - [Godot foot-grounding IK source](tech/godot-foot-ik-grounder-lite/README.md): MIT source subset for Godot 4.4+; upstream demo/tests omitted, so runtime integration is still required.
 - `tech/javascript-state-machine/`: browser-ready finite-state-machine library, history and visualization plugins, plus upstream README and MIT license. Upstream commit `2ae84bbbaad13103be43b3e0a24c077002e2301a`: [jakesgordon/javascript-state-machine](https://github.com/jakesgordon/javascript-state-machine). Evaluate maintenance and performance before integration.
 

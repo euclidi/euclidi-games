@@ -1,0 +1,286 @@
+{
+  "license": "CC0-1.0",
+  "kaykit_adventurers_zip_sha256": "abe48f4763fba0896bab486ee9e6d08ca6b5b3884b9601f235c8847ae94dc479",
+  "kaykit_animations_zip_sha256": "65882f31f905ad2e953819648a59287cdeab8f623908d5ef701971d3758be20f",
+  "files": {
+    "kaykit/License.txt": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "d4adc31660d1db22eb60eba648e01db41577548f6fa1a3576cb4a6283dae0a58",
+      "bytes": 1554,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/License.txt"
+    },
+    "kaykit/Characters/gltf/Ranger.glb": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "3a0b0166b9d61d58dcaaa739c3cc0538be46e00d2928dd5cb513d9a41770d2e9",
+      "bytes": 484712,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Characters/gltf/Ranger.glb",
+      "clips": [],
+      "skin_joint_counts": [
+        23
+      ]
+    },
+    "kaykit/Animations/gltf/Rig_Medium/Rig_Medium_MovementBasic.glb": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "11422afd50abf7e8c92ea107e2e0bc94abd38023d6d15f55ad580347efbfa29e",
+      "bytes": 689624,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Animations/gltf/Rig_Medium/Rig_Medium_MovementBasic.glb",
+      "clips": [
+        "Jump_Full_Long",
+        "Jump_Full_Short",
+        "Jump_Idle",
+        "Jump_Land",
+        "Jump_Start",
+        "Running_A",
+        "Running_B",
+        "T-Pose",
+        "Walking_A",
+        "Walking_B",
+        "Walking_C"
+      ],
+      "skin_joint_counts": [
+        23
+      ]
+    },
+    "kaykit/Animations/gltf/Rig_Medium/Rig_Medium_General.glb": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "5f725c0f745f36078c7238968cd5c04843cbc6260689eb6e7f5e2bbd7ffdd7ad",
+      "bytes": 828240,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Animations/gltf/Rig_Medium/Rig_Medium_General.glb",
+      "clips": [
+        "Death_A",
+        "Death_A_Pose",
+        "Death_B",
+        "Death_B_Pose",
+        "Hit_A",
+        "Hit_B",
+        "Idle_A",
+        "Idle_B",
+        "Interact",
+        "PickUp",
+        "Spawn_Air",
+        "Spawn_Ground",
+        "T-Pose",
+        "Throw",
+        "Use_Item"
+      ],
+      "skin_joint_counts": [
+        23
+      ]
+    },
+    "kaykit/Assets/gltf/bow.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "de978d50afcc66ba30edb42e8d040bf932ae7308942b1b4e1400d252ccb8e1fb",
+      "bytes": 3048,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/bow.gltf"
+    },
+    "kaykit/Assets/gltf/bow.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "12fb8170469444907c00c16149fc9f1679074795a2e0f29cffa7391ac8202c36",
+      "bytes": 18344,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/bow.bin"
+    },
+    "kaykit/Assets/gltf/ranger_texture.png": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "639cd0ba5106fbdf65370b52b9290091d3bd92fe267693abc8dc474471bb800f",
+      "bytes": 13248,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/ranger_texture.png"
+    },
+    "kaykit/Assets/gltf/bow_withString.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "c55e025638cfbdac33e117a83abac8d01b8d7056a0f7514c72daf937512de932",
+      "bytes": 4326,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/bow_withString.gltf"
+    },
+    "kaykit/Assets/gltf/bow_withString.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "2ae583e6089eddf48f78ddffe1decd4b05f9d9ce47360a113d44856946d78d5a",
+      "bytes": 49016,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/bow_withString.bin"
+    },
+    "kaykit/Assets/gltf/arrow_bow.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "db8d6c4bcf7f6119703565220770241a4d98047f22dcd011e66557cb7df795c1",
+      "bytes": 3055,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_bow.gltf"
+    },
+    "kaykit/Assets/gltf/arrow_bow.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "9ec104be838c841eb79baf314c54ba6f7cc97505b75978607e0228f1769a1d0b",
+      "bytes": 2648,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_bow.bin"
+    },
+    "kaykit/Assets/gltf/arrow_bow_bundle.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "bdff6b1f573110f1704d4e33201600bba6140c7d750f928ebf6037feb1c16b24",
+      "bytes": 3084,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_bow_bundle.gltf"
+    },
+    "kaykit/Assets/gltf/arrow_bow_bundle.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "a2b181785297befb8b9e4a48141fdc627162aa3ceaf35f363a33998ed6cdab45",
+      "bytes": 15344,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_bow_bundle.bin"
+    },
+    "kaykit/Assets/gltf/arrow_crossbow.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "c409839e791bce9801614434e4b27dec80bc880d478de8fe9fee6b0c1fdb8efc",
+      "bytes": 3071,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_crossbow.gltf"
+    },
+    "kaykit/Assets/gltf/arrow_crossbow.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "6d3fcc2bc36760e40789c7f86534ef6cc17710f76954f10db8513bdbf9fd030d",
+      "bytes": 2648,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_crossbow.bin"
+    },
+    "kaykit/Assets/gltf/rogue_texture.png": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "2e2fc741e20e7e2c85b176c8143b49b769bca0d2ed1a1cfc1807a758a0e4d3e1",
+      "bytes": 15026,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/rogue_texture.png"
+    },
+    "kaykit/Assets/gltf/arrow_crossbow_bundle.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "e247770b53fcf0a93b7f83f3542633fcf072e7666bf2b06507685d183b66a4b7",
+      "bytes": 3097,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_crossbow_bundle.gltf"
+    },
+    "kaykit/Assets/gltf/arrow_crossbow_bundle.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "6dd13360be3e748bd30e2fb26a20e233905f323f09371f8f38580edc9833e088",
+      "bytes": 15344,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/arrow_crossbow_bundle.bin"
+    },
+    "kaykit/Assets/gltf/crossbow_1handed.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "27622db91dbc2d8deaf89636462cc66291f902c22cc4a5a30411ebde4dd6a2cd",
+      "bytes": 3083,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/crossbow_1handed.gltf"
+    },
+    "kaykit/Assets/gltf/crossbow_1handed.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "2b7106437c1d44b393cbf03a6bfd2634d5bf267ec122922b7e00d60b13a7fa74",
+      "bytes": 25200,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/crossbow_1handed.bin"
+    },
+    "kaykit/Assets/gltf/crossbow_2handed.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "accce97dcde54ddb83b6512f616b7a5f5892aad28a7405b518116ec864725a81",
+      "bytes": 3083,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/crossbow_2handed.gltf"
+    },
+    "kaykit/Assets/gltf/crossbow_2handed.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "1f00b2cddc144e3274f971c6f386069789f596292b0241522fd87466d0cb0b95",
+      "bytes": 34896,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/crossbow_2handed.bin"
+    },
+    "kaykit/Assets/gltf/quiver.gltf": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "543c2abf89eee3bf8a3e1a4d066fd47e105c65b318c3f48e0dbc20dfb027dcf4",
+      "bytes": 3053,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/quiver.gltf"
+    },
+    "kaykit/Assets/gltf/quiver.bin": {
+      "source": "https://kaylousberg.itch.io/kaykit-adventurers",
+      "sha256": "2091b19054c9b97d5ebd71329ed78068ae9825a0aedf18ae8b6302f6cec97969",
+      "bytes": 13884,
+      "file_in_zip": "KayKit_Adventurers_2.0_FREE/Assets/gltf/quiver.bin"
+    },
+    "kaykit/character-animations-1.1/License.txt": {
+      "source": "https://kaylousberg.itch.io/kaykit-character-animations",
+      "sha256": "373b159044d1a886ed15f57ca5a7673ba14e2623c460283452705f2056912ed9",
+      "bytes": 1548,
+      "file_in_zip": "KayKit_Character_Animations_1.1/License.txt"
+    },
+    "kaykit/character-animations-1.1/Animations/gltf/Rig_Medium/Rig_Medium_CombatRanged.glb": {
+      "source": "https://kaylousberg.itch.io/kaykit-character-animations",
+      "sha256": "7fef1fc0e7b0feafd34b8e12d23f514c8c1f9d068047a691b854b56f1774dff5",
+      "bytes": 1014852,
+      "file_in_zip": "KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_CombatRanged.glb",
+      "clips": [
+        "Ranged_1H_Aiming",
+        "Ranged_1H_Reload",
+        "Ranged_1H_Shoot",
+        "Ranged_1H_Shooting",
+        "Ranged_2H_Aiming",
+        "Ranged_2H_Reload",
+        "Ranged_2H_Shoot",
+        "Ranged_2H_Shooting",
+        "Ranged_Bow_Aiming_Idle",
+        "Ranged_Bow_Draw",
+        "Ranged_Bow_Draw_Up",
+        "Ranged_Bow_Idle",
+        "Ranged_Bow_Release",
+        "Ranged_Bow_Release_Up",
+        "Ranged_Magic_Raise",
+        "Ranged_Magic_Shoot",
+        "Ranged_Magic_Spellcasting",
+        "Ranged_Magic_Spellcasting_Long",
+        "Ranged_Magic_Summon",
+        "T-Pose"
+      ],
+      "skin_joint_counts": [
+        23
+      ]
+    },
+    "kaykit/character-animations-1.1/Animations/gltf/Rig_Medium/Rig_Medium_MovementAdvanced.glb": {
+      "source": "https://kaylousberg.itch.io/kaykit-character-animations",
+      "sha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56",
+      "bytes": 719628,
+      "file_in_zip": "KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_MovementAdvanced.glb",
+      "clips": [
+        "Crawling",
+        "Crouching",
+        "Dodge_Backward",
+        "Dodge_Forward",
+        "Dodge_Left",
+        "Dodge_Right",
+        "Running_HoldingBow",
+        "Running_HoldingRifle",
+        "Running_Strafe_Left",
+        "Running_Strafe_Right",
+        "Sneaking",
+        "T-Pose",
+        "Walking_Backwards"
+      ],
+      "skin_joint_counts": [
+        23
+      ]
+    },
+    "wrad-arms/LICENSE": {
+      "source": "https://raw.githubusercontent.com/wwwriks/wrad-arms/f3987244176c33d2c20d4f9e139980af12684d87/LICENSE",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "bytes": 7048
+    },
+    "wrad-arms/README.md": {
+      "source": "https://raw.githubusercontent.com/wwwriks/wrad-arms/f3987244176c33d2c20d4f9e139980af12684d87/README.md",
+      "sha256": "58eef1a23ed8cbd8453f00146ee5a2d23961ea0989c8ccd669164658cb4ae91f",
+      "bytes": 2401
+    },
+    "wrad-arms/arms.blend": {
+      "source": "https://raw.githubusercontent.com/wwwriks/wrad-arms/f3987244176c33d2c20d4f9e139980af12684d87/arms.blend",
+      "sha256": "ccbdb02c33cfc028aa51a7082295078b536bb9b411ab02a057b49beb667ed61c",
+      "bytes": 839018
+    },
+    "wrad-arms/arms.glb": {
+      "source": "https://raw.githubusercontent.com/wwwriks/wrad-arms/f3987244176c33d2c20d4f9e139980af12684d87/arms.glb",
+      "sha256": "580efbb0852bf0b41f82dd3e17eafec86b3d2a48f4a7acaa7e64d60e850f565d",
+      "bytes": 456328,
+      "clips": [],
+      "skin_joint_counts": [
+        50
+      ]
+    },
+    "wrad-arms/arm_albedo_dark.png": {
+      "source": "https://raw.githubusercontent.com/wwwriks/wrad-arms/f3987244176c33d2c20d4f9e139980af12684d87/arm_albedo_dark.png",
+      "sha256": "10683441d56b2d06d7ed0cc5cd9f9d18b216b255494007c5fe1e2271cccef5d1",
+      "bytes": 280792
+    },
+    "wrad-arms/arm_albedo_pale.png": {
+      "source": "https://raw.githubusercontent.com/wwwriks/wrad-arms/f3987244176c33d2c20d4f9e139980af12684d87/arm_albedo_pale.png",
+      "sha256": "a856d5dab7d1da5b7c00faf12efd53cd41f3bf59b586679d444c341c6dc81a9d",
+      "bytes": 386193
+    }
+  }
+}

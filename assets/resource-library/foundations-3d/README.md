@@ -4,6 +4,8 @@ This library covers humanoid rigs, two independent motion libraries, stylized ch
 
 ## Humanoids and animation
 
+- [Ragdoll, archery, and FPS source kit](fps-and-archery/README.md): shared Quaternius rig mapping, a KayKit Ranger with bow assets and ranged clips, and WRAD first-person arms.
+- [Kenney animated humanoids](kenney-animated-humanoids/sources.json): three CC0 archives with 12 skin files and FBX rig and idle/jump/run files. Inspect the import skeleton and bind each skin's texture before reuse.
 - `quaternius/base-characters-standard/`: two textured, rigged, 65-bone humanoid GLTF models (female and male) and eight modular hair/eyebrow GLTF assets. CC0; source details and the four byte-identical URI filename aliases needed by the supplied GLTF files are recorded in `source-record.json`. The models do not contain motion clips.
 - `quaternius/animation-libraries/v1/` and `v2/`: separate humanoid GLBs with 43 named entries each (42 motion clips plus the T-pose entry), from [Universal Animation Library](https://quaternius.com/packs/universalanimationlibrary.html) and [Universal Animation Library 2](https://quaternius.com/packs/universalanimationlibrary2.html). Each library includes in-place and root-motion exports. See each `CLIPS.txt` and `source-record.json`. Both imported in Blender with 65-bone armatures and all 43 named entries; sampled walk poses changed. Engine retargeting and root-motion settings remain project work.
 - `humanoids/animated-mannequin/mannequin.glb`: CC0 skinned mannequin with 46 named clips; see `CLIPS.txt`. It came from the demo for [Foot IK Grounder Lite](https://dangalg.itch.io/foot-ik-grounder-godot). This is an animation reference, not a controller.

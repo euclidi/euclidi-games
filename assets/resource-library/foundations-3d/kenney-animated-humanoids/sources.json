@@ -1,0 +1,26 @@
+{
+  "animated-characters-1.zip": {
+    "source": "https://kenney.nl/assets/animated-characters-1",
+    "source_name": "animated-characters-1.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 16,
+    "sha256": "ec3787de70fa2200256848d74201b10f6b6c3126594e9857bf989753312c2b84"
+  },
+  "animated-characters-2.zip": {
+    "source": "https://kenney.nl/assets/animated-characters-2",
+    "source_name": "animated-characters-2.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 17,
+    "sha256": "fdadced07a0454c9b7f0b46507be6144a072b4d03b4ffa37f225893c76c62845"
+  },
+  "animated-characters-3.zip": {
+    "source": "https://kenney.nl/assets/animated-characters-3",
+    "source_name": "animated-characters-3.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 12,
+    "sha256": "1d03f1fb001f3cf629425b69c898df58261a316616220ea25b58bd35298e6882"
+  }
+}

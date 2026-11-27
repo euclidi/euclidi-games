@@ -1,0 +1,34 @@
+{
+  "input-prompts.zip": {
+    "source": "https://kenney.nl/assets/input-prompts",
+    "source_name": "input-prompts.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 4667,
+    "sha256": "ac2fcf599080b0f3ba2d174c9474db6df1a0e96ff0662580e2da79a122ab78a1"
+  },
+  "cursor-pack.zip": {
+    "source": "https://kenney.nl/assets/cursor-pack",
+    "source_name": "cursor-pack.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 1096,
+    "sha256": "baa87634f3cfd294b0c83e70222053aab2f56d19f78eca4067b9b38a555269cc"
+  },
+  "mobile-controls.zip": {
+    "source": "https://kenney.nl/assets/mobile-controls",
+    "source_name": "mobile-controls.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 1435,
+    "sha256": "7331c648651858fb3186a8c76e0e360e4d3ea71cfec9b502eb5cbb04a02e192b"
+  },
+  "ui-pack-pixel-adventure.zip": {
+    "source": "https://kenney.nl/assets/ui-pack-pixel-adventure",
+    "source_name": "ui-pack-pixel-adventure.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 519,
+    "sha256": "0b0ed4802ebcfff5e44e370f394baa1d751862a5a4a7612ac4ce84e85faa0627"
+  }
+}

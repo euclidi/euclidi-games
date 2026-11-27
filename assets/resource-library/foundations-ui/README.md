@@ -1,5 +1,7 @@
 # UI and icon foundations
 
+- [Cursor, input, touch and pixel HUD packs](kenney-controls/sources.json): cursor PNGs and SVGs, keyboard and controller glyphs, mobile controls, and Pixel Adventure UI panels. Choose one scale and verify cursor hotspots and glyph legibility in your engine.
+
 - `kenney/board-game-icons.zip`: full CC0 source pack of monochrome board-game symbols at multiple sizes, including its original license. Source: [Kenney Board Game Icons](https://kenney.nl/assets/board-game-icons).
 - `../kenney-input-prompts-pixel/`: optional 16-pixel keyboard/controller prompts.
 - `../kenney-crosshairs/`: optional white crosshair PNGs.

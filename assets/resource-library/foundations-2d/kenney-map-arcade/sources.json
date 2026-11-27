@@ -1,0 +1,34 @@
+{
+  "roguelike-rpg-pack.zip": {
+    "source": "https://kenney.nl/assets/roguelike-rpg-pack",
+    "source_name": "roguelike-rpg-pack.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 11,
+    "sha256": "8e7d2378f8f794245645f6d7dc7aeeb246791410a7e512293c594b46a5a9524b"
+  },
+  "map-pack.zip": {
+    "source": "https://kenney.nl/assets/map-pack",
+    "source_name": "map-pack.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 198,
+    "sha256": "6298e198de4e05e0d573bdca0c58198b6375bb0fed45f29d4f0ecf84abf49c49"
+  },
+  "space-shooter-redux.zip": {
+    "source": "https://kenney.nl/assets/space-shooter-redux",
+    "source_name": "space-shooter-redux.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 314,
+    "sha256": "0edbe0ab5cda6c44901d8c42f150268fdfa0c8d48492098669f37e9c296929b5"
+  },
+  "top-down-shooter.zip": {
+    "source": "https://kenney.nl/assets/top-down-shooter",
+    "source_name": "top-down-shooter.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 601,
+    "sha256": "433a2aa4fd6b617cd143528bf12622811ebe9c56fe1975bb664461b58cd2f2f5"
+  }
+}

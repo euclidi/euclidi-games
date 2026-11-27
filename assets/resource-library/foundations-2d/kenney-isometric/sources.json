@@ -1,0 +1,34 @@
+{
+  "isometric-miniature-dungeon.zip": {
+    "source": "https://kenney.nl/assets/isometric-miniature-dungeon",
+    "source_name": "kenney_isometricDungeon.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 753,
+    "sha256": "187a0888451317fe47caac5f26e984bb79c5ddce9b8630926f0f5d9c0247d343"
+  },
+  "isometric-miniature-library.zip": {
+    "source": "https://kenney.nl/assets/isometric-miniature-library",
+    "source_name": "kenney_isometricLibrary.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 297,
+    "sha256": "e8ac573b289e04d06ae2feb174c526aeb6456c0655663cc4b3820942c8bd128f"
+  },
+  "isometric-miniature-farm.zip": {
+    "source": "https://kenney.nl/assets/isometric-miniature-farm",
+    "source_name": "kenney_isometricMiniatureFarm.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 463,
+    "sha256": "6dd0db7d26cb2999fd4a7a28e25b4727e61dafaf1662cac364eb97172a027268"
+  },
+  "isometric-miniature-prototype.zip": {
+    "source": "https://kenney.nl/assets/isometric-miniature-prototype",
+    "source_name": "kenney_isometricPrototypeTiles.zip",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "archive_files": 657,
+    "sha256": "8f35b991d0bad7ebad586c74522a8285cd33b2ef68b78429b0c9d254d22757a5"
+  }
+}
