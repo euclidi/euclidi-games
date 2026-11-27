@@ -34,3 +34,8 @@ This is an ordered development backlog, not a declaration that milestones are co
 - [ ] Validate the rendered city at street zoom and across camera orientations; replace remaining primitive character geometry with authored articulated assets.
 - [ ] Connect underground stair shafts physically to walkable station platforms and player navigation; implement continuous collision and terrain elevation.
 - [ ] Reduce remaining crowd congestion without reducing transit throughput; test bus dwell and transfers, junction capacity and full-day behavior.
+
+### Urban mobility overhaul
+- [ ] Verify vehicle class dimensions, braking, fuel and lane clearances against actual rendering and full-population traffic.
+- [ ] Author distinct detailed vehicles, occupants, working suspension and material/environment reflections; verify legacy model replacement.
+- [ ] Implement physical fuel-station visits, service jobs and dispatch, shopping purchases and animated personal mobility; validate cycle-lane crossing and parking.

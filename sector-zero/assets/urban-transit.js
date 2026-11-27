@@ -7,6 +7,91 @@ const congestion=new Map(),keyOf=(x,z,d)=>x+","+z+","+d;
 const closedEdges=new Set(),plazas=[];
 const edgeOpen=(x,z,dir)=>{const d=D[dir];return Math.abs(x+d[0]*70)<=210&&Math.abs(z+d[1]*70)<=210&&!closedEdges.has(keyOf(x,z,dir));};
 const SIDE=8,PERSON=.76,STOP=20,CAR_LINE=2.5;
+// Scene distances are metres; the existing compressed simulation clock is retained.
+const fleetTypes={
+ sedan:{w:1.82,l:4.55,h:1.45,acc:5.2,brake:8.5,litres:52,consumption:8.2,color:0x687d85},
+ hatch:{w:1.75,l:4.05,h:1.48,acc:5.7,brake:8.7,litres:44,consumption:6.7,color:0x9c765b},
+ wagon:{w:1.88,l:4.72,h:1.62,acc:4.7,brake:8,litres:58,consumption:9.2,color:0x52645d},
+ taxi:{w:1.83,l:4.65,h:1.49,acc:5,brake:8.4,litres:55,consumption:8.5,color:0xc4a34e},
+ police:{w:1.91,l:4.78,h:1.52,acc:6.1,brake:9,litres:65,consumption:10.4,color:0x303d4a},
+ ambulance:{w:2.12,l:5.75,h:2.62,acc:3.5,brake:6.8,litres:85,consumption:15.5,color:0xe1e0d4},
+ icecream:{w:2.05,l:5.1,h:2.45,acc:3.1,brake:6.4,litres:68,consumption:13,color:0xc4b3a2},
+ delivery:{w:2.07,l:5.4,h:2.35,acc:3.8,brake:7,litres:75,consumption:12.5,color:0x8e9285},
+ bus:{w:2.42,l:8.8,h:2.7,acc:2.7,brake:5.8,litres:180,consumption:29,color:0x9b9c87}
+};
+const fleetMix=["sedan","hatch","wagon","sedan","taxi","hatch","delivery","sedan","police","wagon","hatch","ambulance","sedan","icecream","taxi","wagon","sedan"];
+const vehicleType=b=>b?.bus?"bus":fleetMix[((Math.trunc(b?.id||0)%fleetMix.length)+fleetMix.length)%fleetMix.length];
+const vehicleSpec=b=>fleetTypes[vehicleType(b)];
+function initVehicle(b){const p=vehicleSpec(b);if(!Number.isFinite(b.fuelL))b.fuelL=p.litres*(.34+(b.id%11)*.059);if(!Number.isFinite(b.velocity))b.velocity=0;if(!Number.isFinite(b.distanceM))b.distanceM=0;}
+function targetVelocity(b,desired,available,dt){const p=vehicleSpec(b);return Math.max(0,Math.min(desired,Math.sqrt(2*p.brake*Math.max(0,available)),b.velocity+p.acc*dt));}
+function mobilityLedger(w){return w.mobilityLedger||(w.mobilityLedger={fuelLitres:0,fuelStops:0,deliveries:0,marketVisits:0,serviceStops:0});}
+function curbAccess(building){
+ if(!building?.door)return null;let best=null;const p=building.door;
+ for(let x=-210;x<=210;x+=70)for(let z=-210;z<=210;z+=70)for(let dir=0;dir<4;dir++){
+  if(!edgeOpen(x,z,dir))continue;const d=D[dir],along=(p.x-x)*d[0]+(p.z-z)*d[1],side=(p.x-x)*d[1]-(p.z-z)*d[0];
+  if(side<0||along<10||along>60)continue;
+  const progress=clamp(along,18,50),rank=roadRank(dir%2===0?x:z),cost=Math.hypot(side-CAR_LINE,along-progress)+(rank===0?0:4);
+  if(!best||cost<best.cost)best={x,z,dir,progress,cost,building:building.id};
+ }return best;
+}
+const fuelCache=new WeakMap();
+function fuelStops(w){if(!fuelCache.has(w)){const stops=w.buildings.filter(b=>b.architecture==="Fuel station").map(curbAccess).filter(Boolean);if(stops.length)fuelCache.set(w,stops);return stops;}return fuelCache.get(w);}
+function scheduleFuel(w,b){
+ if(b.bus||b.fuelJob||b.fuelL>vehicleSpec(b).litres*.25)return false;
+ const stops=fuelStops(w).filter(q=>!(q.x===b.x&&q.z===b.z&&q.dir===b.dir&&b.progress>q.progress));
+ if(!stops.length)return false;
+ const r=carRect(b),target=stops.slice().sort((a,c)=>dist(a,r)-dist(c,r))[0];
+ b.fuelJob={...target,resumeX:b.destX,resumeZ:b.destZ,phase:"approach",remaining:0};b.destX=target.x;b.destZ=target.z;return true;
+}
+function atFuelEdge(b){const j=b.fuelJob;return j&&j.x===b.x&&j.z===b.z&&j.dir===b.dir;}
+function serviceFuel(w,b,dt){
+ const j=b.fuelJob;if(!j||!atFuelEdge(b)||b.progress<j.progress-.035)return;
+ if(j.phase==="approach"){j.phase="filling";j.remaining=2.5;}
+ const p=vehicleSpec(b),added=Math.min(p.litres-b.fuelL,p.litres/2.5*dt);
+ b.fuelL+=added;j.remaining=Math.max(0,j.remaining-dt);mobilityLedger(w).fuelLitres+=added;
+ if(j.remaining===0||b.fuelL>=p.litres-.001){b.refuels=(b.refuels||0)+1;mobilityLedger(w).fuelStops++;b.destX=j.resumeX;b.destZ=j.resumeZ;delete b.fuelJob;}
+}
+function serviceArrival(w,b,node){
+ const type=vehicleType(b),kind={taxi:["Housing","Market"],police:["Authority"],ambulance:["Clinic"],icecream:["Housing","Market"],delivery:["Warehouse","Market"]}[type];
+ if(!kind)return;const building=w.buildings.find(q=>kind.includes(q.type)&&q.door&&nearestGrid(q.door.x)===node.x&&nearestGrid(q.door.z)===node.z);
+ if(building)b.serviceVisit={building:building.id,kind:type,remaining:.9+(type==="delivery"?1:0),progress:19};
+}
+function finishService(w,b,dt){
+ const j=b.serviceVisit;if(!j||b.progress<j.progress-.03)return;j.remaining=Math.max(0,j.remaining-dt);
+ if(j.remaining===0){const ledger=mobilityLedger(w);ledger.serviceStops++;if(j.kind==="delivery"){const building=w.buildings.find(q=>q.id===j.building);if(building){building.deliveredCrates=(building.deliveredCrates||0)+3;ledger.deliveries+=3;}}delete b.serviceVisit;}
+}
+function consumeFuel(b,distance,dt){const p=vehicleSpec(b);b.distanceM+=distance;b.fuelL=Math.max(0,b.fuelL-distance*p.consumption/100000-(distance<.01?.0009*dt:0));}
+const cycleOffset=v=>roadHalf(v)-.95;
+// Only collectors receive cycle lanes, avoiding the arterial bus-bay overlap.
+const cycleRoad=v=>roadRank(v)===1;
+const citizenMode=c=>c.id%29===0?"skates":c.id%23===0?"skateboard":c.id%17===0?"bicycle":"walk";
+function rideMode(c){return c.ride||c.id===currentWorld?.possessed?"walk":citizenMode(c);}
+function cycleLegal(c,x,z){if(rideMode(c)!=="bicycle")return false;const gx=nearestGrid(x),gz=nearestGrid(z),dx=Math.abs(x-gx),dz=Math.abs(z-gz);return cycleRoad(gx)&&dx>=cycleOffset(gx)-.75&&dx<=SIDE+1&&dz>=12||cycleRoad(gz)&&dz>=cycleOffset(gz)-.75&&dz<=SIDE+1&&dx>=12;}
+function cyclePath(from,route){
+ if(rideMode(from)!=="bicycle")return route;
+ const out=[];let a=from;
+ for(const b of route){
+  const vertical=Math.abs(a.x-b.x)<.02, horizontal=Math.abs(a.z-b.z)<.02;
+  const fixed=vertical?a.x:a.z,g=nearestGrid(fixed),offset=Math.abs(fixed-g);
+  const start=vertical?a.z:a.x,end=vertical?b.z:b.x,len=Math.abs(end-start);
+  if(!a.cross&&!b.cross&&(vertical||horizontal)&&cycleRoad(g)&&offset>=7&&offset<=9&&len>42&&Math.sign(fixed-g)===(vertical?Math.sign(end-start):-Math.sign(end-start))){
+   const sign=Math.sign(end-start),lane=g+Math.sign(fixed-g)*cycleOffset(g),lo=Math.min(start,end),hi=Math.max(start,end);
+   const p=nearestGrid(lo)+14,q=nearestGrid(hi)-14;
+   if(q-p>20){const entry=sign>0?p:q,exit=sign>0?q:p;
+    const make=(f,t)=>vertical?{x:f,z:t,precise:true}:{x:t,z:f,precise:true};
+    out.push(make(fixed,entry),make(lane,entry),make(lane,exit),make(fixed,exit));
+   }
+  }
+  out.push(b);a=b;
+ }return out;
+}
+function serviceDestination(b,x,z){
+ const fallback={x:-210+(b.id+b.trips*3+1)%7*70,z:-210+(b.id*3+b.trips+2)%7*70};
+ const types={taxi:["Housing","Market"],police:["Authority"],ambulance:["Clinic"],icecream:["Housing","Market"],delivery:["Warehouse","Market"]}[vehicleType(b)];
+ const candidates=currentWorld?.buildings?.filter(q=>types?.includes(q.type)&&q.door).map(q=>({x:nearestGrid(q.door.x),z:nearestGrid(q.door.z)})).filter(q=>q.x!==x||q.z!==z)||[];
+ return candidates.length?candidates[(b.id+(b.trips||0)*7)%candidates.length]:fallback;
+}
+
 const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
 const phaseLocks=new Set(),junctions=new Map(),transitPriority=new Map();
@@ -133,17 +218,18 @@ function busBay(b){return b.bus&&roadRank(b.dir%2===0?b.x:b.z)===0;}
 function bayOffset(b,progress){if(!b.bay)return 0;return 2.7*Math.min(clamp((progress-14)/6,0,1),clamp((28-progress)/8,0,1));}
 function carRect(b,progress=b.progress){
  const d=D[b.dir],offset=CAR_LINE+bayOffset(b,progress),x=b.x+d[0]*progress+d[1]*offset,z=b.z+d[1]*progress-d[0]*offset;
- return {x,z,hx:d[0]?(b.bus?4.4:2.35):(b.bus?1.2:1.05),hz:d[1]?(b.bus?4.4:2.35):(b.bus?1.2:1.05)};
+ const p=vehicleSpec(b),half=p.l/2,wide=p.w/2;return {x,z,hx:d[0]?half:wide,hz:d[1]?half:wide};
 }
 function intersects(p,r,pad=PERSON/2){return Math.abs(p.x-r.x)<r.hx+pad&&Math.abs(p.z-r.z)<r.hz+pad;}
 function crossClear(w,cross){
  const a=cross.a,b=cross.b,x=(a.x+b.x)/2,z=(a.z+b.z)/2,hx=Math.abs(a.x-b.x)/2+.55,hz=Math.abs(a.z-b.z)/2+.55;
  return !junctions.has(nodeKey(cross.x,cross.z))&&!w.cars.some(v=>{const r=carRect(v);return Math.abs(r.x-x)<r.hx+hx&&Math.abs(r.z-z)<r.hz+hz;});
 }
-function stopLine(b){return 70-SIDE-(b.bus?4.4:2.35)-1.2;}
+function stopLine(b){return 70-SIDE-vehicleSpec(b).l/2-1.2;}
 function plannedDir(b,x,z){
  const arrived=x===b.destX&&z===b.destZ;
- const dest=arrived?(b.bus?nextNode(b):{x:-210+(b.id+b.trips*3+1)%7*70,z:-210+(b.id*3+b.trips+2)%7*70}):{x:b.destX,z:b.destZ};
+ if(arrived&&b.fuelJob){const j=b.fuelJob;return {dirs:edgeOpen(x,z,j.dir)?[j.dir]:[],dest:{x,z},arrived:false};}
+ const dest=arrived?(b.bus?nextNode(b):serviceDestination(b,x,z)):{x:b.destX,z:b.destZ};
  const dirs=[0,1,2,3].filter(d=>edgeOpen(x,z,d)&&(!b.bus||x+D[d][0]*70===dest.x&&z+D[d][1]*70===dest.z));
  dirs.sort((a,c)=>carScore(x,z,a,dest.x,dest.z,b.dir)-carScore(x,z,c,dest.x,dest.z,b.dir));
  return {dirs,dest,arrived};
@@ -155,7 +241,7 @@ function driveTraffic(w,dt){
  for(const b of cars)add(b);
  transitPriority.clear();for(const b of cars){if(!b.bus||b.wait<=8||b.progress<stopLine(b)-.05)continue;const d=D[b.dir],x=b.x+d[0]*70,z=b.z+d[1]*70,k=nodeKey(x,z),p=transitPriority.get(k);if(!phaseLocks.has(k)&&!junctions.has(k)&&(!p||b.wait>p.wait))transitPriority.set(k,b);}
  for(const [k,b] of junctions)if(!cars.includes(b)||!((nodeKey(b.x,b.z)===k&&b.progress<14)||(nodeKey(b.x+D[b.dir][0]*70,b.z+D[b.dir][1]*70)===k&&b.progress>stopLine(b))))junctions.delete(k);
- const approach=b=>b.progress>=stopLine(b)-.05;
+ const approach=b=>b.progress>=stopLine(b)-3;
  const list=cars.slice().sort((a,b)=>{
   if(key(a)===key(b))return b.progress-a.progress||a.id-b.id;
   return Number(!!b.junction)-Number(!!a.junction)||Number(approach(b))-Number(approach(a))||
@@ -174,30 +260,35 @@ function driveTraffic(w,dt){
   const stopSign=stopControlled(tx,tz);if(stopSign&&b.progress>=line-.05&&!committed)b.stopWait=(b.stopWait||0)+dt;else if(!committed)b.stopWait=0;
   const plan=plannedDir(b,tx,tz);
   const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&!(v.bay==="parked"&&!b.bus)&&v.progress<14+gap(v,b)+3);
-  const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
-  if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
+  const clear=dir=>!ped.some(p=>intersects(p,carRect({id:b.id,x:tx,z:tz,dir,bus:b.bus},0),.5));
+  if(!committed&&b.progress>=line-(stopSign?.05:3)&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
    if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2)&&dir!==undefined){
     junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
    }
   }
   if(!committed){limit=Math.min(limit,line);if(!reason)reason=phaseLocks.has(k)?"PEDESTRIAN CROSSING":owner?"JUNCTION OCCUPIED":stopSign&&b.stopWait<.5?"STOP SIGN":!stopSign&&signal(tx,tz,w.time,b.dir)!==b.dir%2?"RED SIGNAL":"EXIT BLOCKED";}
-  let speed=b.speed;
+  initVehicle(b);const oldVelocity=b.velocity;let speed=b.fuelL>0?b.speed:0;
   if(b.bus&&b.pendingStop)speed=Math.min(speed,Math.max(0,(STOP-b.progress)/dt));
   if(b.bus&&b.dwell>0)reason="BUS STOP";
   if(b.bay==="parked"){speed=0;reason=b.dwell>0?"BUS STOP":"WAIT TO MERGE";}
+  if(atFuelEdge(b)){limit=Math.min(limit,b.fuelJob.progress);if(b.progress>=b.fuelJob.progress-.035){speed=0;reason="FUEL STATION";}}
+  if(b.serviceVisit){limit=Math.min(limit,b.serviceVisit.progress);if(b.progress>=b.serviceVisit.progress-.035){speed=0;reason="SERVICE STOP";}}
+  speed=targetVelocity(b,speed,committed&&limit===70?Infinity:limit-old,dt);
   let next=Math.max(old,Math.min(limit,old+speed*dt));
   const now=carRect(b),to=carRect(b,next),sweep={x:(now.x+to.x)/2,z:(now.z+to.z)/2,hx:now.hx+Math.abs(now.x-to.x)/2,hz:now.hz+Math.abs(now.z-to.z)/2};
-  for(const p of ped)if(intersects(p,sweep,.5)){const along=(p.x-now.x)*d[0]+(p.z-now.z)*d[1],half=b.bus?4.4:2.35;if(along>=-half){next=Math.min(next,Math.max(old,old+along-half-.65));reason="PEDESTRIAN AHEAD";}}
+  for(const p of ped)if(intersects(p,sweep,.5)){const along=(p.x-now.x)*d[0]+(p.z-now.z)*d[1],half=vehicleSpec(b).l/2;if(along>=-half){next=Math.min(next,Math.max(old,old+along-half-.65));reason="PEDESTRIAN AHEAD";}}
+  const travelled=Math.max(0,next-old);b.velocity=dt>0?travelled/dt:0;b.acceleration=dt>0?(b.velocity-oldVelocity)/dt:0;consumeFuel(b,travelled,dt);
   b.progress=next;if(b.bay==="merge"&&b.progress>=28)delete b.bay;
   if(next>=70-.0001&&committed){
    const dir=b.turnDir;
    if(dir!==undefined&&space(dir)&&clear(dir)){
     lane.splice(lane.indexOf(b),1);Object.assign(b,{x:tx,z:tz,dir,progress:0});
-    if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus)arrive(b);}
+    if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus){arrive(b);if(b.fuelL<vehicleSpec(b).litres*.10){b.fuelL=vehicleSpec(b).litres;b.refuels=(b.refuels||0)+1;}}else if(!b.fuelJob&&b.id%3===0)serviceArrival(w,b,{x:tx,z:tz});}
     add(b);delete b.turnDir;b.stopWait=0;
    }else reason="EXIT BLOCKED";
   }
+  if(b.fuelJob)serviceFuel(w,b,dt);if(b.serviceVisit)finishService(w,b,dt);
   const moved=b.progress!==old||b.x===tx&&b.z===tz;
   b.wait=moved?0:(b.wait||0)+dt;b.trafficStatus=moved?"MOVING":reason||"WAITING";
  }
@@ -237,10 +328,10 @@ function moveCrowd(w,dt,api){
   const key=target.x+","+target.z;
   if(st.key!==key||!st.path||!st.path.length||(!st.cross&&(st.stall||0)>3&&w.time-(st.replanAt||0)>6+c.id%7)){st.replanAt=w.time;
    if(st.cross){const end=st.cross.b;c.route=[{x:end.x,z:end.z,cross:st.cross},...pedestrianPath(end,target)];}
-   else c.route=pedestrianPath(c,target);
+   else c.route=cyclePath(c,pedestrianPath(c,target));
    st.path=c.route;st.key=key;
   }else c.route=st.path;
-  let budget=Math.min(1.55,c.speed*dt),loops=0;c.walkStatus="";const oldX=c.x,oldZ=c.z;
+  const mode=rideMode(c),factor=mode==="bicycle"?1.65:mode==="skateboard"?1.28:mode==="skates"?1.20:1;let budget=Math.min(mode==="walk"?1.55:2.05,c.speed*dt*factor),loops=0;c.walkStatus="";const oldX=c.x,oldZ=c.z;
   while(budget>.001&&c.route.length&&loops++<8){
    const p=c.route[0],dx=p.x-c.x,dz=p.z-c.z,len=Math.hypot(dx,dz);
    const tolerance=c.route.length===1?0.08:p.precise||c.route[1]?.precise?0.18:p.cross?0.40:c.route[1]?.cross?0.58:2.15;
@@ -250,7 +341,7 @@ function moveCrowd(w,dt,api){
     st.cross=p.cross;phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
    }
    const step=Math.min(.32,budget,len),ux=dx/len,uz=dz/len;
-   const legal=(x,z)=>offRoad(x,z)||st.cross&&(st.cross.axis===0?Math.abs(z-st.cross.a.z)<=1.25&&x>=Math.min(st.cross.a.x,st.cross.b.x)-.4&&x<=Math.max(st.cross.a.x,st.cross.b.x)+.4:Math.abs(x-st.cross.a.x)<=1.25&&z>=Math.min(st.cross.a.z,st.cross.b.z)-.4&&z<=Math.max(st.cross.a.z,st.cross.b.z)+.4);
+   const legal=(x,z)=>offRoad(x,z)||cycleLegal(c,x,z)||st.cross&&(st.cross.axis===0?Math.abs(z-st.cross.a.z)<=1.25&&x>=Math.min(st.cross.a.x,st.cross.b.x)-.4&&x<=Math.max(st.cross.a.x,st.cross.b.x)+.4:Math.abs(x-st.cross.a.x)<=1.25&&z>=Math.min(st.cross.a.z,st.cross.b.z)-.4&&z<=Math.max(st.cross.a.z,st.cross.b.z)+.4);
    const can=(x,z)=>legal(x,z)&&occ.free(c,x,z)&&!cars.some(r=>intersects({x,z},r,.45))&&(!inSolid(x,z)||Math.hypot(x-target.x,z-target.z)<1);
    let x=c.x+ux*step,z=c.z+uz*step;
    if(!can(x,z)){
@@ -443,7 +534,7 @@ export function prepare(w){
 }
 export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%l.nodes.length]}
 export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.pendingStop=lines[b.line].stops[b.atStop].active;b.dwell=0;b.progress=0;}
-export function gap(a,b){return a?.bus||b?.bus?10.5:5.8}
+export function gap(a,b){return (vehicleSpec(a).l+vehicleSpec(b).l)/2+1.15+(b?.velocity||0)*.04;}
 export function signal(x,z,time,dir){
  const key=nodeKey(x,z);if(phaseLocks.has(key))return -1;
  const priority=transitPriority.get(key);if(priority)return priority.dir%2;
@@ -487,7 +578,7 @@ export function before(w,dt,api){
  for(const c of w.citizens){const st=walkState.get(c)||{};walkState.set(c,st);if(st.cross&&walking(c)){const a=st.cross.a,b=st.cross.b,done=(c.x-(a.x+b.x)/2)*(b.x-a.x)+(c.z-(a.z+b.z)/2)*(b.z-a.z)>0;if(offRoad(c.x,c.z)&&done){if(c.route[0]?.cross)c.route.shift();if(st.path!==c.route&&st.path?.[0]?.cross)st.path.shift();st.cross=null;}else if(offRoad(c.x,c.z)&&Math.hypot(c.x-a.x,c.z-a.z)<1.4)st.cross=null;else phaseLocks.add(nodeKey(st.cross.x,st.cross.z));}}
  for(const c of w.citizens)if(c.transitMigration){delete c.transitMigration;if(c.id!==w.possessed)resume(w,c,api);}
  congestion.clear();
- for(const b of w.cars){const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
+ for(const b of w.cars){initVehicle(b);if(!b.serviceVisit&&!b.junction)scheduleFuel(w,b);const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
  for(const b of w.cars)if(b.bus){b.dwell=Math.max(0,b.dwell-dt);b.speed=b.dwell>0?0:Math.min(lines[b.line].speed,roadSpeed(b.x,b.z,b.dir)+2)*(w.rain?.82:1);
  b.passengers=b.passengers.filter(id=>{const c=w.citizens[id];if(!c||id===w.possessed||c.ride?.bus!==b.id){if(c?.ride?.bus===b.id)delete c.ride;return false}return true;});}
  for(const b of w.cars){b.driveSpeed=b.speed;b.oldWait=b.wait;b.speed=0;b.progress=Math.min(b.progress,69.99);}
@@ -498,14 +589,14 @@ export function after(w,dt,api){
  for(const b of w.cars){b.speed=b.driveSpeed;b.wait=b.oldWait;delete b.oldWait;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
  for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;if(b.bay==="enter")b.bay="parked";}
- for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
+ for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0){st.departing=true;if(w.buildings[st.origin]?.type==="Market"&&c.work!==st.origin){c.shoppingBagUntil=w.time+90;mobilityLedger(w).marketVisits++;}}}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
  for(const c of w.citizens){
  if(c.id===w.possessed){delete c.ride;continue}
  let r=c.ride;
  if(r&&r.goal!==c.goal){if(r.phase==="riding"){r.goal=c.goal;r.cancel=true}else{delete c.ride;r=null;}}
  if(!r&&c.inside<0&&c.route.length&&c.transitGoal!==c.goal){
  c.transitGoal=c.goal;
- if(c.id%4!==0&&w.buildings[c.goal]){r=itinerary(c,w.buildings[c.goal]);const rail=metroPlan(c,w.buildings[c.goal]);if(rail&&(!r||rail.estimate<r.estimate))r=rail;if(r){r.since=w.time;r.activity=c.activity;const p=r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from];r.queue=r.mode==="metro"?metroSlot(w,c,p):queueSlot(w,c,p);if(r.queue){c.ride=r;c.route=walkTo(c,r.queue);}else r=null;}}
+ if(c.id%4!==0&&citizenMode(c)==="walk"&&w.buildings[c.goal]){r=itinerary(c,w.buildings[c.goal]);const rail=metroPlan(c,w.buildings[c.goal]);if(rail&&(!r||rail.estimate<r.estimate))r=rail;if(r){r.since=w.time;r.activity=c.activity;const p=r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from];r.queue=r.mode==="metro"?metroSlot(w,c,p):queueSlot(w,c,p);if(r.queue){c.ride=r;c.route=walkTo(c,r.queue);}else r=null;}}
  }
  if(!r)continue;
  if(r.mode==="metro"){
@@ -519,7 +610,7 @@ export function after(w,dt,api){
  if(r.phase==="riding"){const b=buses.find(x=>x.id===r.bus);if(!b){resume(w,c,api);continue}const p=api.carPosition(b);c.x=p.x;c.z=p.z;c.heading=p.a;c.inside=-1;c.route=[];}
  }
  for(const b of buses){
- w.transit.vehicleKm+=(b.trafficStatus==="MOVING"?b.speed*dt:0)/1000;
+ w.transit.vehicleKm+=(b.velocity||0)*dt/1000;
  if(b.dwell<=0||b.atStop<0)continue;
  const p=lines[b.line].stops[b.atStop];
  for(const id of [...b.passengers]){const c=w.citizens[id],r=c?.ride;if(!r||r.bus!==b.id){b.passengers=b.passengers.filter(x=>x!==id);continue;}
@@ -557,9 +648,11 @@ export function panel(w){
  html+='<h3>UNDERGROUND METRO</h3><div class="stat"><span>STATIONS / TRAINS</span><b>'+metroStations.size+' / '+w.metro.trains.length+'</b></div><div class="stat"><span>WAITING</span><b>'+w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting").length+'</b></div><div class="stat"><span>ON BOARD</span><b>'+w.metro.trains.reduce((n,t)=>n+t.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS / COMPLETED</span><b>'+w.metro.boardings+' / '+w.metro.completed+'</b></div>';
  for(const t of w.metro.trains)html+='<div class="stat"><span>TRAIN '+(t.id+1)+' · '+(t.remaining>0?"IN TUNNEL":metroLines[t.line].stops[t.at].name.toUpperCase())+'</span><b>'+t.passengers.length+' / '+metroCapacity+'</b></div>';
  for(const l of metroLines){html+='<h3 style="color:'+l.color+'">'+l.name+'</h3><p>'+l.stops.map(p=>p.name).join(' · ')+'</p>';}
+ const stats=Object.keys(fleetTypes).map(k=>'<div class="stat"><span>'+k.toUpperCase()+'</span><b>'+w.cars.filter(b=>vehicleType(b)===k).length+'</b></div>').join("");
+ html+='<h3>VEHICLE FLEET</h3>'+stats+'<div class="stat"><span>FUEL STATION VISITS</span><b>'+(w.mobilityLedger?.fuelStops||0)+'</b></div><div class="stat"><span>FUEL DISPENSED (L)</span><b>'+Math.round(w.mobilityLedger?.fuelLitres||0)+'</b></div><div class="stat"><span>DELIVERED CRATES</span><b>'+(w.mobilityLedger?.deliveries||0)+'</b></div><div class="stat"><span>MARKET VISITS</span><b>'+(w.mobilityLedger?.marketVisits||0)+'</b></div><div class="stat"><span>FLEET FUEL (L)</span><b>'+Math.round(w.cars.reduce((n,b)=>n+(b.fuelL||0),0))+'</b></div><h3>ACTIVE PERSONAL TRAVEL</h3>'+["bicycle","skateboard","skates"].map(m=>'<div class="stat"><span>'+m.toUpperCase()+'</span><b>'+w.citizens.filter(c=>walking(c)&&rideMode(c)===m&&c.walkingNow).length+'</b></div>').join("");
  return html+'<p>Local loops and limited-stop express services support one transfer. Riders compare estimated trip time with walking and queue in arrival order. Select a bus to locate it.</p>';
 }
-export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
+export function citizen(c){const r=c.ride;if(!r&&walking(c)&&rideMode(c)!=="walk")return '<div class="stat"><span>TRAVEL MODE</span><b>'+rideMode(c).toUpperCase()+'</b></div>';return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
 const signalGroups=new Map();
 export function updateSignals(time){const hour=((time%1440)+1440)%1440/60,night=hour<6||hour>=19;if(streetLampMaterial?.emissive){streetLampMaterial.emissive.setHex(night&&!currentWorld?.blackout?0xe6c98a:0x000000);streetLampMaterial.emissiveIntensity=night&&!currentWorld?.blackout?0.75:0;}for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
 // Split solid terrain around real shaft openings, rather than painting stairs on it.
@@ -705,10 +798,16 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  signalGroups.clear();
  replaceSurface(parent,{box,cyl,merge,mat,group});
  const asphalt=mat(0x373c3b),local=mat(0x454744),edgeMat=mat(0x76786c),white=mat(0xb9b7a2),yellow=mat(0xc6a662),dark=mat(0x28322f),glass=mat(0x576b65),steel=mat(0x68756d),green=mat(0x75946f),red=mat(0xa74c3d);
+ const cyclePaint=mat(0x425e51),cycleStripe=mat(0x9bba9d);
  const kind=v=>v===0?"avenue":Math.abs(v)===210?"ring":Math.abs(v)===140?"collector":"local";
  const width=v=>kind(v)==="avenue"?13:kind(v)==="ring"?13:kind(v)==="collector"?11.5:8.5;
  for(let v=-210;v<=210;v+=70){const w=width(v),major=kind(v)!=="local";
  for(let p=-175;p<=175;p+=70){box(parent,w,.03,70,v,.005,p,major?asphalt:local);box(parent,70,.03,w,p,.006,v,major?asphalt:local);
+ if(cycleRoad(v)){for(const side of [-1,1]){
+ const o=side*cycleOffset(v),inner=o-side*.76;
+ box(parent,1.5,.016,46,v+o,.027,p,cyclePaint);box(parent,46,.016,1.5,p,.028,v+o,cyclePaint);
+ for(let j=-19;j<=19;j+=6){box(parent,.10,.012,3,v+inner,.046,p+j,cycleStripe);box(parent,3,.012,.10,p+j,.046,v+inner,cycleStripe);}
+ }}
  for(const side of [-1,1]){box(parent,.13,.025,56,v+side*(w/2-.25),.032,p,edgeMat);box(parent,56,.025,.13,p,.032,v+side*(w/2-.25),edgeMat);}
  for(let j=-20;j<=20;j+=8){if(kind(v)!=="avenue"&&kind(v)!=="ring"){box(parent,.15,.02,3.8,v,.04,p+j,yellow);box(parent,3.8,.02,.15,p+j,.04,v,yellow);}}
  if(kind(v)==="avenue"||kind(v)==="ring"){for(const q of [-.18,.18]){box(parent,.12,.025,44,v+q,.041,p,yellow);box(parent,44,.025,.12,p,.041,v+q,yellow);}}
@@ -1145,38 +1244,229 @@ function renderPeople(parent,kit){
  const n=base[0].count,now=typeof performance!=="undefined"?performance.now()/1000:0;
  for(let i=0;i<n;i++){
   base[0].getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14],c=bins.get(Math.round(x*100)+","+Math.round(z*100));if(!c){for(const a of [...accessories,...extra])put(a,i,x,-20,z,0,0,.001,.001,.001,0);continue;}
-  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow,phase=(c.walkDistance||0)*5.8+a.phase,cycle=move?Math.sin(phase):0,step=cycle*.38,bob=0;
+  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow,mode=rideMode(c),bike=mode==="bicycle",board=mode==="skateboard",skating=mode==="skates",phase=(c.walkDistance||0)*(bike?4.6:5.8)+a.phase,cycle=move?Math.sin(phase):0,step=cycle*.38,bob=0;
   const part=(mesh,side,y,front,rx,sx,sy,sz,col)=>put(mesh,i,x+Math.cos(heading)*side+Math.sin(heading)*front,y*h+bob,z-Math.sin(heading)*side+Math.cos(heading)*front,heading,rx,sx,sy,sz,col);
-  part(base[0],0,1.08,0,0,wide,h,a.style===1?1.15:.96,a.shirt);
-  part(base[1],0,1.59,0,0,.95,h,.96,a.skin);
+  part(base[0],0,bike?1.18:1.08,bike?.09:0,bike?.23:0,wide,h,a.style===1?1.15:.96,a.shirt);
+  part(base[1],0,bike?1.62:1.59,bike?.16:0,0,.95,h,.96,a.skin);
   const segment=(mesh,side,a,b,length,w,col)=>{const dy=a.y-b.y,dz=a.z-b.z;part(mesh,side,(a.y+b.y)/2,(a.z+b.z)/2,Math.atan2(dz,dy),w,h*Math.hypot(dy,dz)/length,1,col);};
   for(const sign of [-1,1]){
    const j=sign<0?0:1,theta=phase+(j?Math.PI:0),swing=move?Math.sin(theta):0,lift=move?Math.max(0,Math.cos(theta))*.12:0;
-   const hip={y:.82,z:0},ankle={y:.15+lift,z:.25*swing},knee=kneeJoint(hip,ankle);
+   const hip={y:bike?.91:.82,z:bike?-.10:0},ankle=bike?{y:move?.37+.125*Math.cos(theta):.15,z:move?.045+.125*Math.sin(theta):.09}:board?{y:.20+(j===1&&move?lift*.60:0),z:sign*.22+(j===1&&move?swing*.15:0)}:{y:.15+lift+(skating?.06:0),z:.25*swing},knee=kneeJoint(hip,ankle);
    const side=sign*.145*wide;
    if(anatomy){
     segment(base[2+j],side,hip,knee,.37,wide,a.pants);segment(anatomy.calves[j],side,knee,ankle,.37,wide,a.pants);
-    part(base[6+j],side,.075+lift,ankle.z,0,.94,h,.97,a.shoes);
-    const shoulder={y:1.33,z:0},elbow={y:1.06,z:-swing*.14},wrist={y:.81,z:-swing*.24+.045},armSide=sign*.31*wide;
+    part(base[6+j],side,ankle.y-.075,ankle.z,0,.94,h,.97,a.shoes);
+    const shoulder={y:bike?1.38:1.33,z:bike?.12:0},elbow=bike?{y:1.19,z:.27}:{y:1.06,z:-swing*.14},wrist=bike?{y:1.04,z:.48}:{y:.81,z:-swing*.24+.045},armSide=sign*.31*wide;
     segment(base[4+j],armSide,shoulder,elbow,.29,.94,a.shirt);segment(anatomy.forearms[j],armSide,elbow,wrist,.27,.94,a.style===0?a.skin:a.shirt);
     part(anatomy.hands[j],armSide,wrist.y-.06,wrist.z,0,1,h,1,a.skin);
-    part(anatomy.ears[j],sign*.165,1.59,-.015,0,1,h,1,a.skin);
-    part(anatomy.eyes[j],sign*.072,1.615,.151,0,1,h,1,0x292a25);
+    part(anatomy.ears[j],sign*.165,bike?1.62:1.59,bike?.145:-.015,0,1,h,1,a.skin);
+    part(anatomy.eyes[j],sign*.072,bike?1.645:1.615,bike?.311:.151,0,1,h,1,0x292a25);
    }else {part(base[2+j],side,.48,swing*.1,swing*.38,wide,h,1,a.pants);part(base[4+j],sign*.30*wide,1.02,-swing*.1,-swing*.38,.88,h,.9,a.shirt);part(base[6+j],side,.12,swing*.16+.04,0,.9,h,.97,a.shoes);}
   }
-  if(anatomy){part(anatomy.neck,0,1.42,0,0,1,h,1,a.skin);part(anatomy.mouth,0,1.51,.145,0,1,h,1,0x714a3d);}
-  part(accessories[0],0,1.70,-.005,0,a.style===3?1.13:1.02,a.style===4?1.5:.85,1,a.hair);
-  part(accessories[1],0,1.78,a.style===2?.06:0,0,a.style===2?1:0.001,a.style===2?1:.001,a.style===2?1:.001,a.shirt);
+  if(anatomy){part(anatomy.neck,0,bike?1.45:1.42,bike?.16:0,0,1,h,1,a.skin);part(anatomy.mouth,0,bike?1.54:1.51,bike?.305:.145,0,1,h,1,0x714a3d);}
+  part(accessories[0],0,bike?1.73:1.70,bike?.155:-.005,0,a.style===3?1.13:1.02,a.style===4?1.5:.85,1,a.hair);
+  part(accessories[1],0,bike?1.81:1.78,(bike?.16:0)+(a.style===2?.06:0),0,a.style===2?1:0.001,a.style===2?1:.001,a.style===2?1:.001,a.shirt);
   part(accessories[2],0,1.1,-.29,0,a.bag?1:.001,a.bag?1:.001,a.bag?1:.001,a.style===4?0x6d543d:0x444e46);
-  part(accessories[3],0,1.575,.16,0,.67,.52,.65,a.skin);
-  part(accessories[4],a.style===5?.34:0,a.style===5?.8:-4,.06,0,a.style===5?1:.001,a.style===5?1:.001,a.style===5?1:.001,0x604c39);
-  part(accessories[5],0,1.49,-.12,0,a.style===4?1:.001,a.style===4?1:.001,a.style===4?1:.001,a.hair);
+  part(accessories[3],0,bike?1.605:1.575,bike?.32:.16,0,.67,.52,.65,a.skin);
+  const shopping=(c.shoppingBagUntil||0)>w.time&&!bike&&!board&&!skating,carry=shopping||a.style===5;part(accessories[4],carry?.36:0,carry?.76:-4,.06,0,carry?1:.001,carry?1:.001,carry?1:.001,shopping?0xb7a788:0x604c39);
+  part(accessories[5],0,bike?1.52:1.49,bike?.04:-.12,0,a.style===4?1:.001,a.style===4?1:.001,a.style===4?1:.001,a.hair);
  }
  for(const m of [...base,...accessories,...extra]){m.count=n;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
 }
+
+/* Fleet render adapter. One instanced part per class, rather than a mesh per car.
+   The original bundled private-car instances are hidden only after matching their
+   positions against the live fleet. An unmatched legacy renderer remains intact. */
+const fleetRenderers=new WeakMap();
+function sectionGeometry(template,sections){
+ const g=template.clone(),values=[],tri=(a,b,c)=>values.push(...a,...b,...c);
+ const rings=sections.map(([z,w,low,high])=>[[-w*.78,low,z],[w*.78,low,z],[w,low+(high-low)*.26,z],[w*.93,high-(high-low)*.15,z],[w*.73,high,z],[-w*.73,high,z],[-w*.93,high-(high-low)*.15,z],[-w,low+(high-low)*.26,z]]);
+ for(let j=0;j<rings.length-1;j++)for(let i=0;i<8;i++){const k=(i+1)%8;tri(rings[j][i],rings[j][k],rings[j+1][k]);tri(rings[j][i],rings[j+1][k],rings[j+1][i]);}
+ for(const [ring,front] of [[rings[0],false],[rings.at(-1),true]])for(let i=1;i<7;i++){if(front)tri(ring[0],ring[i],ring[i+1]);else tri(ring[0],ring[i+1],ring[i]);}
+ const Attr=template.attributes.position.constructor;g.setIndex(null);for(const k of Object.keys(g.attributes))g.deleteAttribute(k);g.setAttribute("position",new Attr(new Float32Array(values),3));g.clearGroups();g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();return g;
+}
+function makeFleetTemplate(type,kit,parent,Inst,capacity){
+ const {group,box,cyl,mat}=kit,p=fleetTypes[type],root=group(),chassis=group(),w=p.w,l=p.l,h=p.h,van=["ambulance","icecream","delivery","bus"].includes(type),bus=type==="bus";
+ root.add(chassis);root.userData=root.userData||{};
+ const material=(hex,properties={})=>{const m=mat(hex).clone();Object.assign(m,properties);return m;};
+ const paint=material(0xffffff,{roughness:.32,metalness:.28}),trim=material(0x353b38,{roughness:.68}),rubber=material(0x222622,{roughness:.95}),metal=material(0x929890,{roughness:.38,metalness:.45}),glass=material(0x8fa9a7,{transparent:true,opacity:.32,depthWrite:false,roughness:.16,metalness:.08,side:2}),headlight=material(0xe2dbbd,{roughness:.28}),tail=material(0x9e3d31,{roughness:.35}),skin=material(0xffffff),clothes=material(0xffffff),interior=material(0x303530),white=material(0xe8e4d8),stripe=material(0xa44439);
+ const B=(g,a,b,c,x,y,z,m,tag)=>{const o=box(g,a,b,c,x,y,z,m);if(tag)o.userData.fleetColor=tag;return o;};
+ const shell=(g,sections,m,tag)=>{const o=B(g,1,1,1,0,0,0,m,tag);o.geometry=sectionGeometry(o.geometry,sections);return o;};
+ const wheelR=bus?.48:van?.39:.33,bodyLow=wheelR*.76,belt=van?(bus?1.34:1.04):h*.62,bodyTop=van?belt: h*.66;
+ shell(chassis,[[-l*.5,w*.40,bodyLow+.11,bodyTop-.12],[-l*.44,w*.49,bodyLow,bodyTop],[-l*.25,w*.50,bodyLow,bodyTop+.02],[l*.25,w*.50,bodyLow,bodyTop],[l*.43,w*.48,bodyLow,bodyTop-.055],[l*.5,w*.40,bodyLow+.10,bodyTop-.16]],paint,"paint");
+ const back=bus?-l*.46:van?-l*.45:type==="wagon"?-l*.39:type==="hatch"?-l*.37:-l*.30,front=bus?l*.45:van?l*.34:l*.22,roofBack=van?back+.05:back+.26,roofFront=van?front-.18:front-.49,cabTop=h-.09;
+ if(van&&!bus){
+  // Separate rear load body, front glazing and tapered nose.
+  shell(chassis,[[back,w*.45,belt-.02,h-.06],[l*.07,w*.49,belt-.02,h],[l*.12,w*.47,belt-.02,h-.04]],paint,"paint");
+  shell(chassis,[[l*.10,w*.43,belt-.02,h-.13],[l*.25,w*.42,belt-.02,h-.16],[l*.39,w*.40,belt-.02,belt+.28]],glass);
+  B(chassis,w*.86,.09,l*.16,0,h-.10,l*.20,paint,"paint");
+ }else{
+  shell(chassis,[[back,w*.44,belt-.01,belt+.18],[roofBack,w*.40,belt-.01,cabTop],[roofFront,w*.40,belt-.01,cabTop],[front,w*.44,belt-.01,belt+.15]],glass);
+  shell(chassis,[[roofBack-.04,w*.39,cabTop-.045,cabTop+.02],[roofBack+.06,w*.42,cabTop-.045,h],[roofFront-.05,w*.42,cabTop-.045,h],[roofFront+.04,w*.38,cabTop-.045,cabTop+.02]],paint,"paint");
+ }
+ // Driver's seat and actual seated occupant behind translucent windows.
+ const seatZ=van?l*.26:l*.04,seatY=van?belt-.10:belt-.09,seatX=-w*.24,headY=van?Math.min(h-.30,belt+.43):h-.26;
+ B(chassis,.42,.52,.12,seatX,seatY+.02,seatZ-.20,interior);B(chassis,.42,.12,.36,seatX,seatY-.25,seatZ,interior);
+ B(chassis,.32,.32,.20,seatX,headY-.30,seatZ,clothes,"clothes");
+ const head=B(chassis,.23,.28,.23,seatX,headY,seatZ+.02,skin,"skin");head.geometry=bodyGeometry(head.geometry,[[-.13,.073,.080],[-.08,.104,.105],[.05,.112,.109],[.115,.082,.078]],8);
+ B(chassis,.18,.055,.19,seatX,headY+.11,seatZ,trim);
+ for(const side of [-1,1]){
+  const arm=B(chassis,.085,.24,.085,seatX+side*.13,headY-.28,seatZ+.18,clothes,"clothes");arm.rotation.x=-.8;
+  B(chassis,.27,.14,.08,side*w*.33,bodyTop-.18,l*.495,headlight);
+  B(chassis,.26,.14,.08,side*w*.33,bodyTop-.17,-l*.495,tail,"brake");
+  B(chassis,.11,.11,.26,side*w*.53,belt+.04,front-.10,trim);
+  B(chassis,.035,.055,.19,side*w*.495,belt-.13,l*.03,metal);
+  for(const z of (bus?[-l*.36,-l*.12,l*.12,l*.36]:[roofBack+.13,roofFront-.07])){
+   const post=B(chassis,.045,Math.max(.24,cabTop-belt),.08,side*w*.41,(cabTop+belt)/2,z,trim);if(!van)post.rotation.x=z>0?.29:-.20;
+  }
+ }
+ B(chassis,w*.75,.095,.085,0,bodyLow+.10,l*.501,trim);B(chassis,w*.75,.095,.085,0,bodyLow+.10,-l*.501,trim);
+ B(chassis,w*.48,.14,.035,0,bodyTop-.20,l*.502,trim);B(chassis,.29,.10,.035,0,bodyLow+.25,-l*.503,white);
+ if(type==="taxi"){B(chassis,.63,.20,.27,0,h+.10,0,white);B(chassis,.54,.09,.275,0,h+.12,0,paint,"paint");}
+ if(type==="police"||type==="ambulance"){for(const side of [-1,1]){B(chassis,.37,.14,.24,side*.22,h+.09,l*.07,material(side<0?0x355d91:0xa53737),"beacon");}}
+ if(type==="police"){for(const side of [-1,1])B(chassis,.025,.42,l*.26,side*w*.499,belt-.28,0,white);}
+ if(type==="ambulance"){for(const side of [-1,1]){B(chassis,.035,.17,.75,side*w*.494,h*.60,-l*.17,stripe);B(chassis,.036,.65,.17,side*w*.494,h*.60,-l*.17,stripe);}}
+ if(type==="icecream"){B(chassis,.035,.62,l*.34,w*.494,h*.64,-l*.15,glass);B(chassis,.24,.08,l*.34,w*.54,h*.49,-l*.15,white);B(chassis,w*.65,.11,.35,0,h+.07,-l*.11,stripe);}
+ if(type==="delivery"){for(const side of [-1,1])B(chassis,.026,.19,l*.49,side*w*.494,h*.56,-l*.17,trim);}
+ if(bus){B(chassis,w*.89,.18,l*.96,0,belt-.09,0,paint,"paint");B(chassis,.045,1.10,.88,w*.48,1.15,l*.28,glass);}
+ const wheels=[];
+ for(const side of [-1,1])for(const axle of [-1,1]){
+  const pivot=group(),spin=group();root.add(pivot);pivot.add(spin);pivot.position.set(side*(w*.5-.10),wheelR,axle*l*(van?.32:.30));wheels.push({pivot,spin,front:axle>0,side,axle,rest:wheelR});
+  const tire=cyl(spin,wheelR,wheelR,van?.22:.19,0,0,0,rubber,14);tire.rotation.z=Math.PI/2;
+  const hub=cyl(spin,wheelR*.57,wheelR*.57,.225,0,0,0,metal,10);hub.rotation.z=Math.PI/2;
+  B(spin,.035,wheelR*.79,.055,side*.122,0,0,trim);
+ }
+ const parts=[];root.traverse(o=>{if(!o.isMesh)return;const m=new Inst(o.geometry,o.material,capacity);m.count=0;m.frustumCulled=false;parent.add(m);parts.push({source:o,mesh:m,tag:o.userData?.fleetColor});});
+ return {root,chassis,wheels,parts};
+}
+const fleetPose=new WeakMap();
+function roadHeight(x,z){return .022+.009*Math.sin(x*.93+z*.31)+.006*Math.sin(z*1.17-x*.52);}
+function suspensionStep(state,target,dt){
+ const n=Math.max(1,Math.ceil(dt*120)),h=dt/n;
+ for(let i=0;i<n;i++){const a=145*(target-state.y)-18*state.v;state.v+=a*h;state.y=clamp(state.y+state.v*h,-.11,.11);}
+ return state.y;
+}
+let reflectionTexture=null,reflectionKey="";
+function cityReflection(parent){
+ if(typeof document==="undefined"||!surfaceRoot||!currentWorld)return null;
+ const w=currentWorld,hr=((w.time%1440)+1440)%1440/60,key=Math.floor(hr*2)+":"+!!w.rain+":"+!!w.blackout;
+ if(reflectionTexture&&reflectionKey===key)return reflectionTexture;
+ if(!reflectionTexture){
+  let source=null;surfaceRoot.traverse(o=>{if(!source&&o.material?.map?.isTexture&&o.material.map.image?.getContext)source=o.material.map;});
+  if(!source?.source?.constructor)return null;
+  reflectionTexture=source.clone();const canvas=document.createElement("canvas");canvas.width=512;canvas.height=256;
+  reflectionTexture.source=new source.source.constructor(canvas);reflectionTexture.mapping=303;reflectionTexture.wrapS=1001;reflectionTexture.wrapT=1001;
+  reflectionTexture.repeat?.set(1,1);reflectionTexture.offset?.set(0,0);reflectionTexture.rotation=0;reflectionTexture.flipY=true;reflectionTexture.generateMipmaps=true;reflectionTexture.minFilter=1008;reflectionTexture.magFilter=1006;
+ }
+ const canvas=reflectionTexture.image,ctx=canvas.getContext("2d"),night=hr<6||hr>=19,rain=!!w.rain;
+ const gradient=ctx.createLinearGradient(0,0,0,canvas.height);gradient.addColorStop(0,night?"#171f2c":rain?"#6e7879":"#829aab");gradient.addColorStop(.49,night?"#34353a":rain?"#9b9c91":"#c2c7bc");gradient.addColorStop(.5,"#4a4b43");gradient.addColorStop(1,"#272d2a");ctx.fillStyle=gradient;ctx.fillRect(0,0,512,256);
+ for(const b of w.buildings.slice().sort((a,b)=>Math.hypot(b.x,b.z)-Math.hypot(a.x,a.z))){
+  const distance=Math.max(15,Math.hypot(b.x,b.z)),az=Math.atan2(b.z,b.x),u=(az/(Math.PI*2)+.5)*512,ww=clamp(Math.atan2((b.w||12)/2,distance)*512/Math.PI,3,110),hh=clamp(Math.atan2(b.h||12,distance)*256/Math.PI,4,110);
+  if(!Number.isFinite(u+ww+hh))continue;
+  for(const dx of [-512,0,512]){ctx.fillStyle=night?"#303731":b.type==="Factory"?"#78766e":"#93948a";ctx.fillRect(u+dx-ww/2,128-hh,ww,hh);if(night&&!w.blackout){ctx.fillStyle="#a69767";for(let y=132-hh;y<124;y+=7)for(let x=u+dx-ww/2+3;x<u+dx+ww/2-1;x+=6)if((Math.floor(x+y+b.id)%4)===0)ctx.fillRect(x,y,2,2);}}
+ }
+ reflectionTexture.needsUpdate=true;reflectionKey=key;return reflectionTexture;
+}
+function approachAngle(a,b){return Math.atan2(Math.sin(b-a),Math.cos(b-a));}
+function matchLegacyCars(parent,cars,position,excluded){
+ const targets=cars.map(b=>position(b)),matches=[];
+ for(const o of parent.children){if(!o.isInstancedMesh||excluded.has(o)||o.count<20||Math.abs(o.count-cars.length)>20)continue;
+  const M=o.matrix.clone();let hit=0,n=0;
+  for(let i=0;i<o.count;i+=Math.max(1,Math.floor(o.count/24))){o.getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14];if(targets.some(p=>Math.hypot(x-p.x,z-p.z)<3.2))hit++;n++;}
+  if(n>=8&&hit/n>=.92)matches.push(o);
+ }return matches;
+}
+function renderFleet(cars,position,parent,kit){
+ if(!peopleRenderer?.base?.[0]?.matrix?.clone||!parent?.children)return false;
+ const Inst=peopleRenderer.base[0].constructor;
+ let f=fleetRenderers.get(parent);
+ if(!f){f={templates:new Map(),legacy:new Set(),frames:0,privateReady:false};fleetRenderers.set(parent,f);}
+ f.frames++;
+ if(!f.privateReady||f.frames%90===1){
+  const excluded=new Set([...peopleRenderer.base,...peopleRenderer.accessories,...(peopleRenderer.anatomy?Object.values(peopleRenderer.anatomy).flat():[]),...Array.from(f.templates.values()).flatMap(t=>t.parts.map(p=>p.mesh)),...f.legacy,...Array.from(personalRenderers.get(parent)?.values()||[]).flatMap(t=>t.parts.map(p=>p.mesh))]);
+  const legacy=matchLegacyCars(parent,cars.filter(b=>!b.bus),position,excluded);for(const o of legacy)f.legacy.add(o);
+  if(f.legacy.size)f.privateReady=true;
+ }
+ for(const o of f.legacy)o.visible=false;
+ const sets=new Map();for(const b of cars){if(!b.bus&&!f.privateReady)continue;const type=vehicleType(b);if(!sets.has(type))sets.set(type,[]);sets.get(type).push(b);}
+ const color=peopleRenderer.color,env=cityReflection(parent),now=typeof performance!=="undefined"?performance.now()/1000:0;
+ for(const [type,bs] of sets){let t=f.templates.get(type);if(!t){t=makeFleetTemplate(type,kit,parent,Inst,Math.max(160,cars.length));f.templates.set(type,t);}
+  const {root,chassis,wheels,parts}=t;
+  if(env)for(const part of parts)if(part.tag==="paint"||part.source.material.transparent){const m=part.mesh.material;if(m.isMeshStandardMaterial||m.isMeshPhysicalMaterial){if(m.envMap!==env){m.envMap=env;m.needsUpdate=true;}m.envMapIntensity=part.tag==="paint"?.56:.48;}}
+  for(let i=0;i<bs.length;i++){const b=bs[i],p=vehicleSpec(b),r=carRect(b),raw=position(b),a=Number.isFinite(raw.a)?raw.a:Math.atan2(D[b.dir][0],D[b.dir][1]),old=fleetPose.get(b)||{a,last:now-.016,springs:wheels.map(()=>({y:0,v:0}))},delta=approachAngle(old.a,a);
+   const dt=clamp(now-old.last,.001,.05);old.last=now;old.a+=delta*(1-Math.exp(-12*dt));
+   let front=0,rear=0,left=0,right=0,heave=0;
+   for(let k=0;k<wheels.length;k++){const wheel=wheels[k],lx=wheel.pivot.position.x,lz=wheel.pivot.position.z,ground=roadHeight(r.x+Math.cos(old.a)*lx+Math.sin(old.a)*lz,r.z-Math.sin(old.a)*lx+Math.cos(old.a)*lz);
+    const load=clamp(-(b.acceleration||0)*wheel.axle*.0035+delta*(b.velocity||0)*wheel.side*.007,-.055,.055);
+    const y=suspensionStep(old.springs[k],ground+load,dt);heave+=y;
+    if(wheel.front)front+=y;else rear+=y;if(wheel.side<0)left+=y;else right+=y;
+    wheel.pivot.position.y=wheel.rest+ground;wheel.pivot.rotation.y=wheel.front?clamp(delta,-.48,.48):0;wheel.spin.rotation.x=-(b.distanceM||0)/wheel.rest;
+   }
+   fleetPose.set(b,old);root.position.set(r.x,0,r.z);root.rotation.y=old.a;chassis.rotation.x=(rear-front)/(2*p.l*.6);chassis.rotation.z=(right-left)/(2*p.w*.8);chassis.position.y=heave/4;
+   root.updateMatrixWorld(true);
+   const driver=appearance(b.id+173),palette=[0x687d85,0x9c765b,0x52645d,0x837f6d,0x9b9a89,0x5e5965,0x49545e];
+   for(const part of parts){part.mesh.setMatrixAt(i,part.source.matrixWorld);if(part.tag==="paint"){color.setHex(b.bus?lines[b.line].color:["sedan","hatch","wagon"].includes(type)?palette[b.id%palette.length]:p.color);part.mesh.setColorAt(i,color);}else if(part.tag==="skin"||part.tag==="clothes"){color.setHex(part.tag==="skin"?driver.skin:driver.shirt);part.mesh.setColorAt(i,color);}else if(part.tag==="brake"){color.setHex((b.acceleration||0)<-.8?0xffffff:0x8b8b8b);part.mesh.setColorAt(i,color);}}
+  }
+  for(const part of parts){part.mesh.count=bs.length;part.mesh.instanceMatrix.needsUpdate=true;if(part.mesh.instanceColor)part.mesh.instanceColor.needsUpdate=true;}
+ }
+ for(const [type,t] of f.templates)if(!sets.has(type))for(const part of t.parts)part.mesh.count=0;
+ if(typeof window!=="undefined")window.sectorZeroFleetAudit=()=>({privateReady:f.privateReady,legacyMeshes:f.legacy.size,classes:[...sets.keys()],reflection:!!env,reflectionMaterials:[...f.templates.values()].flatMap(t=>t.parts).filter(p=>p.mesh.material.envMap===env&&!!env).length,rendered:[...sets.values()].reduce((n,b)=>n+b.length,0)});
+ return true;
+}
+
+
+const personalRenderers=new WeakMap();
+function tireRing(template,r,t){
+ const g=template.clone(),v=[],N=18,M=6,point=(i,j)=>{const a=i*Math.PI*2/N,b=j*Math.PI*2/M,q=r+t*Math.cos(b);return [t*Math.sin(b),q*Math.cos(a),q*Math.sin(a)];};
+ for(let i=0;i<N;i++)for(let j=0;j<M;j++){const a=point(i,j),b=point(i+1,j),c=point(i+1,j+1),d=point(i,j+1);v.push(...a,...b,...c,...a,...c,...d);}
+ const Attr=template.attributes.position.constructor;g.setIndex(null);for(const k of Object.keys(g.attributes))g.deleteAttribute(k);g.setAttribute("position",new Attr(new Float32Array(v),3));g.clearGroups();g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();return g;
+}
+function mobilityTemplate(mode,parent,kit,Inst,capacity){
+ const {group,box,cyl,mat}=kit,root=group(),rubber=mat(0x252a26),metal=mat(0x8d9a90),paint=mat(0xffffff).clone(),wood=mat(0x9f8260),dark=mat(0x41483f);
+ const B=(g,w,h,l,x,y,z,m,painted=false)=>{const o=box(g,w,h,l,x,y,z,m);if(painted)o.userData.mobilityPaint=true;return o;};
+ const tube=(g,a,b,r,m,painted=false)=>{const dy=b[1]-a[1],dz=b[2]-a[2],dx=b[0]-a[0],o=cyl(g,r,r,Math.hypot(dx,dy,dz),(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2,m,8);o.rotation.x=Math.atan2(dz,dy);if(Math.abs(dx)>.001)o.rotation.z=-Math.atan2(dx,Math.hypot(dy,dz));if(painted)o.userData.mobilityPaint=true;return o;};
+ const wheels=[],feet=[];
+ if(mode==="bicycle"){
+  for(const z of [-.55,.55]){const g=group();root.add(g);g.position.set(0,.34,z);wheels.push(g);const tire=cyl(g,.34,.34,.055,0,0,0,rubber,16);tire.geometry=tireRing(tire.geometry,.315,.025);tire.rotation.set(0,0,0);const hub=cyl(g,.055,.055,.12,0,0,0,metal,10);hub.rotation.z=Math.PI/2;
+   for(let i=0;i<6;i++){const a=i*Math.PI/3;tube(g,[0,0,0],[0,Math.cos(a)*.298,Math.sin(a)*.298],.008,metal);}
+  }
+  const rear=[0,.34,-.55],crank=[0,.35,.02],seat=[0,.85,-.16],head=[0,.88,.43],front=[0,.34,.55];
+  for(const [a,b] of [[rear,seat],[rear,crank],[seat,crank],[seat,head],[crank,head],[head,front]])tube(root,a,b,.026,paint,true);
+  tube(root,seat,[0,.94,-.18],.018,metal);B(root,.15,.05,.29,0,.94,-.18,dark);
+  tube(root,head,[0,1.04,.48],.018,metal);B(root,.59,.035,.04,0,1.04,.48,metal);for(const side of [-1,1])B(root,.12,.038,.055,side*.28,1.04,.48,rubber);
+  B(root,.27,.04,.09,0,.35,.02,metal);
+ }else if(mode==="skateboard"){
+  const deck=B(root,.24,.035,.83,0,.12,0,wood);deck.geometry=sectionGeometry(deck.geometry,[[-.43,.08,.115,.15],[-.31,.12,.10,.135],[.31,.12,.10,.135],[.43,.08,.115,.15]]);
+  B(root,.21,.014,.66,0,.144,0,dark);
+  for(const z of [-.27,.27]){B(root,.28,.045,.04,0,.068,z,metal);for(const x of [-.12,.12]){const o=cyl(root,.049,.049,.045,x,.05,z,rubber,10);o.rotation.z=Math.PI/2;}}
+ }else{
+  for(const side of [-1,1]){const g=group();root.add(g);feet.push(g);B(g,.13,.05,.26,0,.065,0,dark);for(const z of [-.088,-.03,.03,.088]){const o=cyl(g,.025,.025,.065,0,.027,z,rubber,8);o.rotation.z=Math.PI/2;}}
+ }
+ const parts=[];root.traverse(o=>{if(!o.isMesh)return;const m=new Inst(o.geometry,o.material,capacity);m.count=0;m.frustumCulled=false;parent.add(m);parts.push({source:o,mesh:m,paint:o.userData?.mobilityPaint});});
+ return {root,wheels,feet,parts};
+}
+function renderPersonalMobility(parent,kit){
+ if(!currentWorld||!peopleRenderer?.base?.[0])return;
+ let sets=personalRenderers.get(parent);if(!sets){sets=new Map();personalRenderers.set(parent,sets);}
+ for(const mode of ["bicycle","skateboard","skates"]){
+  const cs=currentWorld.citizens.filter(c=>walking(c)&&rideMode(c)===mode);
+  let t=sets.get(mode);if(!t){t=mobilityTemplate(mode,parent,kit,peopleRenderer.base[0].constructor,Math.max(100,currentWorld.citizens.length));sets.set(mode,t);}
+  const {root,wheels,feet,parts}=t;
+  for(let i=0;i<cs.length;i++){const c=cs[i],p=profiles[c.id]||appearance(c.id),phase=(c.walkDistance||0)*5.8+p.phase;root.position.set(c.x,0,c.z);root.rotation.y=c.heading||0;
+   for(const wheel of wheels)wheel.rotation.x=(c.walkDistance||0)/.34;
+   for(let j=0;j<feet.length;j++){const theta=phase+j*Math.PI,lift=c.walkingNow?Math.max(0,Math.cos(theta))*.12:0,swing=c.walkingNow?Math.sin(theta):0;feet[j].position.set((j?1:-1)*.145*p.width,lift,.25*swing);}
+   root.updateMatrixWorld(true);
+   for(const part of parts){part.mesh.setMatrixAt(i,part.source.matrixWorld);if(part.paint){peopleRenderer.color.setHex(p.shirt);part.mesh.setColorAt(i,peopleRenderer.color);}}
+  }
+  for(const part of parts){part.mesh.count=cs.length;part.mesh.instanceMatrix.needsUpdate=true;if(part.mesh.instanceColor)part.mesh.instanceColor.needsUpdate=true;}
+ }
+}
+
 const busMeshes=new Map();
 export function drawBuses(cars,position,parent,{group,box,cyl,mat}){
  buildUnderground();if(currentWorld)updateTrainMeshes(currentWorld);renderPeople(parent,{group,box,cyl,mat});
+ renderPersonalMobility(parent,{group,box,cyl,mat});
+ if(renderFleet(cars,position,parent,{group,box,cyl,mat}))return;
  for(const b of cars){if(!b.bus)continue;let m=busMeshes.get(b.id);if(!m){m=group();const paint=mat(lines[b.line].color),body=mat(0x9b9c87),window=mat(0x344d51),rubber=mat(0x222722),lights=mat(0xe8dec1),tail=mat(0xa74b40);
  box(m,2.35,1.75,8.1,0,1.48,0,body);box(m,2.42,.4,8.2,0,.78,0,paint);box(m,2.3,.18,8.1,0,2.43,0,paint);if(b.line>=4){box(m,1.8,.3,4,0,2.68,-.5,window);box(m,2.03,.33,.09,0,2.33,4.14,paint);}
  box(m,2.05,.75,.08,0,1.94,4.08,window);box(m,2.05,.7,.08,0,1.94,-4.08,window);

@@ -34,3 +34,6 @@ The current source implements six bus routes, 18 buses, 32 architecture variants
 ### Street infrastructure and underground transit
 
 The city includes street-name and speed signs, all-way-stop junctions, crossing posts, utility distribution poles with sagging conductors, transformers and cabinets, streetlights, hydrants, benches, cycle racks, bins, storm drainage, manholes, bus shelters and arterial bus pullouts. The Transit Control panel includes infrastructure inventory, vehicle wait reasons, two metro corridors, nine entrances, four trains, train positions, rider counts and interchange journeys. Metro trips are simulated underground; an explorable underground scene is not yet implemented.
+
+### Urban mobility development branch
+This branch introduces dimensioned vehicle classes, acceleration and stopping-distance control, distance-based fuel consumption, class-based service destinations and personal travel modes. Fuel is replenished abstractly at trip completion; there is no physical filling station visit yet. Collector cycle lanes and bicycle routing are provisional. See STATUS for validation limits.
