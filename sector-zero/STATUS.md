@@ -1,5 +1,29 @@
 # Sector Zero — Current status
 
+## Urban Stability — 2026-11-27 (partial, not acceptance-passed)
+
+Implementation commits: [bounded crossings, bus dwell and wait-cycle diagnostics](https://github.com/euclidi/euclidi-games/commit/64e80cbbc3a06f61a2440373b995f8ea2c288356), [persistent DOM and spatial fixes](https://github.com/euclidi/euclidi-games/commit/1aa3f49e4f9a0bb6b1b560cd5c73a1f78b4af4a0), [directional crossing batches](https://github.com/euclidi/euclidi-games/commit/8b689707472e176998467531ec8d1436e031077c), [updated browser QA](https://github.com/euclidi/euclidi-games/commit/43031ec1854a5c54f3f1a6abafeec05d8239770b).
+
+The existing city and Metro assets are retained. Junction exit-space checks were tightened; bounded all-red pedestrian admissions, directional batches with exit-space checks, yielding at crosswalk landings, bounded bus stop dwell and merge handling were added. Existing arterial pull-out bays remain. Unbounded bus signal overrides were removed; bus ordering preference remains, but a fully adaptive green-extension system and autonomous cycle recovery are not implemented. Wait-for cycles are counted, not automatically resolved.
+
+The inspector and Civic modal now patch keyed nodes instead of replacing their whole DOM; search input and button identities are intended to persist. PANEL changes actual desktop viewport width and pointer projection. Metro exit restores surface visibility, camera and inspector state; Undercity opens at a known central rail location. Possession checks nearby collision footprints and uses a higher citizen-anchored camera with shell occlusion relief. Citizens inside buildings start possession at a safe exterior entrance because the interiors are still cutaways, not navigable rooms. Cutaway frames the selected building and exposes its existing interior by hiding the merged exterior shell; per-floor/individual wall cutaways and a true camera sphere-sweep remain outstanding. Rain interventions now log events.
+
+Comparable shipped-runtime headless audit with mock scene adapters: 700 quarter-minute ticks (07:00–09:55), 1,000 citizens, 150 vehicles, no sampled pedestrian/vehicle overlaps, pedestrian pairs closer than 0.60 units, unreserved road occupancy or closed-link vehicles. All 4,938 existing assertions passed.
+
+| Metric | Previous source | Urban Stability candidate |
+|---|---:|---:|
+| Completed vehicle trips | 256 | 239 |
+| Vehicles waiting >20 min at end | 81 | 32 |
+| Citizens at workplaces | 199 | 72 |
+| Pedestrians yielding | 225 | 396 |
+| Completed bus rides | 7 | 4 |
+| Completed metro rides | 118 | 74 |
+| Bus wait timeouts | 6 | 5 |
+
+The traffic result is improved but fails the <5% long-wait gate and the 256-trip target. Citizen movement and transit completion regressions are material; no full Urban Stability release certification. A separate 25-car synthetic fixture completed 42 trips in 800 ticks with zero long waits; this is not representative of full-population demand. Several higher-capacity and movement-specific crossing candidates were tested and rejected rather than deployed. Seven-day stress, true indoor possession, full camera collision, adaptive transit priority, physical device performance and institutional diagnostics remain open.
+
+[Catalog audit](https://github.com/euclidi/euclidi-games/actions/runs/46003059239) reported PASS for Sector Zero's browser launch and rotation (overall catalog run failed on another game). [Dedicated browser audit](https://github.com/euclidi/euclidi-games/actions/runs/46003059408) passed population logic but timed out at the old post-Metro extra-toggle assertion; updated QA now checks automatic restoration, panel resizing, search focus and Civic bounds. Updated browser results are not yet verified. [Pages deployment](https://github.com/euclidi/euclidi-games/actions/runs/46005704241) succeeded for commit f8404f14cf9f0570bb1668d46a83b62ee2aff984; its asset blob SHAs match the implemented runtime changes. Deployment verification does not imply real-device playtesting.
+
 **Snapshot:** 2026-11-26, urban infrastructure commit [ca12a4f](https://github.com/euclidi/euclidi-games/commit/ca12a4f5466fe2f55f0b3db3b20ec21353e42d77).
 
 **Lifecycle:** Active — city simulation.
