@@ -8,6 +8,7 @@ try {
  await page.locator('#boot').waitFor({state:'hidden',timeout:30000});
  assert.equal(await page.locator('#canvas canvas').count(),1);
  await page.screenshot({path:'town-desktop.png'});
+ await page.locator('#canvas canvas').screenshot({path:'town-cover.png'});
  await page.keyboard.down('d');await page.waitForTimeout(450);await page.keyboard.up('d');
  await page.locator('[data-tab=contacts]').click();
  assert.equal(await page.locator('#panel .entry').count(),16);
