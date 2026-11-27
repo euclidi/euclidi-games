@@ -1,0 +1,23 @@
+{
+  "method": "Evaluated actual committed body and rig data in JavaScript. No browser or visual verification.",
+  "bodyBlob": "d26635e9326e3cca30778fd7b9c00062b03cce09",
+  "rigSource": {
+    "repository": "makehumancommunity/makehuman",
+    "skeletonBlob": "b02cbecae00143856410d7561adf006d83bf9b3e",
+    "weightsBlob": "66185806afacf87749be8e5cf6dbf66496b2a6b0",
+    "license": "CC0-1.0",
+    "bodyBlob": "d26635e9326e3cca30778fd7b9c00062b03cce09"
+  },
+  "checks": {
+    "restPositionMaxErrorMetres": 6.661338147750939e-16,
+    "restRestorationMaxErrorMetres": 0,
+    "rootTranslationMaxErrorMetres": 7.077671781985373e-16,
+    "testBone": "lowerarm01.L",
+    "testRotationDegrees": 20,
+    "maximumCoordinateDisplacementMetres": 0.07788762450969855,
+    "maximumBoneLengthErrorMetres": 9.020562075079397e-17,
+    "poseAllFinite": true,
+    "posedGeometryNontrivial": true,
+    "restAndPoseUseSameIndices": true
+  }
+}
