@@ -1,4 +1,6 @@
 # Roadmap
+
+v0.2 correction: seat/atlas integration, physical forecast and drag casting implemented; visual and browser acceptance still open. Full approved scope below remains outstanding.
 All approved features are in scope; these are internal work packages, not user approval gates.
 1. Numerical fidelity: REBOUND reference suite, adaptive high-order encounter integration, true 3D authoritative state, direct Cosserat + XPBD, variable resolution, conservation and continuous collision. Add analytical catenary, bending, drag and buoyancy benchmarks.
 2. Coupled mechanics: actual rod swing and flex, spool inertia and material tension, equipment properties, friction, wrap and self-contact, robust retrieval, atmosphere and prediction.

@@ -27,7 +27,7 @@ Projects are actively developed and may contain unfinished features or experimen
 
 | [RICOCHET](ricochet/README.md) | Development 0.4.3 — adaptive layout, unverified | [Spec](ricochet/SPEC.md) · [Roadmap](ricochet/ROADMAP.md) · [Status](ricochet/STATUS.md) |
 
-| [Lunar Angler](lunar-angler/README.md) | Experimental v0.1 — WASM core, browser unverified | [Spec](lunar-angler/SPEC.md) · [Roadmap](lunar-angler/ROADMAP.md) · [Status](lunar-angler/STATUS.md) |
+| [Lunar Angler](lunar-angler/README.md) | Experimental v0.2 — seat / atlas revision, browser unverified | [Spec](lunar-angler/SPEC.md) · [Roadmap](lunar-angler/ROADMAP.md) · [Status](lunar-angler/STATUS.md) |
 
 | [Night Watch](night-watch/README.md) | Active — retro FPS v0.1.0 | [Spec](night-watch/SPEC.md) · [Roadmap](night-watch/ROADMAP.md) · [Status](night-watch/STATUS.md) |
 

@@ -1,4 +1,21 @@
-# Status — v0.1 experimental (2026-11-27)
+# Status — v0.2 seat-first revision (2026-11-27)
+Revision 3.0 is still incomplete. This revision addresses the weak visual and interaction coherence of v0.1 without discarding its C++/WASM simulation.
+
+## Changes
+- Default lunar-seat perspective, corrected radial camera orientation and launcher muzzle at the same planar anchor as the tether. An original modeled seated surveyor, chair, platform, brass bearing/spool, crank, engraved gauge, elastic carriage, telescope and lamp replace the earlier detached prop grouping. Gear and skyward look controls. A real second viewport of the same Three.js scene provides the live interactive atlas; Atlas remains independently accessible.
+- Drag-to-draw and release on lunar seat, atlas click-to-aim, sliders and existing controls. Predicted trajectory uses a second instance of the unchanged authoritative WASM binary, copying state at the exported-call boundary and advancing the clone with the same integrator, rope, water and collision model. Forecast stops at first water entry or 8 seconds. It may become stale while clock runs; pause for exact forecast. Forecast is not a guarantee of a bite or successful retrieval.
+- Depth-tested line in perspective views, atlas overlay line, improved hook camera with underwater interior surface and suspended particles. Whole ocean textures now match physical whole-water spheres. Fractal planetary textures; distinct fish, eel, ray, jellyfish and squid geometry/visual deformation (not physical biomechanics).
+- Initial clock held for intentional planning; casting begins simulation. Reset is explicitly a whole-system reset. Existing specimen progression and controls retained.
+
+## Local verification (actual compiled v0.1 WASM, unchanged)
+Forecast clone memory verified byte-for-byte non-mutating. Five exact replay comparisons: azimuth -60, -25, +60 no water within 8s; 0° Nereid at 1.733333s; +25° Amber mere at 2.891667s. First entry position and time matched actual replay exactly. Four separate first-world retrieval tests beginning 0, 60, 120 and 600 physics steps after the first bite all recovered specimen 1 without breakage. JS syntax checked by parsing stripped import/export declarations. Browser smoke expanded to verify initial seat, atlas, predicted Nereid path, drag cast, full recovery, mobile layout and journal, and capture screenshots. **Not run locally**: Three.js cannot be downloaded from the container; real visual inspection, browser controls, device performance, and Pages deployment remain unverified.
+
+## Remaining limitations
+The complete v0.1 limitations below still apply except for the implemented independent trajectory forecast and the visual/interface improvements above. Direct Cosserat, REBOUND benchmark, advanced fluids, full biological coupling, actual flexible rod and spool mechanics, authored assets and complete progression are not implemented. The new creature deformation, mechanical movement, and underwater surface are visual approximations. 2D authoritative physics remains a limitation; celestial rotations are visual. No approved cover published.
+
+---
+
+## Previous v0.1 record
 **Revision 3.0 is NOT complete.** This is a partial playable core/build, not a certified release.
 
 ## Implemented
