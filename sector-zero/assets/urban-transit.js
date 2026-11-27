@@ -71,7 +71,7 @@ function avoidCar(b,w,dt){
  if(b.speed<=0)return;
  const d=D[b.dir],tx=b.x+d[0]*70,tz=b.z+d[1]*70;
  // Stop before the marked crossing, not at the middle of the intersection.
- const stop=70-SIDE-(b.bus?4.4:2.35)-.65;
+ const stop=70-SIDE-(b.bus?4.4:2.35)-1.2;
  const locked=phaseLocks.has(nodeKey(tx,tz));
  if((locked||signal(tx,tz,w.time+dt,b.dir)!==b.dir%2)&&b.progress<=stop+.02)b.speed=Math.min(b.speed,Math.max(0,(stop-b.progress)/dt));
  // A vehicle already past the stop line may clear the crosswalk, but cannot enter a locked junction.
@@ -127,8 +127,9 @@ function moveCrowd(w,dt,api){
    let x=c.x+ux*step,z=c.z+uz*step;
    if(!can(x,z)){
     let found=false;
-    if(!st.cross&&offRoad(c.x,c.z))for(const side of [1,-1]){const xx=c.x+uz*step*side+ux*step*.2,zz=c.z-ux*step*side+uz*step*.2;
-     if(offRoad(xx,zz)&&can(xx,zz)&&dist({x:xx,z:zz},p)<len+1.5){x=xx;z=zz;found=true;break;}}
+    if(st.cross||offRoad(c.x,c.z))for(const side of [1,-1]){const xx=c.x+uz*step*side+ux*step*.2,zz=c.z-ux*step*side+uz*step*.2;
+     const permitted=st.cross?(st.cross.axis===0?Math.abs(zz-st.cross.a.z)<=.88:Math.abs(xx-st.cross.a.x)<=.88):offRoad(xx,zz);
+     if(permitted&&can(xx,zz)&&Math.hypot(xx-p.x,zz-p.z)<len+1.0){x=xx;z=zz;found=true;break;}}
     if(!found){c.walkStatus="YIELDING";break;}
    }
    occ.remove(c);c.heading=Math.atan2(x-c.x,z-c.z);c.x=x;c.z=z;occ.add(c);budget-=step;
@@ -141,7 +142,7 @@ function queueSlot(w,c,p){
  const d=D[p.dir],occupied=w.citizens.filter(q=>q!==c&&walking(q));
  for(let i=0;i<32;i++){const along=(i%16)*.94-5,side=Math.floor(i/16)*.96;
  const q={x:p.x+d[0]*along+d[1]*side,z:p.z+d[1]*along-d[0]*side};
- if(!occupied.some(o=>Math.hypot(o.x-q.x,o.z-q.z)<PERSON||o.ride?.queue&&Math.hypot(o.ride.queue.x-q.x,o.ride.queue.z-q.z)<PERSON))return q;}
+ if(offRoad(q.x,q.z)&&!inSolid(q.x,q.z)&&!occupied.some(o=>Math.hypot(o.x-q.x,o.z-q.z)<PERSON||o.ride?.queue&&Math.hypot(o.ride.queue.x-q.x,o.ride.queue.z-q.z)<PERSON))return q;}
  return null;
 }
 
@@ -305,7 +306,7 @@ export function networkMap(){
 }
 export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
- let html='<h2>TRANSIT CONTROL</h2><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap();
+ let html='<h2>TRANSIT CONTROL</h2><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap();
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+served(l)+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.reduce((n,b)=>n+capacity(b),0)+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/'+capacity(b)+' · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
  return html+'<p>Local loops and limited-stop express services support one transfer. Riders compare estimated trip time with walking and queue in arrival order. Select a bus to locate it.</p>';
 }
