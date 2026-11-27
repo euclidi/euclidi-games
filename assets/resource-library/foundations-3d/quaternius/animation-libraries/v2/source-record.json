@@ -1,0 +1,33 @@
+{
+  "source_url": "https://quaternius.itch.io/universal-animation-library-2",
+  "source_archive": "universal-animation-library-2-standard.zip",
+  "source_archive_sha256": "4008ea208a604773a2b2177d965f0f5d3195498b5bf838c3f5785d68e95f2a68",
+  "source_archive_bytes": 18735003,
+  "included_files": [
+    {
+      "path": "License.txt",
+      "bytes": 332,
+      "sha256": "6d01f55c6e4c49a2c9963e147e561945ae2c83958c8ca667d90a6bffdbfac061"
+    },
+    {
+      "path": "Mannequin_F.glb",
+      "bytes": 1442824,
+      "sha256": "2ee6cc3fe888d9b144afa8cc4b2ab7bfc5d13a0d5b7548df777f61f64ad65fa6"
+    },
+    {
+      "path": "README.txt",
+      "bytes": 702,
+      "sha256": "ccd02718886b5a57f10f0a8911a38cfe10c36880e1d6dfa3445923fba32d2a72"
+    },
+    {
+      "path": "UAL2_Standard.glb",
+      "bytes": 8091444,
+      "sha256": "8cee20ab1bc55130092447e810e26df22dd2803eccc54f52137a7d54d7ab88a8"
+    },
+    {
+      "path": "UAL2_Standard_RM.glb",
+      "bytes": 8095936,
+      "sha256": "814eee878f82934992d3ea746c539df25e981487109c591f5efbb8dd03286f99"
+    }
+  ]
+}

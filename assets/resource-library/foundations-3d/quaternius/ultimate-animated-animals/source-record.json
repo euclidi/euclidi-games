@@ -1,0 +1,365 @@
+{
+  "source_url": "https://quaternius.com/packs/ultimateanimatedanimals.html",
+  "official_license": "CC0-1.0; confirmed on the pack page and included LICENSE-CC0.txt",
+  "mirror_repository": "https://github.com/agentkaerf/FreeModels",
+  "mirror_commit": "db3df04d1e4714298a09510b26fb6de6645138a2",
+  "mirror_directory": "Ultimate Animated Animals - July 2021/glTF",
+  "format": "self-contained glTF; embedded binary buffers; no external image references",
+  "source_files": [
+    {
+      "path": "Alpaca.gltf",
+      "bytes": 1463728,
+      "sha256": "b5ca116d9415c5144ae4edde7f0cb82305f94330628134984de51e0158150511"
+    },
+    {
+      "path": "Bull.gltf",
+      "bytes": 3149659,
+      "sha256": "7ac1d75fdc0cfdcbec8b89e171637cb21f696aa71417c4a859e69070f45757f8"
+    },
+    {
+      "path": "Cow.gltf",
+      "bytes": 3153688,
+      "sha256": "71d430213f2ed31c1c33a815679360090d4adb3b76e003a2979875a757865e44"
+    },
+    {
+      "path": "Deer.gltf",
+      "bytes": 3332026,
+      "sha256": "7824c494eae896742396ba78c61d52348a4db56a6180e7ff20436abaca6ece7e"
+    },
+    {
+      "path": "Donkey.gltf",
+      "bytes": 3611197,
+      "sha256": "d203d7707c4a4db827d4e39655ccb251ae8c6d8162acc824f2f971440356978e"
+    },
+    {
+      "path": "Fox.gltf",
+      "bytes": 3207241,
+      "sha256": "1ec162e87a9a83398e560d27c74d18c243820750a2d4aeb15e745fd5c8cc691d"
+    },
+    {
+      "path": "Horse.gltf",
+      "bytes": 3656988,
+      "sha256": "3ccc035352e99f691ed783403284fd83bc412ca6edb157cafabe442a1ea4c639"
+    },
+    {
+      "path": "Horse_White.gltf",
+      "bytes": 3654547,
+      "sha256": "3bf2e7fefaa174172c246452f9fb2715832757692f0f25457559014d5ac43c30"
+    },
+    {
+      "path": "Husky.gltf",
+      "bytes": 3101727,
+      "sha256": "31602a2034af1ec3b48646451717b9f6bcc12d1e7d73ac664150367608e7b7a4"
+    },
+    {
+      "path": "LICENSE-CC0.txt",
+      "bytes": 364,
+      "sha256": "83d8959f9fc56353ed571fbe2dc52e4bcd64508e2399501cd45ac2ce3df0bf8c"
+    },
+    {
+      "path": "ShibaInu.gltf",
+      "bytes": 2934373,
+      "sha256": "6349997a5e7d4935c3473fb5cc8dcb88711be84841b20a2c66f63c10ad6f3eb1"
+    },
+    {
+      "path": "Stag.gltf",
+      "bytes": 3260399,
+      "sha256": "854ef91478826f721e8f7226094b79d670d34f83306ecb20d80db5bffb9a5600"
+    },
+    {
+      "path": "Wolf.gltf",
+      "bytes": 3219863,
+      "sha256": "40d0020c65989d00cd34976650ac503ac36ca682356a5b202e7ad4da058de3ec"
+    }
+  ],
+  "generated_index": {
+    "path": "ANIMATIONS.md",
+    "sha256": "2b3c8daba0d8253d985d4766d3ed7fab3df3b56813d2fd9c621e3ea904d7e8c6"
+  },
+  "models": [
+    {
+      "model": "Alpaca",
+      "file": "Alpaca.gltf",
+      "bones": 46,
+      "meshes": 1,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 1463728,
+      "sha256": "b5ca116d9415c5144ae4edde7f0cb82305f94330628134984de51e0158150511"
+    },
+    {
+      "model": "Bull",
+      "file": "Bull.gltf",
+      "bones": 42,
+      "meshes": 1,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 3149659,
+      "sha256": "7ac1d75fdc0cfdcbec8b89e171637cb21f696aa71417c4a859e69070f45757f8"
+    },
+    {
+      "model": "Cow",
+      "file": "Cow.gltf",
+      "bones": 42,
+      "meshes": 1,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 3153688,
+      "sha256": "71d430213f2ed31c1c33a815679360090d4adb3b76e003a2979875a757865e44"
+    },
+    {
+      "model": "Deer",
+      "file": "Deer.gltf",
+      "bones": 46,
+      "meshes": 1,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 3332026,
+      "sha256": "7824c494eae896742396ba78c61d52348a4db56a6180e7ff20436abaca6ece7e"
+    },
+    {
+      "model": "Donkey",
+      "file": "Donkey.gltf",
+      "bones": 50,
+      "meshes": 1,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 3611197,
+      "sha256": "d203d7707c4a4db827d4e39655ccb251ae8c6d8162acc824f2f971440356978e"
+    },
+    {
+      "model": "Fox",
+      "file": "Fox.gltf",
+      "bones": 51,
+      "meshes": 1,
+      "animations": 12,
+      "animation_names": [
+        "Attack",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_2_HeadLow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_ToIdle",
+        "Walk"
+      ],
+      "bytes": 3207241,
+      "sha256": "1ec162e87a9a83398e560d27c74d18c243820750a2d4aeb15e745fd5c8cc691d"
+    },
+    {
+      "model": "Horse",
+      "file": "Horse.gltf",
+      "bones": 50,
+      "meshes": 1,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 3656988,
+      "sha256": "3ccc035352e99f691ed783403284fd83bc412ca6edb157cafabe442a1ea4c639"
+    },
+    {
+      "model": "Horse_White",
+      "file": "Horse_White.gltf",
+      "bones": 50,
+      "meshes": 1,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 3654547,
+      "sha256": "3bf2e7fefaa174172c246452f9fb2715832757692f0f25457559014d5ac43c30"
+    },
+    {
+      "model": "Husky",
+      "file": "Husky.gltf",
+      "bones": 49,
+      "meshes": 1,
+      "animations": 12,
+      "animation_names": [
+        "Attack",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_2_HeadLow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_ToIdle",
+        "Walk"
+      ],
+      "bytes": 3101727,
+      "sha256": "31602a2034af1ec3b48646451717b9f6bcc12d1e7d73ac664150367608e7b7a4"
+    },
+    {
+      "model": "ShibaInu",
+      "file": "ShibaInu.gltf",
+      "bones": 46,
+      "meshes": 1,
+      "animations": 12,
+      "animation_names": [
+        "Attack",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_2_HeadLow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_ToIdle",
+        "Walk"
+      ],
+      "bytes": 2934373,
+      "sha256": "6349997a5e7d4935c3473fb5cc8dcb88711be84841b20a2c66f63c10ad6f3eb1"
+    },
+    {
+      "model": "Stag",
+      "file": "Stag.gltf",
+      "bones": 38,
+      "meshes": 2,
+      "animations": 13,
+      "animation_names": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "bytes": 3260399,
+      "sha256": "854ef91478826f721e8f7226094b79d670d34f83306ecb20d80db5bffb9a5600"
+    },
+    {
+      "model": "Wolf",
+      "file": "Wolf.gltf",
+      "bones": 51,
+      "meshes": 1,
+      "animations": 12,
+      "animation_names": [
+        "Attack",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_2_HeadLow",
+        "Idle_HitReact1",
+        "Idle_HitReact2",
+        "Jump_ToIdle",
+        "Walk"
+      ],
+      "bytes": 3219863,
+      "sha256": "40d0020c65989d00cd34976650ac503ac36ca682356a5b202e7ad4da058de3ec"
+    }
+  ]
+}

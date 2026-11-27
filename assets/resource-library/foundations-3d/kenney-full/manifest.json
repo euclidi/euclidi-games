@@ -1,0 +1,162 @@
+{
+  "source_repo": "https://github.com/Hidencod/tge-assets",
+  "source_commit": "e5bd31ec8b339b25d66dd5816a21dd517bd1ae87",
+  "format": "self-contained GLB models, per-pack source archives",
+  "packs": [
+    {
+      "pack": "blaster-kit",
+      "models": 40,
+      "raw_bytes": 1674272,
+      "archive": "blaster-kit.zip",
+      "archive_bytes": 571692,
+      "sha256": "fdc76d0f82c189468a65a4fa4ea4fcb55cb3abedefc670762ca7ff8676d0665e"
+    },
+    {
+      "pack": "blocky-characters",
+      "models": 18,
+      "raw_bytes": 2310152,
+      "archive": "blocky-characters.zip",
+      "archive_bytes": 541428,
+      "sha256": "560636e121b0e45b43477e118bd176bc103fb1cb1bf40d94cea816ba41d336e5"
+    },
+    {
+      "pack": "car-kit",
+      "models": 50,
+      "raw_bytes": 6245544,
+      "archive": "car-kit.zip",
+      "archive_bytes": 1686870,
+      "sha256": "97061d7560d67b486584e2603c041a823b72e50dd09e2422bf33caa5d9644de1"
+    },
+    {
+      "pack": "castle-kit",
+      "models": 76,
+      "raw_bytes": 2653880,
+      "archive": "castle-kit.zip",
+      "archive_bytes": 927694,
+      "sha256": "ea6b18fe4370ef4470d23891b8b3656396cd38c68c9fd3459623613b4cd85270"
+    },
+    {
+      "pack": "city-kit-commercial",
+      "models": 41,
+      "raw_bytes": 4192244,
+      "archive": "city-kit-commercial.zip",
+      "archive_bytes": 904173,
+      "sha256": "9608f8740b02c2fe3469a1973db137013af4800616581ddb5d8f99b071fdd7f7"
+    },
+    {
+      "pack": "city-kit-roads",
+      "models": 95,
+      "raw_bytes": 2657536,
+      "archive": "city-kit-roads.zip",
+      "archive_bytes": 1317229,
+      "sha256": "2c1bac0eddea24510e09a5ffb6192bc0c7930b79c4e3f9e66cbd04f0b9cdc8d6"
+    },
+    {
+      "pack": "city-kit-suburban",
+      "models": 40,
+      "raw_bytes": 3082288,
+      "archive": "city-kit-suburban.zip",
+      "archive_bytes": 930760,
+      "sha256": "95ddd80bd69c11a622be5bac8c1def4fc172a29f69d547d7f14044b9c1d11420"
+    },
+    {
+      "pack": "cube-pets",
+      "models": 24,
+      "raw_bytes": 3584108,
+      "archive": "cube-pets.zip",
+      "archive_bytes": 766649,
+      "sha256": "a53be102a17f6a08235a37cbcbd17cc55accebf63a0a0a11d7559e033a5b5863"
+    },
+    {
+      "pack": "food-kit",
+      "models": 200,
+      "raw_bytes": 5503128,
+      "archive": "food-kit.zip",
+      "archive_bytes": 2935785,
+      "sha256": "dfff9c6072d127d9d01f48a2df45b8687c48c152cc08f95b67ef84a6093a3805"
+    },
+    {
+      "pack": "furniture-kit",
+      "models": 140,
+      "raw_bytes": 1960832,
+      "archive": "furniture-kit.zip",
+      "archive_bytes": 503702,
+      "sha256": "6a86f4228e9764bca13c9f40c8b63ef57a507a9f1e88141305ed0d5f23d22035"
+    },
+    {
+      "pack": "graveyard-kit",
+      "models": 91,
+      "raw_bytes": 4339764,
+      "archive": "graveyard-kit.zip",
+      "archive_bytes": 1552309,
+      "sha256": "1fcf5dc875932df93815efcc32d520139c2057473039275228bf607fba71b981"
+    },
+    {
+      "pack": "mini-characters",
+      "models": 26,
+      "raw_bytes": 3617048,
+      "archive": "mini-characters.zip",
+      "archive_bytes": 759750,
+      "sha256": "c7a3bde685d8ef7017a5cdf3fbaa3557f59186079cad438b9d3150f375843a21"
+    },
+    {
+      "pack": "mini-dungeon",
+      "models": 30,
+      "raw_bytes": 1218528,
+      "archive": "mini-dungeon.zip",
+      "archive_bytes": 433377,
+      "sha256": "2f99c38b7934cb02fb1977fbf96d653ded30f9f2e32c149aa467fa3a43c6a1c4"
+    },
+    {
+      "pack": "nature-kit",
+      "models": 329,
+      "raw_bytes": 3034372,
+      "archive": "nature-kit.zip",
+      "archive_bytes": 961468,
+      "sha256": "7c636ad21c09251bde4a6cfcbb8712a003470fc3fa0b8982bf35b1de77244593"
+    },
+    {
+      "pack": "pirate-kit",
+      "models": 72,
+      "raw_bytes": 3736360,
+      "archive": "pirate-kit.zip",
+      "archive_bytes": 1177057,
+      "sha256": "c6770af354903226572f712209a7cfbbef0d82088c54052555168aa16f894289"
+    },
+    {
+      "pack": "platformer-kit",
+      "models": 153,
+      "raw_bytes": 4911304,
+      "archive": "platformer-kit.zip",
+      "archive_bytes": 2163273,
+      "sha256": "08b6438c9c2a93a028fe51f78d052c16a689f04ca1f808992d5f05a2311a50f9"
+    },
+    {
+      "pack": "prototype-kit",
+      "models": 145,
+      "raw_bytes": 3132988,
+      "archive": "prototype-kit.zip",
+      "archive_bytes": 1602570,
+      "sha256": "61f502803cecf855bd8c659b5b04c0191aee6020e8d58003e3ad35047e65a0bc"
+    },
+    {
+      "pack": "space-kit",
+      "models": 153,
+      "raw_bytes": 2015564,
+      "archive": "space-kit.zip",
+      "archive_bytes": 525027,
+      "sha256": "e334c5a537aa9bb2fa8c1f54f59d2978d9f5e87d6cb6f23d170d6da2777603e8"
+    },
+    {
+      "pack": "tower-defense-kit",
+      "models": 160,
+      "raw_bytes": 7644448,
+      "archive": "tower-defense-kit.zip",
+      "archive_bytes": 2970438,
+      "sha256": "15ec4ed7d271cf575ced785c167a7d047fd0a4ec94fb6247c169e5b57a91d61c"
+    }
+  ],
+  "models": 1883,
+  "raw_bytes": 67514360,
+  "archive_bytes": 23231251
+}
