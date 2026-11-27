@@ -1,0 +1,59 @@
+{
+  "method": "Official 720 vertex skirt fit helper, posed with imported skeleton. Twelve 1/120 s steps, gravity and brief airflow. Short numeric test, not final garment or browser playtest.",
+  "results": {
+    "neutral": {
+      "vertices": 720,
+      "anchors": 59,
+      "stretchConstraints": 2088,
+      "bendConstraints": 2016,
+      "maxRelativeStretch": 2.163203223101245,
+      "meanRelativeStretch": 0.014529791469179371,
+      "anchorError": 0,
+      "finite": true,
+      "simulatedSeconds": 0.1,
+      "contacts": 537,
+      "projectionFailures": 0,
+      "bindFailures": 0,
+      "minimumVertexClearance": 0.003000999999999926,
+      "penetratingVertices": 0,
+      "maxMotionMetres": 0.029112358045023812,
+      "resetError": 0
+    },
+    "wide": {
+      "vertices": 720,
+      "anchors": 59,
+      "stretchConstraints": 2088,
+      "bendConstraints": 2016,
+      "maxRelativeStretch": 0.18605121563174198,
+      "meanRelativeStretch": 0.01165969203201036,
+      "anchorError": 0,
+      "finite": true,
+      "simulatedSeconds": 0.1,
+      "contacts": 616,
+      "projectionFailures": 0,
+      "bindFailures": 0,
+      "minimumVertexClearance": 0.003000537976211381,
+      "penetratingVertices": 0,
+      "maxMotionMetres": 0.03015231268789057,
+      "resetError": 0
+    },
+    "shift": {
+      "vertices": 720,
+      "anchors": 59,
+      "stretchConstraints": 2088,
+      "bendConstraints": 2016,
+      "maxRelativeStretch": 0.24409538502499695,
+      "meanRelativeStretch": 0.013837138342381448,
+      "anchorError": 0,
+      "finite": true,
+      "simulatedSeconds": 0.1,
+      "contacts": 504,
+      "projectionFailures": 0,
+      "bindFailures": 0,
+      "minimumVertexClearance": 0.0030009999999999395,
+      "penetratingVertices": 0,
+      "maxMotionMetres": 0.03632764389686992,
+      "resetError": 0
+    }
+  }
+}
