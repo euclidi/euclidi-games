@@ -27,6 +27,8 @@ Projects are actively developed and may contain unfinished features or experimen
 
 | [RICOCHET](ricochet/README.md) | Development 0.4.3 — adaptive layout, unverified | [Spec](ricochet/SPEC.md) · [Roadmap](ricochet/ROADMAP.md) · [Status](ricochet/STATUS.md) |
 
+| [Lunar Angler](lunar-angler/README.md) | Experimental v0.1 — WASM core, browser unverified | [Spec](lunar-angler/SPEC.md) · [Roadmap](lunar-angler/ROADMAP.md) · [Status](lunar-angler/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
