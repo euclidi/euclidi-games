@@ -212,6 +212,13 @@ function occupancy(w){
  return{add,remove,free};
 }
 function offRoad(x,z){return plazas.some(p=>Math.abs(x-p.x)<(p.dir===0?4.5:24)&&Math.abs(z-p.z)<(p.dir===0?24:4.5))||Math.abs(x-nearestGrid(x))>=roadHalf(nearestGrid(x))+.42&&Math.abs(z-nearestGrid(z))>=roadHalf(nearestGrid(z))+.42;}
+export function streetCollisionShapes(){return streetSolids.map(o=>({...o,h:o.h||1.15}));}
+export function manualCanMove(c,x,z){
+ if(!currentWorld)return true;
+ for(const b of currentWorld.cars){const r=carRect(b);if(intersects({x,z},r,.30)&&(!intersects(c,r,.30)||Math.hypot(x-r.x,z-r.z)<=Math.hypot(c.x-r.x,c.z-r.z)))return false;}
+ for(const p of currentWorld.citizens){if(p===c||!walking(p)||walkState.get(p)?.departing)continue;const old=Math.hypot(c.x-p.x,c.z-p.z),next=Math.hypot(x-p.x,z-p.z);if(next<.68&&next<=old)return false;}
+ return true;
+}
 function inSolid(x,z){const hit=o=>Math.abs(x-o.x)<o.w/2+.25&&Math.abs(z-o.z)<o.l/2+.25;return solids.some(hit)||streetSolids.some(hit);}
 function destination(w,c){const r=c.ride;return r?.phase==="approach"?(r.queue||(r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from])):w.buildings[c.goal]?.door;}
 function moveCrowd(w,dt,api){
@@ -260,7 +267,7 @@ function moveCrowd(w,dt,api){
    if(Math.hypot(x-p.x,z-p.z)<len-.05)st.stall=Math.max(0,(st.stall||0)-dt);occ.remove(c);c.heading=Math.atan2(x-c.x,z-c.z);c.x=x;c.z=z;occ.add(c);budget-=step;
    if(Math.hypot(p.x-c.x,p.z-c.z)<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;}
   }
-  c.walkingNow=Math.hypot(c.x-oldX,c.z-oldZ)>.025;c.walkDistance=(c.walkDistance||0)+Math.hypot(c.x-oldX,c.z-oldZ);
+  c.crossing=st.cross?{...st.cross}:null;c.walkingNow=Math.hypot(c.x-oldX,c.z-oldZ)>.025;c.walkDistance=(c.walkDistance||0)+Math.hypot(c.x-oldX,c.z-oldZ);
   if(!c.route.length&&!c.ride&&Math.hypot(c.x-target.x,c.z-target.z)<.1){occ.remove(c);c.inside=c.goal;st.cross=null;}
  }
 }
@@ -409,7 +416,14 @@ const variants={
  Clinic:["Hospital","Community clinic","Dispensary"]
 };
 export function prepare(w){
- if(currentWorld!==w){junctions.clear();phaseLocks.clear();transitPriority.clear();trees.clear();crowdEpoch=-1;for(const b of w.buildings){const a=entranceAnchors.get(b.id);if(a&&b.door)Object.assign(b.door,a);}currentWorld=w;}
+ if(currentWorld!==w){
+  junctions.clear();phaseLocks.clear();transitPriority.clear();trees.clear();crowdEpoch=-1;
+  for(const b of w.buildings){const a=entranceAnchors.get(b.id);if(a&&b.door)Object.assign(b.door,a);}
+  for(const c of w.citizens){const cross=c.crossing||c.route?.[0]?.cross;
+   if(walking(c)&&cross?.a&&cross?.b&&Number.isFinite(cross.x)&&Number.isFinite(cross.z)&&!offRoad(c.x,c.z)){walkState.set(c,{cross,path:c.route,key:null});phaseLocks.add(nodeKey(cross.x,cross.z));}
+  }
+  currentWorld=w;
+ }
  initMetro(w);
  if(w.transit?.revision===3&&w.architectureRevision===3){migrateStreetNetwork(w);return w;}
  // Use a rolling subtype counter per functional category, with a deterministic offset.
@@ -484,7 +498,7 @@ export function after(w,dt,api){
  for(const b of w.cars){b.speed=b.driveSpeed;b.wait=b.oldWait;delete b.oldWait;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
  for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;if(b.bay==="enter")b.bay="parked";}
- for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;}}
+ for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
  for(const c of w.citizens){
  if(c.id===w.possessed){delete c.ride;continue}
  let r=c.ride;
