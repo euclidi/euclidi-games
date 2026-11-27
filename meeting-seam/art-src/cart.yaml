@@ -1,0 +1,56 @@
+spritekiln: 1
+name: cart
+kind: prop
+size: 128
+directions: 1
+palette: [gothic.yaml, props-palette.yaml]
+camera: {pitch: 12, scale: 0.015, center: [0, 0.4, 0]}
+materials:
+  metal: {ramp: mine_metal}
+  steel: {ramp: steel}
+  green: {ramp: mine_green}
+  wood: {ramp: mine_wood}
+  darkwood: {ramp: mine_wood, bands: [0, 2]}
+  rock: {ramp: mine_rock}
+  flame: {ramp: flame, emissive: true, band: 3}
+  core: {ramp: flame, emissive: true, band: 4}
+channels: {}
+bones: {}
+parts:
+  tub:
+    material: metal
+    prims:
+      - box: {c: [0, 0.51, 0], half: [0.43, 0.24, 0.63], round: 0.07}
+    cut:
+      - box: {c: [0, 0.72, 0], half: [0.36, 0.29, 0.56], round: 0.05}
+  rim:
+    material: steel
+    prims:
+      - box: {c: [0.41, 0.74, 0], half: [0.045, 0.035, 0.65], round: 0.015}
+      - box: {c: [-0.41, 0.74, 0], half: [0.045, 0.035, 0.65], round: 0.015}
+      - box: {c: [0, 0.74, 0.62], half: [0.43, 0.035, 0.04]}
+      - box: {c: [0, 0.74, -0.62], half: [0.43, 0.035, 0.04]}
+  ribs:
+    material: steel
+    prims:
+      - box: {c: [0.43, 0.50, -0.42], half: [0.025, 0.20, 0.04], round: 0.01}
+      - box: {c: [0.43, 0.50, 0], half: [0.025, 0.20, 0.04], round: 0.01}
+      - box: {c: [0.43, 0.50, 0.42], half: [0.025, 0.20, 0.04], round: 0.01}
+      - box: {c: [-0.43, 0.50, -0.42], half: [0.025, 0.20, 0.04], round: 0.01}
+      - box: {c: [-0.43, 0.50, 0], half: [0.025, 0.20, 0.04], round: 0.01}
+      - box: {c: [-0.43, 0.50, 0.42], half: [0.025, 0.20, 0.04], round: 0.01}
+  wheels:
+    material: metal
+    prims:
+      - cylinder: {a: [-0.49, 0.16, -0.39], b: [0.49, 0.16, -0.39], r: 0.155}
+      - cylinder: {a: [-0.49, 0.16, 0.39], b: [0.49, 0.16, 0.39], r: 0.155}
+  hubs:
+    material: steel
+    prims:
+      - cylinder: {a: [-0.50, 0.16, -0.39], b: [0.50, 0.16, -0.39], r: 0.066}
+      - cylinder: {a: [-0.50, 0.16, 0.39], b: [0.50, 0.16, 0.39], r: 0.066}
+animations:
+  idle:
+    frames: 1
+    ms: 100
+    channels: {}
