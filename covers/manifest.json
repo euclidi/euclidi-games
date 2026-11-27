@@ -8,8 +8,8 @@
     ],
     "route": "./backyard-astronaut/v2/",
     "selector": "canvas",
-    "sha256": "8138de799d2fb45e0b86225dc0e292479cfed4dec4efa1eeda00283fa7846553",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "9ff348297888170727b3ec430cadb36758f641488bacef1c068be9984733083d",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -24,8 +24,8 @@
     ],
     "route": "./brick-breaker/?v=0.3",
     "selector": "#field",
-    "sha256": "efc0f6148a2b05cab0d2a85d0caff864ebb7bc5e5013fba1edd0bb3a27664268",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "9a3ed6adafbf72fa3f958c3d51d3785245f5572cf600562f90e0a578f2d62e6c",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -40,8 +40,8 @@
     ],
     "route": "./dojo/",
     "selector": "#c",
-    "sha256": "640a8133f0e4f8954ca5bb6e53d468e55bc6d79ecf9687accfbcf9176eb3d198",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "3f7c6a9f5c26795b9ebec4a5c9242d64b7a240fdacaab30088db7cf0bb9d2717",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -56,8 +56,8 @@
     ],
     "route": "./dummy-lab-w18/",
     "selector": "canvas",
-    "sha256": "d8b24dc3ee6ddd5ddbfe8c4f2639a09767483e6885f8e3450ff3a57b50c88902",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "266b55b483ccb8067b0103a21805a2cffcd88601a4a6cd33de7c6969eaf24ed6",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -73,7 +73,7 @@
     "route": "./night-watch/",
     "selector": "#game",
     "sha256": "ab8ca496e31e1d1a2fbd190a936ac113874ec1fb11fc7ae90f1290f1328160d2",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -88,8 +88,8 @@
     ],
     "route": "./pacman/",
     "selector": "#board canvas",
-    "sha256": "899edc00affb5a4d585a2f2fc6e9d96546f7899f7b38cb26fada906385e05b32",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "1ce4ec98d296dc60f9e8cff0373f860922047cc161febdce9b8b7ea283b843c5",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -104,8 +104,8 @@
     ],
     "route": "./ricochet/?v=0.4.3",
     "selector": "#screen canvas",
-    "sha256": "1ae1935ab025f215622065a23f6ec7d28f48bc502765fafc89c909f0de49b5d2",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "a703240b1adbab5fdfa0a0770b47eb13c5cfd6506e4033de723e6e15f4ba94f2",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -120,8 +120,8 @@
     ],
     "route": "./sanctuary/",
     "selector": "#view",
-    "sha256": "40b76f07916851be97e66cc524c0bdb35f3a671252dd7be8fd101f6e6b2cb83c",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "cdcd613a13ad82a2997a37768642e433b27a6b539626b8d5a5e77f48d3509f96",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -137,7 +137,7 @@
     "route": "./sector-zero/",
     "selector": "#game canvas",
     "sha256": "27a0799f676e8b75686a153534006fc394891712b491fde305dc325ecd6d3ca6",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -152,8 +152,8 @@
     ],
     "route": "./snake/?v=0.1.7",
     "selector": "#device",
-    "sha256": "08100d1d9c9575d42ec5cd559b53b30d33c131b1fe13f6e28c444b74cb1d9702",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "3dbb0173f1a83dd422c8a179d1a448725a297d89e94bc0ba3946a6803f916413",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
@@ -168,8 +168,8 @@
     ],
     "route": "./meeting-seam/",
     "selector": "#cave",
-    "sha256": "3cf2549b01e7ddf7abc10c4f26b0dd2fb9d0f20525683650eea1f0ef8e101746",
-    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "sha256": "d7a0e418ca5d323506f961fee0bc579c841c27bc964f2d56f727206bca1e6d23",
+    "source": "311fb868d8cedcd50667f4950b5d79a8de294fd5",
     "viewport": [
       1280,
       800
