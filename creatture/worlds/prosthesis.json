@@ -1,0 +1,62 @@
+{
+  "name": "Prosthesis",
+  "branches": [
+    {
+      "focus": 4,
+      "first": 5,
+      "second": 6,
+      "ends": [
+        {
+          "title": "Actuator host",
+          "description": "Reinforced structures develop motor support.",
+          "secret": false,
+          "palette": 0
+        },
+        {
+          "title": "Neural chassis",
+          "description": "A reinforced host develops early neural coordination.",
+          "secret": false,
+          "palette": 1
+        }
+      ]
+    },
+    {
+      "focus": 6,
+      "first": 11,
+      "second": 10,
+      "ends": [
+        {
+          "title": "Electroactive host",
+          "description": "Neural tissue responds to electrical-like resonance.",
+          "secret": false,
+          "palette": 2
+        },
+        {
+          "title": "Adaptive interface",
+          "description": "Catalyst-driven neural development changes the interface.",
+          "secret": false,
+          "palette": 3
+        }
+      ]
+    },
+    {
+      "focus": 0,
+      "first": 7,
+      "second": 9,
+      "ends": [
+        {
+          "title": "Secret graft",
+          "description": "Microbial support develops within a protective membrane.",
+          "secret": true,
+          "palette": 4
+        },
+        {
+          "title": "Thermal insulator",
+          "description": "The host develops an insulating membrane.",
+          "secret": true,
+          "palette": 5
+        }
+      ]
+    }
+  ]
+}

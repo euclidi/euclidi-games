@@ -1,6 +1,7 @@
 use serde::{Serialize,Deserialize};
 use wasm_bindgen::prelude::*;
 use rapier3d::prelude::*;
+mod content;
 mod mechanics;
 use mechanics::Mechanics;
 mod biology;
@@ -18,7 +19,7 @@ fn world(id:usize)->World {
 }
 #[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]
 struct Specimen {
- version:u32, network:Network, mechanics:Mechanics, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, position:[f64;3], velocity:[f64;3]
+ version:u32, network:Network, mechanics:Mechanics, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, outcome_detail:String, outcome_palette:usize, position:[f64;3], velocity:[f64;3]
 }
 fn rng(s:&mut u32)->f64{*s=s.wrapping_mul(1664525).wrapping_add(1013904223);*s as f64/4294967296.}
 fn bounded(x:f64)->f64{x.clamp(0.,1.)}
@@ -26,7 +27,7 @@ impl Specimen {
  fn new(id:usize,mut seed:u32)->Self{
   let original=seed; let mut genome=[0.;8];for x in &mut genome{*x=0.25+rng(&mut seed)*0.5;}
   let env=world(id);
-  Self{version:3,network:Network::new(),mechanics:Mechanics::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),position:[0.,0.7,0.],velocity:[0.;3]}
+  Self{version:3,network:Network::new(),mechanics:Mechanics::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),outcome_detail:String::new(),outcome_palette:0,position:[0.,0.7,0.],velocity:[0.;3]}
  }
  fn valid(&self)->bool {
   self.version==3 && self.network.valid() && self.mechanics.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
@@ -93,17 +94,10 @@ impl Specimen {
   self.neural=self.network.activation[2];
  }
  fn classify(&mut self){
-  if self.turn<12 {self.outcome.clear();return;}
-  let a=self.organs;
-  self.outcome=match self.world_id{
-   0=>if a[5]+a[6]>3.2{"Ambulatory symbiont"}else{"Quiet membrane"},
-   1=>if a[2]+a[11]>3.2{"Pelagic resonator"}else{"Benthic refuge"},
-   2=>if a[7]+a[8]>3.2{"Spore network"}else{"Dormant colony"},
-   3=>if a[4]+a[9]>3.2{"Thermal lattice"}else{"Mineral husk"},
-   4=>if a[4]+a[6]+a[11]>4.7{"Electroactive host"}else{"Isolated conductor"},
-   _=>if a[7]+a[6]>3.2{"Social symbiont"}else{"Solitary survivor"}
-  }.into();
+  if let Some(ending)=content::resolve(self.world_id,&self.history,&self.organs){self.outcome=ending.title;self.outcome_detail=ending.description;self.outcome_palette=ending.palette;}
+  else{self.outcome.clear();self.outcome_detail.clear();self.outcome_palette=0;}
  }
+
 }
 struct ContactWorld{
  pipeline:PhysicsPipeline,islands:IslandManager,broad:BroadPhaseMultiSap,narrow:NarrowPhase,bodies:RigidBodySet,colliders:ColliderSet,joints:ImpulseJointSet,multibody:MultibodyJointSet,ccd:CCDSolver,body:RigidBodyHandle
@@ -142,9 +136,10 @@ impl Engine{
  pub fn environment(&mut self,water:f64,light:f64,temperature:f64){if [water,light,temperature].iter().all(|v|v.is_finite()){self.state.environment.water=bounded(water);self.state.environment.light=bounded(light);self.state.environment.temperature=bounded(temperature);}}
  pub fn stimulate(&mut self,strength:f64){self.state.network.cue(strength);}
  pub fn damage(&mut self,site:usize,amount:f64){self.state.network.damage(site,amount);}
+ pub fn state_hash(&self)->String{let mut h=14695981039346656037u64;for b in self.snapshot().bytes(){h^=b as u64;h=h.wrapping_mul(1099511628211);}format!("{:016x}",h)}
  pub fn snapshot(&self)->String{serde_json::to_string(&self.state).unwrap_or_default()}
  pub fn restore(&mut self,json:&str)->bool{if let Ok(s)=serde_json::from_str::<Specimen>(json){if s.valid(){self.physics=ContactWorld::new(s.position,s.velocity);self.state=s;return true;}}false}
- pub fn transfer(&mut self,id:usize)->bool{if id>=6{return false;}let target=world(id);let tolerance=0.28+0.4*self.state.genome[1]+0.08*self.state.organs[0];if (target.temperature-self.state.environment.temperature).abs()>tolerance{return false;}self.state.world_id=id;self.state.environment=world(id);self.state.mechanics=Mechanics::new();true}
+ pub fn transfer(&mut self,id:usize)->bool{if id>=6{return false;}let target=world(id);let tolerance=0.28+0.4*self.state.genome[1]+0.08*self.state.organs[0];if (target.temperature-self.state.environment.temperature).abs()>tolerance{return false;}self.state.world_id=id;self.state.environment=world(id);self.state.mechanics=Mechanics::new();self.state.classify();true}
  pub fn breed(&mut self,other:&str,mut seed:u32)->bool{
   if let Ok(p)=serde_json::from_str::<Specimen>(other){if p.valid()&&self.state.reserve>0.1&&p.generation<1000{
    let original=seed;let mut child=Specimen::new(self.state.world_id,original);
@@ -158,6 +153,7 @@ impl Engine{
 mod tests{
  use super::*;
  #[test]fn deterministic_and_mass_balance(){for w in 0..6{let mut a=Specimen::new(w,7);let mut b=a.clone();for i in 0..N{assert!(a.introduce(i,1.,72,true));assert!(b.introduce(i,1.,72,true));assert_eq!(a,b);assert!(a.valid());}assert!(!a.introduce(0,1.,0,true));assert!(!a.outcome.is_empty());}}
+ #[test]fn authored_routes_reachable(){for w in 0..6{for (name,order) in content::candidate_orders(w){let mut a=Specimen::new(w,1731);for i in order{assert!(a.introduce(i,1.,72,true));}assert_eq!(a.outcome,name,"world {}",w);assert!(a.valid());}}}
  #[test]fn order_changes_anatomy(){let mut a=Specimen::new(0,3);let mut b=a.clone();for i in 0..N{a.introduce(i,1.,72,true);b.introduce(N-1-i,1.,72,true);}assert_ne!(a.organs,b.organs);}
  #[test]fn starvation_nonnegative(){let mut a=Specimen::new(0,9);for _ in 0..10000{a.bio_step();}assert!(a.valid());}
  #[test]fn damaged_organs_restrict_growth(){let mut a=Specimen::new(0,9);let mut b=a.clone();a.network.damage(Network::region_for(5),1.);a.introduce(5,1.,72,true);b.introduce(5,1.,72,true);assert!(a.organs[5]<b.organs[5]);assert!(a.valid());assert!(b.valid());}
