@@ -2,7 +2,7 @@ import * as T from 'three';import {V,Q,UP} from './geometry.js';import {ACTIONS,
 import {stepProfile,captureOffset,spring} from './dynamics.js?v=1.11';import {createFallRig} from './physical.js?v=1.14';
 import {groundProbe,targetFoot} from './gait.js?v=1.14';
 import {createCompliance,angularStep} from './motion.js?v=1.14';import {swingCurve} from './locomotion-math.js?v=1.13';
-import {createActiveRig} from './active.js?v=1.15';
+import {createActiveRig} from './active.js?v=1.15.1';
 const forward=y=>V(Math.sin(y),0,Math.cos(y)),right=y=>V(Math.cos(y),0,-Math.sin(y)),durations={'wander':5,'jog':3,'backpedal':2.2,'sidestep':2.5,'tiptoe':3,'inspect':3,'stretch':3,'scratch head':3.5,'shrug':2,'wave':3,'inspect hands':3,'hands on hips':3,'dance':5,'crouch':3,'look at player':3,'approach player':4,'retreat':3,'startle':1,'brace':1.5,'duck':1.5,'avoid prop':2,'knock on glass':4,'head tilt':3,'hands on knees':4.5,'jump':2.2,'exercise':8,'wall push-ups':8,'handstand push-ups':10,'pick up item':5,'carry item':4,'throw item':2.6,'drop item':1.6,'recover':2.8,'stumble':1.5};
 const moving=new Set(['wander','jog','backpedal','sidestep','tiptoe','dance','approach player','retreat','avoid prop']);
 export function createDummy(scene,event,lab,R,world){const r=makeRig(scene),center=V(0,0,-1.2),plants=[V(-.15,.075,-1.2),V(.15,.075,-1.2)],goal=V(),history=[];let yaw=0,clock=0,age=0,seed=723,action='wander',phase='walk',step=null,next=0,manual=false,knocks=0,reach=0,cool=0,curiosity=.6,boredom=.3,wariness=.05,playfulness=.6;const fall=createFallRig(R,world,r),active=createActiveRig(R,world,r),compliance=createCompliance(r),velocity=V(),disturbance=V(),lastVel=V(),acceleration=V();let pelvisY=.89,pelvisV=0,hipShift=0,hipShiftV=0,strideSign=0,stepCount=0;let pending=null,transition=null,fallAge=0,recovery=null,item=null,gripStart=null,gripStage=false,dropStage=false,stability=0,tripCooldown=0,stepRoll=[0,0],footHeading=[0,0],weight=[.5,.5],motionAge=0;
@@ -78,7 +78,7 @@ function walk(dt){
  }else{weight=[.5,.5];for(let i=0;i<2;i++)stepRoll[i]+=(Number(tip)*.42-stepRoll[i])*(1-Math.exp(-dt*12))}
  const support=plants[0].clone().multiplyScalar(weight[0]).addScaledVector(plants[1],weight[1]);support.y=0;
  stability=center.clone().add(V(captureOffset(velocity.x),0,captureOffset(velocity.z))).distanceTo(support);
- if(stability>.66&&disturbance.length()>.40&&tripCooldown>0){startFall(velocity.clone().add(disturbance));return false}
+ if(!active.live&&stability>.66&&disturbance.length()>.40&&tripCooldown>0){startFall(velocity.clone().add(disturbance));return false}
  const targetShift=clamp(support.clone().sub(center).dot(right(yaw))*.58,-.09,.09);
  [hipShift,hipShiftV]=angularStep(hipShift,hipShiftV,targetShift,dt,11,.88);
  const spread=Math.hypot(plants[0].x-plants[1].x,plants[0].z-plants[1].z);

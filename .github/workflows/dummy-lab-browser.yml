@@ -28,6 +28,9 @@ jobs:
       - run: |
           npm install --no-save --no-package-lock playwright@1.56.1 three@0.180.0 @dimforge/rapier3d-compat@0.17.3
           npx playwright install --with-deps chromium
+      - name: Active rigid-body stability acceptance (experimental)
+        continue-on-error: true
+        run: node dummy-lab-w18/active-audit.mjs
       - name: Browser audit using pinned local dependency bytes
         run: |
           mkdir -p "$RUNNER_TEMP/site/dummy-lab-w18/vendor/three" "$RUNNER_TEMP/site/dummy-lab-w18/vendor/rapier"

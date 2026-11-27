@@ -103,7 +103,7 @@ export function createActiveRig(R,world,r){
   if(pp.y<.48||upright<.48||maxAnchorError>.22)badTime+=dt;else badTime=Math.max(0,badTime-dt*2);
   if(age>.35&&badTime>.18)release();
  }
- function sync(){for(const p of parts)write(p.g,v(p.b.translation()),q(p.b.rotation()))}
+ function sync(){if(!pelvis)return;r.root.position.copy(pelvis.b.translation());r.root.updateMatrixWorld(true);for(const p of parts)write(p.g,v(p.b.translation()),q(p.b.rotation()))}
  function release(){if(mode==='active'){mode='falling';fallAge=0;effort=assist=0}}
  function tickFall(dt){fallAge+=dt;measure(dt);sync();return fallAge>2.5&&velocity.length()<.35||fallAge>7}
  function nudge(strength,dir){if(mode!=='active')return;torso.b.applyImpulse(dir.clone().multiplyScalar(totalMass*strength*.45),true)}
