@@ -47,6 +47,7 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 ## Development
 
+- [Reusable art and development resources](assets/resource-library/README.md)
 - [Repository rules for humans and agents](AGENTS.md)
 - [New-project documentation templates](docs/templates/)
 - [Documentation standard](docs/PROJECT_DOCUMENTATION.md)
