@@ -16,14 +16,14 @@ export function createPhysicalLab(scene,R,world){
  }
  function nearest(pos){let result=null,best=Infinity;for(const o of objects){if(o===held)continue;const p=vec(o.body.translation());if(p.y>.9)continue;const d=p.distanceToSquared(pos);if(d<best){best=d;result=o}}return result}
  function gripPoint(hand){hand.updateWorldMatrix(true,false);return hand.localToWorld(V(0,-.090,.062))}
- function grab(o,hand){if(held||!objects.includes(o))return false;const p=gripPoint(hand);if(p.distanceTo(vec(o.body.translation()))>.16)return false;held=o;lastGrip=p.clone();gripVelocity.set(0,0,0);o.body.setBodyType(R.RigidBodyType.KinematicPositionBased,true);return true}
+ function grab(o,hand){if(held||!objects.includes(o))return false;const p=gripPoint(hand);if(p.distanceTo(vec(o.body.translation()))>.115)return false;held=o;lastGrip=p.clone();gripVelocity.set(0,0,0);o.body.setBodyType(R.RigidBodyType.KinematicPositionBased,true);return true}
  function follow(hand,dt){if(!held)return;const p=gripPoint(hand),q=hand.getWorldQuaternion(Q());if(lastGrip){const v=p.clone().sub(lastGrip).multiplyScalar(1/Math.max(dt,1e-5));gripVelocity.lerp(v,.38)}lastGrip=p.clone();held.body.setNextKinematicTranslation(p);held.body.setNextKinematicRotation(q)}
  function release(throwing=false,forward=V(0,0,1)){if(!held)return null;const o=held;held=null;const v=gripVelocity.clone();if(throwing){v.addScaledVector(forward,1.3);v.y+=.7;if(v.length()>8)v.setLength(8)}else if(v.length()>2)v.setLength(2);
  o.body.setBodyType(R.RigidBodyType.Dynamic,true);o.body.setLinvel(v,true);o.body.setAngvel({x:throwing?3:0,y:throwing?1:0,z:0},true);lastGrip=null;return o}
  function sync(){for(const o of objects){o.mesh.position.copy(o.body.translation());o.mesh.quaternion.copy(o.body.rotation())}}
  function clear(){held=null;lastGrip=null;for(const o of objects){world.removeRigidBody(o.body);scene.remove(o.mesh);o.mesh.geometry.dispose();o.mesh.material.dispose()}objects.length=0}
  function obstacle(p){return objects.find(o=>o!==held&&o.body.translation().y<.35&&Math.hypot(o.body.translation().x-p.x,o.body.translation().z-p.z)<o.radius+.075)}
- return {spawn,nearest,grab,follow,release,sync,clear,obstacle,get held(){return held},get count(){return objects.length}};
+ return {spawn,nearest,grab,follow,release,sync,clear,obstacle,has:o=>objects.includes(o),get held(){return held},get count(){return objects.length}};
 }
 export function createFallRig(R,world,r){
  let parts=[],joints=[];
