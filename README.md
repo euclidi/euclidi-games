@@ -41,6 +41,17 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [VOIDRUNNER](voidrunner/README.md) | Development v0.24.0 — Earth traversal migration | [Spec](voidrunner/SPEC.md) · [Roadmap](voidrunner/ROADMAP.md) · [Status](voidrunner/STATUS.md) |
 
+| [Candy Land Sewer](candy-land-sewer/README.md) | Development — see status | [Spec](candy-land-sewer/SPEC.md) · [Roadmap](candy-land-sewer/ROADMAP.md) · [Status](candy-land-sewer/STATUS.md) |
+| [Electrocute Stuff](electrocute-stuff/README.md) | Development — see status | [Spec](electrocute-stuff/SPEC.md) · [Roadmap](electrocute-stuff/ROADMAP.md) · [Status](electrocute-stuff/STATUS.md) |
+| [EXOHOSTILE](exohostile/README.md) | Development — see status | [Spec](exohostile/SPEC.md) · [Roadmap](exohostile/ROADMAP.md) · [Status](exohostile/STATUS.md) |
+| [Floor 20](floor-20/README.md) | Development — see status | [Spec](floor-20/SPEC.md) · [Roadmap](floor-20/ROADMAP.md) · [Status](floor-20/STATUS.md) |
+| [Nereid K07](nereid-k07/README.md) | Development — see status | [Spec](nereid-k07/SPEC.md) · [Roadmap](nereid-k07/ROADMAP.md) · [Status](nereid-k07/STATUS.md) |
+| [Salticid](salticid/README.md) | Development — see status | [Spec](salticid/SPEC.md) · [Roadmap](salticid/ROADMAP.md) · [Status](salticid/STATUS.md) |
+| [Sugarworks](sugarworks/README.md) | Development — see status | [Spec](sugarworks/SPEC.md) · [Roadmap](sugarworks/ROADMAP.md) · [Status](sugarworks/STATUS.md) |
+| [TENPIN](tenpin/README.md) | Development — see status | [Spec](tenpin/SPEC.md) · [Roadmap](tenpin/ROADMAP.md) · [Status](tenpin/STATUS.md) |
+| [Through the Boards](through-the-boards/README.md) | Development — see status | [Spec](through-the-boards/SPEC.md) · [Roadmap](through-the-boards/ROADMAP.md) · [Status](through-the-boards/STATUS.md) |
+| [Throw Lab](throw-lab/README.md) | Development — see status | [Spec](throw-lab/SPEC.md) · [Roadmap](throw-lab/ROADMAP.md) · [Status](throw-lab/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
