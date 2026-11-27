@@ -9,3 +9,6 @@ Complete-first workflow: preserve cumulative baseline, audit, evaluate compatibl
 - Publish catalog revisions only after meaningful playtesting; keep previous working source in version history.
 
 V6 audit: Matter.js and licensed audio/VFX integrated; spatial moisture and persistent specimen rack implemented as approximations. Optional intact/crushed can art pilot available; verify browser rendering and contact alignment before adopting a coherent asset-based visual conversion. Remaining major work: actual component electrical graph, spatially accurate materials, structural deformation/fracture, simultaneous multiple-object workbench, authored models for all remaining specimens and integrated browser/mobile playtests. Preserve prior versions and the stable catalog entry.
+
+
+V7 replaces the isolated sprite pilot with a unified live 3D chamber. Next acceptance gate: actual browser screenshots and visual review across all seven specimens, asset decoding, camera/size/material consistency, contact alignment, mobile performance and audio. Do not present reference imagery as gameplay. Full structural deformation/fracture, electrical component graph and simultaneous multi-object workbench remain outstanding.
