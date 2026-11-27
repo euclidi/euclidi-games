@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.5.3.
+**Lifecycle:** Active — Git revision 1.5.4.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.5.4 — aligned character editor
+
+Reference-based canonical facing-right attachment coordinates (left reflection and vertical quarter turns), hand-authored eye and wearable pixel clusters, invariant face anchors across mouth frames, no eye/accessory overlap, fixed face/body attachment. Four-direction preview, selectable cosmetic thumbnails and inspectable mouth poses. References: [Ms. Pac-Man sprite sheet](https://www.spriters-resource.com/arcade/mspacman/asset/21043/page-1/) and [masonicGIT directional sprite implementation](https://github.com/masonicGIT/pacman/blob/master/src/sprites.js). Artwork independently drawn, not imported ROM sprites. All original combination tests and directional attachment tests passed; browser/device visuals remain pending.
 
 ## Revision 1.5.3 — character customization
 

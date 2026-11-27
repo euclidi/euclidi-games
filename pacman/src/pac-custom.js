@@ -8,25 +8,30 @@ export const PAC_OPTIONS=[
 ];
 export function normalizePac(value){return Object.fromEntries(PAC_OPTIONS.map(o=>[o.id,o.values.includes(value?.[o.id])?value[o.id]:o.values[0]]))}
 export function cyclePac(value,id,delta=1){let p=normalizePac(value),o=PAC_OPTIONS.find(o=>o.id===id);if(o)p[id]=o.values[((o.values.indexOf(p[id])+delta)%o.values.length+o.values.length)%o.values.length];return p}
-export function pacPixels(value,d=3,f=0){
- const p=normalizePac(value),[base,dark,light]=PALETTES[p.color],cells=new Map(),widths=[6,10,12,12,14,14,14,14,14,14,12,12,10,6];
- for(let y=0;y<14;y++)for(let x=0;x<14;x++){
-  if(x<(14-widths[y])/2||x>=(14+widths[y])/2)continue;let a=x-6.5,b=y-6.5,k=Math.atan2(b,a)-[-Math.PI/2,Math.PI,Math.PI/2,0][d];k=Math.atan2(Math.sin(k),Math.cos(k));
-  if(f===0||Math.abs(k)>[0,.32,.73][f])cells.set((y+1)*16+x+1,base)
+// Canonical right-facing attachment coordinates, mirrored left and rotated vertically.
+export function pacTransform(x,y,d){return d===0?[y,15-x]:d===1?[15-x,y]:d===2?[15-y,x]:[x,y]}
+const widths=[6,10,12,12,14,14,14,14,14,14,12,12,10,6];
+export function pacBody(d=3,f=0){let cells=[];for(let y=0;y<14;y++)for(let x=0;x<14;x++){if(x<(14-widths[y])/2||x>=(14+widths[y])/2)continue;let a=x-6.5,b=y-6.5,k=Math.atan2(b,a)-[-Math.PI/2,Math.PI,Math.PI/2,0][d];k=Math.atan2(Math.sin(k),Math.cos(k));if(f===0||Math.abs(k)>[0,.32,.73][f])cells.push([x+1,y+1])}return cells}
+const common=new Set(pacBody(3,0).map(([x,y])=>y*16+x).filter(k=>[0,1,2,3].every(d=>{let [x,y]=pacTransform(k%16,k>>4,d);return pacBody(d,2).some(([a,b])=>a===x&&b===y)})));
+const rgb={k:'#18202a',w:'#f6f8ff',b:'#76dfff',r:'#b91b48',R:'#f23f68',p:'#ffafbd',n:'#64203d',c:'#254b95',C:'#537cce',L:'#a1b9eb',g:'#ba6a16',G:'#f7bc38',Y:'#ffe8a0',j:'#df3151'};
+const stamps={
+ eyes:{
+  dot:{x:7,y:5,rows:['kk','kk']},
+  bright:{x:6,y:4,rows:['.ww.','wwkk','.wk.']},
+  visor:{x:5,y:5,rows:['kkkkk','kbkkk']}
+ },
+ accessory:{
+  bow:{x:1,y:1,rows:['...RR.','..rRrp','.rRrRn','RRRn..','pRn...']},
+  cap:{x:3,y:0,rows:['...CCC...','..CLCCC..','..CCCCCC.','.cccccccc','.......c.']},
+  crown:{x:3,y:0,rows:['Y..Y..Y..','GY.GY.GY.','GGGGGGGG.','.gGjgGg..']},
+  band:{x:2,y:2,rows:['..RRRRRRR..','.rRRRRRRRr.']}
  }
- const body=new Set(cells.keys()),inside=(x,y)=>x>=0&&x<16&&y>=0&&y<16&&body.has(y*16+x);
- for(let k of body){let x=k%16,y=k>>4;if(p.finish==='shaded'){if(x+y>=19)cells.set(k,dark);else if(x+y<=10)cells.set(k,light)}else if(p.finish==='outline'&&(!inside(x-1,y)||!inside(x+1,y)||!inside(x,y-1)||!inside(x,y+1)))cells.set(k,dark);else if(p.finish==='stripe'&&Math.abs(x+y-11)<=.5)cells.set(k,light)}
- const overlay=(x,y,col,clip=true)=>{if(x>=0&&x<16&&y>=0&&y<16&&(!clip||inside(x,y)))cells.set(y*16+x,col)};
- const eyeX=d===1?5:d===3?10:8,eyeY=d===0?5:d===2?5:5;
- // Place the eye away from the mouth opening in each direction.
- const ex=d===0?5:eyeX,ey=d===0?6:eyeY;
- if(p.eyes==='dot'||p.eyes==='bright'){for(let y=ey;y<ey+2;y++)for(let x=ex;x<ex+2;x++)overlay(x,y,p.eyes==='dot'?'#111122':'#ffffff');if(p.eyes==='bright')overlay(ex+(d===3?1:0),ey+1,'#111122')}
- if(p.eyes==='visor'){for(let x=ex-2;x<=ex+2;x++){overlay(x,ey,'#13172b');overlay(x,ey+1,'#13172b')}overlay(ex-1,ey,'#86eaff')}
- // Small wearable pixel sprites within the existing 16x16 texture.
- if(p.accessory==='bow'){for(let [x,y] of [[3,1],[4,1],[3,2],[4,2],[5,2],[6,1],[7,1],[6,2],[7,2],[3,3],[7,3]])overlay(x,y,'#ed3181',false);overlay(5,2,'#ffb5d9',false)}
- if(p.accessory==='cap'){for(let y=0;y<3;y++)for(let x=5;x<=10;x++)overlay(x,y,y===0?'#dfdfef':'#4b75df',false);for(let x=3;x<=12;x++)overlay(x,3,'#3249a6',false)}
- if(p.accessory==='crown'){for(let x=4;x<=11;x++)overlay(x,3,'#f4a827',false);for(let x of [4,7,8,11]){overlay(x,1,'#ffe291',false);overlay(x,2,'#ffce45',false)}overlay(7,3,'#d83b53',false);overlay(8,3,'#d83b53',false)}
- if(p.accessory==='band'){for(let x=1;x<15;x++)overlay(x,4,'#e33a3c');for(let x=5;x<11;x++)overlay(x,5,'#ff9995')}
- return [...cells].map(([k,color])=>[k%16,k>>4,color])
+};
+export function pacLayers(value,d=3,f=0){
+ const p=normalizePac(value),[base,dark,light]=PALETTES[p.color],body=pacBody(d,f),occupied=new Set(body.map(([x,y])=>y*16+x)),inside=(x,y)=>x>=0&&x<16&&y>=0&&y<16&&occupied.has(y*16+x),basePixels=[];
+ for(let [x,y] of body){let col=base;if(p.finish==='shaded'){if(x+y>=19)col=dark;else if(x+y<=10)col=light}else if(p.finish==='outline'&&(!inside(x-1,y)||!inside(x+1,y)||!inside(x,y-1)||!inside(x,y+1)))col=dark;else if(p.finish==='stripe'&&Math.abs(x+y-11)<=.5)col=light;basePixels.push([x,y,col])}
+ const apply=(stamp,clip=false)=>{if(!stamp)return [];let out=[];stamp.rows.forEach((row,dy)=>[...row].forEach((v,dx)=>{if(v==='.')return;let x=stamp.x+dx,y=stamp.y+dy;if(clip&&!common.has(y*16+x))return;let [a,b]=pacTransform(x,y,d);out.push([a,b,rgb[v]])}));return out};
+ return {body:basePixels,eyes:apply(stamps.eyes[p.eyes],true),accessory:apply(stamps.accessory[p.accessory],p.accessory==='band')}
 }
+export function pacPixels(value,d=3,f=0){let layers=pacLayers(value,d,f),cells=new Map();for(let layer of [layers.body,layers.accessory,layers.eyes])for(let [x,y,c] of layer)cells.set(y*16+x,c);return [...cells].map(([k,color])=>[k%16,k>>4,color])}
 export function paintPac(ctx,value,d,f){ctx.clearRect(0,0,16,16);for(let [x,y,color] of pacPixels(value,d,f)){ctx.fillStyle=color;ctx.fillRect(x,y,1,1)}}
