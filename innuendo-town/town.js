@@ -1,9 +1,10 @@
 import {urbanAtlas} from './assets/urban-atlas.js';
 import {FACADES,INTERIORS,MOOD_TINT,destinationFor} from './world-art.js';
+import {witnessIncident,spreadRumors,rumorText} from './social.js';
 import {SHOPS,RESIDENTS,INCIDENTS,isOpen,moneyFor,pathfind} from './content.js';
-const $=id=>document.getElementById(id),T=16,KEY='euclidi.innuendo.v3',defaultState={version:3,cash:40,rep:0,calm:100,minute:540,day:0,x:264,y:232,look:0,style:'Witty',owned:[],home:false,relations:{},lastTalk:{},news:['Welcome to town. Find a job or meet your neighbors.'],shifts:0};
+const $=id=>document.getElementById(id),T=16,KEY='euclidi.innuendo.v3',defaultState={version:3,cash:40,rep:0,calm:100,minute:540,day:0,x:264,y:232,look:0,style:'Witty',owned:[],home:false,relations:{},lastTalk:{},rumors:[],news:['Welcome to town. Find a job or meet your neighbors.'],shifts:0};
 let S={...defaultState};try{let s=JSON.parse(localStorage.getItem(KEY));if(s?.version===3&&Number.isFinite(s.cash)&&Array.isArray(s.owned))S={...defaultState,...s}}catch{}
-let world,room=-1,job=null,dialogue=false,muted=true,audio,run=false,held={},toastTimer,game,tab='directory',nextIncident=35,saveTimer=0,timeAcc=0;
+let world,room=-1,job=null,dialogue=false,muted=true,audio,run=false,held={},toastTimer,game,tab='directory',nextIncident=35,saveTimer=0,timeAcc=0,rumorTimer=0,bumpAt=0;
 const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),F=(x,y)=>y*27+x,door=b=>({x:(b.x+Math.floor(b.w/2)+.5)*T,y:(b.y+b.h+.5)*T});
 const clock=()=>String(Math.floor(S.minute/60)).padStart(2,'0')+':'+String(S.minute%60).padStart(2,'0');
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
@@ -28,10 +29,10 @@ function reply(n,type){let fresh=S.lastTalk[n.id]!==S.day,r=S.relations[n.id]||0
 if(type==='literal'){a=2;line='Finally, someone who understands what I actually meant.';calm=3}
 if(type==='pun'){let likes=['Mischievous','Shameless','Deadpan','Cheerful','Flirtatious','Competitive'].includes(n.mood);a=likes?4:-3;rep=likes?3:1;calm=likes?-2:-8;line=likes?'You have been here too long already.':'Please act your age.';if(S.style==='Deadpan')a++}
 if(type==='compliment'){a=r>=8||n.mood==='Flirtatious'?4:r<0?-1:1;line=a<0?'I would prefer to keep things professional.':a>1?'I might start looking forward to seeing you.':'Well, thank you.'}
-if(type==='gossip'){a=1;line=INCIDENTS[(n.id+S.day)%INCIDENTS.length][1]}
+if(type==='gossip'){a=1;let rumor=(S.rumors||[]).find(r=>r.heard.includes(n.id));line=rumor?rumorText(rumor,'the new resident'):INCIDENTS[(n.id+S.day)%INCIDENTS.length][1]}
 if(!fresh){a=Math.min(0,a);rep=0;calm=Math.min(0,calm)}
 S.relations[n.id]=clamp(r+a,-40,100);S.lastTalk[n.id]=S.day;S.rep+=rep;S.calm=clamp(S.calm+calm,0,100);
-if(fresh)log('Spoke to '+n.name+' ('+(a>=0?'+':'')+a+' rapport).');if(type==='pun'&&fresh&&room===-1){let witness=world.people.find(q=>q.n.id!==n.id&&d(q.sprite,world.player)<55);if(witness){S.rep++;log(witness.n.name+' overheard the conversation.');line+=' A bystander snickers.'}}
+if(fresh)log('Spoke to '+n.name+' ('+(a>=0?'+':'')+a+' rapport).');if(type==='pun'&&fresh&&room===-1){let witness=world.people.find(q=>q.n.id!==n.id&&d(q.sprite,world.player)<55);if(witness){S.rep++;witnessIncident(S,-1,witness.n.id,'remark');log(witness.n.name+' overheard the conversation.');line+=' A bystander snickers.'}}
 hud();save();modal(n.name,[line,'Rapport '+S.relations[n.id]],[['Keep talking',()=>talk(n)],['Walk away',close]])}
 function shopMenu(){let b=SHOPS[room];if(!b)return;modal(b.name,[b.line,b.task+' · Earn up to $'+b.pay],[['Start shift',()=>startJob(b)],['Talk to '+b.owner,()=>talk(RESIDENTS[b.id])],['Buy '+b.product+' · $'+b.price,()=>{S.cash-=b.price;S.owned.push(b.id);S.look=(b.id+1)%6;save();hud();shopMenu()},S.cash<b.price||S.owned.includes(b.id)],['Leave',()=>switchRoom(-1)],['Continue exploring',close]])}
 function finishJob(score){if(!job)return;let b=job.b,pay=moneyFor(b,score);S.cash+=pay;S.rep+=score;S.shifts++;S.minute+=35;while(S.minute>=1440){S.minute-=1440;S.day++}job=null;world.clearCargo();log('Finished '+b.task+' at '+b.name+'; earned $'+pay+'.');hud();modal('SHIFT COMPLETE',[score+'/3 objectives achieved. Wages: $'+pay],[['Back to shop',shopMenu],['Explore',close]])}
@@ -57,7 +58,7 @@ create(){world=this;this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blo
 this.physics.world.setBounds(0,0,this.cols*T,this.rows*T);if(room===-1)this.buildTown();else this.buildRoom();
 let x=room===-1?clamp(S.x,10,this.cols*T-10):216,y=room===-1?clamp(S.y,10,this.rows*T-10):272;
 if(this.blocked.has(Math.floor(y/T)*this.cols+Math.floor(x/T))){x=264;y=232}
-this.player=this.person(x,y,S.look);this.player.body.setMass(5);this.physics.add.collider(this.player,this.walls);this.physics.add.collider(this.player,this.props);this.physics.add.collider(this.props,this.walls);this.physics.add.collider(this.props,this.props);
+this.player=this.person(x,y,S.look);this.player.body.setMass(5);this.physics.add.collider(this.player,this.walls);this.physics.add.collider(this.player,this.props,(_,obj)=>{if(job||performance.now()-bumpAt<2500||Math.hypot(obj.body.velocity.x,obj.body.velocity.y)<10)return;let w=this.people.find(q=>q.sprite.visible&&d(q.sprite,obj)<42);if(w){bumpAt=performance.now();S.calm=Math.max(0,S.calm-4);witnessIncident(S,-1,w.n.id,'collision');log(w.n.name+' witnessed an awkward collision.');toast('Oops. '+w.n.name+' saw that.');hud()}});this.physics.add.collider(this.props,this.walls);this.physics.add.collider(this.props,this.props);
 for(let n of this.people){this.physics.add.collider(n.sprite,this.walls)}
 this.cam=this.cameras.main;this.cam.setBounds(0,0,this.cols*T,this.rows*T);this.cam.setZoom(2);this.cam.roundPixels=true;this.cam.startFollow(this.player,true,.18,.18);
 this.tint=this.add.rectangle(0,0,this.cols*T,this.rows*T,0x142844,0).setOrigin(0).setDepth(9999);
@@ -118,6 +119,7 @@ for(let obj of this.props.getChildren())if(obj.active)obj.setDepth(100+Math.floo
 if(this.carry){this.carry.setPosition(p.x,p.y-7);this.carry.setDepth(p.depth+1)}
 if(job?.b.kind==='cargo'&&this.bay){for(let c of this.cargo.slice()){if(c.active&&c!==this.carry&&d(c,this.bay)<19){this.cargo=this.cargo.filter(x=>x!==c);c.destroy();job.score++;beep(550);toast('Delivered '+job.score+'/3');if(job.score===3){finishJob(3);break}}}}
 if(job?.b.kind==='timing'&&$('needle'))$('needle').style.left=((1-Math.cos((performance.now()-job.start)/400))*50)+'%';
+rumorTimer+=sec;if(room===-1&&rumorTimer>=8){rumorTimer=0;let contacts=[];for(let i=0;i<this.people.length;i++)for(let j=i+1;j<this.people.length;j++){let a=this.people[i],b=this.people[j];if(a.sprite.visible&&b.sprite.visible&&d(a.sprite,b.sprite)<36)contacts.push([a.n.id,b.n.id])}let changed=spreadRumors(S,contacts);for(let c of changed){let n=RESIDENTS[c.target];if(n){log(n.name+' heard a rumor about your public behavior.');S.rep++}}}
 timeAcc+=sec;saveTimer+=sec;nextIncident-=sec;if(timeAcc>=1){timeAcc-=1;S.minute++;if(S.minute>=1440){S.minute=0;S.day++}if(!job)S.calm=Math.min(100,S.calm+.15);hud()}
 if(nextIncident<=0){nextIncident=48;let e=INCIDENTS[(Math.floor(Math.random()*INCIDENTS.length))];log(e[1]);toast(e[0]+' — see local news')}
 if(saveTimer>=7){saveTimer=0;save()}
