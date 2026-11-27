@@ -35,14 +35,14 @@
    el.addEventListener('mouseleave',()=>el.classList.remove('eg-hover'));
    el.addEventListener('pointerdown',e=>{if(enabled()&&e.pointerType==='touch'&&!el.classList.contains('brand')){el.classList.remove('eg-tap');void el.offsetWidth;el.classList.add('eg-tap');setTimeout(()=>el.classList.remove('eg-tap'),700);}});
  }
- for(const card of document.querySelectorAll('.game')){
+ for(const card of document.querySelectorAll('.game,.brand')){
    const move=event=>{
      if(!enabled()||event.pointerType==='touch')return;
      const box=card.getBoundingClientRect(),w=card.offsetWidth,h=card.offsetHeight;
      const x=Math.max(-1,Math.min(1,(event.clientX-(box.left+box.width/2))/(w/2)));
      const y=Math.max(-1,Math.min(1,(event.clientY-(box.top+box.height/2))/(h/2)));
-     card.style.setProperty('--tilt-x',(-y*10).toFixed(2)+'deg');
-     card.style.setProperty('--tilt-y',(x*12).toFixed(2)+'deg');
+     card.style.setProperty('--tilt-x',(-y*(card.classList.contains('brand')?18:10)).toFixed(2)+'deg');
+     card.style.setProperty('--tilt-y',(x*(card.classList.contains('brand')?20:12)).toFixed(2)+'deg');
      card.classList.add('is-tilted');
    };
    card.addEventListener('mousemove',move,{passive:true});

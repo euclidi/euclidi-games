@@ -32,7 +32,7 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
      const clipped=[...document.querySelectorAll('.cover')].flatMap(cover=>{const r=cover.getBoundingClientRect();return [...cover.querySelectorAll('.cover-title,.cover-top,.cover-bottom')].filter(e=>{const t=e.getBoundingClientRect();return t.left<r.left-1||t.right>r.right+1||t.top<r.top-1||t.bottom>r.bottom+1;}).map(e=>e.textContent);});
      return {revision:document.body.dataset.designRevision,font,logo:document.querySelector('.mark').naturalWidth,overflow:document.documentElement.scrollWidth>innerWidth,items,clipped};
    });
-   assert.equal(layout.revision,'5');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
+   assert.equal(layout.revision,'6');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
    assert.equal(layout.clipped.length,0,JSON.stringify(layout.clipped));
    for(const i of layout.items){assert(i.font.includes('Press Start 2P'),JSON.stringify(i));assert.equal(i.weight,'400',JSON.stringify(i));assert.equal(i.tracking,'1px',JSON.stringify(i));assert(i.size>=8.9&&i.size<=27.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
    const n=await page.locator('.game').count();assert(n>0);
@@ -43,7 +43,18 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    await page.waitForFunction(()=>!document.querySelector('.eg-crt').classList.contains('is-playing'));
    const cursor=await sampled(page,'.intro h1','opacity','::after',1400);assert(cursor.includes('0')&&cursor.includes('1'));
    if(!mobile){
-     await page.locator('.brand').hover();await sampled(page,'.mark','transform',null,500);
+     const brand=page.locator('.brand'),mark=page.locator('.mark');
+     const brandBox=await brand.boundingBox();
+     await page.mouse.move(brandBox.x+brandBox.width*.2,brandBox.y+brandBox.height*.25);await delay(250);
+     const logoA=await mark.evaluate(e=>getComputedStyle(e).transform);
+     await page.mouse.move(brandBox.x+brandBox.width*.8,brandBox.y+brandBox.height*.75);await delay(250);
+     const logoB=await mark.evaluate(e=>getComputedStyle(e).transform);
+     assert(logoA.startsWith('matrix3d')&&logoB.startsWith('matrix3d')&&logoA!==logoB,'Logo must tilt with cursor in 3D');
+     await delay(450);
+     assert.equal(await mark.evaluate(e=>getComputedStyle(e).transform),logoB,'Logo must not spin while pointer is stationary');
+     assert.equal(await mark.evaluate(e=>getComputedStyle(e).animationName),'none','No continuous logo animation');
+     await page.mouse.move(0,0);await delay(250);
+     assert.equal(await mark.evaluate(e=>getComputedStyle(e).transform),'none','Logo must return to rest');
      const card=page.locator('.game').first();await card.scrollIntoViewIfNeeded();
      const b=await card.boundingBox();await page.mouse.move(b.x+b.width*.25,b.y+b.height*.4);await delay(250);
      const a=await card.evaluate(e=>getComputedStyle(e).transform);
