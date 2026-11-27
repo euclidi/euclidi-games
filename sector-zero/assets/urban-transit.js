@@ -38,7 +38,7 @@ function cyclePath(from,route){
   const vertical=Math.abs(a.x-b.x)<.02, horizontal=Math.abs(a.z-b.z)<.02;
   const fixed=vertical?a.x:a.z,g=nearestGrid(fixed),offset=Math.abs(fixed-g);
   const start=vertical?a.z:a.x,end=vertical?b.z:b.x,len=Math.abs(end-start);
-  if(!a.cross&&!b.cross&&(vertical||horizontal)&&cycleRoad(g)&&offset>=7&&offset<=9&&len>42){
+  if(!a.cross&&!b.cross&&(vertical||horizontal)&&cycleRoad(g)&&offset>=7&&offset<=9&&len>42&&Math.sign(fixed-g)===(vertical?Math.sign(end-start):-Math.sign(end-start))){
    const sign=Math.sign(end-start),lane=g+Math.sign(fixed-g)*cycleOffset(g),lo=Math.min(start,end),hi=Math.max(start,end);
    const p=nearestGrid(lo)+14,q=nearestGrid(hi)-14;
    if(q-p>20){const entry=sign>0?p:q,exit=sign>0?q:p;
@@ -549,7 +549,7 @@ export function after(w,dt,api){
  for(const b of w.cars){b.speed=b.driveSpeed;b.wait=b.oldWait;delete b.oldWait;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
  for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;if(b.bay==="enter")b.bay="parked";}
- for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
+ for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0){st.departing=true;if(w.buildings[st.origin]?.type==="Market"&&c.work!==st.origin)c.shoppingBagUntil=w.time+90;}}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
  for(const c of w.citizens){
  if(c.id===w.possessed){delete c.ride;continue}
  let r=c.ride;
@@ -1204,32 +1204,32 @@ function renderPeople(parent,kit){
  const n=base[0].count,now=typeof performance!=="undefined"?performance.now()/1000:0;
  for(let i=0;i<n;i++){
   base[0].getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14],c=bins.get(Math.round(x*100)+","+Math.round(z*100));if(!c){for(const a of [...accessories,...extra])put(a,i,x,-20,z,0,0,.001,.001,.001,0);continue;}
-  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow,phase=(c.walkDistance||0)*5.8+a.phase,cycle=move?Math.sin(phase):0,step=cycle*.38,bob=0;
+  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow,mode=rideMode(c),bike=mode==="bicycle",board=mode==="skateboard",skating=mode==="skates",phase=(c.walkDistance||0)*(bike?4.6:5.8)+a.phase,cycle=move?Math.sin(phase):0,step=cycle*.38,bob=0;
   const part=(mesh,side,y,front,rx,sx,sy,sz,col)=>put(mesh,i,x+Math.cos(heading)*side+Math.sin(heading)*front,y*h+bob,z-Math.sin(heading)*side+Math.cos(heading)*front,heading,rx,sx,sy,sz,col);
-  part(base[0],0,1.08,0,0,wide,h,a.style===1?1.15:.96,a.shirt);
-  part(base[1],0,1.59,0,0,.95,h,.96,a.skin);
+  part(base[0],0,bike?1.18:1.08,bike?.09:0,bike?.23:0,wide,h,a.style===1?1.15:.96,a.shirt);
+  part(base[1],0,bike?1.62:1.59,bike?.16:0,0,.95,h,.96,a.skin);
   const segment=(mesh,side,a,b,length,w,col)=>{const dy=a.y-b.y,dz=a.z-b.z;part(mesh,side,(a.y+b.y)/2,(a.z+b.z)/2,Math.atan2(dz,dy),w,h*Math.hypot(dy,dz)/length,1,col);};
   for(const sign of [-1,1]){
    const j=sign<0?0:1,theta=phase+(j?Math.PI:0),swing=move?Math.sin(theta):0,lift=move?Math.max(0,Math.cos(theta))*.12:0;
-   const hip={y:.82,z:0},ankle={y:.15+lift,z:.25*swing},knee=kneeJoint(hip,ankle);
+   const hip={y:bike?.91:.82,z:bike?-.10:0},ankle=bike?{y:move?.37+.125*Math.cos(theta):.15,z:move?.045+.125*Math.sin(theta):.09}:board?{y:.20+(j===1&&move?lift*.60:0),z:sign*.22+(j===1&&move?swing*.15:0)}:{y:.15+lift+(skating?.06:0),z:.25*swing},knee=kneeJoint(hip,ankle);
    const side=sign*.145*wide;
    if(anatomy){
     segment(base[2+j],side,hip,knee,.37,wide,a.pants);segment(anatomy.calves[j],side,knee,ankle,.37,wide,a.pants);
-    part(base[6+j],side,.075+lift,ankle.z,0,.94,h,.97,a.shoes);
-    const shoulder={y:1.33,z:0},elbow={y:1.06,z:-swing*.14},wrist={y:.81,z:-swing*.24+.045},armSide=sign*.31*wide;
+    part(base[6+j],side,ankle.y-.075,ankle.z,0,.94,h,.97,a.shoes);
+    const shoulder={y:bike?1.38:1.33,z:bike?.12:0},elbow=bike?{y:1.19,z:.27}:{y:1.06,z:-swing*.14},wrist=bike?{y:1.04,z:.48}:{y:.81,z:-swing*.24+.045},armSide=sign*.31*wide;
     segment(base[4+j],armSide,shoulder,elbow,.29,.94,a.shirt);segment(anatomy.forearms[j],armSide,elbow,wrist,.27,.94,a.style===0?a.skin:a.shirt);
     part(anatomy.hands[j],armSide,wrist.y-.06,wrist.z,0,1,h,1,a.skin);
-    part(anatomy.ears[j],sign*.165,1.59,-.015,0,1,h,1,a.skin);
-    part(anatomy.eyes[j],sign*.072,1.615,.151,0,1,h,1,0x292a25);
+    part(anatomy.ears[j],sign*.165,bike?1.62:1.59,bike?.145:-.015,0,1,h,1,a.skin);
+    part(anatomy.eyes[j],sign*.072,bike?1.645:1.615,bike?.311:.151,0,1,h,1,0x292a25);
    }else {part(base[2+j],side,.48,swing*.1,swing*.38,wide,h,1,a.pants);part(base[4+j],sign*.30*wide,1.02,-swing*.1,-swing*.38,.88,h,.9,a.shirt);part(base[6+j],side,.12,swing*.16+.04,0,.9,h,.97,a.shoes);}
   }
-  if(anatomy){part(anatomy.neck,0,1.42,0,0,1,h,1,a.skin);part(anatomy.mouth,0,1.51,.145,0,1,h,1,0x714a3d);}
-  part(accessories[0],0,1.70,-.005,0,a.style===3?1.13:1.02,a.style===4?1.5:.85,1,a.hair);
-  part(accessories[1],0,1.78,a.style===2?.06:0,0,a.style===2?1:0.001,a.style===2?1:.001,a.style===2?1:.001,a.shirt);
+  if(anatomy){part(anatomy.neck,0,bike?1.45:1.42,bike?.16:0,0,1,h,1,a.skin);part(anatomy.mouth,0,bike?1.54:1.51,bike?.305:.145,0,1,h,1,0x714a3d);}
+  part(accessories[0],0,bike?1.73:1.70,bike?.155:-.005,0,a.style===3?1.13:1.02,a.style===4?1.5:.85,1,a.hair);
+  part(accessories[1],0,bike?1.81:1.78,(bike?.16:0)+(a.style===2?.06:0),0,a.style===2?1:0.001,a.style===2?1:.001,a.style===2?1:.001,a.shirt);
   part(accessories[2],0,1.1,-.29,0,a.bag?1:.001,a.bag?1:.001,a.bag?1:.001,a.style===4?0x6d543d:0x444e46);
-  part(accessories[3],0,1.575,.16,0,.67,.52,.65,a.skin);
-  part(accessories[4],a.style===5?.34:0,a.style===5?.8:-4,.06,0,a.style===5?1:.001,a.style===5?1:.001,a.style===5?1:.001,0x604c39);
-  part(accessories[5],0,1.49,-.12,0,a.style===4?1:.001,a.style===4?1:.001,a.style===4?1:.001,a.hair);
+  part(accessories[3],0,bike?1.605:1.575,bike?.32:.16,0,.67,.52,.65,a.skin);
+  const shopping=(c.shoppingBagUntil||0)>w.time&&!bike&&!board&&!skating,carry=shopping||a.style===5;part(accessories[4],carry?.36:0,carry?.76:-4,.06,0,carry?1:.001,carry?1:.001,carry?1:.001,shopping?0xb7a788:0x604c39);
+  part(accessories[5],0,bike?1.52:1.49,bike?.04:-.12,0,a.style===4?1:.001,a.style===4?1:.001,a.style===4?1:.001,a.hair);
  }
  for(const m of [...base,...accessories,...extra]){m.count=n;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
 }
@@ -1316,7 +1316,7 @@ function renderFleet(cars,position,parent,kit){
  if(!f){f={templates:new Map(),legacy:new Set(),frames:0,privateReady:false};fleetRenderers.set(parent,f);}
  f.frames++;
  if(!f.privateReady||f.frames%90===1){
-  const excluded=new Set([...peopleRenderer.base,...peopleRenderer.accessories,...(peopleRenderer.anatomy?Object.values(peopleRenderer.anatomy).flat():[]),...Array.from(f.templates.values()).flatMap(t=>t.parts.map(p=>p.mesh)),...f.legacy]);
+  const excluded=new Set([...peopleRenderer.base,...peopleRenderer.accessories,...(peopleRenderer.anatomy?Object.values(peopleRenderer.anatomy).flat():[]),...Array.from(f.templates.values()).flatMap(t=>t.parts.map(p=>p.mesh)),...f.legacy,...Array.from(personalRenderers.get(parent)?.values()||[]).flatMap(t=>t.parts.map(p=>p.mesh))]);
   const legacy=matchLegacyCars(parent,cars.filter(b=>!b.bus),position,excluded);for(const o of legacy)f.legacy.add(o);
   if(f.legacy.size)f.privateReady=true;
  }
@@ -1342,9 +1342,58 @@ function renderFleet(cars,position,parent,kit){
  return true;
 }
 
+
+const personalRenderers=new WeakMap();
+function tireRing(template,r,t){
+ const g=template.clone(),v=[],N=18,M=6,point=(i,j)=>{const a=i*Math.PI*2/N,b=j*Math.PI*2/M,q=r+t*Math.cos(b);return [t*Math.sin(b),q*Math.cos(a),q*Math.sin(a)];};
+ for(let i=0;i<N;i++)for(let j=0;j<M;j++){const a=point(i,j),b=point(i+1,j),c=point(i+1,j+1),d=point(i,j+1);v.push(...a,...b,...c,...a,...c,...d);}
+ const Attr=template.attributes.position.constructor;g.setIndex(null);for(const k of Object.keys(g.attributes))g.deleteAttribute(k);g.setAttribute("position",new Attr(new Float32Array(v),3));g.clearGroups();g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();return g;
+}
+function mobilityTemplate(mode,parent,kit,Inst,capacity){
+ const {group,box,cyl,mat}=kit,root=group(),rubber=mat(0x252a26),metal=mat(0x8d9a90),paint=mat(0xffffff).clone(),wood=mat(0x9f8260),dark=mat(0x41483f);
+ const B=(g,w,h,l,x,y,z,m,painted=false)=>{const o=box(g,w,h,l,x,y,z,m);if(painted)o.userData.mobilityPaint=true;return o;};
+ const tube=(g,a,b,r,m,painted=false)=>{const dy=b[1]-a[1],dz=b[2]-a[2],dx=b[0]-a[0],o=cyl(g,r,r,Math.hypot(dx,dy,dz),(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2,m,8);o.rotation.x=Math.atan2(dz,dy);if(Math.abs(dx)>.001)o.rotation.z=-Math.atan2(dx,Math.hypot(dy,dz));if(painted)o.userData.mobilityPaint=true;return o;};
+ const wheels=[],feet=[];
+ if(mode==="bicycle"){
+  for(const z of [-.55,.55]){const g=group();root.add(g);g.position.set(0,.34,z);wheels.push(g);const tire=cyl(g,.34,.34,.055,0,0,0,rubber,16);tire.geometry=tireRing(tire.geometry,.315,.025);tire.rotation.set(0,0,0);const hub=cyl(g,.055,.055,.12,0,0,0,metal,10);hub.rotation.z=Math.PI/2;
+   for(let i=0;i<6;i++){const a=i*Math.PI/3;tube(g,[0,0,0],[0,Math.cos(a)*.298,Math.sin(a)*.298],.008,metal);}
+  }
+  const rear=[0,.34,-.55],crank=[0,.35,.02],seat=[0,.85,-.16],head=[0,.88,.43],front=[0,.34,.55];
+  for(const [a,b] of [[rear,seat],[rear,crank],[seat,crank],[seat,head],[crank,head],[head,front]])tube(root,a,b,.026,paint,true);
+  tube(root,seat,[0,.94,-.18],.018,metal);B(root,.15,.05,.29,0,.94,-.18,dark);
+  tube(root,head,[0,1.04,.48],.018,metal);B(root,.59,.035,.04,0,1.04,.48,metal);for(const side of [-1,1])B(root,.12,.038,.055,side*.28,1.04,.48,rubber);
+  B(root,.27,.04,.09,0,.35,.02,metal);
+ }else if(mode==="skateboard"){
+  const deck=B(root,.24,.035,.83,0,.12,0,wood);deck.geometry=sectionGeometry(deck.geometry,[[-.43,.08,.115,.15],[-.31,.12,.10,.135],[.31,.12,.10,.135],[.43,.08,.115,.15]]);
+  B(root,.21,.014,.66,0,.144,0,dark);
+  for(const z of [-.27,.27]){B(root,.28,.045,.04,0,.068,z,metal);for(const x of [-.12,.12]){const o=cyl(root,.049,.049,.045,x,.05,z,rubber,10);o.rotation.z=Math.PI/2;}}
+ }else{
+  for(const side of [-1,1]){const g=group();root.add(g);feet.push(g);B(g,.13,.05,.26,0,.065,0,dark);for(const z of [-.088,-.03,.03,.088]){const o=cyl(g,.025,.025,.065,0,.027,z,rubber,8);o.rotation.z=Math.PI/2;}}
+ }
+ const parts=[];root.traverse(o=>{if(!o.isMesh)return;const m=new Inst(o.geometry,o.material,capacity);m.count=0;m.frustumCulled=false;parent.add(m);parts.push({source:o,mesh:m,paint:o.userData?.mobilityPaint});});
+ return {root,wheels,feet,parts};
+}
+function renderPersonalMobility(parent,kit){
+ if(!currentWorld||!peopleRenderer?.base?.[0])return;
+ let sets=personalRenderers.get(parent);if(!sets){sets=new Map();personalRenderers.set(parent,sets);}
+ for(const mode of ["bicycle","skateboard","skates"]){
+  const cs=currentWorld.citizens.filter(c=>walking(c)&&rideMode(c)===mode);
+  let t=sets.get(mode);if(!t){t=mobilityTemplate(mode,parent,kit,peopleRenderer.base[0].constructor,Math.max(100,currentWorld.citizens.length));sets.set(mode,t);}
+  const {root,wheels,feet,parts}=t;
+  for(let i=0;i<cs.length;i++){const c=cs[i],p=profiles[c.id]||appearance(c.id),phase=(c.walkDistance||0)*5.8+p.phase;root.position.set(c.x,0,c.z);root.rotation.y=c.heading||0;
+   for(const wheel of wheels)wheel.rotation.x=(c.walkDistance||0)/.34;
+   for(let j=0;j<feet.length;j++){const theta=phase+j*Math.PI,lift=c.walkingNow?Math.max(0,Math.cos(theta))*.12:0,swing=c.walkingNow?Math.sin(theta):0;feet[j].position.set((j?1:-1)*.145*p.width,lift,.25*swing);}
+   root.updateMatrixWorld(true);
+   for(const part of parts){part.mesh.setMatrixAt(i,part.source.matrixWorld);if(part.paint){peopleRenderer.color.setHex(p.shirt);part.mesh.setColorAt(i,peopleRenderer.color);}}
+  }
+  for(const part of parts){part.mesh.count=cs.length;part.mesh.instanceMatrix.needsUpdate=true;if(part.mesh.instanceColor)part.mesh.instanceColor.needsUpdate=true;}
+ }
+}
+
 const busMeshes=new Map();
 export function drawBuses(cars,position,parent,{group,box,cyl,mat}){
  buildUnderground();if(currentWorld)updateTrainMeshes(currentWorld);renderPeople(parent,{group,box,cyl,mat});
+ renderPersonalMobility(parent,{group,box,cyl,mat});
  if(renderFleet(cars,position,parent,{group,box,cyl,mat}))return;
  for(const b of cars){if(!b.bus)continue;let m=busMeshes.get(b.id);if(!m){m=group();const paint=mat(lines[b.line].color),body=mat(0x9b9c87),window=mat(0x344d51),rubber=mat(0x222722),lights=mat(0xe8dec1),tail=mat(0xa74b40);
  box(m,2.35,1.75,8.1,0,1.48,0,body);box(m,2.42,.4,8.2,0,.78,0,paint);box(m,2.3,.18,8.1,0,2.43,0,paint);if(b.line>=4){box(m,1.8,.3,4,0,2.68,-.5,window);box(m,2.03,.33,.09,0,2.33,4.14,paint);}

@@ -5,11 +5,16 @@ on:
     paths:
       - 'sector-zero/**'
       - '.github/workflows/sector-zero.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'sector-zero/**'
+      - '.github/workflows/sector-zero.yml'
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: sector-zero-acceptance
+  group: sector-zero-acceptance-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   audit:
@@ -21,7 +26,9 @@ jobs:
         with:
           node-version: '22'
       - name: Population and metro logic
-        run: node sector-zero/tests/overhaul.mjs
+        run: |
+          node sector-zero/tests/mobility.mjs
+          node sector-zero/tests/overhaul.mjs
       - name: Install Chromium
         run: |
           npm install --no-save --no-package-lock playwright@1.51.1
@@ -47,6 +54,10 @@ jobs:
               await p.waitForFunction(()=>window.sectorZeroAudit().render.frame>5);
               const start=await p.evaluate(()=>window.sectorZeroAudit());
               assert.equal(start.population,1000);assert.equal(start.vehicles,150);assert(start.render.drawCalls>0);
+              const fleet=await p.evaluate(()=>window.sectorZeroFleetAudit?.());
+              assert(fleet?.privateReady,'Legacy private-car renderer could not be replaced');
+              assert.equal(fleet.rendered,150,'Not all vehicles rendered');
+              console.log('FLEET',JSON.stringify(fleet));
               await p.screenshot({path:'sector-zero-audit/'+(mobile?'mobile':'desktop')+'-surface.png'});
               await p.getByRole('button',{name:'METRO WALK',exact:true}).click();
               await p.locator('#metro-choice').selectOption('5');await p.locator('#metro-enter').click();
