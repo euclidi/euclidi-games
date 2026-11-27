@@ -24,6 +24,42 @@ const vehicleType=b=>b?.bus?"bus":fleetMix[((Math.trunc(b?.id||0)%fleetMix.lengt
 const vehicleSpec=b=>fleetTypes[vehicleType(b)];
 function initVehicle(b){const p=vehicleSpec(b);if(!Number.isFinite(b.fuelL))b.fuelL=p.litres*(.34+(b.id%11)*.059);if(!Number.isFinite(b.velocity))b.velocity=0;if(!Number.isFinite(b.distanceM))b.distanceM=0;}
 function targetVelocity(b,desired,available,dt){const p=vehicleSpec(b);return Math.max(0,Math.min(desired,Math.sqrt(2*p.brake*Math.max(0,available)),b.velocity+p.acc*dt));}
+function mobilityLedger(w){return w.mobilityLedger||(w.mobilityLedger={fuelLitres:0,fuelStops:0,deliveries:0,marketVisits:0,serviceStops:0});}
+function curbAccess(building){
+ if(!building?.door)return null;let best=null;const p=building.door;
+ for(let x=-210;x<=210;x+=70)for(let z=-210;z<=210;z+=70)for(let dir=0;dir<4;dir++){
+  if(!edgeOpen(x,z,dir))continue;const d=D[dir],along=(p.x-x)*d[0]+(p.z-z)*d[1],side=(p.x-x)*d[1]-(p.z-z)*d[0];
+  if(side<0||along<10||along>60)continue;
+  const progress=clamp(along,18,50),rank=roadRank(dir%2===0?x:z),cost=Math.hypot(side-CAR_LINE,along-progress)+(rank===0?0:4);
+  if(!best||cost<best.cost)best={x,z,dir,progress,cost,building:building.id};
+ }return best;
+}
+const fuelCache=new WeakMap();
+function fuelStops(w){if(!fuelCache.has(w)){const stops=w.buildings.filter(b=>b.architecture==="Fuel station").map(curbAccess).filter(Boolean);if(stops.length)fuelCache.set(w,stops);return stops;}return fuelCache.get(w);}
+function scheduleFuel(w,b){
+ if(b.bus||b.fuelJob||b.fuelL>vehicleSpec(b).litres*.25)return false;
+ const stops=fuelStops(w).filter(q=>!(q.x===b.x&&q.z===b.z&&q.dir===b.dir&&b.progress>q.progress));
+ if(!stops.length)return false;
+ const r=carRect(b),target=stops.slice().sort((a,c)=>dist(a,r)-dist(c,r))[0];
+ b.fuelJob={...target,resumeX:b.destX,resumeZ:b.destZ,phase:"approach",remaining:0};b.destX=target.x;b.destZ=target.z;return true;
+}
+function atFuelEdge(b){const j=b.fuelJob;return j&&j.x===b.x&&j.z===b.z&&j.dir===b.dir;}
+function serviceFuel(w,b,dt){
+ const j=b.fuelJob;if(!j||!atFuelEdge(b)||b.progress<j.progress-.035)return;
+ if(j.phase==="approach"){j.phase="filling";j.remaining=2.5;}
+ const p=vehicleSpec(b),added=Math.min(p.litres-b.fuelL,p.litres/2.5*dt);
+ b.fuelL+=added;j.remaining=Math.max(0,j.remaining-dt);mobilityLedger(w).fuelLitres+=added;
+ if(j.remaining===0||b.fuelL>=p.litres-.001){b.refuels=(b.refuels||0)+1;mobilityLedger(w).fuelStops++;b.destX=j.resumeX;b.destZ=j.resumeZ;delete b.fuelJob;}
+}
+function serviceArrival(w,b,node){
+ const type=vehicleType(b),kind={taxi:["Housing","Market"],police:["Authority"],ambulance:["Clinic"],icecream:["Housing","Market"],delivery:["Warehouse","Market"]}[type];
+ if(!kind)return;const building=w.buildings.find(q=>kind.includes(q.type)&&q.door&&nearestGrid(q.door.x)===node.x&&nearestGrid(q.door.z)===node.z);
+ if(building)b.serviceVisit={building:building.id,kind:type,remaining:.9+(type==="delivery"?1:0),progress:19};
+}
+function finishService(w,b,dt){
+ const j=b.serviceVisit;if(!j||b.progress<j.progress-.03)return;j.remaining=Math.max(0,j.remaining-dt);
+ if(j.remaining===0){const ledger=mobilityLedger(w);ledger.serviceStops++;if(j.kind==="delivery"){const building=w.buildings.find(q=>q.id===j.building);if(building){building.deliveredCrates=(building.deliveredCrates||0)+3;ledger.deliveries+=3;}}delete b.serviceVisit;}
+}
 function consumeFuel(b,distance,dt){const p=vehicleSpec(b);b.distanceM+=distance;b.fuelL=Math.max(0,b.fuelL-distance*p.consumption/100000-(distance<.01?.0009*dt:0));}
 const cycleOffset=v=>roadHalf(v)-.95;
 // Only collectors receive cycle lanes, avoiding the arterial bus-bay overlap.
@@ -192,6 +228,7 @@ function crossClear(w,cross){
 function stopLine(b){return 70-SIDE-vehicleSpec(b).l/2-1.2;}
 function plannedDir(b,x,z){
  const arrived=x===b.destX&&z===b.destZ;
+ if(arrived&&b.fuelJob){const j=b.fuelJob;return {dirs:edgeOpen(x,z,j.dir)?[j.dir]:[],dest:{x,z},arrived:false};}
  const dest=arrived?(b.bus?nextNode(b):serviceDestination(b,x,z)):{x:b.destX,z:b.destZ};
  const dirs=[0,1,2,3].filter(d=>edgeOpen(x,z,d)&&(!b.bus||x+D[d][0]*70===dest.x&&z+D[d][1]*70===dest.z));
  dirs.sort((a,c)=>carScore(x,z,a,dest.x,dest.z,b.dir)-carScore(x,z,c,dest.x,dest.z,b.dir));
@@ -204,7 +241,7 @@ function driveTraffic(w,dt){
  for(const b of cars)add(b);
  transitPriority.clear();for(const b of cars){if(!b.bus||b.wait<=8||b.progress<stopLine(b)-.05)continue;const d=D[b.dir],x=b.x+d[0]*70,z=b.z+d[1]*70,k=nodeKey(x,z),p=transitPriority.get(k);if(!phaseLocks.has(k)&&!junctions.has(k)&&(!p||b.wait>p.wait))transitPriority.set(k,b);}
  for(const [k,b] of junctions)if(!cars.includes(b)||!((nodeKey(b.x,b.z)===k&&b.progress<14)||(nodeKey(b.x+D[b.dir][0]*70,b.z+D[b.dir][1]*70)===k&&b.progress>stopLine(b))))junctions.delete(k);
- const approach=b=>b.progress>=stopLine(b)-.05;
+ const approach=b=>b.progress>=stopLine(b)-3;
  const list=cars.slice().sort((a,b)=>{
   if(key(a)===key(b))return b.progress-a.progress||a.id-b.id;
   return Number(!!b.junction)-Number(!!a.junction)||Number(approach(b))-Number(approach(a))||
@@ -223,8 +260,8 @@ function driveTraffic(w,dt){
   const stopSign=stopControlled(tx,tz);if(stopSign&&b.progress>=line-.05&&!committed)b.stopWait=(b.stopWait||0)+dt;else if(!committed)b.stopWait=0;
   const plan=plannedDir(b,tx,tz);
   const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&!(v.bay==="parked"&&!b.bus)&&v.progress<14+gap(v,b)+3);
-  const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
-  if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
+  const clear=dir=>!ped.some(p=>intersects(p,carRect({id:b.id,x:tx,z:tz,dir,bus:b.bus},0),.5));
+  if(!committed&&b.progress>=line-(stopSign?.05:3)&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
    if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2)&&dir!==undefined){
     junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
@@ -235,7 +272,9 @@ function driveTraffic(w,dt){
   if(b.bus&&b.pendingStop)speed=Math.min(speed,Math.max(0,(STOP-b.progress)/dt));
   if(b.bus&&b.dwell>0)reason="BUS STOP";
   if(b.bay==="parked"){speed=0;reason=b.dwell>0?"BUS STOP":"WAIT TO MERGE";}
-  speed=targetVelocity(b,speed,limit-old,dt);
+  if(atFuelEdge(b)){limit=Math.min(limit,b.fuelJob.progress);if(b.progress>=b.fuelJob.progress-.035){speed=0;reason="FUEL STATION";}}
+  if(b.serviceVisit){limit=Math.min(limit,b.serviceVisit.progress);if(b.progress>=b.serviceVisit.progress-.035){speed=0;reason="SERVICE STOP";}}
+  speed=targetVelocity(b,speed,committed&&limit===70?Infinity:limit-old,dt);
   let next=Math.max(old,Math.min(limit,old+speed*dt));
   const now=carRect(b),to=carRect(b,next),sweep={x:(now.x+to.x)/2,z:(now.z+to.z)/2,hx:now.hx+Math.abs(now.x-to.x)/2,hz:now.hz+Math.abs(now.z-to.z)/2};
   for(const p of ped)if(intersects(p,sweep,.5)){const along=(p.x-now.x)*d[0]+(p.z-now.z)*d[1],half=vehicleSpec(b).l/2;if(along>=-half){next=Math.min(next,Math.max(old,old+along-half-.65));reason="PEDESTRIAN AHEAD";}}
@@ -245,10 +284,11 @@ function driveTraffic(w,dt){
    const dir=b.turnDir;
    if(dir!==undefined&&space(dir)&&clear(dir)){
     lane.splice(lane.indexOf(b),1);Object.assign(b,{x:tx,z:tz,dir,progress:0});
-    if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus)arrive(b);if(b.fuelL<vehicleSpec(b).litres*.10){b.fuelL=vehicleSpec(b).litres;b.refuels=(b.refuels||0)+1;}}
+    if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus){arrive(b);if(b.fuelL<vehicleSpec(b).litres*.10){b.fuelL=vehicleSpec(b).litres;b.refuels=(b.refuels||0)+1;}}else if(!b.fuelJob&&b.id%3===0)serviceArrival(w,b,{x:tx,z:tz});}
     add(b);delete b.turnDir;b.stopWait=0;
    }else reason="EXIT BLOCKED";
   }
+  if(b.fuelJob)serviceFuel(w,b,dt);if(b.serviceVisit)finishService(w,b,dt);
   const moved=b.progress!==old||b.x===tx&&b.z===tz;
   b.wait=moved?0:(b.wait||0)+dt;b.trafficStatus=moved?"MOVING":reason||"WAITING";
  }
@@ -494,7 +534,7 @@ export function prepare(w){
 }
 export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%l.nodes.length]}
 export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.pendingStop=lines[b.line].stops[b.atStop].active;b.dwell=0;b.progress=0;}
-export function gap(a,b){return (vehicleSpec(a).l+vehicleSpec(b).l)/2+1.25+(b?.velocity||0)*.12;}
+export function gap(a,b){return (vehicleSpec(a).l+vehicleSpec(b).l)/2+1.15+(b?.velocity||0)*.04;}
 export function signal(x,z,time,dir){
  const key=nodeKey(x,z);if(phaseLocks.has(key))return -1;
  const priority=transitPriority.get(key);if(priority)return priority.dir%2;
@@ -538,7 +578,7 @@ export function before(w,dt,api){
  for(const c of w.citizens){const st=walkState.get(c)||{};walkState.set(c,st);if(st.cross&&walking(c)){const a=st.cross.a,b=st.cross.b,done=(c.x-(a.x+b.x)/2)*(b.x-a.x)+(c.z-(a.z+b.z)/2)*(b.z-a.z)>0;if(offRoad(c.x,c.z)&&done){if(c.route[0]?.cross)c.route.shift();if(st.path!==c.route&&st.path?.[0]?.cross)st.path.shift();st.cross=null;}else if(offRoad(c.x,c.z)&&Math.hypot(c.x-a.x,c.z-a.z)<1.4)st.cross=null;else phaseLocks.add(nodeKey(st.cross.x,st.cross.z));}}
  for(const c of w.citizens)if(c.transitMigration){delete c.transitMigration;if(c.id!==w.possessed)resume(w,c,api);}
  congestion.clear();
- for(const b of w.cars){const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
+ for(const b of w.cars){initVehicle(b);if(!b.serviceVisit&&!b.junction)scheduleFuel(w,b);const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
  for(const b of w.cars)if(b.bus){b.dwell=Math.max(0,b.dwell-dt);b.speed=b.dwell>0?0:Math.min(lines[b.line].speed,roadSpeed(b.x,b.z,b.dir)+2)*(w.rain?.82:1);
  b.passengers=b.passengers.filter(id=>{const c=w.citizens[id];if(!c||id===w.possessed||c.ride?.bus!==b.id){if(c?.ride?.bus===b.id)delete c.ride;return false}return true;});}
  for(const b of w.cars){b.driveSpeed=b.speed;b.oldWait=b.wait;b.speed=0;b.progress=Math.min(b.progress,69.99);}
@@ -549,7 +589,7 @@ export function after(w,dt,api){
  for(const b of w.cars){b.speed=b.driveSpeed;b.wait=b.oldWait;delete b.oldWait;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
  for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;if(b.bay==="enter")b.bay="parked";}
- for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0){st.departing=true;if(w.buildings[st.origin]?.type==="Market"&&c.work!==st.origin)c.shoppingBagUntil=w.time+90;}}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
+ for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0){st.departing=true;if(w.buildings[st.origin]?.type==="Market"&&c.work!==st.origin){c.shoppingBagUntil=w.time+90;mobilityLedger(w).marketVisits++;}}}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
  for(const c of w.citizens){
  if(c.id===w.possessed){delete c.ride;continue}
  let r=c.ride;
@@ -609,7 +649,7 @@ export function panel(w){
  for(const t of w.metro.trains)html+='<div class="stat"><span>TRAIN '+(t.id+1)+' · '+(t.remaining>0?"IN TUNNEL":metroLines[t.line].stops[t.at].name.toUpperCase())+'</span><b>'+t.passengers.length+' / '+metroCapacity+'</b></div>';
  for(const l of metroLines){html+='<h3 style="color:'+l.color+'">'+l.name+'</h3><p>'+l.stops.map(p=>p.name).join(' · ')+'</p>';}
  const stats=Object.keys(fleetTypes).map(k=>'<div class="stat"><span>'+k.toUpperCase()+'</span><b>'+w.cars.filter(b=>vehicleType(b)===k).length+'</b></div>').join("");
- html+='<h3>VEHICLE FLEET</h3>'+stats+'<div class="stat"><span>DEPOT REFUELS</span><b>'+w.cars.reduce((n,b)=>n+(b.refuels||0),0)+'</b></div><div class="stat"><span>FLEET FUEL (L)</span><b>'+Math.round(w.cars.reduce((n,b)=>n+(b.fuelL||0),0))+'</b></div><h3>ACTIVE PERSONAL TRAVEL</h3>'+["bicycle","skateboard","skates"].map(m=>'<div class="stat"><span>'+m.toUpperCase()+'</span><b>'+w.citizens.filter(c=>walking(c)&&rideMode(c)===m&&c.walkingNow).length+'</b></div>').join("");
+ html+='<h3>VEHICLE FLEET</h3>'+stats+'<div class="stat"><span>FUEL STATION VISITS</span><b>'+(w.mobilityLedger?.fuelStops||0)+'</b></div><div class="stat"><span>FUEL DISPENSED (L)</span><b>'+Math.round(w.mobilityLedger?.fuelLitres||0)+'</b></div><div class="stat"><span>DELIVERED CRATES</span><b>'+(w.mobilityLedger?.deliveries||0)+'</b></div><div class="stat"><span>MARKET VISITS</span><b>'+(w.mobilityLedger?.marketVisits||0)+'</b></div><div class="stat"><span>FLEET FUEL (L)</span><b>'+Math.round(w.cars.reduce((n,b)=>n+(b.fuelL||0),0))+'</b></div><h3>ACTIVE PERSONAL TRAVEL</h3>'+["bicycle","skateboard","skates"].map(m=>'<div class="stat"><span>'+m.toUpperCase()+'</span><b>'+w.citizens.filter(c=>walking(c)&&rideMode(c)===m&&c.walkingNow).length+'</b></div>').join("");
  return html+'<p>Local loops and limited-stop express services support one transfer. Riders compare estimated trip time with walking and queue in arrival order. Select a bus to locate it.</p>';
 }
 export function citizen(c){const r=c.ride;if(!r&&walking(c)&&rideMode(c)!=="walk")return '<div class="stat"><span>TRAVEL MODE</span><b>'+rideMode(c).toUpperCase()+'</b></div>';return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
@@ -1291,7 +1331,7 @@ function makeFleetTemplate(type,kit,parent,Inst,capacity){
  if(bus){B(chassis,w*.89,.18,l*.96,0,belt-.09,0,paint,"paint");B(chassis,.045,1.10,.88,w*.48,1.15,l*.28,glass);}
  const wheels=[];
  for(const side of [-1,1])for(const axle of [-1,1]){
-  const pivot=group(),spin=group();root.add(pivot);pivot.add(spin);pivot.position.set(side*(w*.5-.10),wheelR,axle*l*(van?.32:.30));wheels.push({pivot,spin,front:axle>0});
+  const pivot=group(),spin=group();root.add(pivot);pivot.add(spin);pivot.position.set(side*(w*.5-.10),wheelR,axle*l*(van?.32:.30));wheels.push({pivot,spin,front:axle>0,side,axle,rest:wheelR});
   const tire=cyl(spin,wheelR,wheelR,van?.22:.19,0,0,0,rubber,14);tire.rotation.z=Math.PI/2;
   const hub=cyl(spin,wheelR*.57,wheelR*.57,.225,0,0,0,metal,10);hub.rotation.z=Math.PI/2;
   B(spin,.035,wheelR*.79,.055,side*.122,0,0,trim);
@@ -1300,6 +1340,33 @@ function makeFleetTemplate(type,kit,parent,Inst,capacity){
  return {root,chassis,wheels,parts};
 }
 const fleetPose=new WeakMap();
+function roadHeight(x,z){return .022+.009*Math.sin(x*.93+z*.31)+.006*Math.sin(z*1.17-x*.52);}
+function suspensionStep(state,target,dt){
+ const n=Math.max(1,Math.ceil(dt*120)),h=dt/n;
+ for(let i=0;i<n;i++){const a=145*(target-state.y)-18*state.v;state.v+=a*h;state.y=clamp(state.y+state.v*h,-.11,.11);}
+ return state.y;
+}
+let reflectionTexture=null,reflectionKey="";
+function cityReflection(parent){
+ if(typeof document==="undefined"||!surfaceRoot||!currentWorld)return null;
+ const w=currentWorld,hr=((w.time%1440)+1440)%1440/60,key=Math.floor(hr*2)+":"+!!w.rain+":"+!!w.blackout;
+ if(reflectionTexture&&reflectionKey===key)return reflectionTexture;
+ if(!reflectionTexture){
+  let source=null;surfaceRoot.traverse(o=>{if(!source&&o.material?.map?.isTexture&&o.material.map.image?.getContext)source=o.material.map;});
+  if(!source?.source?.constructor)return null;
+  reflectionTexture=source.clone();const canvas=document.createElement("canvas");canvas.width=512;canvas.height=256;
+  reflectionTexture.source=new source.source.constructor(canvas);reflectionTexture.mapping=303;reflectionTexture.wrapS=1001;reflectionTexture.wrapT=1001;
+  reflectionTexture.repeat?.set(1,1);reflectionTexture.offset?.set(0,0);reflectionTexture.rotation=0;reflectionTexture.flipY=true;reflectionTexture.generateMipmaps=true;reflectionTexture.minFilter=1008;reflectionTexture.magFilter=1006;
+ }
+ const canvas=reflectionTexture.image,ctx=canvas.getContext("2d"),night=hr<6||hr>=19,rain=!!w.rain;
+ const gradient=ctx.createLinearGradient(0,0,0,canvas.height);gradient.addColorStop(0,night?"#171f2c":rain?"#6e7879":"#829aab");gradient.addColorStop(.49,night?"#34353a":rain?"#9b9c91":"#c2c7bc");gradient.addColorStop(.5,"#4a4b43");gradient.addColorStop(1,"#272d2a");ctx.fillStyle=gradient;ctx.fillRect(0,0,512,256);
+ for(const b of w.buildings.slice().sort((a,b)=>Math.hypot(b.x,b.z)-Math.hypot(a.x,a.z))){
+  const distance=Math.max(15,Math.hypot(b.x,b.z)),az=Math.atan2(b.z,b.x),u=(az/(Math.PI*2)+.5)*512,ww=clamp(Math.atan2((b.w||12)/2,distance)*512/Math.PI,3,110),hh=clamp(Math.atan2(b.h||12,distance)*256/Math.PI,4,110);
+  if(!Number.isFinite(u+ww+hh))continue;
+  for(const dx of [-512,0,512]){ctx.fillStyle=night?"#303731":b.type==="Factory"?"#78766e":"#93948a";ctx.fillRect(u+dx-ww/2,128-hh,ww,hh);if(night&&!w.blackout){ctx.fillStyle="#a69767";for(let y=132-hh;y<124;y+=7)for(let x=u+dx-ww/2+3;x<u+dx+ww/2-1;x+=6)if((Math.floor(x+y+b.id)%4)===0)ctx.fillRect(x,y,2,2);}}
+ }
+ reflectionTexture.needsUpdate=true;reflectionKey=key;return reflectionTexture;
+}
 function approachAngle(a,b){return Math.atan2(Math.sin(b-a),Math.cos(b-a));}
 function matchLegacyCars(parent,cars,position,excluded){
  const targets=cars.map(b=>position(b)),matches=[];
@@ -1322,15 +1389,20 @@ function renderFleet(cars,position,parent,kit){
  }
  for(const o of f.legacy)o.visible=false;
  const sets=new Map();for(const b of cars){if(!b.bus&&!f.privateReady)continue;const type=vehicleType(b);if(!sets.has(type))sets.set(type,[]);sets.get(type).push(b);}
- const color=peopleRenderer.color;
+ const color=peopleRenderer.color,env=cityReflection(parent),now=typeof performance!=="undefined"?performance.now()/1000:0;
  for(const [type,bs] of sets){let t=f.templates.get(type);if(!t){t=makeFleetTemplate(type,kit,parent,Inst,Math.max(160,cars.length));f.templates.set(type,t);}
   const {root,chassis,wheels,parts}=t;
-  for(let i=0;i<bs.length;i++){const b=bs[i],p=vehicleSpec(b),r=carRect(b),raw=position(b),a=Number.isFinite(raw.a)?raw.a:Math.atan2(D[b.dir][0],D[b.dir][1]),old=fleetPose.get(b)||{a,pitch:0,roll:0,bounce:0},delta=approachAngle(old.a,a);
-   old.a+=delta*.30;old.pitch+=(clamp(-(b.acceleration||0)*.009,-.065,.065)-old.pitch)*.22;
-   old.roll+=(clamp(-delta*(b.velocity||0)*.022,-.10,.10)-old.roll)*.24;
-   old.bounce+=(Math.sin((b.distanceM||0)*2.3)*Math.min(.021,(b.velocity||0)*.002)-old.bounce)*.20;fleetPose.set(b,old);
-   root.position.set(r.x,0,r.z);root.rotation.y=old.a;chassis.rotation.x=old.pitch;chassis.rotation.z=old.roll;chassis.position.y=old.bounce;
-   for(const wheel of wheels){wheel.pivot.rotation.y=wheel.front?clamp(delta,-.48,.48):0;wheel.spin.rotation.x=-(b.distanceM||0)/(b.bus?.48:p.h>2?.39:.33);}
+  if(env)for(const part of parts)if(part.tag==="paint"||part.source.material.transparent){const m=part.mesh.material;if(m.isMeshStandardMaterial||m.isMeshPhysicalMaterial){if(m.envMap!==env){m.envMap=env;m.needsUpdate=true;}m.envMapIntensity=part.tag==="paint"?.56:.48;}}
+  for(let i=0;i<bs.length;i++){const b=bs[i],p=vehicleSpec(b),r=carRect(b),raw=position(b),a=Number.isFinite(raw.a)?raw.a:Math.atan2(D[b.dir][0],D[b.dir][1]),old=fleetPose.get(b)||{a,last:now-.016,springs:wheels.map(()=>({y:0,v:0}))},delta=approachAngle(old.a,a);
+   const dt=clamp(now-old.last,.001,.05);old.last=now;old.a+=delta*(1-Math.exp(-12*dt));
+   let front=0,rear=0,left=0,right=0,heave=0;
+   for(let k=0;k<wheels.length;k++){const wheel=wheels[k],lx=wheel.pivot.position.x,lz=wheel.pivot.position.z,ground=roadHeight(r.x+Math.cos(old.a)*lx+Math.sin(old.a)*lz,r.z-Math.sin(old.a)*lx+Math.cos(old.a)*lz);
+    const load=clamp(-(b.acceleration||0)*wheel.axle*.0035+delta*(b.velocity||0)*wheel.side*.007,-.055,.055);
+    const y=suspensionStep(old.springs[k],ground+load,dt);heave+=y;
+    if(wheel.front)front+=y;else rear+=y;if(wheel.side<0)left+=y;else right+=y;
+    wheel.pivot.position.y=wheel.rest+ground;wheel.pivot.rotation.y=wheel.front?clamp(delta,-.48,.48):0;wheel.spin.rotation.x=-(b.distanceM||0)/wheel.rest;
+   }
+   fleetPose.set(b,old);root.position.set(r.x,0,r.z);root.rotation.y=old.a;chassis.rotation.x=(rear-front)/(2*p.l*.6);chassis.rotation.z=(right-left)/(2*p.w*.8);chassis.position.y=heave/4;
    root.updateMatrixWorld(true);
    const driver=appearance(b.id+173),palette=[0x687d85,0x9c765b,0x52645d,0x837f6d,0x9b9a89,0x5e5965,0x49545e];
    for(const part of parts){part.mesh.setMatrixAt(i,part.source.matrixWorld);if(part.tag==="paint"){color.setHex(b.bus?lines[b.line].color:["sedan","hatch","wagon"].includes(type)?palette[b.id%palette.length]:p.color);part.mesh.setColorAt(i,color);}else if(part.tag==="skin"||part.tag==="clothes"){color.setHex(part.tag==="skin"?driver.skin:driver.shirt);part.mesh.setColorAt(i,color);}else if(part.tag==="brake"){color.setHex((b.acceleration||0)<-.8?0xffffff:0x8b8b8b);part.mesh.setColorAt(i,color);}}
@@ -1338,7 +1410,7 @@ function renderFleet(cars,position,parent,kit){
   for(const part of parts){part.mesh.count=bs.length;part.mesh.instanceMatrix.needsUpdate=true;if(part.mesh.instanceColor)part.mesh.instanceColor.needsUpdate=true;}
  }
  for(const [type,t] of f.templates)if(!sets.has(type))for(const part of t.parts)part.mesh.count=0;
- if(typeof window!=="undefined")window.sectorZeroFleetAudit=()=>({privateReady:f.privateReady,legacyMeshes:f.legacy.size,classes:[...sets.keys()],rendered:[...sets.values()].reduce((n,b)=>n+b.length,0)});
+ if(typeof window!=="undefined")window.sectorZeroFleetAudit=()=>({privateReady:f.privateReady,legacyMeshes:f.legacy.size,classes:[...sets.keys()],reflection:!!env,reflectionMaterials:[...f.templates.values()].flatMap(t=>t.parts).filter(p=>p.mesh.material.envMap===env&&!!env).length,rendered:[...sets.values()].reduce((n,b)=>n+b.length,0)});
  return true;
 }
 
