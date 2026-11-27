@@ -1,0 +1,4 @@
+# 0.1.0 — migrated development build
+Implemented: original V3 scene and game systems retained; corrected foot lift and alternating gait, hip position, approximate two-link IK, 120 Hz gait/suspension, inertial fly flight, capture ownership, visible weave line, trajectory preview, camera damping, controller neutral/disconnect handling, fullscreen layout, help pause, startup error handling and Three.js r170 pin.
+Tests: module syntax compiled; actual launch and ground physics executed on mocked flat surface: held leap continuous gravity, landing and 3-unit rope bound passed. Not browser playtests.
+Incomplete: advanced asset acquisition/rigging, full 3D collision, coupled limb forces, elastic silk solver, prey resistance, persistent threads/world save, graphical polish. Existing procedural models, plane physics and projected rope retained. WebGL visuals, gameplay, touch, controller hardware and Pages deployment unverified. CDN dependency required.
