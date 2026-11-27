@@ -9,3 +9,6 @@ Drag probes, hold Shock or Space, and use the inspector to observe the simulated
 See [SPEC](SPEC.md), [ROADMAP](ROADMAP.md) and [STATUS](STATUS.md).
 
 [V5 asset-first preview](https://euclidi.github.io/euclidi-games/electrocute-stuff/v5.html) — new contact geometry, Matter debris fixes and CC0 visual/audio assets. Logic regression passed; full browser playtest remains outstanding. See [ASSETS.md](ASSETS.md).
+
+
+[V6 development preview](https://euclidi.github.io/euclidi-games/electrocute-stuff/v6.html): persistent specimen rack, local water brush and optional authored soda-can model. Select **WATER BRUSH ON**, drag over a specimen, then turn it off to control probes. Tab switching preserves the experiment; REPLACE OBJECT resets the selected slot. CAN MODEL PILOT is optional. See [STATUS](STATUS.md) for verification limitations.
