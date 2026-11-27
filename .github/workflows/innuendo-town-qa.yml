@@ -1,0 +1,36 @@
+name: Innuendo Town browser QA
+on:
+  push:
+    branches: [dev/innuendo-town]
+    paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
+  pull_request:
+    branches: [main]
+    paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node innuendo-town/qa/logic.mjs
+      - run: |
+          cd innuendo-town
+          npm install --no-save --package-lock=false phaser@3.90.0 playwright@1.56.1
+          mkdir -p vendor
+          cp node_modules/phaser/dist/phaser.min.js vendor/phaser.min.js
+          npx playwright install --with-deps chromium
+      - run: |
+          python3 -m http.server 8080 >/tmp/town-http.log 2>&1 &
+          node innuendo-town/qa/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: innuendo-town-qa
+          path: town-*.png
+          if-no-files-found: ignore
