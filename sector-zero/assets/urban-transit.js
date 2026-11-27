@@ -102,9 +102,9 @@ function driveTraffic(w,dt){
   if(limit<70)reason="FOLLOWING";
   let owner=junctions.get(k),committed=owner===b;
   const plan=plannedDir(b,tx,tz);
-  const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&v.progress<20+(b.bus?3:0));
+  const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&v.progress<14+gap(v,b)+3);
   const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
-  if(!committed&&b.progress>=line-.05&&b.progress<70){
+  if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
    if(!owner&&!phaseLocks.has(k)&&signal(tx,tz,w.time,b.dir)===b.dir%2&&dir!==undefined){
     junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
@@ -301,18 +301,18 @@ function resume(w,c,api){const r=c.ride;delete c.ride;c.transitGoal=c.goal;
 export function before(w,dt,api){
  prepare(w);
  currentWorld=w;phaseLocks.clear();
- for(const c of w.citizens){const st=walkState.get(c)||{};walkState.set(c,st);if(st.cross&&walking(c)){if(offRoad(c.x,c.z)&&Math.hypot(c.x-st.cross.a.x,c.z-st.cross.a.z)<1.4)st.cross=null;else phaseLocks.add(nodeKey(st.cross.x,st.cross.z));}}
+ for(const c of w.citizens){const st=walkState.get(c)||{};walkState.set(c,st);if(st.cross&&walking(c)){const a=st.cross.a,b=st.cross.b,done=(c.x-(a.x+b.x)/2)*(b.x-a.x)+(c.z-(a.z+b.z)/2)*(b.z-a.z)>0;if(offRoad(c.x,c.z)&&done){if(c.route[0]?.cross)c.route.shift();st.cross=null;}else if(offRoad(c.x,c.z)&&Math.hypot(c.x-a.x,c.z-a.z)<1.4)st.cross=null;else phaseLocks.add(nodeKey(st.cross.x,st.cross.z));}}
  for(const c of w.citizens)if(c.transitMigration){delete c.transitMigration;if(c.id!==w.possessed)resume(w,c,api);}
  congestion.clear();
  for(const b of w.cars){const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
  for(const b of w.cars)if(b.bus){b.dwell=Math.max(0,b.dwell-dt);b.speed=b.dwell>0?0:Math.min(lines[b.line].speed,roadSpeed(b.x,b.z,b.dir)+2)*(w.rain?.82:1);
  b.passengers=b.passengers.filter(id=>{const c=w.citizens[id];if(!c||id===w.possessed||c.ride?.bus!==b.id){if(c?.ride?.bus===b.id)delete c.ride;return false}return true;});}
- for(const b of w.cars){b.driveSpeed=b.speed;b.speed=0;b.progress=Math.min(b.progress,69.99);}
+ for(const b of w.cars){b.driveSpeed=b.speed;b.oldWait=b.wait;b.speed=0;b.progress=Math.min(b.progress,69.99);}
  // Original simulation remains responsible for intent, economy and needs, not motion.
  for(const c of w.citizens){if(c.id===w.possessed)continue;const st=walkState.get(c);st.speed=c.speed;st.origin=c.inside;c.speed=0;if(c.ride?.phase==="waiting"||c.ride?.phase==="riding")c.route=[{x:c.x,z:c.z}];}
 }
 export function after(w,dt,api){
- for(const b of w.cars){b.speed=b.driveSpeed;delete b.driveSpeed;}driveTraffic(w,dt);
+ for(const b of w.cars){b.speed=b.driveSpeed;b.wait=b.oldWait;delete b.oldWait;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
  for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;}
  for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st)st.cross=null;}
@@ -330,7 +330,7 @@ export function after(w,dt,api){
  if(r.phase==="riding"){const b=buses.find(x=>x.id===r.bus);if(!b){resume(w,c,api);continue}const p=api.carPosition(b);c.x=p.x;c.z=p.z;c.heading=p.a;c.inside=-1;c.route=[];}
  }
  for(const b of buses){
- w.transit.vehicleKm+=b.speed*dt/1000;
+ w.transit.vehicleKm+=(b.trafficStatus==="MOVING"?b.speed*dt:0)/1000;
  if(b.dwell<=0||b.atStop<0)continue;
  const p=lines[b.line].stops[b.atStop];
  for(const id of [...b.passengers]){const c=w.citizens[id],r=c?.ride;if(!r||r.bus!==b.id){b.passengers=b.passengers.filter(x=>x!==id);continue;}
