@@ -1,6 +1,10 @@
 import {createRun,GUNS} from './core.js';
-import {createRenderer} from './render.js';
-const $=id=>document.getElementById(id),canvas=$('game'),renderer=createRenderer(canvas),keys=new Set();let run,started=false,paused=true,difficulty='normal',map=true,look=0,fire=false,move={x:0,y:0},last=performance.now(),acc=0,padPrev=[],ac=null;
+import {createRenderer} from './render.js?v=030';
+import {loadAuthoredArt} from './authored-art.js?v=030';
+const authored=await loadAuthoredArt().catch(error=>{console.error(error);return null});
+document.documentElement.dataset.authoredArt=authored?'ready':'fallback';
+const $=id=>document.getElementById(id),canvas=$('game'),renderer=createRenderer(canvas,authored),keys=new Set();let run,started=false,paused=true,difficulty='normal',map=false,look=0,fire=false,move={x:0,y:0},last=performance.now(),acc=0,padPrev=[],ac=null;
+let hadLock=false;document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement===canvas){hadLock=true;return}if(hadLock){hadLock=false;if(started&&!paused&&!touchDevice)show('PAUSED','Mouse released.','RESUME')}});
 let touchDevice=matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;$('touch').hidden=!touchDevice;document.body.classList.toggle('touch-device',touchDevice);
 function sound(kind){try{if(!ac)return;let dur=kind.startsWith('fire')?.16:kind==='enemy-fire'?.12:.075,n=Math.round(ac.sampleRate*dur),b=ac.createBuffer(1,n,ac.sampleRate),a=b.getChannelData(0),seed=27439,lp=0;for(let i=0;i<n;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;let v=seed/2147483648-1;lp+=(v-lp)*.18;let t=i/n,noise=kind.startsWith('fire')||kind==='enemy-fire'||kind==='hurt';a[i]=(noise?lp*.7+Math.sin(i/ac.sampleRate*2*Math.PI*(kind==='fire1'?62:105))*.24:Math.sin(i/ac.sampleRate*2*Math.PI*(kind==='pickup'?660:220))*.28)*Math.pow(1-t,2)}let s=ac.createBufferSource(),g=ac.createGain();g.gain.value=.28;s.buffer=b;s.connect(g);g.connect(ac.destination);s.start()}catch{}}
 function unlock(){try{ac??=new AudioContext();ac.resume()}catch{}}

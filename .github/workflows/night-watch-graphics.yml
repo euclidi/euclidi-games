@@ -1,5 +1,10 @@
 name: Night Watch graphics verification
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'night-watch/**'
+      - '.github/workflows/night-watch-graphics.yml'
   pull_request:
     paths:
       - 'night-watch/**'
@@ -31,6 +36,7 @@ jobs:
             p.on('pageerror',e=>errors.push(e.message));
             await p.goto('http://127.0.0.1:8765/night-watch/');
             await p.waitForFunction(()=>document.documentElement.dataset.gameReady==='true');
+            assert.equal(await p.locator('html').getAttribute('data-authored-art'),'ready');
             await p.locator('#play').click();
             await p.locator('#overlay').waitFor({state:'hidden'});
             await p.waitForTimeout(500);
@@ -40,7 +46,7 @@ jobs:
             if(name==='desktop'){await p.keyboard.down('KeyW');await p.waitForTimeout(350);await p.keyboard.up('KeyW');await p.keyboard.press('Space');await p.keyboard.press('KeyM')}
             else{assert(await p.locator('#touch').isVisible());await p.locator('#fire').tap()}
             await p.screenshot({path:'night-watch-audit/'+name+'.png'});
-            await p.locator('#pause').click();await p.locator('#overlay').waitFor({state:'visible'});
+            if(name==='desktop')await p.keyboard.press('Escape');else await p.locator('#pause').click();await p.locator('#overlay').waitFor({state:'visible'});
             assert.deepEqual(errors,[]);await p.close();
           }
           await browser.close();
