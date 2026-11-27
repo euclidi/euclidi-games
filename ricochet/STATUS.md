@@ -1,4 +1,4 @@
-# Status — 0.4.2 development
+# Status — 0.4.3 development
 Source implementation: eight menu modes; 50 deterministic template-based boards (not 50 handcrafted boards); peg contacts through Rapier CCD, scoring, limited shots, free-ball bucket, power logic, deterministic daily seed, incremental upgrades, editor JSON import/export, IndexedDB with localStorage fallback, synthesized sound and simple music loop, original runtime-generated bitmap textures rendered via PixiJS. No final-quality art or individually playtested levels. No cover art added without approval.
 
 Known gaps: mode balance and distinct efficiency/high-score rules, approximation in trajectory guide, fireball uses pass-through collision groups and proximity scoring, unverified; flippers as velocity assist, missing independent ambience, accessible symbols added but not visually tested, controller remapping and fullscreen missing, no TypeScript/Vite bundling. CDN dependency runtime is unverified; local environment cannot resolve CDN. Browser/mobile/physical-controller playtesting and visual audit not performed. Do not describe as complete or verified deployment. Static checks are not browser tests.
@@ -20,3 +20,6 @@ Inspected an actual raster contact sheet of all seven preliminary portraits and 
 
 ## V0.4.2
 Adaptive layout module classifies viewport and primary pointer/hover capability; actual pointer input updates hints, resize/orientation changes reflow without restarting gameplay. Desktop keeps companion and controls beside the board; portrait stacks the field, shot controls and compact companion; landscape uses a compact side control area; tablet adapts independently. HUD decluttered, menu buttons restyled, safe-area padding added, fixed 4:3 playfield preserved. Pure geometry tests and JS syntax checks passed; browser rotation smoke coverage added but not executed here. Very short landscape, editor, result overlays, notched screens and physical devices remain unverified. Visual art limitations from 0.4.1 remain; no claim of finished graphics or live Pages verification.
+
+### V0.4.3 correction
+Increased short-landscape HUD and boss panel height reserve and side rail clearance. Geometry regression checks for 320/370/390/430px viewport height with and without boss panel. Local Chromium exists, but live Pages DNS resolution failed; no full browser execution or screenshot validation in this environment.

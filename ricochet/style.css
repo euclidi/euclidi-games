@@ -90,3 +90,8 @@ header a{text-decoration:none;font-size:12px}.version{font:10px system-ui;color:
 :root[data-layout=mobile-landscape] .menu-home button{min-height:40px;padding:7px 10px;font-size:14px}:root[data-layout=mobile-landscape] #menu:has(.menu-sub:not([hidden])) .title{min-height:62px}
 :root[data-layout=mobile-landscape] #roster{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-height:370px){:root[data-layout=mobile-landscape] .title p,:root[data-layout=mobile-landscape] .collection{display:none}}
+
+/* Very short displays keep the controls reachable; preserve aspect ratio. */
+:root[data-layout=mobile-landscape] .play-shell{grid-template-columns:minmax(0,var(--fit-board)) minmax(142px,174px)}
+:root[data-layout=mobile-landscape] .field-info{min-width:0;flex-wrap:wrap}:root[data-layout=mobile-landscape] .controls #fire{min-height:44px}
+:root[data-layout=mobile-landscape] body:has(#game:not([hidden])) main{padding-top:max(3px,env(safe-area-inset-top));padding-bottom:max(3px,env(safe-area-inset-bottom))}

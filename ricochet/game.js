@@ -1,4 +1,4 @@
-import {installLayout} from "./layout.js?v=7";
+import {installLayout} from "./layout.js?v=8";
 import {campaign,makeBoard,validate,dateSeed,scoreFor,W,H,rng} from "./levels.js?v=4";
 import {newFinale,cameraStep,finalHit,finalActive,scoreLanding,prizes} from "./finale.js?v=4";
 import {Music,arrangement} from "./music.js?v=4";

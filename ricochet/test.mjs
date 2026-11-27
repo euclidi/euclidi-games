@@ -19,3 +19,5 @@ assert.equal(roster.length,7);assert.equal(available(0).length,2);assert.equal(a
 
 import {classifyLayout,boardFit} from "./layout.js";
 const cases=[[{width:390,height:844,coarse:true,hover:false,touch:true},"mobile-portrait"],[{width:844,height:390,coarse:true,hover:false,touch:true},"mobile-landscape"],[{width:1280,height:800},"desktop"],[{width:820,height:1180,coarse:true,hover:false,touch:true},"tablet"],[{width:520,height:900},"mobile-portrait"],[{width:1440,height:900,touch:true},"desktop"]];for(const [input,expected] of cases){assert.equal(classifyLayout(input),expected);const fit=boardFit({...input,layout:expected});assert.ok(fit.width<=input.width);assert.ok(Math.abs(fit.height-fit.width*.75)<1)}console.log("PASS adaptive layout classifier and board fit");
+
+for(const height of [320,370,390,430])for(const boss of [false,true]){const fit=boardFit({width:844,height,layout:"mobile-landscape",boss});assert.ok(fit.height+(boss?88:62)<=height)}console.log("PASS short landscape HUD reserve");

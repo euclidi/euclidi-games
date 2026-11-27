@@ -8,8 +8,8 @@ export function classifyLayout({width,height,coarse=false,hover=true,touch=false
 }
 export function boardFit({width,height,layout,boss=false,editing=false}){
  const compact=layout==="mobile-landscape",pad=compact?6:12;
- const chrome=compact?24:layout==="mobile-portrait"? (boss?236:203):layout==="tablet"? (boss?230:198):(boss?205:173);
- const availW=Math.max(1,width-2*pad-(compact?174:layout==="desktop"?228:0));
+ const chrome=compact?(boss?88:62):layout==="mobile-portrait"? (boss?236:203):layout==="tablet"? (boss?230:198):(boss?205:173);
+ const availW=Math.max(1,width-2*pad-(compact?190:layout==="desktop"?228:0));
  const availH=editing?Infinity:Math.max(compact?110:150,height-chrome);
  const w=Math.floor(Math.min(768,availW,availH*4/3));
  return {width:w,height:Math.floor(w*3/4)}
