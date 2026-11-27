@@ -1,6 +1,6 @@
 /* SNAKE LCD Organic v0.1 — direct WebGL 2 pixel renderer */
 (function boot(){
-  const $=id=>document.getElementById(id),W=480,H=320,version="0.1.3",key="snake-lcd-v1",clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),fmt=n=>String(Math.floor(n)).padStart(4,"0");
+  const $=id=>document.getElementById(id),W=480,H=320,version="0.1.4",key="snake-lcd-v1",clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),fmt=n=>String(Math.floor(n)).padStart(4,"0");
   const palettes={olive:["#aab77c","#25351f"],gameboy:["#9bbc0f","#0f380f"],graphite:["#c0c3bc","#252a28"],amber:["#ceba82","#4b341d"],ice:["#b5cdd5","#274353"],inverse:["#26332b","#b8d3af"]};
   const base={mode:"classic",movement:"grid",food:"pellets",habitat:"arcade",growth:"instant",boundary:"wall",obstacles:0,speed:96,sensitivity:1,difficulty:"normal",species:"grass",pattern:"diamond",initialSize:5,palette:"olive",paper:"#aab77c",ink:"#25351f",contrast:1,ghost:.02,pixel:1,tiltStrength:1,control:"pad",sound:true,organicAudio:true,volume:.35,reduced:matchMedia("(prefers-reduced-motion: reduce)").matches};
   let store={};try{store=JSON.parse(localStorage.getItem(key)||"{}")||{}}catch{}
@@ -86,7 +86,7 @@
     ["Game", [["movement","Movement","select",["grid","organic"]],["food","Food","select",["pellets","prey","mixed"]],["habitat","Habitat","select",["arcade","grassland","desert","wetlands"]],["growth","Growth","select",["instant","biological"]],["boundary","Boundary","select",["wall","wrap"]],["obstacles","Extra obstacles","range",0,12,1],["difficulty","Difficulty","select",["easy","normal","hard"]],["speed","Speed","range",45,155,5]]],
     ["Snake", [["species","Species","select",["grass","viper","python"]],["pattern","Scale pattern","select",["diamond","banded","speckled","plain"]],["initialSize","Initial size","range",5,9,1]]],
     ["Display", [["palette","Palette","select",[...Object.keys(palettes),"custom"]],["paper","Custom background","color"],["ink","Custom ink","color"],["contrast","Contrast","range",.6,1.7,.1],["ghost","Persistence","range",0,.75,.01],["pixel","Pixel size","select",[1,2,3]]]],
-    ["Controls", [["control","Touch control","select",["pad","stick","swipe"]],["sensitivity","Turn sensitivity","range",.6,1.5,.1],["tiltStrength","Shell tilt strength","range",.25,1.6,.05],["reduced","Reduced motion","checkbox"]]],
+    ["Controls", [["control","Touch control","select",["pad","stick","swipe"]],["sensitivity","Turn sensitivity","range",.6,1.5,.1],["tiltStrength","Shell tilt strength","range",.25,1.5,.05],["reduced","Reduced motion","checkbox"]]],
     ["Sound", [["sound","Sound effects","checkbox"],["organicAudio","Organic sounds","checkbox"],["volume","Master volume","range",0,1,.05]]]
   ];
   const notes=["Applies when starting a new game. Custom mode uses all game choices.","Applies to the next game.","Changes appear immediately. Custom colors appear when Custom is selected.","Tilt moves the handheld, not the snake. Turn sensitivity applies to the next game.","Changes take effect immediately."];
@@ -122,5 +122,5 @@
   applyPalette();$("resume").hidden=!saved;const idle=createGame({...base,mode:"organic",habitat:"grassland",food:"mixed"},19);idle.s.body=Array.from({length:39},(_,i)=>({x:290-i*5.1,y:155+Math.sin(i*.22)*27}));idle.s.head={x:290,y:155,a:-.2};idle.s.age=1;
   function frame(ms){requestAnimationFrame(frame);let dt=Math.min(.05,(ms-(last||ms))/1000);last=ms;gamepad();if(running&&game){acc+=dt;while(acc>=1/120){game.step(1/120);acc-=1/120;let event=game.consume();if(event&&event!=="death")tone(event);if(game.s.dead){finish();break}}if(running){best[game.cfg.mode]=Math.max(best[game.cfg.mode]||0,game.s.score);if(cfg.organicAudio&&!game.classic&&game.s.age-lastTone>1.8){tone("rustle");lastTone=game.s.age}if(game.s.age-saveAt>4){saveAt=game.s.age;snapshot();save()}}updateHUD()}render(game||idle);window.__snake={version,mode:game?.cfg.mode,running,score:game?.s.score||0,state:game?.s,renderer}}
   requestAnimationFrame(frame);
-  if(location.protocol==="https:"&&"serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=0.1.3").catch(()=>{});
+  if(location.protocol==="https:"&&"serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=0.1.4").catch(()=>{});
 })();

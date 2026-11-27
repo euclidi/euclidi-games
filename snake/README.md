@@ -1,6 +1,6 @@
 # SNAKE — LCD Organic
 
-Version 0.1.3, experimental compatibility build. [Play](https://euclidi.github.io/euclidi-games/snake/).
+Version 0.1.4, experimental compatibility build. [Play](https://euclidi.github.io/euclidi-games/snake/).
 
 Classic grid Snake and continuous organic hunting/survival share a monochrome dot-matrix display. Custom games mix movement, prey, environment and growth. Prey flees, the snake grows, and hunger affects survival. Original indexed pixel masks, procedural body rasterization and synthesized audio; no third-party assets.
 
@@ -9,3 +9,5 @@ Controls: arrows/WASD, on-screen D-pad/joystick/swipe, standard gamepad stick/D-
 Run from repository root with `python3 -m http.server 8000` and visit /snake/. WebGL 2 preferred; software LCD fallback available; no external runtime dependencies. Service worker caches game assets after a successful HTTPS load. This is a compatibility implementation, not the approved PixiJS/TypeScript build.
 
 [Specification](SPEC.md) · [Roadmap](ROADMAP.md) · [Status](STATUS.md)
+
+Tilt is limited to 7 degrees total and uses a neutral dead zone with time-based smoothing. Adjust intensity in Settings → Controls.

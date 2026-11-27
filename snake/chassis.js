@@ -1,8 +1,11 @@
 function orientationTarget(beta,gamma,baseBeta,baseGamma,angle=0,strength=1){
- const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),d=(a,b)=>((a-b+540)%360)-180;
+ const d=(a,b)=>((a-b+540)%360)-180;
  let x=d(beta,baseBeta),y=d(gamma,baseGamma);
  if(angle===90)[x,y]=[y,-x];else if(angle===-90||angle===270)[x,y]=[-y,x];else if(Math.abs(angle)===180)[x,y]=[-x,-y];
- return {x:clamp(x*.72*strength,-16,16),y:clamp(y*.72*strength,-16,16)};
+ const m=Math.hypot(x,y), dead=1.25, gain=.30*Math.max(.25,Math.min(1.5,strength));
+ if(m<=dead)return{x:0,y:0};
+ const magnitude=Math.min(7, (m-dead)*gain);
+ return{x:x/m*magnitude,y:y/m*magnitude};
 }
 function unprojectQuad(q,x,y){
  // Projective transform from a unit square to the four viewport corners; invert it.
@@ -17,13 +20,13 @@ function isMobileLayout(coarse,touch,width,height){return !!(coarse||(touch>0&&M
 (function bootChassis(){
  const root=document.documentElement,device=document.getElementById("device"),button=document.getElementById("tilt"),label=document.getElementById("layoutLabel");
  const coarse=matchMedia("(pointer: coarse)"),reduced=matchMedia("(prefers-reduced-motion: reduce)");
- let mobile=false,active=false,requested=false,baseline=null,target={x:0,y:0},shown={x:0,y:0},raf=0,lastSensor=0,strength=1,appReduced=false;
+ let mobile=false,active=false,requested=false,baseline=null,target={x:0,y:0},shown={x:0,y:0},raf=0,lastDraw=0,lastSensor=0,strength=1,appReduced=false;
  const supports=typeof window.DeviceOrientationEvent!=="undefined";
  let preferred=true;try{preferred=localStorage.getItem("snake-shell-tilt")!=="off"}catch{}
  const save=()=>{try{localStorage.setItem("snake-shell-tilt",preferred?"on":"off")}catch{}};
- function draw(){raf=0;shown.x+=(target.x-shown.x)*.23;shown.y+=(target.y-shown.y)*.23;if(Math.abs(shown.x-target.x)<.015)shown.x=target.x;if(Math.abs(shown.y-target.y)<.015)shown.y=target.y;
- device.style.setProperty("--tiltx",shown.x.toFixed(3)+"deg");device.style.setProperty("--tilty",shown.y.toFixed(3)+"deg");device.style.setProperty("--lightx",(45-shown.y*2.6).toFixed(1)+"%");device.style.setProperty("--lighty",(22+shown.x*2.5).toFixed(1)+"%");device.style.setProperty("--edge-x",(-shown.y*.65).toFixed(1)+"px");device.style.setProperty("--edge-y",(7-shown.x*.36).toFixed(1)+"px");device.style.setProperty("--case-scale",String(1-Math.min(.13,(Math.abs(shown.x)+Math.abs(shown.y))*.004)));
- if(shown.x!==target.x||shown.y!==target.y)raf=requestAnimationFrame(draw);}
+ function draw(now){raf=0;const dt=lastDraw?Math.min(40,Math.max(1,now-lastDraw)):16.67;lastDraw=now;const alpha=1-Math.exp(-dt/130);shown.x+=(target.x-shown.x)*alpha;shown.y+=(target.y-shown.y)*alpha;if(Math.abs(shown.x-target.x)<.015)shown.x=target.x;if(Math.abs(shown.y-target.y)<.015)shown.y=target.y;
+ device.style.setProperty("--tiltx",shown.x.toFixed(3)+"deg");device.style.setProperty("--tilty",shown.y.toFixed(3)+"deg");device.style.setProperty("--lightx",(45-shown.y*2.6).toFixed(1)+"%");device.style.setProperty("--lighty",(22+shown.x*2.5).toFixed(1)+"%");device.style.setProperty("--edge-x",(-shown.y*.65).toFixed(1)+"px");device.style.setProperty("--edge-y",(7-shown.x*.36).toFixed(1)+"px");device.style.setProperty("--case-scale",String(1-Math.min(.035,Math.hypot(shown.x,shown.y)*.003)));
+ if(shown.x!==target.x||shown.y!==target.y)raf=requestAnimationFrame(draw);else lastDraw=0;}
  function schedule(){if(!raf)raf=requestAnimationFrame(draw)}
  function reset(){baseline=null;target={x:0,y:0};schedule()}
  function updateButton(){button.hidden=!mobile;button.disabled=!supports||(reduced.matches||appReduced);button.setAttribute("aria-pressed",String(active));button.textContent=(reduced.matches||appReduced)?"MOTION OFF":!supports?"TILT N/A":active?"TILT ON":preferred&&!requested?"ENABLE TILT":"TILT OFF";}
@@ -35,5 +38,5 @@ function isMobileLayout(coarse,touch,width,height){return !!(coarse||(touch>0&&M
  button.addEventListener("click",async()=>{if(active){preferred=false;save();turnOff();return}preferred=true;save();if(typeof DeviceOrientationEvent.requestPermission==="function"){try{const result=await DeviceOrientationEvent.requestPermission();if(result!=="granted"){preferred=false;save();button.textContent="TILT DENIED";return}requested=true}catch{preferred=false;save();button.textContent="TILT N/A";return}}turnOn()});
  for(const m of [coarse,reduced]){if(m.addEventListener)m.addEventListener("change",layout);else m.addListener?.(layout)}
  addEventListener("resize",layout,{passive:true});addEventListener("orientationchange",()=>{reset();layout()},{passive:true});screen.orientation?.addEventListener?.("change",()=>{reset();layout()});document.addEventListener("visibilitychange",()=>{if(document.hidden)reset()});
- layout();window.__snakeChassis={get layout(){return root.dataset.layout},get orientation(){return root.dataset.orientation},get tilt(){return{...shown}},get sensorSeen(){return lastSensor>0},setStrength(n){strength=Math.max(.25,Math.min(1.6,Number(n)||1));reset()},setReduced(n){appReduced=!!n;layout()},recenter:reset,map(element,x,y){const points=[...element.querySelectorAll(".map-point")].map(p=>{const r=p.getBoundingClientRect();return{x:r.x,y:r.y}});if(points.length===4){const v=unprojectQuad(points,x,y);if(v)return v}const r=element.getBoundingClientRect();return{x:(x-r.left)/r.width,y:(y-r.top)/r.height}}};
+ layout();window.__snakeChassis={get layout(){return root.dataset.layout},get orientation(){return root.dataset.orientation},get tilt(){return{...shown}},get sensorSeen(){return lastSensor>0},setStrength(n){strength=Math.max(.25,Math.min(1.5,Number(n)||1));reset()},setReduced(n){appReduced=!!n;layout()},recenter:reset,map(element,x,y){const points=[...element.querySelectorAll(".map-point")].map(p=>{const r=p.getBoundingClientRect();return{x:r.x,y:r.y}});if(points.length===4){const v=unprojectQuad(points,x,y);if(v)return v}const r=element.getBoundingClientRect();return{x:(x-r.left)/r.width,y:(y-r.top)/r.height}}};
 })();
