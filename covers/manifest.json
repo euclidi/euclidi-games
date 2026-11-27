@@ -40,8 +40,8 @@
     ],
     "route": "./creatture/?v=0.1.8",
     "selector": "#stage",
-    "sha256": "db512690b9d65fad8b06c6a246a2c0974f75461f1a266e5568e8aa4f175fea91",
-    "source": "6913ab04f22ed721c27d004dcb6fc29fc2bdbcad",
+    "sha256": "2991257ae58f0b22222c276153c555713c70c6b2cc3c4a2dbe49cbe2d0af7769",
+    "source": "4d1381daf818fbc2b21e0f4b7056d9eced7f5d5a",
     "viewport": [
       1280,
       800
