@@ -1,0 +1,575 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no"><title>NEREID K-07 / 3D Submarine Simulator — Voyage Development v3.3</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#07151c;color:#b9cfca;font:11px Consolas,'Liberation Mono',monospace}#ne2{position:relative;height:100%;min-height:335px;overflow:hidden;border:1px solid #536970;background:#07161d;touch-action:none;user-select:none;-webkit-user-select:none}#ne2 canvas.world{display:block;width:100%;height:100%;touch-action:none}#ne2 button,#ne2 select,#ne2 input{font:700 11px Consolas,monospace;color:#d2dcd3;background:#233a42;border:1px solid #677f7d;border-radius:1px;min-height:29px;padding:5px 8px;touch-action:manipulation}#ne2 button:active,#ne2 button.selected{color:#081c20;background:#dac08b;border-color:#e6d4aa}#ne2 button{cursor:pointer}#ne2 .top{position:absolute;inset:0 0 auto;z-index:3;pointer-events:none;display:flex;justify-content:space-between;gap:10px;padding:8px 11px 25px;background:linear-gradient(#071720f0,#07172004);letter-spacing:.3px}#ne2 .top b{color:#e8cc91}#ne2 .metrics{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;font-variant-numeric:tabular-nums}#ne2 .metrics strong{color:#d6cfab}#ne2 .subroom{position:absolute;top:35px;left:11px;z-index:2;pointer-events:none;color:#a4c3b7}#ne2 .center{position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);pointer-events:none;color:#f5e1b69c;font-size:21px}#ne2 .message{position:absolute;left:50%;transform:translateX(-50%);bottom:118px;z-index:4;max-width:85%;padding:6px 9px;text-align:center;border:1px solid #77785c;background:#071b24e6;color:#f2d9a7;display:none}#ne2 .message.on{display:block}#ne2 .prompt{position:absolute;bottom:94px;left:50%;transform:translateX(-50%);z-index:3;color:#f3d5a0;text-align:center;text-shadow:1px 2px 4px #000;white-space:nowrap;pointer-events:none}#ne2 .hint{position:absolute;left:50%;transform:translateX(-50%);bottom:70px;z-index:3;color:#9dbdb8;white-space:nowrap;text-align:center;pointer-events:none}#ne2 .nav{position:absolute;bottom:0;left:0;right:0;padding:6px;display:flex;gap:5px;min-height:55px;overflow-x:auto;background:#112630f7;border-top:1px solid #516b70;z-index:5}#ne2 .nav button{flex:1;min-width:57px;white-space:nowrap}#ne2 .nav .action{border-color:#ccb37f;color:#f0d6a0}#ne2 .pad{position:absolute;bottom:111px;left:14px;width:100px;height:100px;border:1px solid #bdcdbe66;border-radius:50%;background:#20405266;z-index:4;touch-action:none;display:flex;align-items:center;justify-content:center}#ne2 .knob{width:38px;height:38px;background:#8fa6a188;border:2px solid #d2ddc49c;border-radius:50%;transform:translate(0,0);pointer-events:none}#ne2 .use{position:absolute;bottom:126px;right:14px;width:75px;height:47px;border-color:#d8b77c!important;color:#efdbb0!important;z-index:4}#ne2 .sound{position:absolute;top:40px;right:10px;z-index:5;padding:4px 7px!important;font-size:10px!important}#ne2 .gamebtn{position:absolute;top:40px;right:100px;z-index:5;padding:4px 7px!important;font-size:10px!important}#ne2 .gpstatus{position:absolute;top:73px;right:11px;z-index:2;color:#d2c194;font-size:10px;pointer-events:none}#ne2 .optic{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}#ne2 .options{display:none;position:absolute;top:82px;right:7px;width:min(360px,calc(100% - 14px));max-height:calc(100% - 152px);overflow-y:auto;z-index:15;background:#0b2229f7;border:2px solid #86998e;padding:9px;box-shadow:0 6px 25px #0008}#ne2 .options.open{display:block}#ne2 .options h4{margin:1px 0 8px;font-size:13px;color:#ead19e}#ne2 .options .row{display:flex;align-items:center;gap:7px;margin:4px 0}#ne2 .options .row label{flex:1}#ne2 .options .row select{width:112px;font-size:11px;padding:3px}#ne2 .options .row input{width:125px}#ne2 .options .raw{border:1px solid #54706c;padding:6px;white-space:pre-wrap;line-height:1.6;font-size:10px;background:#06171f;min-height:55px;margin-top:8px}#ne2 .options p{font-size:10px;line-height:1.45;color:#a2bbb6}#ne2 .options .bar{display:flex;gap:5px;margin-top:7px}#ne2 .options .bar button{flex:1}#ne2 .boot{position:absolute;inset:0;background:#091c25;z-index:19;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px}#ne2 .boot strong{font-size:22px;color:#ead4a4;letter-spacing:4px}#ne2 .boot small{color:#90a9a9}#ne2 .compass{position:absolute;top:53px;left:50%;transform:translateX(-50%);z-index:2;color:#b9cfc3;pointer-events:none}#ne2 .tracer{position:absolute;top:75px;left:10px;z-index:2;color:#b3cfc3;opacity:.88;pointer-events:none;font-size:10px}
+@media(max-width:610px){#ne2 .top{padding:5px 7px 21px;font-size:9px}#ne2 .metrics{gap:6px}#ne2 .subroom{top:26px;left:8px;font-size:10px}#ne2 .compass{top:42px;font-size:10px}#ne2 .gamebtn,#ne2 .sound{top:27px}#ne2 .gamebtn{right:93px}#ne2 .gpstatus{top:61px}#ne2 .pad{width:78px;height:78px;left:8px;bottom:96px}#ne2 .knob{width:31px;height:31px}#ne2 .use{right:9px;bottom:109px;width:58px;height:43px}#ne2 .nav{min-height:48px;padding:3px;gap:3px}#ne2 .nav button{font-size:9px;padding:4px 5px;min-width:55px}#ne2 .message{bottom:94px}#ne2 .prompt{bottom:75px;font-size:10px}#ne2 .hint{bottom:54px;font-size:9px}#ne2 .options{top:70px;max-height:calc(100% - 121px)}#ne2 .tracer{display:none}}
+@media(max-height:440px){#ne2 .pad{width:65px;height:65px;bottom:66px}#ne2 .use{bottom:77px}#ne2 .message{bottom:70px}#ne2 .prompt{bottom:56px}#ne2 .hint{display:none}#ne2 .nav{min-height:40px;padding:2px}#ne2 .nav button{min-height:30px}#ne2 .options{top:54px;max-height:calc(100% - 98px)}}
+</style></head><body>
+<div id="ne2" tabindex="0"><canvas class="world" id="ne2world"></canvas><canvas class="optic" id="ne2optic"></canvas><div class="top"><b>NEREID / K-07</b><div class="metrics"><span>DEPTH <strong id="ne2depth">0080</strong> m</span><span>SPD <strong id="ne2speed">0.0</strong> kt</span><span>HULL <strong id="ne2hull">100</strong>%</span></div></div><div class="subroom" id="ne2room">01 / BRIDGE</div><div class="compass" id="ne2comp">HDG 082°</div><div class="tracer" id="ne2tracer">POWER READY / INTERNAL ATMOSPHERE STABLE</div><div class="center" id="ne2cross">+</div><div class="message" id="ne2msg"></div><div class="prompt" id="ne2prompt"></div><div class="hint" id="ne2hint">LEFT PAD / WASD · DRAG TO LOOK · USE EQUIPMENT</div><button class="sound" id="ne2sound">SOUND OFF</button><button class="gamebtn" id="ne2gamebtn">CONTROLLER</button><div class="gpstatus" id="ne2gpstatus">PAD: NOT DETECTED</div><div class="pad" id="ne2pad"><div class="knob" id="ne2knob"></div></div><button class="use" id="ne2use">USE</button><div class="nav" id="ne2nav"></div><div class="options" id="ne2options"><h4>GAMEPAD / DIRECTINPUT CALIBRATION</h4><div id="ne2device">Press a button on the gamepad to connect.</div><div class="row"><label>Left stick horizontal</label><select id="ne2lx"></select></div><div class="row"><label>Left stick vertical</label><select id="ne2ly"></select></div><div class="row"><label>Right stick horizontal</label><select id="ne2rx"></select></div><div class="row"><label>Right stick vertical</label><select id="ne2ry"></select></div><div class="row"><label>Interact / Grip button</label><select id="ne2a"></select></div><div class="row"><label>Back / Exit button</label><select id="ne2b"></select></div><div class="row"><label>Lamps button</label><select id="ne2x"></select></div><div class="row"><label>Next station / action</label><select id="ne2y"></select></div><div class="row"><label>Left bumper</label><select id="ne2lb"></select></div><div class="row"><label>Right bumper</label><select id="ne2rb"></select></div><div class="row"><label>Dead zone <output id="ne2deadval">0.18</output></label><input id="ne2dead" type="range" min="0.05" max="0.4" step="0.01" value="0.18"></div><div class="row"><label>Invert vertical look</label><input id="ne2invert" type="checkbox"></div><div class="raw" id="ne2raw">Axes and button readings will appear here.</div><p>DirectInput pads that the browser exposes use the Gamepad API. Generic pads may have different axis or button order; use these selectors to remap. The game cannot read devices the browser does not expose.</p><div class="bar"><button id="ne2std">STANDARD</button><button id="ne2generic">GENERIC DINPUT</button><button id="ne2cal">CENTER STICKS</button><button id="ne2close">CLOSE</button></div></div><div class="boot" id="ne2boot"><strong>NEREID / K-07</strong><span id="ne2boottext">INITIALIZING 3D PRESSURE HULL...</span><small>FIRST PERSON / THREE.JS / DINPUT / MARINE BIOMES</small></div></div>
+<script type="module">
+let T;
+try {T=await import('https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js')}
+catch(first){
+ try{T=await import('https://unpkg.com/three@0.180.0/build/three.module.js')}
+ catch(second){const boot=document.getElementById('ne2boottext');
+  if(boot)boot.textContent='THREE.JS COULD NOT LOAD. CHECK INTERNET / FIREWALL, THEN REOPEN THIS FILE.';
+  console.error('Both Three.js CDN attempts failed',first,second);
+  throw second;
+ }
+}
+try{(()=>{
+// Keep errors visible: a frozen boot panel without an explanation is not acceptable.
+window.addEventListener('error', e=>{const b=document.getElementById('ne2boot'),t=document.getElementById('ne2boottext');
+  if(!b||!t)return;b.style.display='flex';t.textContent='SIMULATION ERROR: '+(e.message||'unknown runtime failure');console.error(e.error||e.message)});
+window.addEventListener('unhandledrejection',e=>{const b=document.getElementById('ne2boot'),t=document.getElementById('ne2boottext');
+  if(!b||!t)return;b.style.display='flex';t.textContent='ENGINE LOAD FAILED: '+String(e.reason).slice(0,175)});
+const root=document.querySelector('#ne2'),$=id=>root.querySelector('#ne2'+id),view=$('world'),nav=$('nav'),opts=$('options'),lens=$('optic'),lg=lens.getContext('2d'),ui={depth:$('depth'),speed:$('speed'),hull:$('hull'),room:$('room'),comp:$('comp'),hint:$('hint'),msg:$('msg'),prompt:$('prompt'),gp:$('gpstatus'),dev:$('device'),raw:$('raw'),tracer:$('tracer')};
+let renderer;try{renderer=new T.WebGLRenderer({canvas:view,antialias:true,powerPreference:'high-performance'});}catch(e){$('boottext').textContent='WEBGL UNAVAILABLE: '+String(e.message);return}renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.45));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.21;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+const scene=new T.Scene();scene.background=new T.Color(0x153f4d);scene.fog=new T.FogExp2(0x153f4d,.022);const cam=new T.PerspectiveCamera(73,1,.065,150);cam.rotation.order='YXZ';const V=(x,y,z)=>new T.Vector3(x,y,z);const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t;
+const mat={wall:new T.MeshStandardMaterial({color:0x57666b,roughness:.67,metalness:.62,side:T.DoubleSide,fog:false}),roof:new T.MeshStandardMaterial({color:0x394a51,roughness:.72,metalness:.57,side:T.DoubleSide,fog:false}),floor:new T.MeshStandardMaterial({color:0x37474c,roughness:.64,metalness:.67,fog:false}),trim:new T.MeshStandardMaterial({color:0x9da9a0,metalness:.78,roughness:.39,fog:false}),dark:new T.MeshStandardMaterial({color:0x26373f,roughness:.64,metalness:.55,fog:false}),black:new T.MeshStandardMaterial({color:0x0a222a,roughness:.41,fog:false}),brass:new T.MeshStandardMaterial({color:0xbb9e70,roughness:.47,metalness:.78,fog:false}),rust:new T.MeshStandardMaterial({color:0x77584e,roughness:.77,metalness:.54,fog:false}),fabric:new T.MeshStandardMaterial({color:0x667d78,roughness:.98,fog:false}),bed:new T.MeshStandardMaterial({color:0xbcb5a7,roughness:.92,fog:false}),glass:new T.MeshPhysicalMaterial({color:0x6cbbcb,transparent:true,opacity:.16,depthWrite:false,side:T.DoubleSide,roughness:.1}),indicator:new T.MeshStandardMaterial({color:0xffe3bc,emissive:0xfab96f,emissiveIntensity:1.8,fog:false}),green:new T.MeshStandardMaterial({color:0x71bd9b,emissive:0x28815b,emissiveIntensity:1.1,fog:false}),red:new T.MeshStandardMaterial({color:0x9b4b42,emissive:0x66251f,emissiveIntensity:.58,fog:false})};
+function obj(geo,m,x,y,z,p=scene){let o=new T.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o}function box(x,y,z,w,h,d,m=mat.wall,p=scene){return obj(new T.BoxGeometry(w,h,d),m,x,y,z,p)}function sphere(x,y,z,r,m=mat.trim,p=scene){return obj(new T.SphereGeometry(r,12,9),m,x,y,z,p)}function beam(a,b,r,m=mat.trim,p=scene){let d=V(...b).sub(V(...a)),o=obj(new T.CylinderGeometry(r,r,d.length(),10),m,(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2,p);o.userData.n=d.length();o.quaternion.setFromUnitVectors(V(0,1,0),d.normalize());return o}function tor(x,y,z,r,s,m=mat.brass){return obj(new T.TorusGeometry(r,s,8,26),m,x,y,z)}function board(s,x,y,z,w=1.55,rotate=0){let c=document.createElement('canvas');c.width=512;c.height=128;let g=c.getContext('2d');g.fillStyle='#0c2730';g.fillRect(0,0,512,128);g.strokeStyle='#ac996e';g.lineWidth=6;g.strokeRect(5,5,502,118);g.fillStyle='#efdcaa';g.font='bold 35px monospace';g.textAlign='center';g.textBaseline='middle';g.fillText(s,256,64);let t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;let p=obj(new T.PlaneGeometry(w,w*.25),new T.MeshBasicMaterial({map:t,side:T.DoubleSide}),x,y,z);p.rotation.y=rotate;return p}
+// Precision-fabricated components: bevelled cast housings, flanges, ribs and routed wiring.
+function bevel(x,y,z,w,h,d,material=mat.trim,r=.045){
+  const t=Math.min(r,w*.19,h*.19,d*.28),sh=new T.Shape(),L=-w/2,B=-h/2,R=w/2,U=h/2;
+  sh.moveTo(L+t,B);sh.lineTo(R-t,B);sh.quadraticCurveTo(R,B,R,B+t);
+  sh.lineTo(R,U-t);sh.quadraticCurveTo(R,U,R-t,U);sh.lineTo(L+t,U);
+  sh.quadraticCurveTo(L,U,L,U-t);sh.lineTo(L,B+t);sh.quadraticCurveTo(L,B,L+t,B);
+  const o=obj(new T.ExtrudeGeometry(sh,{depth:d-2*t,bevelEnabled:true,bevelThickness:t,bevelSize:t*.65,bevelSegments:2,curveSegments:4}),material,x,y,z-d/2+t);
+  o.castShadow=w*h>.5;o.receiveShadow=true;return o
+}
+function routed(points,r,material=mat.dark,parent=scene){
+  let c=new T.CatmullRomCurve3(points.map(q=>V(...q)));return obj(new T.TubeGeometry(c,Math.max(12,points.length*6),r,7,false),material,0,0,0,parent)
+}
+function flange(axis,x,y,z,r,metal=mat.brass){
+  const t=tor(x,y,z,r,.038,metal);if(axis==='x')t.rotation.y=Math.PI/2;
+  else if(axis==='y')t.rotation.x=Math.PI/2;
+  for(let k=0;k<6;k++){
+    let a=k*Math.PI/3,xx=x+(axis==='x'?0:Math.cos(a)*r),
+    yy=y+(axis==='y'?0:Math.sin(a)*r),zz=z+(axis==='z'?0:axis==='x'?Math.cos(a)*r:Math.sin(a)*r);
+    sphere(xx,yy,zz,.017,mat.trim)
+  }
+  return t
+}
+function instrumentDial(x,y,z,r,accent=mat.green){
+  let d=obj(new T.CylinderGeometry(r,r,.038,24),mat.dark,x,y,z);d.rotation.x=Math.PI/2;
+  let rim=tor(x,y,z+.027,r*.91,.016,mat.brass);
+  let face=obj(new T.CircleGeometry(r*.77,24),mat.black,x,y,z+.034);
+  for(let k=0;k<9;k++){let a=-2.35+k*.58;
+    beam([x+Math.sin(a)*r*.58,y+Math.cos(a)*r*.58,z+.044],[x+Math.sin(a)*r*.68,y+Math.cos(a)*r*.68,z+.044],.004,mat.bed)
+  }
+  beam([x,y,z+.051],[x+r*.38,y+r*.16,z+.052],.011,accent);sphere(x,y,z+.06,.018,mat.brass);return d
+}
+// Surface finishes vary subtly in roughness and color, rather than looking like plastic.
+const pat=document.createElement('canvas');pat.width=256;pat.height=256;
+const pg=pat.getContext('2d');pg.fillStyle='#b8bdba';pg.fillRect(0,0,256,256);
+for(let k=0;k<800;k++){let x=(k*89+29)%256,y=(k*137+11)%256;
+  pg.fillStyle=k%3?'#abb3b0':'#cbd0ca';pg.globalAlpha=.09;pg.fillRect(x,y,1+(k%11===0?13:1),1)
+}pg.globalAlpha=1;
+const metalGrain=new T.CanvasTexture(pat);metalGrain.wrapS=metalGrain.wrapT=T.RepeatWrapping;metalGrain.repeat.set(2,2);
+mat.wall.roughnessMap=metalGrain;mat.trim.roughnessMap=metalGrain;
+
+const cabin=new T.AmbientLight(0x8aa7a3,.34);scene.add(cabin);scene.add(new T.HemisphereLight(0x9bb9c3,0x15262b,.3));const outside=new T.HemisphereLight(0x4b8b9d,0x101c27,.5);scene.add(outside);const fixtures=[];
+const names=['BRIDGE','SONAR BAY','OBSERVATION','GALLEY','CREW QUARTERS','WASHROOM','ENGINE ROOM'];
+for(let i=0;i<7;i++){let x=-18+6*i,l=-21+6*i;box(x,-.18,0,6,.35,4.76,mat.floor);for(let j=0;j<12;j++)box(l+.36+j*.47,.008,0,.07,.018,4.52,mat.dark);for(let z of [-2.31,2.31]){let shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(6,0);shape.lineTo(6,2.75);shape.lineTo(0,2.75);shape.closePath();let see=i!==5&&i!==6;if(see){let hole=new T.Path();hole.absarc(3,1.56,.55,0,Math.PI*2,true);shape.holes.push(hole)}obj(new T.ShapeGeometry(shape,28),mat.wall,l,0,z);if(see){let ring=tor(x,1.56,z,.57,.065,mat.trim);ring.rotation.y=0;obj(new T.CircleGeometry(.545,32),mat.glass,x,1.56,z);for(let k=0;k<8;k++){let a=k*Math.PI/4;sphere(x+Math.cos(a)*.57,1.56+Math.sin(a)*.57,z,.025,mat.brass)}}beam([l+.25,2.46,z],[l+5.75,2.46,z],.06,mat.dark);for(let k=0;k<6;k++)box(l+.36+k*1.01,2.02,z*.99,.2,.3,.05,mat.roof)}for(let z=-2.25;z<=2.3;z+=.38){let y=2.72+.26*(1-z*z/5.6);box(x,y,z,6,.1,.42,mat.roof)}for(let xx of [l+1,l+3,l+5]){beam([xx,2.66,-2.28],[xx,2.94,0],.035,mat.trim);beam([xx,2.94,0],[xx,2.66,2.28],.035,mat.trim)}box(x,2.72,0,.95,.16,.48,mat.indicator);let glow=new T.PointLight(i===6?0xffaf77:0xffd9a7,i===6?2.9:2.25,7.5,1.75);glow.position.set(x,2.55,0);scene.add(glow);fixtures.push(glow);board((i+1)+' / '+names[i],l+.9,2.32,-2.285,2.1)}for(let j=0;j<=7;j++){let x=-21+6*j;for(let z of [-1.65,1.65]){box(x,1.35,z,.24,2.7,1.43,mat.trim);box(x,1.24,z*.59,.26,2.45,.08,mat.dark)}box(x,2.47,0,.25,.48,2.05,mat.trim);box(x,.10,0,.25,.19,1.95,mat.brass);for(let y of [.32,2.37])for(let z of [-.86,.86])sphere(x+(j%2?.13:-.13),y,z,.055,mat.brass)}
+// Seal BOTH ends of the pressure hull. These are solid, gasketed end hatches,
+// not traversable doorways into empty space.
+for(const [end,face] of [[-20.88,1],[20.88,-1]]){
+  bevel(end,1.32,0,.17,2.36,2.08,mat.dark,.045);
+  for(const z of [-.88,.88])beam([end+face*.105,.25,z],[end+face*.105,2.36,z],.035,mat.brass);
+  const disk=obj(new T.CylinderGeometry(.37,.37,.085,24),mat.trim,end+face*.145,1.3,0);
+  disk.rotation.z=Math.PI/2;
+  for(let k=0;k<8;k++){let a=k*Math.PI/4;sphere(end+face*.188,1.3+Math.sin(a)*.29,Math.cos(a)*.29,.022,mat.brass)}
+  board(end<0?'FORE PRESSURE HATCH':'AFT PRESSURE HATCH',end+face*.22,2.28,0,1.7,Math.PI/2);
+}
+// Continuous elliptical pressure-ribs, door-coamings, grating, ceiling conduits.
+for(let i=0;i<=7;i++){
+  const x=-21+i*6;
+  let pts=[];for(let k=0;k<=18;k++){let a=Math.PI*k/18;
+    pts.push([x,1.34+1.34*Math.sin(a),-2.26*Math.cos(a)])
+  }
+  routed(pts,.078,mat.trim);
+  for(let side of [-1,1]){
+    beam([x,.12,side*2.23],[x,1.38,side*2.23],.073,mat.trim);
+    flange('x',x,1.43,side*2.22,.115,mat.brass)
+  }
+  // Forged doorway frame is connected to the actual bulkhead plate.
+  for(let z of [-1.05,1.05]){
+    bevel(x,.68,z,.29,1.48,.18,mat.dark,.045);
+    beam([x,.2,z],[x,2.37,z],.036,mat.brass)
+  }
+  bevel(x,2.36,0,.3,.24,2.22,mat.trim,.038);
+  for(let k=0;k<7;k++){let a=k*Math.PI/3, z=Math.sin(a)*.8,y=1.25+Math.cos(a)*.8;
+    sphere(x+(i%2?.17:-.17),y,z,.026,mat.brass)
+  }
+}
+for(let side of [-1,1]){
+  routed([[-20.5,2.54,side*1.42],[-15,2.59,side*1.42],[-9.8,2.54,side*1.42],[-4.9,2.59,side*1.42],[.2,2.55,side*1.42],[6,2.56,side*1.42],[12,2.54,side*1.42],[19.8,2.54,side*1.42]],.047,side<0?mat.brass:mat.dark);
+  for(let i=0;i<7;i++){
+    let x=-18+i*6;
+    beam([x-1.3,2.55,side*1.42],[x-1.3,2.68,side*1.42],.028,mat.trim);
+    box(x,2.59,side*1.55,1.3,.075,.45,mat.roof)
+  }
+}
+for(let i=0;i<7;i++){
+  let x=-18+i*6;
+  // Deck tread plates, recessed rail guides and removable access covers.
+  for(let j=-2;j<=2;j++){
+    bevel(x+j*.97,.036,0,.68,.015,1.45,mat.dark,.005);
+    for(let q=0;q<4;q++)box(x+j*.97-.24+q*.16,.05,0,.038,.008,1.34,mat.trim)
+  }
+  for(let side of [-1,1]){
+    beam([x-2.67,.17,side*2.07],[x+2.67,.17,side*2.07],.055,mat.brass);
+    for(let k=0;k<4;k++){
+      let xx=x-2.2+k*1.45;
+      bevel(xx,1.9,side*2.22,.29,.49,.19,mat.dark,.026);
+      sphere(xx,2.02,side*2.09,.045,k%2?mat.green:mat.red)
+    }
+  }
+}
+// Cast circular control enclosure with inset glass and permanently mounted floor pedestal.
+bevel(-19.92,1.13,0,.53,.98,3.67,mat.trim,.075);
+for(let z of [-1.3,1.3]){
+  bevel(-19.62,1.25,z,.17,.36,.4,mat.dark,.025);
+  for(let k=0;k<3;k++)sphere(-19.52,1.19+k*.1,z,.018,k===1?mat.green:mat.brass)
+}
+for(let z of [-1.15,0,1.15]){
+  routed([[-18.95,.22,z],[-19.25,.36,z],[-19.57,.83,z]],.035,mat.rust);
+  flange('x',-19.57,.83,z,.085)
+}
+// Bridge: helm, illuminated nav displays, gauge stacks, rail and wheel.
+box(-20,.91,0,.95,1.12,3.55,mat.dark);box(-19.82,1.51,0,.55,.2,3.6,mat.trim);let helmScreens=[];for(let j=-1;j<=1;j++){box(-19.56,1.78,j*1.05,.13,.65,.88,mat.black);let c=document.createElement('canvas');c.width=256;c.height=192;let g=c.getContext('2d');g.fillStyle='#0b282d';g.fillRect(0,0,256,192);g.fillStyle='#66b799';g.font='bold 22px monospace';g.fillText(j===-1?'TRIM':j===0?'DEPTH':'COMMS',15,32);for(let k=0;k<4;k++){g.strokeStyle=k%2?'#5a907a':'#b9bf8e';g.strokeRect(20,51+k*30,200,16)}let t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;let screen=obj(new T.PlaneGeometry(.86,.62),new T.MeshBasicMaterial({map:t,side:T.DoubleSide}),-19.48,1.78,j*1.05);screen.rotation.y=Math.PI/2;helmScreens.push({c,g,t,j})}let wheel=tor(-19.36,1.12,0,.32,.04);wheel.rotation.y=Math.PI/2;for(let k=0;k<8;k++){let a=k*Math.PI/4;beam([-19.36,1.12,0],[-19.36,1.12+Math.cos(a)*.32,Math.sin(a)*.32],.02,mat.brass)}for(let j=0;j<9;j++)sphere(-19.48,1.38,-1.42+j*.35,.05,j%3===0?mat.red:j%3===1?mat.green:mat.brass);board('BALLAST & PROPULSION',-19.48,2.36,0,2,Math.PI/2);
+// Sonar station: green PPI display with data derived from actual fish world positions.
+box(-12.1,1.44,2.1,3.35,1.9,.54,mat.dark);const scanC=document.createElement('canvas');scanC.width=512;scanC.height=512;const scan=scanC.getContext('2d');const scanTex=new T.CanvasTexture(scanC);scanTex.colorSpace=T.SRGBColorSpace;let monitor=obj(new T.PlaneGeometry(1.7,1.62),new T.MeshBasicMaterial({map:scanTex,side:T.DoubleSide}),-12.1,1.58,1.795);box(-12.1,.79,1.2,2.2,.63,.72,mat.trim);board('HYDROACOUSTICS',-12.1,2.48,2.28,2.13);for(let j=0;j<10;j++)sphere(-13.2+j*.23,.9,.8,.045,j%3?mat.brass:mat.green);
+// Periscope: black twin eyepieces, hydraulic column and robotic controls.
+beam([-7.25,.2,-1.47],[-7.25,2.82,-1.47],.20,mat.trim);box(-7.25,1.45,-1.1,.52,.36,.8,mat.dark);for(let xx of [-.18,.18]){beam([-7.25+xx,1.45,-1.04],[-7.25+xx,1.45,-.56],.1,mat.black);let ring=tor(-7.25+xx,1.45,-.55,.11,.025,mat.brass);ring.rotation.x=Math.PI/2}board('OPTICAL MAST',-7.25,2.24,-1.5,1.45);box(-5.38,1.03,1.95,1.75,1.16,.6,mat.dark);box(-5.38,1.6,1.57,1.2,.65,.15,mat.black);board('ARM CONSOLE',-5.4,2.36,2.28,1.55);
+// Galley: range, lockers, table, kettle, sinks and overhead vents.
+box(0,.87,-1.91,5.1,1.12,.79,mat.trim);box(0,1.48,-1.83,5.1,.12,.96,mat.bed);for(let k=0;k<5;k++){box(-2.05+k,1.02,-1.45,.9,.83,.07,mat.dark);box(-1.86+k,.95,-1.40,.06,.1,.07,mat.brass)}for(let j=0;j<4;j++){let c=obj(new T.CylinderGeometry(.12,.12,.035,14),mat.black,-1.5+j*.43,1.55,-1.75);tor(-1.5+j*.43,1.565,-1.75,.09,.01,mat.trim).rotation.x=Math.PI/2}box(.4,.76,1.63,2.8,.16,1.2,mat.trim);for(let x of [-.7,1.5])box(x,.39,1.63,.10,.6,.13,mat.dark);for(let i=0;i<3;i++)box(-1+i*1.3,2.17,-2.00,1.03,.85,.51,mat.dark);board('GALLEY / MESS',.2,2.69,-2.28,1.85);
+// Crew bunks + lockers.
+for(let k=0;k<2;k++){let yy=.52+k*1.17;box(5.4,yy,1.65,4.7,.16,1.3,mat.trim);box(5.4,yy+.18,1.65,4.4,.25,1.02,mat.fabric);box(4.03,yy+.28,1.65,.62,.17,.84,mat.bed);box(5.85,yy+.27,1.66,1.6,.08,.93,mat.rust);for(let xx of [3.08,7.69])beam([xx,yy-.1,1.04],[xx,yy+.15,2.28],.03,mat.brass)}for(let j=0;j<3;j++){box(3.77+j*1.46,1.17,-2.0,1.3,2.33,.67,mat.trim);box(3.77+j*1.46,1.16,-1.65,1.13,2.1,.07,mat.dark);sphere(4.12+j*1.46,1.08,-1.59,.05,mat.brass)}
+// Washroom.
+box(10.1,1.3,1.49,1.8,2.57,.13,mat.trim);box(9.23,1.3,1.49,.12,2.57,1.69,mat.roof);obj(new T.CylinderGeometry(.29,.35,.8,14),mat.bed,10.08,.42,1.85);let seat=tor(10.08,.8,1.85,.32,.075,mat.bed);seat.rotation.x=Math.PI/2;box(12.8,1,-1.94,2.0,.26,.8,mat.trim);sphere(12.8,1.18,-1.62,.3,mat.bed);beam([12.8,1.31,-2.06],[12.8,1.48,-2.06],.035,mat.brass);board('SANITATION',12,2.40,-2.29,1.6);
+// Engine room: generator drums, shaft lines, red indicators and insulated piping.
+box(18,.55,1.5,5.3,.8,1.35,mat.dark);for(let j=0;j<3;j++){let x=16.55+j*1.43;let o=obj(new T.CylinderGeometry(.65,.65,1.32,18),mat.trim,x,1.22,1.46);o.rotation.x=Math.PI/2;let t=tor(x,1.22,.78,.57,.06,mat.brass);for(let k=0;k<6;k++){let a=k*Math.PI/3;beam([x-.55,1.22+Math.cos(a)*.59,1.46+Math.sin(a)*.59],[x+.55,1.22+Math.cos(a)*.59,1.46+Math.sin(a)*.59],.04,mat.dark)}}for(let z of [-2.10,-1.83])beam([15.3,2.22,z],[20.4,2.22,z],.14,mat.rust);box(18,1.48,-2.04,2.2,1.24,.55,mat.dark);for(let j=0;j<5;j++)sphere(17.1+j*.44,1.52,-1.71,.065,j%3===0?mat.red:mat.green);board('REACTOR / SYSTEMS',18,2.45,-2.29,1.9);
+// Connected functional machinery and fitted trim throughout the living spaces.
+// Helm: angled cast instrument nacelle, inset circular gauges and physical switch guards.
+let hood=bevel(-19.32,1.73,-1.45,.3,.77,.68,mat.dark,.07);
+for(let i=0;i<3;i++)instrumentDial(-19.145,1.84-i*.24,-1.52,.078,i===2?mat.red:mat.green);
+for(let z of [-1.4,1.4]){
+  let p=bevel(-19.2,.84,z,.24,.16,.36,mat.brass,.025);
+  beam([-19.2,.89,z],[-19.04,1.2,z],.027,mat.trim);sphere(-19.04,1.2,z,.065,mat.black)
+}
+// Sonar console: curved acoustic isolation hood, jack panel and cabling disappearing into floor.
+// Monitor glass faces the corridor at z=1.795. Fit a real four-sided bezel IN FRONT,
+// not two opaque boxes floating beyond the pressure wall at z=2.49.
+for(let dx of [-.91,.91])bevel(-12.1+dx,1.58,1.752,.13,1.78,.095,mat.trim,.020);
+for(let dy of [-.865,.865])bevel(-12.1,1.58+dy,1.752,1.94,.105,.095,mat.trim,.019);
+for(let dx of [-.91,.91])for(let dy of [-.865,.865])sphere(-12.1+dx,1.58+dy,1.683,.021,mat.brass);
+for(let i=0;i<12;i++){
+  let x=-13.38+i*.235; sphere(x,.92,.91,.04,i%4===0?mat.green:mat.brass);
+  if(i%3===0)routed([[x,.86,.91],[x,.63,1.04],[x+.18,.27,1.36],[x+.21,.11,1.63]],.016,mat.rust)
+}
+// Scope: bearings, brake collars and hand-crank gear teeth.
+for(let y of [.47,1.16,2.2]){
+  flange('y',-7.25,y,-1.47,.24);
+  box(-7.25,y,-1.47,.61,.07,.62,mat.dark)
+}
+for(let k=0;k<11;k++){
+  let a=k*Math.PI*2/11;
+  sphere(-7.25+Math.cos(a)*.25,.55,-1.47+Math.sin(a)*.25,.035,mat.brass)
+}
+beam([-7.53,1.18,-1.5],[-7.88,1.18,-1.5],.042,mat.trim);
+sphere(-7.88,1.18,-1.5,.085,mat.dark);
+// Galley: physically seated pot, stepped countertop rim, bowls, faucet, drawer hardware.
+for(let z of [-2.34,-1.52])beam([-2.5,1.45,z],[2.46,1.45,z],.035,mat.brass);
+let pot=obj(new T.LatheGeometry([new T.Vector2(.0,0),new T.Vector2(.18,0),new T.Vector2(.22,.06),new T.Vector2(.23,.28),new T.Vector2(.17,.34)],22),mat.trim,-.8,1.54,-1.68);
+tor(-.8,1.83,-1.68,.22,.035,mat.dark).rotation.x=Math.PI/2;
+for(let h of [-1,1])beam([-.8+h*.23,1.75,-1.68],[-.8+h*.33,1.88,-1.68],.025,mat.brass);
+for(let x of [-1.7,.4,1.7]){
+  let plate=obj(new T.CylinderGeometry(.22,.22,.035,22),mat.bed,x,1.55,-1.98);
+  plate.scale.y=.9;
+}
+beam([1.54,1.51,-2.07],[1.54,1.79,-2.07],.036,mat.brass);
+beam([1.54,1.79,-2.07],[1.33,1.79,-2.07],.032,mat.brass);
+// Bunks: real ladder, safety straps, recessed vents, fabric seams and brass catches.
+for(let y of [.67,1.83]){
+  for(let x of [4.2,5.7,7.0]){
+    box(x,y+.18,1.02,.05,.53,.055,mat.brass);
+    box(x,y+.18,2.19,.05,.53,.055,mat.brass)
+  }
+}
+for(let x of [3.15,7.65])beam([x,.1,.93],[x,2.57,.93],.05,mat.trim);
+for(let y of [.42,.75,1.08,1.41,1.74,2.07,2.4])beam([3.14,y,.92],[3.84,y,.92],.037,mat.brass);
+for(let x of [3.77,5.23,6.69]){
+  bevel(x,2.47,-2.18,1.18,.13,.18,mat.dark,.022);
+  for(let h=0;h<4;h++)box(x-.42+h*.22,2.49,-2.063,.12,.025,.013,mat.trim)
+}
+// Washroom: mirror surround, shower rose, real plumbing and hygienic fixtures.
+bevel(12.8,1.88,-2.27,1.12,.76,.16,mat.brass,.055);
+bevel(12.8,1.88,-2.16,.97,.58,.045,mat.glass,.016);
+beam([10.18,2.3,1.95],[10.18,2.55,1.95],.045,mat.trim);
+let shower=obj(new T.CylinderGeometry(.24,.18,.13,18),mat.trim,10.18,2.41,1.95);
+for(let i=0;i<9;i++){let a=i*2.4;beam([10.18+Math.cos(a)*.09,2.33,1.95+Math.sin(a)*.09],[10.18+Math.cos(a)*.18,2.22,1.95+Math.sin(a)*.18],.01,mat.glass)}
+routed([[12.66,.93,-1.92],[12.66,.63,-1.95],[12.83,.2,-2.2]],.04,mat.dark);
+// Engine: stepped flywheel covers, flanged longitudinal manifolds, cable clamps and cooling fins.
+for(let j=0;j<3;j++){
+  let x=16.55+j*1.43;
+  for(let i=0;i<11;i++){
+    let a=i*Math.PI*2/11;
+    sphere(x+Math.cos(a)*.54,1.22+Math.sin(a)*.54,.78,.026,mat.dark)
+  }
+  for(let k=0;k<8;k++)box(x-.45+k*.13,1.87,1.48,.055,.13,1.04,mat.dark);
+  routed([[x,1.89,1.39],[x,2.17,1.13],[x,2.42,.89]],.038,mat.rust)
+}
+for(let i=0;i<5;i++){
+ let x=15.6+i*1.14;
+ for(let z of [-2.12,-1.84]){
+  box(x,2.3,z,.23,.27,.3,mat.trim);
+  flange('x',x,2.22,z,.14)
+ }
+}
+// Two localized shadowing area lights create grounded depth without darkening the corridor.
+for(const x of [-18,-6,6,18]){
+  let l=new T.SpotLight(x===18?0xffb183:0xffd6ae,.8,8,Math.PI/2.65,.55,1.6);
+  l.position.set(x,2.62,.15);l.target.position.set(x,.03,0);
+  l.castShadow=x===-18||x===6;l.shadow.mapSize.set(256,256);l.shadow.bias=-.0008;
+  scene.add(l,l.target)
+}
+// Deep ocean: large terrain, particulate field, rock samples, fish silhouettes and manipulator rigs.
+const beforeOcean=new Set(scene.children);
+const seabed=obj(new T.PlaneGeometry(180,180,14,14),new T.MeshStandardMaterial({color:0x2d4149,roughness:1}),0,-3.78,0);seabed.rotation.x=-Math.PI/2;let seed=46319;function rand(){seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296}const rockMat=[0x51666d,0x777968,0x334953].map(color=>new T.MeshStandardMaterial({color,roughness:1}));for(let j=0;j<145;j++){let x=(rand()-.5)*100,z=(rand()-.5)*110;if(Math.abs(z)<3.5&&Math.abs(x)<23)continue;let radius=.08+rand()*.6,o=obj(new T.DodecahedronGeometry(radius,0),rockMat[j%3],x,-3.77+radius*.35,z);o.scale.y=.43+rand()*.4}for(let j=0;j<95;j++){let x=(rand()-.5)*65,z=(rand()-.5)*65;if(Math.abs(z)<3.1)continue;for(let k=0;k<3;k++)beam([x,-3.76,z],[x+(.16-k*.16),-3.05-rand()*.7,z+(.07-k*.13)],.014,mat.fabric)}// Fractured terrain avoids a geometrically flat ocean floor.
+const groundAtt=seabed.geometry.attributes.position;
+for(let i=0;i<groundAtt.count;i++){
+ let u=groundAtt.getX(i),v=groundAtt.getY(i),d=Math.hypot(u,v);
+ let amp=clamp((d-5)/22,0,1);
+ groundAtt.setZ(i,(Math.sin(u*.27)*Math.cos(v*.34)*.61+Math.sin(u*.75+v*.31)*.18)*amp)
+}
+seabed.geometry.computeVertexNormals();
+// Tide-driven kelp stands and branching coral / hydrothermal formations.
+const nature={shallow:[],deep:[],mid:[]};
+const leafMat=new T.MeshStandardMaterial({color:0x577c6a,roughness:1,side:T.DoubleSide});
+const kelpLeaf=new T.MeshStandardMaterial({color:0x789b83,roughness:.96,side:T.DoubleSide});
+const coralMat=new T.MeshStandardMaterial({color:0x8c9da1,roughness:.96});
+const ventMat=new T.MeshStandardMaterial({color:0x303d43,roughness:1});
+function kelp(x,z,h){
+  let root=new T.Group();root.position.set(x,-3.67,z);scene.add(root);nature.shallow.push(root);
+  for(let j=0;j<3;j++){
+    let xx=(j-1)*.17;
+    routed([[xx,0,0],[xx+.07,h*.45,.12],[xx+.14,h,.2]],.018,leafMat,root);
+    for(let k=0;k<3;k++){
+      let yy=-3.62+h*(.25+k*.22);
+      let a=obj(new T.ShapeGeometry((()=>{let s=new T.Shape();s.moveTo(0,0);s.quadraticCurveTo(.22,.07,.29,.31);s.quadraticCurveTo(.02,.23,0,0);return s})()),kelpLeaf,x+xx,yy,z+.13);
+      a.rotation.y=j*.6+k*.4;root.add(a);a.position.sub(root.position)
+    }
+  }
+}
+for(let i=0;i<18;i++){
+  let x=-19+rand()*38,z=(i%2?1:-1)*(3.5+rand()*12);kelp(x,z,.9+rand()*1.5)
+}
+function branch(root,at,len,width,level){
+ if(level<=0)return;
+ for(let i=-1;i<=1;i++){
+  let a=[at[0]+i*len*.38,at[1]+len*(.7+Math.abs(i)*.1),at[2]+(i%2)*len*.32];
+  let geo=new T.CylinderGeometry(width*.58,width,len*.95,7);
+  let vec=V(...a).sub(V(...at)),o=obj(geo,coralMat,(a[0]+at[0])/2,(a[1]+at[1])/2,(a[2]+at[2])/2,root);
+  o.quaternion.setFromUnitVectors(V(0,1,0),vec.normalize());branch(root,a,len*.61,width*.67,level-1)
+ }
+}
+for(let i=0;i<9;i++){
+ let x=-18+rand()*36,z=(i%2?1:-1)*(5+rand()*15),g=new T.Group();scene.add(g);branch(g,[x,-3.64,z],.65+rand()*.4,.065,2);nature.mid.push(g)
+}
+for(let i=0;i<7;i++){
+ let x=-15+rand()*30,z=(i%2?1:-1)*(6+rand()*14);
+ let stone=obj(new T.LatheGeometry([new T.Vector2(.55,0),new T.Vector2(.43,.25),new T.Vector2(.21,.7),new T.Vector2(.16,1),new T.Vector2(.24,1.2)],12),ventMat,x,-3.67,z);
+ let vent=new T.Group();vent.add(stone);scene.add(vent);nature.deep.push(vent);
+ for(let j=0;j<5;j++){
+  sphere(x+Math.sin(j*2.1)*.25,-2.5+j*.15,z+Math.cos(j*1.7)*.18,.025,mat.green)
+ }
+}
+const oceanStatic=scene.children.filter(o=>!beforeOcean.has(o));
+const oceanRoot=new T.Group();scene.add(oceanRoot);for(const o of oceanStatic)oceanRoot.add(o);
+// Keep decoration in a coherent finite world tile; never batch across vessel/world boundaries.
+const sampleCoords=[[-9.4,10.2],[-7.1,12.0],[-4.2,10.4],[-4.6,14.0],[-6.5,8.8],[-9,15.0]];const rocks=sampleCoords.map(([x,z],i)=>({o:obj(new T.DodecahedronGeometry(.34+i%3*.07,1),rockMat[i%3],x,-3.33,z),taken:false,world:V(x,-3.33,z)}));const bin=V(-6.05,-3.31,7.22);box(bin.x,bin.y,bin.z,1.22,.43,1.05,mat.dark);box(bin.x,bin.y+.25,bin.z,1.37,.07,1.15,mat.brass);
+const arms=[];for(let i=0;i<2;i++){let base=V(i?-4.5:-7.56,-.75,3.1),joint=V(base.x,-1.6,5.8),end=V(base.x,-2.7,9.4);let upper=beam(base.toArray(),joint.toArray(),.16,mat.brass),lower=beam(joint.toArray(),end.toArray(),.12,mat.trim);arms.push({base,upper,lower,joint:sphere(...joint.toArray(),.16,mat.dark),tip:sphere(...end.toArray(),.16,mat.brass),target:end.clone(),end:end.clone()})}
+// Marine-life revision: genus-specific profiles, fins, tendrils, eyes and biomechanics.
+// Coordinates are model-space; head points toward +Z, caudal fin toward -Z.
+function fishHull(profile,material,root){
+ let sides=12,verts=[],indices=[];
+ for(const [z,w,h] of profile){for(let k=0;k<=sides;k++){
+   let a=k*2*Math.PI/sides;verts.push(Math.cos(a)*w,Math.sin(a)*h,z)
+ }}
+ for(let j=0;j<profile.length-1;j++)for(let k=0;k<sides;k++){
+   let a=j*(sides+1)+k,b=a+sides+1;indices.push(a,b,a+1,b,b+1,a+1)
+ }
+ let g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(verts,3));
+ g.setIndex(indices);g.computeVertexNormals();return obj(g,material,0,0,0,root)
+}
+function finShape(root,pts,ma){
+ let v=[],ind=[];for(const p of pts)v.push(...p);
+ for(let j=1;j<pts.length-1;j++)ind.push(0,j,j+1);
+ let g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(v,3));
+ g.setIndex(ind);g.computeVertexNormals();return obj(g,ma,0,0,0,root)
+}
+const seaLifeMats={
+  tuna:new T.MeshStandardMaterial({color:0x769bac,roughness:.59,metalness:.09,side:T.DoubleSide}),
+  reef:new T.MeshStandardMaterial({color:0xb1b989,roughness:.68,side:T.DoubleSide}),
+  ray:new T.MeshStandardMaterial({color:0x647c83,roughness:.76,side:T.DoubleSide}),
+  jelly:new T.MeshPhysicalMaterial({color:0x9cbed8,transparent:true,opacity:.54,roughness:.23,emissive:0x315a70,emissiveIntensity:.38,side:T.DoubleSide,depthWrite:false}),
+  squid:new T.MeshStandardMaterial({color:0x998c8f,roughness:.76,side:T.DoubleSide}),
+  lantern:new T.MeshStandardMaterial({color:0x5e7882,roughness:.61,side:T.DoubleSide}),
+  angler:new T.MeshStandardMaterial({color:0x514f58,roughness:.84,side:T.DoubleSide}),
+  gulper:new T.MeshStandardMaterial({color:0x566575,roughness:.88,side:T.DoubleSide}),
+  dumbo:new T.MeshStandardMaterial({color:0x97889f,roughness:.91,side:T.DoubleSide})
+};
+const photophore=new T.MeshStandardMaterial({color:0xc6f4d2,emissive:0x66ddb6,emissiveIntensity:1.5,fog:false});
+const fish=[];const lifeTypes=['reef','tuna','ray','reef','squid','jelly','lantern','angler','gulper','dumbo','squid','lantern'];
+function buildLife(type,index){
+ let g=new T.Group();scene.add(g);const material=seaLifeMats[type],parts=[];
+ let caudal=new T.Group();g.add(caudal);parts.push(caudal);
+ let broad=type==='reef'||type==='tuna'||type==='lantern'||type==='angler';
+ if(broad){
+  const body=fishHull([[-.94,.075,.065],[-.7,.16,.14],[-.43,.27,.24],[-.1,.37,.31],[.31,.35,.29],[.69,.22,.2],[.95,.015,.017]],material,g);
+  if(type==='angler'){
+    fishHull([[.63,.15,.15],[.86,.24,.19],[1.02,.18,.06]],material,g);
+    for(let j=0;j<8;j++){
+      let a=j*Math.PI/4;
+      let tooth=obj(new T.ConeGeometry(.026,.095,5),mat.bed,Math.cos(a)*.17,Math.sin(a)*.1,1.01,g);tooth.rotation.x=Math.PI/2
+    }
+    routed([[0,.13,.64],[0,.3,.96],[0,.64,1.03],[0,.71,.9]],.017,material,g);
+    sphere(0,.71,.91,.075,photophore,g)
+  }
+  caudal.position.z=-.9;
+  finShape(caudal,[[0,0,0],[0,.34,-.39],[0,.06,-.24],[0,-.06,-.24],[0,-.34,-.39]],material);
+  finShape(g,[[0,.25,-.32],[0,.59,-.42],[0,.45,.31],[0,.26,.44]],material);
+  finShape(g,[[0,-.19,-.37],[0,-.41,-.13],[0,-.24,.38]],material);
+  for(let sign of [-1,1]){
+    const p=new T.Group();p.position.set(sign*.29,-.04,.22);g.add(p);
+    finShape(p,[[0,0,0],[sign*.39,-.08,-.43],[sign*.16,-.20,-.26]],material);parts.push(p);
+    sphere(sign*.175,.12,.68,.055,mat.black,g);
+    sphere(sign*.188,.128,.70,.014,mat.bed,g);
+    for(let q=0;q<3;q++){
+      let gg=tor(sign*(.22+q*.025),.11,.28-q*.08,.075,.007,mat.dark);gg.rotation.y=Math.PI/2;g.add(gg);gg.position.sub(g.position)
+    }
+  }
+  if(type==='lantern')for(let sign of [-1,1])for(let j=0;j<8;j++)sphere(sign*(.14+.13*Math.sin(j*.39)),-.12,.58-j*.18,.025,photophore,g)
+  if(type==='reef')for(let j=0;j<4;j++){
+     let band=tor(0,0,.63-j*.31,.25,.024,mat.brass);band.rotation.x=Math.PI/2;
+     g.add(band)
+  }
+ }
+ if(type==='gulper'){
+   fishHull([[-1.55,.045,.04],[-1.28,.067,.064],[-.7,.13,.1],[-.08,.17,.15],[.54,.18,.15],[.8,.08,.075]],material,g);
+   fishHull([[.15,.1,.1],[.35,.43,.18],[.71,.46,.12],[1.03,.12,.038]],material,g);
+   for(let sign of [-1,1])sphere(sign*.19,.07,.62,.05,photophore,g);
+   caudal.position.z=-1.5;finShape(caudal,[[0,0,0],[0,.19,-.43],[0,-.19,-.43]],material)
+ }
+ if(type==='ray'){
+  fishHull([[-.36,.085,.035],[.07,.38,.09],[.5,.22,.1],[.72,.025,.012]],material,g);
+  const wings=[];
+  for(let sign of [-1,1]){
+     let p=new T.Group();p.position.set(sign*.22,-.015,.18);g.add(p);
+     finShape(p,[[0,0,.45],[sign*.5,.035,.4],[sign*1.5,.03,.02],[sign*1.1,-.03,-.45],[sign*.1,-.035,-.38]],material);
+     wings.push(p);sphere(sign*.15,.08,.49,.045,mat.black,g)
+  }
+  parts.push(...wings);
+  routed([[0,0,-.35],[0,0,-.78],[0,0,-1.35],[.035,0,-1.75]],.017,material,g);
+  caudal.visible=false
+ }
+ if(type==='squid'){
+  fishHull([[-.88,.07,.09],[-.5,.19,.21],[.05,.26,.26],[.38,.2,.2],[.67,.07,.07]],material,g);
+  finShape(g,[[0,.0,-.4],[.52,0,-.76],[.24,0,-.08]],material);
+  finShape(g,[[0,.0,-.4],[-.52,0,-.76],[-.24,0,-.08]],material);
+  sphere(0,-.04,.67,.17,material,g);
+  for(let sign of [-1,1])sphere(sign*.13,.07,.68,.044,mat.black,g);
+  for(let j=0;j<8;j++){
+    let a=j*Math.PI*2/8;
+    let ten=new T.Group();g.add(ten);ten.position.set(Math.cos(a)*.11,-.10,.75);
+    const curve=new T.CatmullRomCurve3([V(0,0,0),V(Math.cos(a)*.15,-.07,.42),V(Math.cos(a)*.24,-.10,.83),V(Math.cos(a)*.23,-.17,1.19)]);
+    obj(new T.TubeGeometry(curve,12,.022,5,false),material,0,0,0,ten);parts.push(ten)
+  }
+  caudal.visible=false
+ }
+ if(type==='jelly'){
+   const dome=obj(new T.SphereGeometry(.54,22,12,0,Math.PI*2,0,Math.PI*.51),material,0,0,0,g);
+   let edge=tor(0,0,0,.53,.027,photophore);g.add(edge);edge.rotation.x=Math.PI/2;
+   for(let j=0;j<12;j++){
+     let a=j*2*Math.PI/12;
+     const leg=new T.Group();leg.position.set(Math.cos(a)*.39,-.04,Math.sin(a)*.39);g.add(leg);
+     let c=new T.CatmullRomCurve3([V(0,0,0),V(.035,-.35,.03),V(-.055,-.71,.03),V(.07,-1.15,.05)]);
+     obj(new T.TubeGeometry(c,9,.012,5,false),j%3?material:photophore,0,0,0,leg);parts.push(leg)
+   }
+   caudal.visible=false
+ }
+ if(type==='dumbo'){
+   fishHull([[-.46,.08,.075],[-.22,.24,.19],[.1,.43,.36],[.45,.34,.29],[.65,.11,.12]],material,g);
+   for(let sign of [-1,1]){
+     let fin=new T.Group();fin.position.set(sign*.27,.2,.05);g.add(fin);
+     finShape(fin,[[0,0,0],[sign*.38,.24,.09],[sign*.55,.16,-.25],[sign*.12,-.09,-.22]],material);
+     parts.push(fin);sphere(sign*.18,.12,.46,.056,mat.black,g)
+   }
+   for(let j=0;j<8;j++){
+     let a=j*Math.PI*2/8;
+     const leg=new T.Group();leg.position.set(Math.cos(a)*.24,-.20,.13+Math.sin(a)*.12);g.add(leg);
+     obj(new T.TubeGeometry(new T.CatmullRomCurve3([V(0,0,0),V(Math.cos(a)*.16,-.18,.14),V(Math.cos(a)*.2,-.35,.36),V(Math.cos(a)*.3,-.51,.49)]),10,.038,6,false),material,0,0,0,leg);
+     parts.push(leg)
+   }
+   caudal.visible=false
+ }
+ return {group:g,tail:caudal,parts,type,material,index};
+}
+for(let i=0;i<48;i++){
+  let type=lifeTypes[i%lifeTypes.length],f=buildLife(type,i),near=i<21;
+  f.x=near?-18+(i*4.97)%36:(rand()-.5)*47;
+  f.y=near?-1.5+(i%5)*.66:-2.15+rand()*5;
+  f.z=(i%6===0?-1:1)*(near?4.4+(i%7)*1.7:5+rand()*16);
+  f.speed=.12+rand()*.25;f.phase=rand()*Math.PI*2;f.size=.42+rand()*.38;
+  f.group.scale.setScalar(f.size*(type==='ray'?1.35:type==='jelly'?.92:1));
+  f.group.rotation.y=f.z<0?Math.PI:0;
+  fish.push(f)
+}
+const snowP=new Float32Array(360*3);for(let i=0;i<360;i++){snowP[i*3]=(rand()-.5)*75;snowP[i*3+1]=-3+rand()*10;snowP[i*3+2]=(rand()-.5)*75}let snowG=new T.BufferGeometry();snowG.setAttribute('position',new T.BufferAttribute(snowP,3));const particulate=new T.Points(snowG,new T.PointsMaterial({color:0xa3bcc2,size:.027,transparent:true,opacity:.7}));scene.add(particulate);
+const opticLamp=new T.SpotLight(0xffe8b3,8,45,Math.PI/5,.48,1.0);opticLamp.position.set(-7.2,3.65,2);opticLamp.target.position.set(-7,2.7,20);scene.add(opticLamp,opticLamp.target);const armLamp=new T.SpotLight(0xffdfac,12,38,Math.PI/4,.42,1.1);armLamp.position.set(-6,0,3.2);armLamp.target.position.set(-6,-3.2,14);scene.add(armLamp,armLamp.target);
+// Finite-volume floodlamp cones create visible particulate scattering at depth.
+const beamMat=new T.MeshBasicMaterial({color:0x9abfc6,transparent:true,opacity:.035,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending,fog:false});
+const glowCones=[];
+for(const [sx,sy,sz,span] of [[-7.2,3.62,2,18],[-6,-.2,4.3,11]]){
+ let c=obj(new T.ConeGeometry(span*.38,span,25,1,true),beamMat.clone(),sx,sy,sz+span*.5);
+ c.rotation.x=-Math.PI/2;glowCones.push(c)
+}
+// Batch static boxes, fasteners, pipes and spherical fittings. The articulated arms,
+// marine-life rigs, animated fish, instruments and biome visibility groups stay separate.
+function batchStaticPrimitives(){
+  if(!T.InstancedMesh||!T.Matrix4)return 0;
+  const moving=new Set([...arms.flatMap(a=>[a.upper,a.lower,a.joint,a.tip]),...rocks.map(r=>r.o)]);
+  const buckets=new Map();
+  for(const o of [...scene.children]){
+    if(!o.isMesh||moving.has(o)||!o.geometry?.parameters||Array.isArray(o.material))continue;
+    const p=o.geometry.parameters,kind=o.geometry.type;let factor=null,segments=0;
+    if(kind==='BoxGeometry')factor=[p.width,p.height,p.depth];
+    else if(kind==='SphereGeometry'){factor=[p.radius,p.radius,p.radius];segments=p.widthSegments+'x'+p.heightSegments}
+    else if(kind==='CylinderGeometry'&&Math.abs(p.radiusTop-p.radiusBottom)<.0001){
+      factor=[p.radiusTop,p.height,p.radiusBottom];segments=p.radialSegments
+    }
+    if(!factor||factor.some(v=>!Number.isFinite(v)||v<=0))continue;
+    const key=kind+'|'+o.material.id+'|'+segments;
+    if(!buckets.has(key))buckets.set(key,{kind,segments,material:o.material,objects:[]});
+    o.updateMatrix();
+    const transform=o.matrix.clone().multiply(new T.Matrix4().makeScale(...factor));
+    buckets.get(key).objects.push({o,transform});
+  }
+  let saved=0;
+  for(const bucket of buckets.values()){
+    if(bucket.objects.length<3)continue;
+    let geometry=bucket.kind==='BoxGeometry'?new T.BoxGeometry(1,1,1):
+      bucket.kind==='SphereGeometry'?new T.SphereGeometry(1,...bucket.segments.split('x').map(Number)):
+      new T.CylinderGeometry(1,1,1,Number(bucket.segments));
+    const mesh=new T.InstancedMesh(geometry,bucket.material,bucket.objects.length);
+    bucket.objects.forEach(({o,transform},index)=>{mesh.setMatrixAt(index,transform);scene.remove(o)});
+    mesh.instanceMatrix.needsUpdate=true;
+    // All instances remain in the correct world-space placement and do not disappear
+    // due to an incorrectly centered bounding sphere for a 42-meter-long pressure hull.
+    mesh.frustumCulled=false;scene.add(mesh);
+    saved+=bucket.objects.length-1;
+  }
+  return saved;
+}
+const savedDrawCalls=batchStaticPrimitives();
+const stations=[{id:'helm',name:'BRIDGE HELM',p:V(-19.2,1.5,0)},{id:'sonar',name:'SONAR ARRAY',p:V(-12.1,1.5,1.5)},{id:'optic',name:'OPTICAL MAST',p:V(-7.25,1.5,-1.25)},{id:'arms',name:'ROBOT ARM STATION',p:V(-5.35,1.5,1.3)},{id:'galley',name:'GALLEY',p:V(0,1.5,-1.5)},{id:'bunks',name:'CREW BUNKS',p:V(5.4,1.5,1.55)},{id:'wash',name:'WASHROOM',p:V(12.8,1.5,-1.45)},{id:'engine',name:'REACTOR CHECK',p:V(18,1.5,-1.4)}];
+const s={mode:'walk',depth:80,target:80,hull:100,speed:0,throttle:0,heading:82,manned:false,lamps:2,armLight:2,arm:0,held:-1,samples:0,grip:false,armsOn:true,time:0,yaw:Math.PI/2,pitch:-.035,scopeYaw:Math.PI,scopePitch:0,pings:0,worldX:0,worldZ:0,logNm:0,heldArm:-1};const player={pos:V(-18.3,1.63,0),velocity:V(0,0,0),bob:0},room=()=>clamp(Math.floor((player.pos.x+21)/6),0,6);const initialHeading=82;
+function turnAngle(){return (s.heading-initialHeading)*Math.PI/180}
+function localToOcean(p){return p.clone().applyAxisAngle(V(0,1,0),-turnAngle()).add(V(s.worldX,0,s.worldZ))}
+function oceanToLocal(p){return p.clone().sub(V(s.worldX,0,s.worldZ)).applyAxisAngle(V(0,1,0),turnAngle())}
+function helmTurn(amount){if(!s.manned)return notice('MAN HELM FIRST');s.heading=(s.heading+amount+360)%360;}
+function near(){let best=null,d=2.25;for(let a of stations){let r=Math.hypot(player.pos.x-a.p.x,player.pos.z-a.p.z);if(r<d){d=r;best=a}}return best}
+let msgTill=0;function notice(v,secs=2.4){ui.msg.textContent=v;ui.msg.classList.add('on');msgTill=s.time+secs}function navbtn(label,cb,primary=false){const b=document.createElement('button');b.textContent=label;if(primary)b.className='action';b.onclick=()=>{cb();tone(370,.045,.025)};nav.appendChild(b)}function buttons(){nav.textContent='';if(s.mode==='walk'){navbtn('◂ ROOM',()=>jump(-1));navbtn('USE / E',interact,true);navbtn('ROOM ▸',()=>jump(1));navbtn('LAMPS '+s.lamps+'/4',()=>{s.lamps=(s.lamps+1)%5;buttons()});navbtn('SONAR',()=>change('sonar'))}if(s.mode==='helm'){navbtn(s.manned?'UNMAN':'MAN HELM',()=>{s.manned=!s.manned;notice(s.manned?'HELM MANNED':'AUTOPILOT HOLD');buttons()},true);navbtn('ASCEND',()=>ballast(-300));navbtn('DIVE',()=>ballast(300));navbtn('THR '+s.throttle+'/4',()=>{if(!s.manned)return notice('MAN HELM FIRST');s.throttle=(s.throttle+1)%5;buttons()});navbtn('HDG −',()=>helmTurn(-10));navbtn('HDG +',()=>helmTurn(10));navbtn('LIGHT '+s.lamps+'/4',()=>{s.lamps=(s.lamps+1)%5;buttons()});navbtn('ABYSS',()=>{if(!s.manned)return notice('MAN HELM FIRST');s.target=3900;notice('DEPTH SCENARIO TARGET 3900m')});navbtn('EXIT',()=>change('walk'))}if(s.mode==='sonar'){navbtn('ACTIVE PING',()=>pingSonar(),true);navbtn('TRACK',()=>{let f=fish.filter(f=>f.group.visible&&Math.hypot(f.group.position.x,f.group.position.z)<=30).sort((a,b)=>a.group.position.lengthSq()-b.group.position.lengthSq())[0];if(!f)return notice('NO CONTACTS IN RANGE');const p=f.group.position;notice('CONTACT '+f.type.toUpperCase()+' / '+Math.hypot(p.x,p.z).toFixed(1)+' m')});navbtn('EXIT',()=>change('walk'))}if(s.mode==='optic'){navbtn('◀ PAN',()=>s.scopeYaw+=.2);navbtn('PAN ▶',()=>s.scopeYaw-=.2);navbtn('LAMP '+s.lamps+'/4',()=>{s.lamps=(s.lamps+1)%5;buttons()});navbtn('EXIT',()=>change('walk'))}if(s.mode==='arms'){navbtn(s.armsOn?'STOW':'DEPLOY',()=>{if(s.held>=0)return notice('RELEASE SAMPLE BEFORE STOWING');s.armsOn=!s.armsOn;notice(s.armsOn?'MANIPULATORS EXTENDED':'MANIPULATORS RETRACTED');buttons()});navbtn(s.arm?'STBD ARM':'PORT ARM',()=>{if(s.held>=0)return notice('RELEASE SAMPLE BEFORE SWITCHING');s.arm=1-s.arm;buttons()});navbtn(s.held<0?'GRIP':'RELEASE',grab,true);navbtn('LIGHT −',()=>{s.armLight=Math.max(0,s.armLight-1);buttons()});navbtn('LIGHT +',()=>{s.armLight=Math.min(4,s.armLight+1);buttons()});navbtn('EXIT',()=>change('walk'))}}
+function change(v){s.mode=v;$('pad').style.display=v==='walk'?'flex':'none';$('use').style.display=v==='walk'?'block':'none';lens.style.display=v==='optic'?'block':'none';ui.hint.textContent=({walk:'WASD / STICK MOVE · DRAG TO LOOK · USE NEAR CONSOLE',helm:'PILOT STATION / BALLAST & PROPULSION',sonar:'LIVE CONTACTS / ACTIVE SWEEP',optic:'DRAG TO ROTATE OPTIC / TURN ON LIGHTS',arms:'DRAG TO AIM / GRIP ROCKS TO SAMPLE BIN'})[v];buttons();notice(v==='walk'?'WALK / DECK':v.toUpperCase()+' STATION',1.2)}function jump(dir){let n=clamp(room()+dir,0,6);player.pos.set(-18+n*6,1.63,0);player.velocity.set(0,0,0);notice((n+1)+' / '+names[n])}function ballast(d){if(!s.manned)return notice('MAN HELM FIRST');s.target=clamp(s.target+d,0,4200);notice('BALLAST TARGET '+s.target+'m')}
+function interact(){if(s.mode!=='walk')return;let a=near();if(!a)return notice('MOVE CLOSER TO A STATION');if(['helm','sonar','optic','arms'].includes(a.id)){change(a.id);return}notice(({galley:'HOT COFFEE / GALLEY ACTIVE',bunks:'CREW REST STATION READY',wash:'FRESHWATER 88% / RECIRCULATION',engine:'REACTOR 98% / COOLANT STABLE'})[a.id])}function pingSonar(){s.pings++;tone(730,.48,.10);notice('ACTIVE SONAR PING / RETURNS RECEIVED')}function grab(){if(!s.armsOn)return notice('DEPLOY ROBOT ARMS FIRST');if(s.held>=0){const r=rocks[s.held],p=r.o.position;if(Math.hypot(p.x-bin.x,p.z-bin.z)<1.1){r.taken=true;r.o.visible=false;s.samples++;notice('ROCK SAMPLE '+s.samples+' STORED');tone(950,.13,.08)}else{r.o.position.y=-3.33;r.world.copy(localToOcean(r.o.position));notice('SAMPLE RELEASED')}s.held=-1;s.heldArm=-1;s.grip=false}else{const a=arms[s.arm];let closest=-1,dist=.7;rocks.forEach((r,i)=>{let d=r.o.position.distanceTo(a.end);if(!r.taken&&d<dist){dist=d;closest=i}});s.grip=true;if(closest>=0){s.held=closest;s.heldArm=s.arm;notice('ROCK GRIPPED / TRANSFER TO BIN')}else notice('GRIP CLOSED / NO SAMPLE')}buttons()}
+// Procedural ambient sound: machinery, low water drone, radio beeps, footsteps.
+let audio=null,audioBus=null,audioOn=false,audioTick=0;function initAudio(){if(audio)return;const A=window.AudioContext||window.webkitAudioContext;if(!A)return;audio=new A;audioBus=audio.createGain();audioBus.gain.value=.53;audioBus.connect(audio.destination);for(let hz of [44,89,136]){let o=audio.createOscillator(),gain=audio.createGain();o.type='sine';o.frequency.value=hz;gain.gain.value=hz===44?.024:.009;o.connect(gain);gain.connect(audioBus);o.start()}let noise=audio.createBuffer(1,audio.sampleRate*2,audio.sampleRate),data=noise.getChannelData(0),v=0;for(let i=0;i<data.length;i++){v=v*.95+(.05*(Math.random()*2-1));data[i]=v}let src=audio.createBufferSource(),filter=audio.createBiquadFilter(),vol=audio.createGain();src.buffer=noise;src.loop=true;filter.type='lowpass';filter.frequency.value=320;vol.gain.value=.17;src.connect(filter);filter.connect(vol);vol.connect(audioBus);src.start()}function tone(hz=450,d=.09,v=.035){if(!audioOn||!audio)return;let osc=audio.createOscillator(),vol=audio.createGain(),now=audio.currentTime;osc.type='sine';osc.frequency.setValueAtTime(hz,now);osc.frequency.exponentialRampToValueAtTime(hz*.77,now+d);vol.gain.setValueAtTime(v,now);vol.gain.exponentialRampToValueAtTime(.0001,now+d);osc.connect(vol);vol.connect(audioBus);osc.start();osc.stop(now+d)}$('sound').onclick=()=>{initAudio();if(!audio)return notice('AUDIO UNAVAILABLE');audioOn=!audioOn;audioOn?audio.resume():audio.suspend();$('sound').textContent=audioOn?'SOUND ON':'SOUND OFF';notice(audioOn?'ENGINE / WATER / RADIO SOUND ON':'AUDIO MUTED')};
+// Keyboard, touch, and generic browser Gamepad API, including remapping for unstandardized DInput axes/buttons.
+const keys={};let joyX=0,joyY=0,joyId=null,lookId=null,lastX=0,lastY=0;const pad=$('pad'),knob=$('knob');function joy(e){let r=pad.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,d=Math.hypot(dx,dy),lim=r.width*.36,k=Math.min(1,lim/(d||1));joyX=dx*k/lim;joyY=dy*k/lim;knob.style.transform=`translate(${dx*k}px,${dy*k}px)`}pad.onpointerdown=e=>{joyId=e.pointerId;pad.setPointerCapture(joyId);joy(e)};pad.onpointermove=e=>{if(e.pointerId===joyId)joy(e)};pad.onpointerup=pad.onpointercancel=()=>{joyId=null;joyX=joyY=0;knob.style.transform='translate(0,0)'};$('use').onclick=interact;
+const ray=new T.Raycaster(),armPlane=new T.Plane(V(0,1,0),2.8);function aim(e){let r=view.getBoundingClientRect(),uv=new T.Vector2((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);ray.setFromCamera(uv,cam);let hit=V(0,0,0);if(ray.ray.intersectPlane(armPlane,hit))arms[s.arm].target.set(clamp(hit.x,-11,-1),-2.8,clamp(hit.z,5.5,17.8))}view.onpointerdown=e=>{lookId=e.pointerId;lastX=e.clientX;lastY=e.clientY;view.setPointerCapture(e.pointerId);if(s.mode==='arms'&&s.armsOn)aim(e)};view.onpointermove=e=>{if(e.pointerId!==lookId)return;let dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;if(s.mode==='walk'){s.yaw-=dx*.0039;s.pitch=clamp(s.pitch-dy*.0031,-1.1,1.1)}else if(s.mode==='optic'){s.scopeYaw-=dx*.005;s.scopePitch=clamp(s.scopePitch-dy*.0035,-.83,.83)}else if(s.mode==='arms'&&s.armsOn)aim(e)};view.onpointerup=view.onpointercancel=view.onlostpointercapture=()=>lookId=null;pad.onlostpointercapture=pad.onpointercancel;
+window.addEventListener('keydown',e=>{if(e.target&&e.target.matches?.('input,select,textarea'))return;const k=e.key.toLowerCase();if(['w','a','s','d','arrowleft','arrowright','arrowup','arrowdown','e',' ','escape'].includes(k))e.preventDefault();keys[k]=true;if(e.repeat)return;if(k==='e'||k===' '){if(s.mode==='walk')interact();else if(s.mode==='arms')grab();else if(s.mode==='sonar')pingSonar()}if(k==='escape')change('walk');if(k==='c')toggleOptions()});window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);window.addEventListener('blur',()=>{Object.keys(keys).forEach(k=>keys[k]=false);joyX=joyY=0;player.velocity.set(0,0,0)});
+const standard={lx:0,ly:1,rx:2,ry:3,a:0,b:1,x:2,y:3,lb:4,rb:5};let map={...standard},dead=.18,invert=false,neutral=[],prevButtons={},lastGp=null,lastGpID='',gpLookX=0,gpLookY=0,gpMoveX=0,gpMoveY=0;const gpKeys=['lx','ly','rx','ry','a','b','x','y','lb','rb'];gpKeys.forEach(k=>{const el=$((k));const isAxis=['lx','ly','rx','ry'].includes(k);for(let i=0;i<(isAxis?12:32);i++){let opt=document.createElement('option');opt.value=i;opt.textContent=(isAxis?'Axis ':'Button ')+i;el.appendChild(opt)}el.value=map[k];el.onchange=()=>{map[k]=Number(el.value);saveGP()}});$('dead').oninput=e=>{dead=Number(e.target.value);$('deadval').textContent=dead.toFixed(2);saveGP()};$('invert').onchange=e=>{invert=e.target.checked;saveGP()};function saveGP(){if(!lastGpID)return;try{localStorage.setItem('nereid-gp-'+lastGpID,JSON.stringify({map,dead,invert,neutral}))}catch(e){}}function restoreGP(){try{let v=JSON.parse(localStorage.getItem('nereid-gp-'+lastGpID));if(!v)return;map={...standard,...v.map};dead=clamp(Number(v.dead)||.18,.05,.4);invert=!!v.invert;neutral=Array.isArray(v.neutral)?v.neutral:neutral;for(let k of gpKeys)$(k).value=map[k];$('dead').value=dead;$('deadval').textContent=dead.toFixed(2);$('invert').checked=invert}catch(e){}}function applyPreset(layout){map={...standard,...layout};for(let k of gpKeys)$(k).value=map[k];saveGP();notice('CONTROLLER MAPPING UPDATED')}function toggleOptions(force){opts.classList.toggle('open',force===undefined?!opts.classList.contains('open'):force);if(opts.classList.contains('open'))$('device').textContent=lastGp?'DETECTED: '+lastGp.id:'PRESS ANY GAMEPAD BUTTON'}$('gamebtn').onclick=()=>toggleOptions();$('close').onclick=()=>toggleOptions(false);$('std').onclick=()=>applyPreset({});$('generic').onclick=()=>applyPreset({lx:0,ly:1,rx:3,ry:4,a:1,b:2,x:0,y:3,lb:4,rb:5});$('cal').onclick=()=>{if(!lastGp)return notice('CONNECT GAMEPAD FIRST');neutral=Array.from(lastGp.axes);saveGP();notice('NEUTRAL AXES CAPTURED / RELEASE STICKS FIRST')};
+function axis(g,i){let raw=g.axes[i]??0,center=neutral[i]??0;return Math.abs(raw-center)<dead?0:clamp((raw-center-Math.sign(raw-center)*dead)/(1-dead),-1,1)}function isDown(g,i){return i>=0&&i<g.buttons.length&&g.buttons[i].value>.45}function gpButton(g,i,cb){let on=isDown(g,i),key=String(i);if(on&&!prevButtons[key])cb();prevButtons[key]=on}function pollPad(dt){let g=null;try{g=[...(navigator.getGamepads?.()||[])].find(p=>p&&p.connected)||null}catch(e){}if(!g){if(lastGp){lastGp=null;ui.gp.textContent='PAD: DISCONNECTED';notice('CONTROLLER DISCONNECTED')}gpMoveX=gpMoveY=gpLookX=gpLookY=0;return}if(!lastGp||lastGp.id!==g.id){lastGpID=g.id;prevButtons={};neutral=new Array(g.axes.length).fill(0);applyPreset(g.mapping==='standard'?{}:{lx:0,ly:1,rx:g.axes.length>=5?3:2,ry:g.axes.length>=5?4:3,a:0,b:1,x:2,y:3,lb:4,rb:5});restoreGP();notice('GAMEPAD CONNECTED / '+(g.mapping==='standard'?'STANDARD':'GENERIC / DINPUT'));ui.gp.textContent=g.mapping==='standard'?'PAD: STANDARD':'PAD: RAW / DINPUT';$('device').textContent=g.id+' / '+g.axes.length+' axes / '+g.buttons.length+' buttons'}lastGp=g;gpMoveX=axis(g,map.lx);gpMoveY=axis(g,map.ly);gpLookX=axis(g,map.rx);gpLookY=axis(g,map.ry)*(invert?-1:1);
+gpButton(g,map.a,()=>{if(s.mode==='walk')interact();else if(s.mode==='arms')grab();else if(s.mode==='sonar')pingSonar();else if(s.mode==='helm'&&!s.manned){s.manned=true;notice('HELM MANNED');buttons()}});gpButton(g,map.b,()=>{if(s.mode!=='walk')change('walk')});gpButton(g,map.x,()=>{if(s.mode==='arms')s.armLight=(s.armLight+1)%5;else s.lamps=(s.lamps+1)%5;buttons()});gpButton(g,map.y,()=>{if(s.mode==='walk'){const n=near();if(n)interact();else jump(1)}else if(s.mode==='sonar')pingSonar();else if(s.mode==='helm'){s.manned=!s.manned;buttons()}});gpButton(g,map.lb,()=>{if(s.mode==='arms'){if(s.held<0)s.arm=0;buttons()}else if(s.mode==='helm')ballast(-300);else if(s.mode==='walk')jump(-1)});gpButton(g,map.rb,()=>{if(s.mode==='arms'){if(s.held<0)s.arm=1;buttons()}else if(s.mode==='helm')ballast(300);else if(s.mode==='walk')jump(1)});if(g.mapping==='standard'){gpButton(g,9,()=>toggleOptions());gpButton(g,12,()=>{if(s.mode==='helm')ballast(-300);else if(s.mode==='arms')s.armLight=clamp(s.armLight+1,0,4)});gpButton(g,13,()=>{if(s.mode==='helm')ballast(300);else if(s.mode==='arms')s.armLight=clamp(s.armLight-1,0,4)});gpButton(g,14,()=>{if(s.mode==='helm'){s.throttle=clamp(s.throttle-1,0,4);buttons()}});gpButton(g,15,()=>{if(s.mode==='helm'){s.throttle=clamp(s.throttle+1,0,4);buttons()}})}if(opts.classList.contains('open')&&Math.floor(s.time*7)%2===0)ui.raw.textContent='AXES '+g.axes.map((v,i)=>i+':'+v.toFixed(2)).join('  ')+'\nBUTTONS '+g.buttons.map((b,i)=>b.value>.15?i+':'+b.value.toFixed(1):'').filter(Boolean).join('  ')}
+// Visual station scopes and real ocean contact feed.
+function sonarDraw(){scan.fillStyle='#051d18';scan.fillRect(0,0,512,512);scan.lineWidth=2;scan.strokeStyle='#235943';for(let r=45;r<=188;r+=47){scan.beginPath();scan.arc(256,254,r,0,Math.PI*2);scan.stroke()}scan.beginPath();scan.moveTo(68,254);scan.lineTo(444,254);scan.moveTo(256,67);scan.lineTo(256,442);scan.stroke();let a=s.time*.9;scan.fillStyle='#72ddaa2a';scan.beginPath();scan.moveTo(256,254);scan.arc(256,254,188,a-.45,a);scan.fill();scan.strokeStyle='#b3f0b6';scan.beginPath();scan.moveTo(256,254);scan.lineTo(256+Math.cos(a)*188,254+Math.sin(a)*188);scan.stroke();for(let f of fish){if(!f.group.visible)continue;let p=f.group.position,range=Math.hypot(p.x,p.z);if(range>30)continue;let b=Math.atan2(p.z,p.x),r=range/30*188;scan.fillStyle='#c7f4b1';scan.fillRect(254+Math.cos(b)*r,252+Math.sin(b)*r,3,3)}scan.fillStyle='#9edbb0';scan.font='bold 20px monospace';scan.fillText('SONAR / 360°',20,28);scan.font='16px monospace';scan.fillText('RANGE 30 M',16,492);scan.fillText('PING '+s.pings,357,492);scanTex.needsUpdate=true;for(let h of helmScreens){let c=h.c,g=h.g;g.fillStyle='#0b282d';g.fillRect(0,0,256,192);g.fillStyle='#a1ddbd';g.font='bold 24px monospace';g.fillText(h.j===-1?'BALLAST':h.j===0?'DEPTH / M':'COMMS',14,29);g.fillStyle='#c5d49c';g.font='bold 36px monospace';g.fillText(h.j===-1?Math.round(s.target):h.j===0?Math.round(s.depth):s.throttle+' / 4',14,92);for(let k=0;k<4;k++){g.fillStyle=k===Math.floor(s.time*.75)%4?'#aecb80':'#397b68';g.fillRect(17+k*55,135,42,15)}h.t.needsUpdate=true}}
+function optics(){let w=lens.width,h=lens.height,r=Math.min(w*.24,h*.43),gap=Math.min(w*.13,r*.5);lg.clearRect(0,0,w,h);lg.fillStyle='#030c12';lg.beginPath();lg.rect(0,0,w,h);for(let cx of [w/2-gap,w/2+gap]){lg.moveTo(cx+r,h/2);lg.arc(cx,h/2,r,0,Math.PI*2,true)}lg.fill('evenodd');lg.lineWidth=6;lg.strokeStyle='#93aa9c';for(let cx of [w/2-gap,w/2+gap]){lg.beginPath();lg.arc(cx,h/2,r,0,Math.PI*2);lg.stroke()}lg.strokeStyle='#b5d1b46b';lg.lineWidth=1;lg.beginPath();lg.moveTo(w/2-45,h/2);lg.lineTo(w/2+45,h/2);lg.moveTo(w/2,h/2-33);lg.lineTo(w/2,h/2+33);lg.stroke()}
+function resize(){let w=root.clientWidth,h=root.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/Math.max(h,1);cam.updateProjectionMatrix();lens.width=w;lens.height=h}window.addEventListener('resize',resize);if(window.ResizeObserver)new ResizeObserver(resize).observe(root);resize();
+// Walk collision against actual cabinet/bunk/engine footprints (XZ), with a
+// 27cm body radius; movement still slides along the furnishings and door edges.
+const furnitureXZ=[
+ [-20.55,-19.44,-1.84,1.84], // bridge helm console
+ [-13.86,-10.34,1.76,2.41], // hydroacoustic housing
+ [-7.56,-6.91,-1.83,-1.08], // optical mast
+ [-6.36,-4.40,1.54,2.40], // arm-control console
+ [-2.63,2.63,-2.39,-1.46], // galley range
+ [-1.06,1.87,1.00,2.30], // dining table
+ [3.00,7.82,0.94,2.36], // crew bunks / safety rail
+ [3.00,7.64,-2.42,-1.58], // locker fronts
+ [9.06,11.12,1.37,2.39], // bathroom compartment
+ [11.68,13.88,-2.43,-1.48], // washbasin
+ [15.25,20.73,.70,2.36], // engine housing
+ [16.76,19.24,-2.42,-1.67] // engine control panel
+];
+function hitsFurnishing(x,z,r=.24){return furnitureXZ.some(([x0,x1,z0,z1])=>x>x0-r&&x<x1+r&&z>z0-r&&z<z1+r)}
+// Subtle inertia and camera bob, physical collision with structural bulkheads.
+function positionBeam(o,a,b){let d=b.clone().sub(a);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V(0,1,0),d.clone().normalize());o.scale.y=d.length()/o.userData.n}let previous=0,uiTimer=0,scanTimer=0,footTravel=0;const look=new T.Vector3();function update(now){requestAnimationFrame(update);let dt=clamp((now-(previous||now))/1000,0,.055);previous=now;s.time+=dt;pollPad(dt);const rate=140+s.throttle*24;s.depth+=Math.sign(s.target-s.depth)*Math.min(Math.abs(s.target-s.depth),rate*dt);if(s.depth>3900)s.hull=Math.max(90,s.hull-(s.depth-3900)*.000008*dt);s.speed=lerp(s.speed,s.throttle*1.85,Math.min(1,dt*.75));if(s.mode==='helm'&&s.manned){const steer=(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0)+gpMoveX;s.heading=(s.heading+steer*24*dt+360)%360;}
+const distance=s.speed*.514444*dt,angle=turnAngle();
+// At reference heading the bow faces local -X; translate in an inertial ocean frame.
+s.worldX-=Math.cos(angle)*distance;s.worldZ-=Math.sin(angle)*distance;s.logNm+=distance/1852;
+const wrap=(v,span)=>((v+span/2)%span+span)%span-span/2;
+// Tile repeats outside the original 180m terrain; samples retain absolute coordinates.
+const tileOffset=V(-wrap(s.worldX,180),0,-wrap(s.worldZ,180)).applyAxisAngle(V(0,1,0),angle);
+oceanRoot.position.copy(tileOffset);oceanRoot.rotation.y=angle;
+for(let i=0;i<rocks.length;i++){const r=rocks[i];if(!r.taken&&i!==s.held)r.o.position.copy(oceanToLocal(r.world));}
+
+if(s.mode==='walk'){let f=clamp((keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0)-joyY-gpMoveY,-1,1),str=clamp((keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+joyX+gpMoveX,-1,1),length=Math.hypot(f,str);if(length>1){f/=length;str/=length}let vx=-Math.sin(s.yaw)*f+Math.cos(s.yaw)*str,vz=-Math.cos(s.yaw)*f-Math.sin(s.yaw)*str,tgt=V(vx*2.45,0,vz*2.45);player.velocity.lerp(tgt,1-Math.exp(-dt*11));let old=player.pos.clone(),px=clamp(player.pos.x+player.velocity.x*dt,-20.7,20.7),pz=clamp(player.pos.z+player.velocity.z*dt,-2.02,2.02);for(let barrier of [-15,-9,-3,3,9,15])if((player.pos.x-barrier)*(px-barrier)<=0&&Math.abs(pz)>.72){px=player.pos.x;player.velocity.x=0}
+// Resolve each axis independently, so the body slides rather than clipping into furniture.
+if(hitsFurnishing(px,player.pos.z)){px=player.pos.x;player.velocity.x=0}
+if(hitsFurnishing(px,pz)){pz=player.pos.z;player.velocity.z=0}
+player.pos.set(px,1.63,pz);let moved=player.pos.distanceTo(old);footTravel+=moved;player.bob+=moved*12;if(footTravel>.56){footTravel=0;tone(125,.058,.013)}s.yaw-=gpLookX*dt*2.4;s.pitch=clamp(s.pitch-gpLookY*dt*1.9,-1.12,1.12);cam.position.copy(player.pos);cam.position.y+=Math.sin(player.bob)*Math.min(.024,moved*1.7);cam.rotation.set(s.pitch,s.yaw,0)}else if(s.mode==='helm'){cam.position.set(-18.7,1.65,0);cam.lookAt(-20.6,1.5,0)}else if(s.mode==='sonar'){cam.position.set(-12.05,1.65,.42);cam.lookAt(-12.05,1.56,2.25)}else if(s.mode==='optic'){s.scopeYaw-=gpLookX*dt*2.0;s.scopePitch=clamp(s.scopePitch-gpLookY*dt*1.4,-.84,.84);cam.position.set(-7.25,3.63,2);cam.rotation.set(s.scopePitch,s.scopeYaw,0)}else if(s.mode==='arms'){const a=arms[s.arm];if(s.armsOn){a.target.x=clamp(a.target.x+gpLookX*dt*3.5,-11,-1);a.target.z=clamp(a.target.z-gpLookY*dt*5.3,5.5,18);} cam.position.set(-6,.12,4.36);cam.lookAt(-6,-2.8,13)}
+for(let i=0;i<arms.length;i++){const a=arms[i],base=a.base,delta=(s.armsOn?a.target:base.clone().add(V(0,-.3,.45))).clone().sub(base);if(delta.length()>11)delta.setLength(11);let end=base.clone().add(delta),joint=base.clone().lerp(end,.54);joint.y=Math.min(-.48,end.y+1.1);positionBeam(a.upper,base,joint);positionBeam(a.lower,joint,end);a.joint.position.copy(joint);a.tip.position.copy(end);a.end.copy(end)}if(s.held>=0)rocks[s.held].o.position.copy(arms[s.heldArm].end).add(V(0,-.15,.18));for(let f of fish){
+  let t=s.time*f.speed+f.phase;
+  let drift=f.type==='jelly'?.65:f.type==='ray'?1.15:1.8;
+  const fx=wrap(f.x+Math.sin(t)*drift-s.worldX,90),fz=wrap(f.z+Math.cos(t*.71)*1.2-s.worldZ,90);
+  f.group.position.copy(V(fx,f.y+Math.sin(t*1.7)*.24,fz).applyAxisAngle(V(0,1,0),angle));
+  f.group.rotation.y=angle+Math.cos(t)*.31+(f.z<0?Math.PI:0);
+  f.group.rotation.z=(f.type==='ray'?Math.sin(t*2)*.04:0);
+  if(f.tail)f.tail.rotation.y=Math.sin(s.time*(f.type==='tuna'?12:6)+f.phase)*(f.type==='gulper'?.18:.29);
+  for(let j=1;j<f.parts.length;j++){
+    let p=f.parts[j];p.rotation.z=Math.sin(s.time*(f.type==='jelly'?2.3:4.5)+f.phase+j*.65)*(f.type==='ray'?.2:.13);
+    p.rotation.y=Math.cos(s.time*3+f.phase+j*.8)*.09
+  }
+  if(f.type==='jelly')f.group.scale.setScalar(f.size*(.9+.08*Math.sin(s.time*2.3+f.phase)));
+  let zone=s.depth<220?0:s.depth<1300?1:s.depth<2800?2:3;
+  f.group.visible=zone===0?['reef','tuna','ray','jelly','squid'].includes(f.type):
+    zone===1?['tuna','squid','jelly','lantern','ray'].includes(f.type):
+    zone===2?['lantern','squid','angler','gulper','jelly','dumbo'].includes(f.type):
+    ['angler','gulper','dumbo','jelly','lantern'].includes(f.type);
+}
+for(const [name,objects] of Object.entries(nature)){
+  let visible=name==='shallow'?s.depth<350:name==='mid'?s.depth<2200:s.depth>1700;
+  for(const o of objects)o.visible=visible
+}
+particulate.position.set(-wrap(s.worldX,7),0,-wrap(s.worldZ+s.time*.018,7));particulate.rotation.y=angle;
+let color=new T.Color(s.depth<190?0x17485d:s.depth<760?0x0a3347:s.depth<2100?0x091c2b:0x030e17);scene.background.copy(color);scene.fog.color.copy(color);scene.fog.density=s.depth<200?.017:s.depth<1300?.034:.063;outside.intensity=s.depth<220?.62:s.depth<900?.16:.015;opticLamp.intensity=s.lamps*(s.depth>700?6.9:4.8);opticLamp.distance=s.depth>1200?32:47;opticLamp.target.position.set(-7.25-Math.sin(s.scopeYaw)*18,3.6+Math.sin(s.scopePitch)*16,2-Math.cos(s.scopeYaw)*18);armLamp.intensity=s.armsOn?s.armLight*(s.depth>1200?8.5:5.5):0;armLamp.target.position.copy(arms[s.arm].end).add(V(0,0,2));glowCones[0].material.opacity=s.lamps===0?0:Math.min(.057,.009+s.lamps*.012)*(s.depth>300?1:.48);
+glowCones[1].material.opacity=s.armsOn&&s.armLight>0?Math.min(.07,s.armLight*.013)*(s.depth>300?1:.45):0;
+glowCones[0].position.set(-7.2-Math.sin(s.scopeYaw)*7,3.62+Math.sin(s.scopePitch)*7,2-Math.cos(s.scopeYaw)*7);
+glowCones[0].quaternion.setFromUnitVectors(V(0,1,0),V(Math.sin(s.scopeYaw),-Math.sin(s.scopePitch),Math.cos(s.scopeYaw)).normalize());
+// Anchor arm beam to the actual operating gripper, not a fixed world-space cone.
+const beamMid=V(-6,-.2,4.3).lerp(arms[s.arm].end,.5);glowCones[1].position.copy(beamMid);
+const towardCamera=V(-6,-.2,4.3).sub(arms[s.arm].end).normalize();
+glowCones[1].quaternion.setFromUnitVectors(V(0,1,0),towardCamera);
+glowCones[1].scale.y=clamp(V(-6,-.2,4.3).distanceTo(arms[s.arm].end)/11,.14,1.5);
+for(let k=0;k<fixtures.length;k++)fixtures[k].intensity=k===6?2.9:2.25;
+uiTimer+=dt;scanTimer+=dt;if(scanTimer>.105){scanTimer=0;sonarDraw()}if(uiTimer>.12){uiTimer=0;ui.depth.textContent=String(Math.round(s.depth)).padStart(4,'0');ui.speed.textContent=s.speed.toFixed(1);ui.hull.textContent=Math.round(s.hull);ui.comp.textContent='HDG '+String(Math.round(s.mode==='optic'?(s.heading+(s.scopeYaw-Math.PI/2)*180/Math.PI+720)%360:s.heading)).padStart(3,'0')+'°';ui.room.textContent=s.mode==='walk'?String(room()+1).padStart(2,'0')+' / '+names[room()]:(s.mode==='arms'?'MANIPULATOR / EXTERIOR':s.mode.toUpperCase()+' / INSTRUMENT VIEW');ui.prompt.textContent=s.mode==='walk'?(near()?'[ USE / A ] '+near().name:''):s.mode==='arms'?'ROCKS '+rocks.filter(r=>!r.taken).length+' · SAMPLES '+s.samples+(s.armsOn?'':' · ARMS STOWED'):s.mode==='helm'?'TARGET '+s.target+'m / THR '+s.throttle+'/4 / LOG '+s.logNm.toFixed(3)+' nm':s.mode==='optic'?'FLOODLIGHT '+s.lamps+'/4':'CONTACTS '+fish.filter(f=>f.group.visible&&Math.hypot(f.group.position.x,f.group.position.z)<=30).length;if(s.time>msgTill)ui.msg.classList.remove('on');if(s.mode==='optic')optics();if(s.mode==='walk')ui.tracer.textContent='ATMOSPHERE NOMINAL / '+(s.depth>2600?'ABYSSAL DARKNESS':'HYDROACOUSTICS ONLINE')}
+if(audioOn){audioTick+=dt;if(audioTick>10){audioTick=0;tone(1000,.06,.014)}}renderer.render(scene,cam)}
+change('walk');$('boot').style.display='none';notice('NEREID V3.3 / VOYAGE DEVELOPMENT',3.5);requestAnimationFrame(update);
+})();
+}catch(error){
+ const panel=document.getElementById('ne2boot'),msg=document.getElementById('ne2boottext');
+ if(panel)panel.style.display='flex';
+ if(msg)msg.textContent='SIMULATOR INITIALIZATION FAILED: '+String(error.message||error);
+ console.error('NEREID initialization error',error);
+}
+</script></body></html>
