@@ -18,3 +18,6 @@ Retain original artwork until compatible models, component alignment, material m
 ## Verification
 
 V4 inline JavaScript compiled successfully. Vendored Matter.js 0.20.0 executed an isolated polygon/floor collision test successfully. Integrated browser input, audio decoding/playback, full gameplay and Pages deployment unverified. V3 remains catalog baseline; V4 is available separately at v4.html.
+
+## V5 additions
+Kenney Particle Pack (CC0-1.0), https://kenney.nl/assets/particle-pack. Original `smoke_01.png` and `light_01.png`, retrieved from https://github.com/GeorgeQLe/assets-vfx-particles/tree/main/assets/kenney/particle-pack/PNG%20(Transparent) with license metadata in its manifest. PNG signatures checked; exact original images embedded in `vendor/vfx.js` and used for smoke sprites and conducting contact light. Browser image decode/render and visual fit not yet checked. No authored specimen art adopted in V5; geometry and visual fit require evaluation.
