@@ -1,3 +1,7 @@
+# v0.2 — Asset-first corrective pass
+
+Three Poly Haven CC0 PBR material integrations and four authored industrial glTF model integrations are in source. Local-first loading, runtime success/failure reporting, measured model bounds and collision envelopes, a reproducible vendor script, and a scoped GitHub Actions acquisition workflow are committed. Spatial impact audio uses Web Audio panners. JavaScript syntax passed. Asset download and workflow outcome are unverified; local network DNS prevents the download, visual inspection and browser test. Weapons, alien hands, targets and much of the architecture still use procedural geometry. Quaternius packs were reviewed but their stylized look does not match the approved grounded direction. Actual asset acceptance and full-scope playtesting remain outstanding.
+
 # v0.1 status
 **Committed development build, not a completed Revision 1.0 release.**
 Source is implemented in a browser module and its JavaScript passed a V8 parse check. No browser playtest, screenshot, GPU benchmark, physics benchmark, controller test, network integration test or live Pages verification was completed in the build environment. Outbound dependency downloads were blocked by DNS. Actual runtime behavior and asset loading are unverified.
