@@ -146,5 +146,10 @@ async function start(){
  renderFood();for(const [k,t] of Object.entries(tools)){t.visible=!!active&&k===tool;if(t.visible){t.position.set(last.x,E.zone(last)==="bowl"?.72:.33,last.z);if(active)t.rotation.y=-Math.atan2(active.last.z-active.from.z,active.last.x-active.from.x)}}
  renderer.render(scene,camera);if(dirty||now-uiAt>300){metrics();dirty=false;uiAt=now}if(now-saveAt>5000&&!active){save(false);saveAt=now}
  }
+ if(new URLSearchParams(location.search).has("test"))Object.defineProperty(window,"__guacTest",{value:Object.freeze({
+  snapshot:()=>JSON.parse(JSON.stringify(state)),summary:()=>E.summary(state),models:()=>Object.keys(library),
+  project:(x,z)=>{const q=vec(x,.13,z).project(camera),r=canvas.getBoundingClientRect();return {x:r.left+(q.x+1)*r.width/2,y:r.top+(1-q.y)*r.height/2}},
+  tests:()=>runTests()
+ })});
  $("boot").hidden=true;metrics();requestAnimationFrame(loop)
 }
