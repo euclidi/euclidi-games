@@ -32,8 +32,8 @@ function drawTitle(sc,time){
  c.fillStyle=blue;for(let [x,y,w,h] of [[8,8,208,1],[8,279,208,1],[8,8,1,272],[215,8,1,272],[11,11,202,1],[11,276,202,1]])c.fillRect(x,y,w,h);
  centered(c,'MAZE ARCADE',23,peach);centered(c,'PAC-MAN',45,'#b24600',3);largeWord(c,'PAC-MAN',Math.floor((224-53*3)/2),42,3,yellow);
  centered(c,'1980',72,'#fff');
- const sprite=(k,x,y)=>c.drawImage(sc.textures.get(k).getSourceImage(),x,y,24,24);
- for(let i=0;i<4;i++)sprite('g'+i+'3'+(Math.floor(time/130)%2),32+i*45,88);
+ const sprite=(k,x,y,size=16)=>c.drawImage(sc.textures.get(k).getSourceImage(),x,y,size,size);
+ for(let i=0;i<4;i++)sprite('g'+i+'3'+(Math.floor(time/130)%2),28+i*45,82,32);
  ['BLINKY','PINKY','INKY','CLYDE'].forEach((n,i)=>{let xx=44+i*45-Math.floor((n.length*6-2)/2); // compact bitmap names
  for(let j=0;j<n.length;j++){let g=font[n[j]];for(let y=0;y<7;y++){let a=parseInt(g.slice(y*2,y*2+2),16);for(let x=0;x<5;x++)if(a&(16>>x))p(c,xx+j*6+x,117+y,colors[i])}}});
  c.fillStyle=blue;c.fillRect(24,136,176,1);
@@ -41,7 +41,7 @@ function drawTitle(sc,time){
  centered(c,selectedMode.toUpperCase(),163,yellow,2);
  centered(c,selectedMode==='authentic'?'CLASSIC TARGETING':selectedMode==='advanced'?'PREDICTIVE CHASE':'MIXED GHOST AI',186,'#fff');
  centered(c,'HIGH SCORE',207,peach);centered(c,String(Number(read('maze-high-'+selectedMode,0))),219,'#fff');
- let x=24+Math.floor(time/16)%176;for(let k=28;k<198;k+=8){if(k>x){c.fillStyle=peach;c.fillRect(k,242,2,2)}}sprite('p3'+[0,1,2,1][Math.floor(time/90)%4],x-12,231);
+ let x=24+Math.floor(time/16)%176;for(let k=28;k<198;k+=8){if(k>x){c.fillStyle=peach;c.fillRect(k,242,2,2)}}sprite('p3'+[0,1,2,1][Math.floor(time/90)%4],x-8,234);
  centered(c,'PRESS START',260,Math.floor(time/450)%2===0?yellow:'#b7a900');
  sc.title.refresh();
 }
