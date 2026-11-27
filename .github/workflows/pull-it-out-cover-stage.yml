@@ -1,0 +1,45 @@
+name: Pull It Out verified cover staging
+on:
+  push:
+    branches: [pull-it-out-development]
+    paths: ['.github/workflows/pull-it-out-cover-stage.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  stage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve successful browser-test capture
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(gh run view 46050722531 --json conclusion --jq .conclusion)" = success
+          test "$(gh run view 46050722531 --json headSha --jq .headSha)" = 9cd1ac32ac94d51ea4a3a50f90c5bebd7a18e69d
+          gh run download 46050722531 --name pull-it-out-gameplay-captures --dir /tmp/pull-it-out-captures
+          python3 -m pip install --quiet pillow==11.3.0
+          python3 - <<'PY'
+          from PIL import Image, ImageStat
+          from pathlib import Path
+          import hashlib, json
+          src=Path('/tmp/pull-it-out-captures/pull-it-out-gameplay.png')
+          im=Image.open(src).convert('RGB')
+          assert min(im.size)>=100 and max(ImageStat.Stat(im).stddev)>=8 and im.entropy()>=2
+          original=list(im.size)
+          ratio=min(800/im.width,500/im.height)
+          resized=im.resize((round(im.width*ratio),round(im.height*ratio)),Image.Resampling.LANCZOS)
+          cover=Image.new('RGB',(800,500),(17,17,17))
+          cover.paste(resized,((800-resized.width)//2,(500-resized.height)//2))
+          dst=Path('covers/pull-it-out-gameplay.webp')
+          cover.save(dst,'WEBP',quality=88,method=6)
+          rec=dict(file=str(dst),kind='gameplay',original_size=original,route='./pull-it-out/',selector='#stage',sha256=hashlib.sha256(dst.read_bytes()).hexdigest(),source='9cd1ac32ac94d51ea4a3a50f90c5bebd7a18e69d',viewport=[1280,800])
+          Path('pull-it-out/cover-provenance.json').write_text(json.dumps(rec,indent=2)+'\n')
+          print(rec)
+          PY
+          git add covers/pull-it-out-gameplay.webp pull-it-out/cover-provenance.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Stage genuine Pull It Out gameplay capture from successful browser test"
+          git push origin HEAD:pull-it-out-development
