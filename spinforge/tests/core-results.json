@@ -1,0 +1,13 @@
+{
+  "bouts": 120,
+  "contacts": 17172,
+  "finishes": {
+    "SPIN FINISH": 51,
+    "TIME / SPIN ADVANTAGE": 63,
+    "STADIUM OUT": 6
+  },
+  "steeringEnergy": "pass",
+  "deterministicReplay": "pass",
+  "experimentalSteering": "pass",
+  "syntax": "pass"
+}

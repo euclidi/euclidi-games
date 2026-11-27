@@ -1,0 +1,7 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const script=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8').match(/<script>([\s\S]*)<\/script>/)[1];new Function(script);
+const make=new Function(script.slice(0,script.indexOf('\n(()=>{'))+';return createPhysics')();
+function run(seed){let q=make(seed);q.arena=seed%3;q.configuration={blade:seed%4,disc:(seed>>2)%4,driver:(seed>>4)%4};q.reset(true);q.launch(Math.cos(seed*.73),Math.sin(seed*.73),.4+(seed%7)*.09);for(let n=0;n<6300&&q.phase==='battle';n++){if(n%600===0)q.steer(0,0);q.step(1/120);for(let t of q.tops)if(![t.x,t.z,t.vx,t.vz,t.omega,t.air,t.health].every(Number.isFinite))throw Error('nonfinite '+seed)}if(q.phase==='battle')throw Error('timeout '+seed);if(q.score.reduce((a,b)=>a+b,0)!==1||q.recording.length<2)throw Error('score/replay');return q}
+for(let i=0;i<120;i++)run(i);assert.deepEqual(run(23).recording,run(23).recording);
+let q=make(5),t=q.tops[0];t.omega=.0001;const energy=q.energy(t);q.applySteer(t,100,100,1);assert(q.energy(t)<=energy+1e-9);
+q.mode='experimental';q.autoCPU=false;q.launch(1,0,1);assert.equal(q.steer(0,0),false);console.log('120 seeded bouts, deterministic recording, steering cap and experimental input passed');

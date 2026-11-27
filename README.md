@@ -37,6 +37,8 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [Atlantis](atlantis/README.md) | Migration — source recovery, not published | [Spec](atlantis/SPEC.md) · [Roadmap](atlantis/ROADMAP.md) · [Status](atlantis/STATUS.md) |
 
+| [SPINFORGE VII](spinforge/README.md) | Development candidate — unlisted pending WebGL verification | [Spec](spinforge/SPEC.md) · [Roadmap](spinforge/ROADMAP.md) · [Status](spinforge/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
