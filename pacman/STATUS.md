@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.4.6.
+**Lifecycle:** Active — Git revision 1.4.7.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.4.7 — fruit contact fix
+
+Fruit rendering and collision share one center. Removed the tile-arrival pickup shortcut; swept player contact is required while the fruit is active. Fruit scores once, shows a brief pickup-value popup, and is hidden outside active play. Four targeted regression tests and 36,000 general simulation ticks passed in JS evaluation. Live visual verification remains pending.
 
 ## Revision 1.4.6 — compact settings and gamepad
 
