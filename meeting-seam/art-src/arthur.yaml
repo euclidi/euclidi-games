@@ -1,0 +1,278 @@
+spritekiln: 1
+name: arthur
+kind: character
+view: side                      # profile camera (pitch 0), directions e and w, no ground shadow
+mirror: false                   # true renders only e (engines flip it): the sword swaps hands, the light flips
+size: 128
+palette: [gothic.yaml, arthur-palette.yaml]
+camera: {scale: 0.023, center: [0, 1.16, 0]}
+
+# Wren: the example side-scroller character (CC0), built from the side_humanoid template (light chibi
+# proportions: head 1.25x; same skeleton, channels and platformer clip set). In profile the silhouette is
+# what reads, so the hat brim, the scarf ends, the sword blade and the coat hem are set up for it.
+# In `e` the sword arm (right) is the near one, in `w` the far one. Jumps are in place: the game moves the
+# character, `root` only nudges the body inside the frame.
+
+brief:
+  summary: arthur — working coal miner with hardhat, heavy workwear and tool
+
+materials:
+  skin:    {ramp: skin, bands: [2, 5], gamma: 0.7}     # profile faces catch little light: lift them
+  coat:    {ramp: coat, bands: [1, 5], gamma: 0.85}
+  pants:   {ramp: pants, bands: [1, 4]}
+  hair:    {ramp: hair, bands: [2, 5]}
+  hat:     {ramp: felt, bands: [2, 5]}
+  brim:    {ramp: felt, bands: [1, 4]}    # brim one tone below the crown (separates the two shapes)
+  scarf:   {ramp: scarf, bands: [2, 5], gamma: 0.85}   # the accent: keep it saturated, never the dark band
+  steel:   {ramp: steel}
+  leather: {ramp: leather, bands: [1, 4]}
+  canvas:  {ramp: felt, bands: [2, 5]}    # satchel and boot cuffs
+  brass:   {ramp: gold, bands: [1, 4]}    # lantern frame
+  lantern: {ramp: flame, emissive: true, band: 3, outline: false, glow: {color: "#ffb13b", mix: 0.5, radius: 1}}
+  ink:     {ramp: pants, emissive: true, band: 0, outline: false}
+  fx_tail: {ramp: fx_tail, emissive: true}
+  fx_mid:  {ramp: fx_mid, emissive: true}
+  fx_core: {ramp: fx_core, emissive: true}
+
+channels:
+  root: [0, 0, 0]
+  bob: 0
+  lean: 0.05
+  twist: 0
+  roll: 0
+  squash: 1
+  head_pitch: 0
+  head_yaw: 0
+  hand_L: [0.33, 0.06, 0.06]
+  foot_L: [0.13, 0, 0.02]
+  pitch_foot_L: 0
+  coat: 0           # coat hem sway (+ forward, - trailing back)
+  scarf: 0          # scarf ends: 0 hang down the back, 0.5 diagonal, 1 stream straight back, > 1 curl up
+  scarf_wave: 0     # ripple along the scarf ends, travelling with the clip phase p (0.15-0.3 for a run)
+  hat_tilt: 0       # hat rocks on its seat (+ tips the front down over the eyes, - pushes it back)
+  brim_flop: 0      # brim edge flop (+ droops, - flicks up); follow-through on jumps and landings
+  sword_pitch: 0    # blade rotation at the wrist, in the profile plane (+ = tip toward the forearm)
+  smear_w: 0
+  smear_a0: 0       # smear angles in the profile plane: 0 = forward, pi/2 = up, -pi/2 = down
+  smear_a1: 0
+  smear_r: 0.80
+  smear_y: 1.15     # arc centre, about the shoulder (root space)
+  smear_z: 0.10
+  smear_fade: 1
+
+bones:
+  torso_rot: {parent: root, pos: "[0, 0.84 + bob, 0]", rot: "[lean, twist, roll]"}
+  pelvis:    {parent: torso_rot, scale: "[1/sqrt(squash), squash, 1/sqrt(squash)]"}
+  headbase:  {parent: pelvis, pos: [0, 0.70, 0.02], inherit_rot: false, inherit_scale: false,
+              rot: "[lean*0.5, twist, roll]"}
+  head:      {parent: headbase, rot: "[head_pitch, head_yaw, 0]", scale: 1.25}
+  hatseat:   {parent: head, pos: [0, 0.255, -0.01], rot: "[hat_tilt, 0, 0]"}   # hat sits high: forehead shows
+  shoulder_L: {parent: pelvis, pos: [0.27, 0.55, 0.0]}
+  hip_L:      {parent: pelvis, pos: [0.12, -0.02, 0.0]}
+  legyaw:     {parent: root, rot: "[0, twist*0.5, 0]"}
+  footyaw:    {parent: root, rot: "[0, twist*0.4, 0]"}
+  sole_L:     {parent: footyaw, at: ankle_L, rot: "[pitch_foot_L, 0.08, 0]"}
+  coatbase:   {parent: pelvis, rot: "[-coat*0.25, 0, 0]"}
+  # scarf ends: a 4-segment chain from the knot behind the neck (+x rot swings a hanging segment back);
+  # `scarf` lifts each segment a little more than the one above, so the ends curl back like a streamer
+  scarfknot:  {parent: pelvis, pos: [0.04, 0.60, -0.13], rot: "[0.25 + 1.05*scarf, 0, 0]"}
+  scarf_1:    {parent: scarfknot, pos: [0, -0.12, 0], rot: "[-0.10 + 0.25*scarf + scarf_wave*sin(p - 1.2), 0, 0]"}
+  scarf_2:    {parent: scarf_1, pos: [0, -0.12, 0], rot: "[-0.05 + 0.20*scarf + scarf_wave*sin(p - 2.4), 0, 0]"}
+  scarf_3:    {parent: scarf_2, pos: [0, -0.12, 0], rot: "[-0.10*scarf + scarf_wave*sin(p - 3.6), 0, 0]"}
+  scarf_tip:  {parent: scarf_3, pos: [0, -0.12, 0]}
+  swordgrip:  {parent: wrist_R, rot: "[sword_pitch, 0, 0]"}   # lets a windup cock the blade back
+  # side view: the smear arc turned into the profile plane (vertical slashes read; flat ones are edge-on)
+  fxspace:    {parent: root, pos: "[-0.20, smear_y, smear_z]", rot: "[0, 0, pi/2]"}   # x: sword side
+
+ik:
+  arm_L: {start: shoulder_L, space: torso_rot, target: hand_L, lengths: [0.29, 0.27],
+          pole: [0.3, 0.0, -1.0], pole_space: torso_rot, up: [0, 0, 1], joint: elbow_L, end: wrist_L}
+  leg_L: {start: hip_L, space: root, target: "foot_L + [0, 0.08, -0.02]", lengths: [0.42, 0.40],
+          pole: [0.1, 0, 1.0], pole_space: legyaw, joint: knee_L, end: ankle_L}
+
+parts:
+  torso:
+    material: coat
+    space: pelvis
+    blend: 0.06
+    prims:
+      - ellipsoid: {c: [0, 0.04, 0], r: [0.19, 0.13, 0.14]}
+      - ellipsoid: {c: [0, 0.25, 0.0], r: [0.18, 0.16, 0.13]}
+      - ellipsoid: {c: [0, 0.45, 0.0], r: [0.25, 0.16, 0.15]}
+  coat:            # short travel coat: open cone from the hip to mid-thigh
+    material: coat
+    space: coatbase
+    blend: 0.03
+    prims:
+      - cone: {a: [0, 0.05, -0.01], b: [0, -0.32, -0.04], r: [0.20, 0.23]}
+    cut:
+      - cone: {a: [0, -0.10, 0.20], b: [0, -0.45, 0.30], r: [0.06, 0.16]}   # front opening
+      - box: {c: [0, -0.46, 0], half: [0.4, 0.16, 0.4]}   # side view: flat hem at mid-thigh (round reads as a sack)
+  belt:
+    material: leather
+    space: pelvis
+    prims:
+      - cylinder: {a: [0, 0.10, 0], b: [0, 0.155, 0], r: 0.195}
+  # lantern on the back-left of the belt: sticks out of the back silhouette in both profiles
+  neck:
+    material: skin
+    space: pelvis
+    prims:
+      - cone: {a: [0, 0.56, 0], b: [0, 0.70, 0.02], r: [0.07, 0.065]}
+  head:
+    material: skin
+    space: head
+    blend: 0.05
+    prims:
+      - ellipsoid: {c: [0, 0.14, 0.0], r: [0.15, 0.16, 0.15]}
+      - ellipsoid: {c: [0, 0.07, 0.04], r: [0.11, 0.09, 0.11]}
+      - sphere: {c: [0, 0.11, 0.15], r: 0.025}
+  hair:            # only what shows under the hat: nape, sides and a fringe
+    material: hair
+    space: head
+    blend: 0.04
+    prims:
+      - ellipsoid: {c: [0, 0.15, -0.08], r: [0.158, 0.12, 0.10]}
+      - ellipsoid: {c: [0, 0.07, -0.12], r: [0.12, 0.07, 0.06], rot: [0.4, 0, 0]}   # tuft at the nape
+      - ellipsoid: {c: [0, 0.205, 0.10], r: [0.13, 0.045, 0.07]}     # fringe under the brim
+  eye_L:
+    material: ink
+    space: head
+    prims:
+      - sphere: {c: [0.06, 0.105, 0.135], r: 0.04}
+  arm_L:
+    material: coat
+    blend: 0.03
+    prims:
+      - sphere: {c: "@shoulder_L", r: 0.085}
+      - cone: {a: "@shoulder_L", b: "@elbow_L", r: [0.075, 0.06]}
+      - cone: {a: "@elbow_L", b: "@wrist_L", r: [0.06, 0.05]}
+  hand_L:
+    material: skin
+    space: wrist_L
+    prims:
+      - sphere: {c: [0, 0, 0.04], r: 0.055}
+  leg_L:
+    material: pants
+    blend: 0.03
+    prims:
+      - cone: {a: "@hip_L", b: "@knee_L", r: [0.095, 0.07]}
+      - cone: {a: "@knee_L", b: "@ankle_L", r: [0.07, 0.055]}
+  boot_L:
+    material: leather
+    space: sole_L
+    blend: 0.03
+    prims:
+      - cone: {a: [0, 0.17, -0.005], b: [0, -0.02, 0.0], r: [0.07, 0.066]}   # tall shaft to mid-calf
+      - ellipsoid: {c: [0, -0.04, 0.05], r: [0.066, 0.046, 0.115]}
+  cuff_L:          # turned-down boot cuff, a lighter felt band
+    material: canvas
+    space: sole_L
+    prims:
+      - cylinder: {a: [0, 0.15, -0.005], b: [0, 0.20, -0.008], r: 0.08}
+
+
+  helmet_shell:
+    material: hat
+    space: head
+    prims:
+      - ellipsoid: {c: [0, 0.245, -0.005], r: [0.192, 0.12, 0.205]}
+    cut:
+      - box: {c: [0, 0.065, 0], half: [0.35, 0.10, 0.35]}
+  helmet_rim:
+    material: brim
+    space: head
+    prims:
+      - ellipsoid: {c: [0, 0.175, 0.025], r: [0.208, 0.028, 0.242]}
+  headlamp_mount:
+    material: steel
+    space: head
+    prims:
+      - cylinder: {a: [0, 0.213, 0.167], b: [0, 0.213, 0.245], r: 0.063}
+      - cylinder: {a: [0, 0.213, 0.237], b: [0, 0.213, 0.260], r: 0.070}
+  headlamp_lens:
+    material: lantern
+    space: head
+    prims:
+      - cylinder: {a: [0, 0.213, 0.258], b: [0, 0.213, 0.268], r: 0.053}
+  collar:
+    material: leather
+    space: pelvis
+    prims:
+      - torus: {c: [0, 0.58, 0.01], R: 0.10, r: 0.027}
+  bib:
+    material: pants
+    space: pelvis
+    prims:
+      - box: {c: [0, 0.32, 0.139], half: [0.145, 0.15, 0.035], round: 0.035}
+      - chain: {pts: [[0.13, 0.37, 0.15], [0.15, 0.53, 0.12], [0.15, 0.58, 0], [0.15, 0.42, -0.13]], r: [0.027, 0.026, 0.026, 0.026]}
+      - chain: {pts: [[-0.13, 0.37, 0.15], [-0.15, 0.53, 0.12], [-0.15, 0.58, 0], [-0.15, 0.42, -0.13]], r: [0.027, 0.026, 0.026, 0.026]}
+  buckles:
+    material: brass
+    space: pelvis
+    prims:
+      - box: {c: [0.13, 0.41, 0.18], half: [0.033, 0.035, 0.012], round: 0.008}
+      - box: {c: [-0.13, 0.41, 0.18], half: [0.033, 0.035, 0.012], round: 0.008}
+  tool_handle:
+    material: leather
+    space: swordgrip
+    prims:
+      - cylinder: {a: [0, -0.11, -0.04], b: [0, 0.52, 0.18], r: 0.027}
+  tool_head:
+    material: steel
+    space: swordgrip
+    prims:
+      - chain: {pts: [[0, 0.47, -0.13], [0, 0.55, 0.03], [0, 0.52, 0.18], [0, 0.48, 0.33], [0, 0.40, 0.45]], r: [0.008, 0.038, 0.053, 0.031, 0.008]}
+      - cylinder: {a: [0, 0.48, 0.166], b: [0, 0.57, 0.19], r: 0.061}
+
+sockets:
+  lamp: {bone: head, offset: [0, 0.213, 0.27]}
+
+animations:
+  idle:
+    frames: 6
+    ms: 160
+    channels:
+      bob: "0.012*sin(p)"
+      head_pitch: "0.02*sin(p)"
+      foot_L: [0.13, 0, 0.09]
+      foot_R: [0.13, 0, -0.07]
+      hand_L: [0.33, 0.09, 0.10]
+      hand_R: [0.28, 0.10, 0.10]
+      sword_pitch: -0.35
+  walk:
+    frames: 12
+    ms: 90
+    channels:
+      lean: 0.09
+      bob: "-0.035*cos(2*p)"
+      twist: "0.07*cos(p)"
+      foot_L: "[0.13, 0.13*pos(-sin(p)), 0.05+0.28*cos(p)]"
+      foot_R: "[0.13, 0.13*pos(sin(p)), 0.05-0.28*cos(p)]"
+      pitch_foot_L: "0.5*pos(-sin(p))"
+      pitch_foot_R: "0.5*pos(sin(p))"
+      hand_L: "[0.30, 0.12, 0.06-0.12*cos(p)]"
+      hand_R: "[0.28, 0.15, 0.10+0.08*cos(p)]"
+      sword_pitch: -0.45
+  mine:
+    frames: 12
+    ms: 87
+    channels:
+      lean: "0.12-0.17*cos(p)"
+      bob: "-0.04-0.05*sin(p)"
+      foot_L: [0.13, 0, 0.17]
+      foot_R: [0.13, 0, -0.16]
+      hand_L: "[0.30, 0.32+0.24*cos(p), 0.28+0.15*sin(p)]"
+      hand_R: "[0.28, 0.32+0.37*cos(p), 0.29+0.24*sin(p)]"
+      sword_pitch: "-0.75+1.25*sin(p)"
+  work:
+    frames: 8
+    ms: 100
+    channels:
+      lean: 0.26
+      bob: -0.11
+      foot_L: [0.13, 0, 0.09]
+      foot_R: [0.13, 0, -0.12]
+      hand_L: "[0.30, 0.09+0.11*sin(p), 0.32]"
+      hand_R: "[0.28, 0.12-0.11*sin(p), 0.36]"
+      sword_pitch: 0.8
