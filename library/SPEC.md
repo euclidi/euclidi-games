@@ -7,3 +7,6 @@ Run tests/mechanical-library.mjs via GitHub Actions, with Chromium and Firefox a
 
 ## V1.3 responsive interaction requirement
 Mechanical view is a single-screen experience using dynamic/visual viewport height and safe-area insets. No document scrolling during normal browse, inspection, retrieval or delivery. Responsive desktop/landscape side-by-side and portrait in-place inspection; search, documentation and settings open as dismissible dialogs. Only long optional dialog content may scroll. Maintain readable controls rather than shrinking the whole interface. Verify viewport fit at 320x568, 360x640, 390x844, 412x915, 667x375, 844x390, 768x1024, 1280x720 and 1920x1080, including retrieval states. Physical devices, extreme zoom and virtual-keyboard variations require additional checks.
+
+## V1.4 interaction refinement
+One real-time scene and one camera. Tap/select a physical box to bring that same mesh into foreground inspection, drag to rotate, put back, retrieve, or play. Camera follows the physical box through transport; projected accessible labels align with the shelf instead of a separate catalog. Keep LCD and action deck visible, and preserve direct launch and Classic View.
