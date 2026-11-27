@@ -9,3 +9,6 @@ Miniature Worlds with Retro Pre-rendered CGI influence; pre-rendered 3D plus dyn
 
 ## Responsive presentation amendment
 Automatically select desktop, tablet, mobile portrait or mobile landscape presentation based on usable viewport, orientation and input capabilities; no user-agent assumptions or manual mode selection required. Maintain same gameplay world and input mapping when layout changes. Touch-first controls, safe-area padding, compact companion and HUD, preserve logical collision coordinates.
+
+## v0.5.0 approved fidelity amendment
+Localized soft desaturation/vignette and peg rim/shadow separation in foliage; consistent pause/result input gating; friendly editor validation and Back to Editor; shared brick, bumper, static, moving and rotating obstacles with properties; five persistent Incremental upgrades with visual mechanical feedback; previews for all seven abilities; interface copy and navigation polish. Existing scope remains binding. See STATUS for implementation versus verified behavior.

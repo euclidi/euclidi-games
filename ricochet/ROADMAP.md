@@ -11,3 +11,5 @@
 - Replace interim analytic portraits and layered dioramas with individually modeled, offline Blender-rendered assets; add animated character reactions, true normal-map lighting/reflection pass and high-resolution authored backgrounds. Validate full game and visual performance on desktop/mobile.
 
 - Validate device-specific layout on actual phones and desktop, including mid-shot rotation, small landscape, boss HUD, browser bars and editor scrolling; refine visual assets and menu composition beyond interim art.
+
+- v0.5.0: browser-test new board objects and upgrades, tune rebound and magnet, verify save/load and paused input across devices, inspect foliage readability and replace interim workbench assets with individual modeled mechanisms. Complete true ability animation previews, exact prediction parity, handcrafted boards and outstanding original scope.
