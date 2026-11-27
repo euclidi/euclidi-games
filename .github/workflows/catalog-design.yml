@@ -7,58 +7,45 @@ on:
 permissions:
   contents: read
 jobs:
-  visual-audit:
+  local-and-published:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - run: npm install --no-save --no-package-lock playwright@1.51.1
-      - run: npx playwright install --with-deps chromium
-      - name: Test font, layout, interactions and motion
+      - run: npx playwright install --with-deps chromium firefox
+      - name: Test actual local animation movement and layout
         run: |
           mkdir -p "$RUNNER_TEMP/site" audit-artifacts
           ln -s "$GITHUB_WORKSPACE" "$RUNNER_TEMP/site/euclidi-games"
           python3 -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/site" &
           SERVER=$!
           trap 'kill "$SERVER" 2>/dev/null || true' EXIT
-          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8765/euclidi-games/ >/dev/null && break; sleep 1; done
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8765/euclidi-games/ -o /tmp/catalog.html && break; sleep 1; done
           node tests/catalog-design.mjs
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: catalog-design-screenshots
-          path: audit-artifacts/
-          if-no-files-found: ignore
-
-  published-audit:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 12
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - run: npm install --no-save --no-package-lock playwright@1.51.1
-      - run: npx playwright install --with-deps chromium
-      - name: Confirm published revision and font
+          mv audit-artifacts local-audit-artifacts
+      - name: Verify published revision, matching asset bytes and actual motion
         run: |
           BASE=https://euclidi.github.io/euclidi-games/
           for i in $(seq 1 30); do
-            if curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID-$i" | grep -q 'catalog-retro.css?v=2' && curl -fsS "${BASE}assets/brand/catalog-retro.css?v=2" | grep -q 'revision 2'; then break; fi
+            if curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID-$i" -o /tmp/live-catalog.html && grep -q 'data-design-revision="3"' /tmp/live-catalog.html && curl -fsS "${BASE}assets/brand/catalog-retro.css?v=3" -o /tmp/live-catalog.css && cmp -s /tmp/live-catalog.css assets/brand/catalog-retro.css; then break; fi
             sleep 10
           done
-          curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID" | grep -q 'catalog-retro.css?v=2'
-          curl -fsS "${BASE}assets/brand/press-start-2p/PressStart2P-Regular.ttf" -o /tmp/press-start.ttf
-          cmp /tmp/press-start.ttf assets/brand/press-start-2p/PressStart2P-Regular.ttf
-          mkdir -p audit-artifacts
+          grep -q 'data-design-revision="3"' /tmp/live-catalog.html
+          cmp /tmp/live-catalog.css assets/brand/catalog-retro.css
+          curl -fsS "${BASE}assets/brand/catalog-motion.js?v=3" -o /tmp/live-motion.js
+          cmp /tmp/live-motion.js assets/brand/catalog-motion.js
+          curl -fsS "${BASE}assets/brand/press-start-2p/PressStart2P-Regular.ttf" -o /tmp/live-font.ttf
+          cmp /tmp/live-font.ttf assets/brand/press-start-2p/PressStart2P-Regular.ttf
           CATALOG_URL="$BASE" node tests/catalog-design.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: published-catalog-design-screenshots
-          path: audit-artifacts/
-          if-no-files-found: ignore
+          name: catalog-design-revision-3
+          path: |
+            audit-artifacts/
+            local-audit-artifacts/
+          if-no-files-found: warn
