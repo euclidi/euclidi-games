@@ -31,6 +31,22 @@
       800
     ]
   },
+  "creatture": {
+    "file": "covers/creatture-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1256,
+      593
+    ],
+    "route": "./creatture/?v=0.1.8",
+    "selector": "#stage",
+    "sha256": "db512690b9d65fad8b06c6a246a2c0974f75461f1a266e5568e8aa4f175fea91",
+    "source": "6913ab04f22ed721c27d004dcb6fc29fc2bdbcad",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
   "dojo x": {
     "file": "covers/dojo-gameplay.webp",
     "kind": "gameplay",
