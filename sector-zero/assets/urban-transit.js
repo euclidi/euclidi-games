@@ -4,7 +4,7 @@ const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.z-b.z);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const roadRank=v=>v===0||Math.abs(v)===210?0:Math.abs(v)===140?1:2;
 const congestion=new Map(),keyOf=(x,z,d)=>x+","+z+","+d;
-const SIDE=9,PERSON=.82,STOP=20,CAR_LINE=2.5;
+const SIDE=8,PERSON=.72,STOP=20,CAR_LINE=2.5;
 const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
 const phaseLocks=new Set();
@@ -17,8 +17,8 @@ const coord=[];for(let v=-210;v<=210;v+=70)coord.push(v-SIDE,v+SIDE);
 const nearIndex=v=>coord.reduce((best,p,i)=>Math.abs(p-v)<Math.abs(coord[best]-v)?i:best,0);
 function crossing(a,b){
  const horizontal=Math.abs(a.z-b.z)<.01;
- if(horizontal&&Math.abs(a.x-b.x)>17.9&&Math.abs(a.x-b.x)<18.1&&nearestGrid(a.x)===nearestGrid(b.x))return{x:nearestGrid(a.x),z:nearestGrid(a.z),axis:0,a,b};
- if(!horizontal&&Math.abs(a.x-b.x)<.01&&Math.abs(a.z-b.z)>17.9&&Math.abs(a.z-b.z)<18.1&&nearestGrid(a.z)===nearestGrid(b.z))return{x:nearestGrid(a.x),z:nearestGrid(a.z),axis:1,a,b};
+ if(horizontal&&Math.abs(Math.abs(a.x-b.x)-SIDE*2)<.1&&nearestGrid(a.x)===nearestGrid(b.x))return{x:nearestGrid(a.x),z:nearestGrid(a.z),axis:0,a,b};
+ if(!horizontal&&Math.abs(a.x-b.x)<.01&&Math.abs(Math.abs(a.z-b.z)-SIDE*2)<.1&&nearestGrid(a.z)===nearestGrid(b.z))return{x:nearestGrid(a.x),z:nearestGrid(a.z),axis:1,a,b};
  return null;
 }
 function cornerOptions(p){
@@ -45,7 +45,7 @@ function tree(goal){
  const target=goal.iz*14+goal.ix;if(trees.has(target))return trees.get(target);
  const n=196,cost=Array(n).fill(Infinity),next=Array(n).fill(-1),used=new Uint8Array(n);cost[target]=0;
  for(let j=0;j<n;j++){let v=-1;for(let i=0;i<n;i++)if(!used[i]&&(v<0||cost[i]<cost[v]))v=i;if(v<0)break;used[v]=1;const x=v%14,z=Math.floor(v/14);
- for(const [dx,dz] of D){const a=x+dx,b=z+dz;if(a<0||a>13||b<0||b>13)continue;const k=b*14+a,step=Math.abs(coord[x]-coord[a])+Math.abs(coord[z]-coord[b]);const c=cost[v]+step+(step===18?9:0);if(c<cost[k]){cost[k]=c;next[k]=v;}}}
+ for(const [dx,dz] of D){const a=x+dx,b=z+dz;if(a<0||a>13||b<0||b>13)continue;const k=b*14+a,step=Math.abs(coord[x]-coord[a])+Math.abs(coord[z]-coord[b]);const c=cost[v]+step+(step===SIDE*2?9:0);if(c<cost[k]){cost[k]=c;next[k]=v;}}}
  const result={cost,next};trees.set(target,result);return result;
 }
 function pedestrianPath(from,to){
@@ -58,7 +58,7 @@ function pedestrianPath(from,to){
  const push=(p,metadata)=>{if(dist(last,p)<.001)return;out.push({x:p.x,z:p.z,...(metadata?{cross:metadata}:{})});last=p;};
  for(const p of route){if(dist(prev,p)<.001)continue;
   const dx=p.x-prev.x,dz=p.z-prev.z,horizontal=Math.abs(dz)<.001,vertical=Math.abs(dx)<.001;
-  const cross=crossing(prev,p),lane=.67;
+  const cross=crossing(prev,p),lane=.62;
   const sidewalk=horizontal&&coord.some(v=>Math.abs(v-p.z)<.001)||vertical&&coord.some(v=>Math.abs(v-p.x)<.001);
   if(sidewalk&&Math.abs(dx)+Math.abs(dz)>2.5){
    const ox=vertical?Math.sign(dz)*lane:0,oz=horizontal?-Math.sign(dx)*lane:0;
@@ -128,7 +128,8 @@ function moveCrowd(w,dt,api){
   let budget=Math.min(1.25,c.speed*dt),loops=0;c.walkStatus="";
   while(budget>.001&&c.route.length&&loops++<8){
    const p=c.route[0],dx=p.x-c.x,dz=p.z-c.z,len=Math.hypot(dx,dz);
-   if(len<.025){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.05)st.cross=null;continue;}
+   const tolerance=(p.cross||c.route[1]?.cross)?0.28:c.route.length===1?0.08:0.70;
+   if(len<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;continue;}
    if(p.cross&&!st.cross){
     if(signal(p.cross.x,p.cross.z,w.time,0)===p.cross.axis||!crossClear(w,p.cross)||!occ.free(c,p.x,p.z)){c.walkStatus="WAITING FOR CROSSWALK";break;}
     st.cross=p.cross;phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
@@ -138,13 +139,13 @@ function moveCrowd(w,dt,api){
    let x=c.x+ux*step,z=c.z+uz*step;
    if(!can(x,z)){
     let found=false;
-    if(st.cross||offRoad(c.x,c.z))for(const side of [1,-1]){const xx=c.x+uz*step*side+ux*step*.2,zz=c.z-ux*step*side+uz*step*.2;
+    if(st.cross||offRoad(c.x,c.z))for(const [angle,side] of [[.6,1],[.6,-1],[1.1,1],[1.1,-1],[1.55,1],[1.55,-1]]){const xx=c.x+(ux*Math.cos(angle)+uz*Math.sin(angle)*side)*step,zz=c.z+(uz*Math.cos(angle)-ux*Math.sin(angle)*side)*step;
      const permitted=st.cross?(st.cross.axis===0?Math.abs(zz-(nearestGrid(st.cross.a.z)+(st.cross.a.z<nearestGrid(st.cross.a.z)?-SIDE:SIDE)))<=.96:Math.abs(xx-(nearestGrid(st.cross.a.x)+(st.cross.a.x<nearestGrid(st.cross.a.x)?-SIDE:SIDE)))<=.96):offRoad(xx,zz);
-     if(permitted&&can(xx,zz)&&Math.hypot(xx-p.x,zz-p.z)<len+1.0){x=xx;z=zz;found=true;break;}}
+     if(permitted&&can(xx,zz)&&Math.hypot(xx-p.x,zz-p.z)<len+.06){x=xx;z=zz;found=true;break;}}
     if(!found){c.walkStatus="YIELDING";break;}
    }
    occ.remove(c);c.heading=Math.atan2(x-c.x,z-c.z);c.x=x;c.z=z;occ.add(c);budget-=step;
-   if(Math.hypot(p.x-c.x,p.z-c.z)<.03){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.05)st.cross=null;}
+   if(Math.hypot(p.x-c.x,p.z-c.z)<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;}
   }
   if(!c.route.length&&!c.ride&&Math.hypot(c.x-target.x,c.z-target.z)<.1){occ.remove(c);c.inside=c.goal;st.cross=null;}
  }
