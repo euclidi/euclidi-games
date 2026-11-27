@@ -18,3 +18,5 @@ This is an ordered development backlog, not a declaration that milestones are co
 - [ ] Verify the actual GitHub Pages release and catalog links before labeling a build verified.
 
 [Specification](SPEC.md) · [Current status](STATUS.md)
+
+- Ghost Mode: browser playtest, AI difficulty tuning and physical controller verification.

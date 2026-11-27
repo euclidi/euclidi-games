@@ -34,3 +34,7 @@ Preserve original or appropriately licensed assets and record their source, lice
 - [Maze logic](src/core.js)
 - [Bitmap compositor](src/bitmap-runtime.js)
 - [Regression suite](test.mjs)
+
+## Ghost Mode (v1.6)
+
+Optional reverse-role game with a controlled classic or custom ghost, autonomous Pac-Man, three AI teammates, shared maze physics, frightened vulnerability and house regeneration. Pac-Man lives use starting-lives setting; catch all before pellet exhaustion. Independent ghost scores; customization limited to name, body and pupil color to preserve arcade fidelity. Pac-Man mode remains unchanged.

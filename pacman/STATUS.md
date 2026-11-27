@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.5.7.
+**Lifecycle:** Active — Git revision 1.6.0.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.6.0 — Ghost Mode
+
+Separate reverse-role mode with all four classic ghosts and a custom named, recolored ghost; same pixel geometry and two-frame animation. Autonomous Pac-Man uses maze-graph BFS food/danger evaluation; allied ghosts retain selected AI. Controlled ghost can reverse, is vulnerable to energizers, regenerates through the house, and scores personal/team captures. Win/loss, isolated high scores and player marker. Targeted tests passed; browser/device playtest pending. Pac-Man AI is heuristic, not an optimal solver.
 
 ## Revision 1.5.7 — character customizer removed
 
