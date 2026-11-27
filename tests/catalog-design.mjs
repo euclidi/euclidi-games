@@ -20,6 +20,8 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().startsWith(base)&&r.status()>=400)errors.push(r.status()+' '+r.url());});
    assert((await page.goto(base+'?design-audit='+Date.now(),{waitUntil:'networkidle'})).ok());
    await page.locator('#crt-replay').waitFor();
+   assert.equal(await page.locator('body').getAttribute('data-motion'),'on');
+   console.log('motion environment',name,width,await page.evaluate(()=>({hover:matchMedia('(hover:hover)').matches,fine:matchMedia('(pointer:fine)').matches,reduced:matchMedia('(prefers-reduced-motion:reduce)').matches,mode:document.body.dataset.motion})));
    await page.waitForFunction(()=>!document.querySelector('.eg-crt').classList.contains('is-playing'));
    const layout=await page.evaluate(async()=>{
      const font=(await document.fonts.load('400 16px "Press Start 2P"')).length>0;
@@ -28,7 +30,7 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
      const clipped=[...document.querySelectorAll('.cover')].flatMap(cover=>{const r=cover.getBoundingClientRect();return [...cover.querySelectorAll('.cover-title,.cover-top,.cover-bottom')].filter(e=>{const t=e.getBoundingClientRect();return t.left<r.left-1||t.right>r.right+1||t.top<r.top-1||t.bottom>r.bottom+1;}).map(e=>e.textContent);});
      return {revision:document.body.dataset.designRevision,font,logo:document.querySelector('.mark').naturalWidth,overflow:document.documentElement.scrollWidth>innerWidth,items,clipped};
    });
-   assert.equal(layout.revision,'3');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
+   assert.equal(layout.revision,'4');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
    assert.equal(layout.clipped.length,0,JSON.stringify(layout.clipped));
    for(const i of layout.items){assert(i.font.includes('Press Start 2P'),JSON.stringify(i));assert.equal(i.weight,'400',JSON.stringify(i));assert.equal(i.tracking,'1px',JSON.stringify(i));assert(i.size>=8.9&&i.size<=27.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
    const n=await page.locator('.game').count();assert(n>0);
@@ -39,7 +41,7 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    await page.waitForFunction(()=>!document.querySelector('.eg-crt').classList.contains('is-playing'));
    const cursor=await sampled(page,'.intro h1','opacity','::after',1400);assert(cursor.includes('0')&&cursor.includes('1'));
    if(!mobile){
-     await page.locator('.brand').hover();await sampled(page,'.mark','transform',null,350);
+     await page.locator('.brand').hover();await sampled(page,'.mark','transform',null,500);
      const card=page.locator('.game').first();await card.scrollIntoViewIfNeeded();
      const b=await card.boundingBox();await page.mouse.move(b.x+b.width*.25,b.y+b.height*.4);await delay(250);
      const a=await card.evaluate(e=>getComputedStyle(e).transform);
@@ -55,6 +57,14 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    await page.emulateMedia({reducedMotion:'reduce'});await page.reload({waitUntil:'networkidle'});
    assert(await page.locator('#crt-replay').isDisabled());assert.equal(await page.locator('.intro h1').evaluate(e=>getComputedStyle(e,'::after').animationName),'none');
    assert.equal(await page.locator('.eg-crt').evaluate(e=>getComputedStyle(e).display),'none');
+   assert.equal(await page.locator('body').getAttribute('data-motion'),'off');
+   await page.locator('#motion-mode').selectOption('on');
+   assert.equal(await page.locator('body').getAttribute('data-motion'),'on');
+   await sampled(page,'.intro h1','opacity','::after',1400);
+   await page.locator('#motion-mode').selectOption('off');
+   assert.equal(await page.locator('body').getAttribute('data-motion'),'off');
+   await page.locator('#motion-mode').selectOption('auto');
+   assert.equal(await page.locator('body').getAttribute('data-motion'),'off');
    assert.equal(errors.length,0,errors.join('\n'));console.log('PASS actual motion and layout',name,width,height);await page.close();
  }
  }finally{await browser.close();}
