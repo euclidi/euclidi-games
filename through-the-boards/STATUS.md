@@ -1,3 +1,9 @@
+# Build 0.16 — asset-first correction
+
+Vendored CC0 recorded indoor rainfall from PhilllChabbb via Aurora Viewer; the existing spatial rain chain switches to the recording after successful decoding and retains procedural fallback. Repository readback confirms exact upstream asset bytes, unchanged WASM and valid JS syntax. Audible playback and hosted runtime remain unverified. See [ASSETS.md](ASSETS.md).
+
+---
+
 # Through the Boards — status (2026-11-27)
 
 **Lifecycle:** Active development, build 0.15 browser preview. Original editable C99 source not recovered. No native compile or new engine physics claimed.
