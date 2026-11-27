@@ -11,7 +11,7 @@ const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
 const phaseLocks=new Set(),junctions=new Map(),transitPriority=new Map();
 const nodeKey=(x,z)=>x+","+z;
-const solids=[],streetSolids=[];
+const solids=[],streetSolids=[],entranceAnchors=new Map();
 const stopControlled=(x,z)=>roadRank(x)===2&&roadRank(z)===2;
 const streetLabels=[];let streetLabelGroup=null,streetLampMaterial=null;
 let surfaceRoot=null,lowerRoot=null,streetKit=null;const rebuiltBlocks=new WeakSet();
@@ -409,6 +409,7 @@ const variants={
  Clinic:["Hospital","Community clinic","Dispensary"]
 };
 export function prepare(w){
+ if(currentWorld!==w){junctions.clear();phaseLocks.clear();transitPriority.clear();trees.clear();crowdEpoch=-1;for(const b of w.buildings){const a=entranceAnchors.get(b.id);if(a&&b.door)Object.assign(b.door,a);}currentWorld=w;}
  initMetro(w);
  if(w.transit?.revision===3&&w.architectureRevision===3){migrateStreetNetwork(w);return w;}
  // Use a rolling subtype counter per functional category, with a deterministic offset.
@@ -919,7 +920,7 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  if(!["Covered market","Duplex courts","Row residences","Night bazaar","Corner shops"].includes(a)&&b.type!=="Warehouse"){
  wallDoor(frontage.x,front,2.6);
  const entrance={x:frontage.x,z:front-.75};
- if(b.door&&offRoad(entrance.x,entrance.z)&&!inSolid(entrance.x,entrance.z)){b.door.x=entrance.x;b.door.z=entrance.z;}
+ if(b.door&&offRoad(entrance.x,entrance.z)&&!inSolid(entrance.x,entrance.z)){b.door.x=entrance.x;b.door.z=entrance.z;entranceAnchors.set(b.id,{...entrance});}
  }
  if(["Tenement","Workers' hostel","Records office","Police station","Community clinic","Dispensary","Courtyard flats"].includes(a)){
  const wall=frontage;
@@ -1070,6 +1071,41 @@ function appearance(id){
  return {height:.83+rand(1)*.32,width:.78+rand(2)*.34,skin:pick([0xe3bc98,0xc79572,0xa76d4c,0x704732,0x4d3128,0xf0cfb0],3),hair:pick([0x2d2421,0x4e3528,0x776347,0xb2a183,0x9a6946,0x302e2d],4),shirt:pick([0x82776b,0x3d6571,0x6d504c,0x7b835a,0xa29b83,0x484d65,0x343b36,0xc1b193,0x6d6b80,0x8f693d,0x567567,0x9a5554],5),pants:pick([0x393d3b,0x565949,0x424d5e,0x756553,0x272c32,0x81786a],6),shoes:pick([0x292725,0x544335,0x7c7565,0x3f4648],7),style:Math.floor(rand(8)*6),bag:rand(9)<.32,phase:rand(10)*Math.PI*2};
 }
 const profiles=Array.from({length:1000},(_,i)=>appearance(i));
+// Low-poly body topology with tapered contours and connected two-segment limbs.
+function bodyGeometry(template,rings,sides=8){
+ const geometry=template.clone(),values=[];
+ const point=(r,i)=>{const [y,x,z,offset=0]=r,t=2*Math.PI*i/sides;return [Math.sin(t)*x,y,Math.cos(t)*z+offset];};
+ const tri=(a,b,c)=>values.push(...a,...b,...c);
+ for(let j=0;j<rings.length-1;j++)for(let i=0;i<sides;i++){
+  const a=point(rings[j],i),b=point(rings[j],i+1),c=point(rings[j+1],i+1),d=point(rings[j+1],i);tri(a,b,c);tri(a,c,d);
+ }
+ for(const [r,top] of [[rings[0],false],[rings.at(-1),true]])for(let i=0;i<sides;i++){
+  const a=point(r,i),b=point(r,i+1),c=[0,r[0],r[3]||0];if(top)tri(c,a,b);else tri(c,b,a);
+ }
+ const Attr=template.attributes.position.constructor;geometry.setIndex(null);
+ for(const k of Object.keys(geometry.attributes))geometry.deleteAttribute(k);
+ geometry.setAttribute("position",new Attr(new Float32Array(values),3));geometry.computeVertexNormals();geometry.clearGroups();geometry.computeBoundingBox();geometry.computeBoundingSphere();return geometry;
+}
+function installBodyGeometry(base,accessories,parent){
+ if(!base[0]?.geometry?.attributes?.position)return null;
+ const template=base[0].geometry,make=(r,n)=>bodyGeometry(template,r,n);
+ const limb=(length,w0,w1,d)=>make([[-length/2,w0,d*.82],[-length*.34,w0*1.05,d],[length*.32,w1,d*1.02],[length/2,w1*.91,d*.91]],7);
+ const torso=make([[-.32,.205,.132],[-.22,.25,.15],[-.02,.236,.16],[.18,.285,.145],[.26,.24,.12],[.32,.115,.10]],8);
+ const head=make([[-.18,.075,.085,.035],[-.13,.125,.11,.028],[-.055,.166,.151,.018],[.045,.178,.157],[.13,.148,.132,-.008],[.178,.085,.075,-.01]],10);
+ const shoe=make([[-.07,.101,.20,.045],[-.035,.105,.205,.045],[.03,.099,.18,.035],[.075,.075,.108,-.02]],8);
+ for(let i=0;i<8;i++)base[i].geometry=i===0?torso:i===1?head:i===2||i===3?limb(.37,.103,.129,.104):i===4||i===5?limb(.29,.079,.105,.09):shoe;
+ const mat=base[0].material.clone();mat.color.setHex(0xffffff);mat.map=null;
+ const extra=geo=>{const m=new base[0].constructor(geo,mat,base[0].instanceMatrix.count);m.count=0;m.frustumCulled=false;parent.add(m);return m;};
+ const calf=limb(.37,.068,.098,.091),forearm=limb(.27,.057,.078,.071),hand=make([[-.085,.035,.035],[-.055,.053,.044],[.038,.051,.038],[.08,.039,.034]],7);
+ const neck=limb(.15,.083,.084,.076),ear=make([[-.055,.025,.024],[0,.045,.027],[.055,.023,.023]],6);
+ const eye=make([[-.015,.025,.009],[.015,.025,.009]],6),mouth=make([[-.011,.039,.012],[.011,.039,.012]],6);
+ accessories[0].geometry=make([[-.04,.177,.153,-.012],[.02,.182,.159,-.015],[.09,.155,.137,-.013],[.14,.091,.083,-.015]],10);
+ return {calves:[extra(calf),extra(calf)],forearms:[extra(forearm),extra(forearm)],hands:[extra(hand),extra(hand)],neck:extra(neck),ears:[extra(ear),extra(ear)],eyes:[extra(eye),extra(eye)],mouth:extra(mouth)};
+}
+function kneeJoint(hip,ankle,L=.37){
+ const dy=ankle.y-hip.y,dz=ankle.z-hip.z,d=Math.max(.001,Math.hypot(dy,dz)),bend=Math.sqrt(Math.max(0,L*L-d*d/4));
+ return {y:(hip.y+ankle.y)/2+dz/d*bend,z:(hip.z+ankle.z)/2-dy/d*bend};
+}
 function renderPeople(parent,kit){
  if(!currentWorld||!parent?.children)return;
  if(!peopleRenderer){
@@ -1085,27 +1121,44 @@ function renderPeople(parent,kit){
    box(tmp,.38,.16,.12,0,0,0,mat(0xffffff))
   ].map(o=>{const m=new base[0].constructor(o.geometry,o.material,base[0].instanceMatrix.count);m.count=0;m.frustumCulled=false;parent.add(m);return m;});
   for(const i of [1,2,3,6,7]){base[i].material=base[i].material.clone();base[i].material.color.setHex(0xffffff);}
-  peopleRenderer={base,accessories,mat:base[0].matrix.clone(),pos:base[0].position.clone(),rot:base[0].rotation.clone(),quat:base[0].quaternion.clone(),scale:base[0].scale.clone(),color:base[0].material.color.clone()};
+  const anatomy=installBodyGeometry(base,accessories,parent);
+  peopleRenderer={base,accessories,anatomy,mat:base[0].matrix.clone(),pos:base[0].position.clone(),rot:base[0].rotation.clone(),quat:base[0].quaternion.clone(),scale:base[0].scale.clone(),color:base[0].material.color.clone()};
  }
- const {base,accessories,mat:M,pos,rot,quat,scale,color}=peopleRenderer,w=currentWorld;
+ const {base,accessories,anatomy,mat:M,pos,rot,quat,scale,color}=peopleRenderer,w=currentWorld;
+ const extra=anatomy?[...anatomy.calves,...anatomy.forearms,...anatomy.hands,anatomy.neck,...anatomy.ears,...anatomy.eyes,anatomy.mouth]:[];
  const bins=new Map();for(const c of w.citizens){if(!walking(c)&&c.id!==w.possessed)continue;const key=Math.round(c.x*100)+","+Math.round(c.z*100);bins.set(key,c);}
  const put=(mesh,i,x,y,z,heading,rx,sx,sy,sz,hex)=>{pos.set(x,y,z);rot.set(rx,heading,0,"YXZ");quat.setFromEuler(rot);scale.set(sx,sy,sz);M.compose(pos,quat,scale);mesh.setMatrixAt(i,M);color.setHex(hex);mesh.setColorAt(i,color);};
  const n=base[0].count,now=typeof performance!=="undefined"?performance.now()/1000:0;
  for(let i=0;i<n;i++){
-  base[0].getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14],c=bins.get(Math.round(x*100)+","+Math.round(z*100));if(!c){for(const a of accessories)put(a,i,x,-20,z,0,0,.001,.001,.001,0);continue;}
-  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow||c.id===w.possessed&&c.route?.length,cycle=move?Math.sin((c.walkDistance||0)*5.8+a.phase):0,step=cycle*.38,bob=move?Math.abs(cycle)*.025:0;
+  base[0].getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14],c=bins.get(Math.round(x*100)+","+Math.round(z*100));if(!c){for(const a of [...accessories,...extra])put(a,i,x,-20,z,0,0,.001,.001,.001,0);continue;}
+  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow,phase=(c.walkDistance||0)*5.8+a.phase,cycle=move?Math.sin(phase):0,step=cycle*.38,bob=0;
   const part=(mesh,side,y,front,rx,sx,sy,sz,col)=>put(mesh,i,x+Math.cos(heading)*side+Math.sin(heading)*front,y*h+bob,z-Math.sin(heading)*side+Math.cos(heading)*front,heading,rx,sx,sy,sz,col);
   part(base[0],0,1.08,0,0,wide,h,a.style===1?1.15:.96,a.shirt);
   part(base[1],0,1.59,0,0,.95,h,.96,a.skin);
-  for(const sign of [-1,1]){const j=sign<0?0:1,arm=sign*step;part(base[2+j],sign*.14*wide,.48,arm*.26,arm,wide,h,1,a.pants);part(base[4+j],sign*.30*wide,1.02,-arm*.20,-arm,.88,h,.9,a.shirt);part(base[6+j],sign*.14*wide,.12,arm*.42+.04,0,.9,h,.97,a.shoes);}
-  part(accessories[0],0,1.76,0,0,a.style===3?1.13:.91,a.style===4?1.8:.8,1,a.hair);
+  const segment=(mesh,side,a,b,length,w,col)=>{const dy=a.y-b.y,dz=a.z-b.z;part(mesh,side,(a.y+b.y)/2,(a.z+b.z)/2,Math.atan2(dz,dy),w,h*Math.hypot(dy,dz)/length,1,col);};
+  for(const sign of [-1,1]){
+   const j=sign<0?0:1,theta=phase+(j?Math.PI:0),swing=move?Math.sin(theta):0,lift=move?Math.max(0,Math.cos(theta))*.12:0;
+   const hip={y:.82,z:0},ankle={y:.15+lift,z:.25*swing},knee=kneeJoint(hip,ankle);
+   const side=sign*.145*wide;
+   if(anatomy){
+    segment(base[2+j],side,hip,knee,.37,wide,a.pants);segment(anatomy.calves[j],side,knee,ankle,.37,wide,a.pants);
+    part(base[6+j],side,.075+lift,ankle.z,0,.94,h,.97,a.shoes);
+    const shoulder={y:1.33,z:0},elbow={y:1.06,z:-swing*.14},wrist={y:.81,z:-swing*.24+.045},armSide=sign*.31*wide;
+    segment(base[4+j],armSide,shoulder,elbow,.29,.94,a.shirt);segment(anatomy.forearms[j],armSide,elbow,wrist,.27,.94,a.style===0?a.skin:a.shirt);
+    part(anatomy.hands[j],armSide,wrist.y-.06,wrist.z,0,1,h,1,a.skin);
+    part(anatomy.ears[j],sign*.165,1.59,-.015,0,1,h,1,a.skin);
+    part(anatomy.eyes[j],sign*.072,1.615,.151,0,1,h,1,0x292a25);
+   }else {part(base[2+j],side,.48,swing*.1,swing*.38,wide,h,1,a.pants);part(base[4+j],sign*.30*wide,1.02,-swing*.1,-swing*.38,.88,h,.9,a.shirt);part(base[6+j],side,.12,swing*.16+.04,0,.9,h,.97,a.shoes);}
+  }
+  if(anatomy){part(anatomy.neck,0,1.42,0,0,1,h,1,a.skin);part(anatomy.mouth,0,1.51,.145,0,1,h,1,0x714a3d);}
+  part(accessories[0],0,1.70,-.005,0,a.style===3?1.13:1.02,a.style===4?1.5:.85,1,a.hair);
   part(accessories[1],0,1.78,a.style===2?.06:0,0,a.style===2?1:0.001,a.style===2?1:.001,a.style===2?1:.001,a.shirt);
   part(accessories[2],0,1.1,-.29,0,a.bag?1:.001,a.bag?1:.001,a.bag?1:.001,a.style===4?0x6d543d:0x444e46);
-  part(accessories[3],0,1.59,.19,0,.85,.85,.75,a.skin);
+  part(accessories[3],0,1.575,.16,0,.67,.52,.65,a.skin);
   part(accessories[4],a.style===5?.34:0,a.style===5?.8:-4,.06,0,a.style===5?1:.001,a.style===5?1:.001,a.style===5?1:.001,0x604c39);
   part(accessories[5],0,1.49,-.12,0,a.style===4?1:.001,a.style===4?1:.001,a.style===4?1:.001,a.hair);
  }
- for(const m of [...base,...accessories]){m.count=n;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
+ for(const m of [...base,...accessories,...extra]){m.count=n;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
 }
 const busMeshes=new Map();
 export function drawBuses(cars,position,parent,{group,box,cyl,mat}){
