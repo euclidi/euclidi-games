@@ -1,0 +1,23 @@
+'use strict';
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
+const {createHash}=require('node:crypto');
+const html=fs.readFileSync(process.argv[2]||'index.html','utf8');
+const embedded=html.match(/const wasm='([A-Za-z0-9+/=]+)'/);
+assert.ok(embedded,'embedded WASM not found');
+const bytes=Buffer.from(embedded[1],'base64');
+assert.equal(createHash('sha256').update(bytes).digest('hex'),'7274bf858095a736be49742431d29af3e72e83960e90ea70574f92568726c9a0');
+const moduleWasm=new WebAssembly.Module(bytes);
+assert.equal(WebAssembly.Module.imports(moduleWasm).length,0);
+assert.equal(WebAssembly.Module.exports(moduleWasm).length,57);
+const m=new WebAssembly.Instance(moduleWasm).exports;
+const begin=()=>{m.reset();m.start()};
+const route=k=>{assert.equal(m.approach(k),1);for(let i=0;i<2500&&m.get(10);i++)m.route_tick(20);assert.equal(m.get(10),0);assert.equal(m.target(),k)};
+for(const k of [1,2,3,4,6]){begin();route(k)}
+console.log('PASS five interaction routes');
+begin();route(2);assert.equal(m.interact(),2);assert.equal(m.pc_stage(),1);for(let i=0;i<400;i++)m.tick(0,0,20);assert.equal(m.pc_stage(),4);assert.equal(m.pc_login(),1);assert.equal(m.pc_stage(),5);
+const text=Buffer.from('Room journal: café');for(let i=0;i<text.length;i++)assert.equal(m.journal_stage_byte(i,text[i]),1);assert.equal(m.journal_commit(text.length),1);
+assert.deepEqual(Buffer.from(Array.from({length:m.journal_size()},(_,i)=>m.journal_byte(i))),text);console.log('PASS startup, login and UTF-8 journal');
+const state=Array.from({length:27},(_,i)=>m.save_field(i)),physics=Array.from({length:m.physics_size()},(_,i)=>m.physics_save(i)),pc=[0,1,2].map(i=>m.pc_snapshot(i));assert.equal(physics.length,120);let copy=new WebAssembly.Instance(moduleWasm).exports;copy.reset();state.forEach((v,i)=>copy.load_field(i,v));assert.equal(copy.load_commit(),1);physics.forEach((v,i)=>copy.physics_stage(i,v));assert.equal(copy.physics_commit(),1);assert.equal(copy.pc_restore(...pc),1);assert.equal(copy.get(0),m.get(0));assert.equal(copy.get(1),m.get(1));assert.equal(copy.pc_stage(),5);console.log('PASS independent engine state restoration');
+begin();let day=m.get(3),minute=m.get(2);for(let i=0;i<48;i++)m.wait_minutes(30);assert.equal(m.get(3),day+1);assert.equal(m.get(2),minute);console.log('PASS day rollover');
+console.log('PASS compiled engine checksum and ABI');
