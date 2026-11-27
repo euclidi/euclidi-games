@@ -1,4 +1,4 @@
-/* Euclidi Games — approved typography & motion, revision 1. */
+/* Euclidi Games — approved typography & motion, revision 2. */
 @font-face {
   font-family: "Press Start 2P";
   src: url("./press-start-2p/PressStart2P-Regular.ttf") format("truetype");
@@ -44,7 +44,7 @@ button, input { letter-spacing: inherit; font-weight: 400; }
 .cover-title {font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-synthesis:weight style;}
 .cover-title.sanctuary {font-family:Georgia,serif;}
 .cover-title.backyard-astronaut,.cover-title.dummy-lab-w18 {font-family:ui-monospace,monospace;}
-.cover-top,.cover-bottom {font-size:calc(clamp(7px,.7vw,9px) * var(--ui-scale));line-height:1.7;letter-spacing:0;flex-wrap:wrap;}
+.cover-top,.cover-bottom {font-size:calc(clamp(7px,.7vw,9px) * var(--ui-scale));line-height:1.7;letter-spacing:var(--ui-tracking);flex-wrap:wrap;}
 .cover-top span,.cover-bottom span {min-width:0;overflow-wrap:anywhere;}
 /* One-time CRT startup, with no persistent flashing. */
 @keyframes eg-crt-startup {
@@ -57,13 +57,13 @@ button, input { letter-spacing: inherit; font-weight: 400; }
 @keyframes eg-cursor {50%{opacity:0;}}
 @keyframes eg-pixel-blink {50%{background:var(--bg);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}}
 @media(prefers-reduced-motion:no-preference) {
-  header,main,footer {animation:eg-crt-startup calc(.72s / var(--motion-speed)) cubic-bezier(.2,.75,.25,1) both;transform-origin:center center;}
-  .intro h1::after {animation:eg-cursor calc(1s / var(--motion-speed)) steps(1,end) 4;}
+  body {animation:eg-crt-startup calc(1s / var(--motion-speed)) cubic-bezier(.2,.75,.25,1) both;transform-origin:center min(50vh,400px);}
+  .intro h1::after {animation:eg-cursor calc(1s / var(--motion-speed)) steps(1,end) infinite;}
   .game {transition:transform calc(.2s / var(--motion-speed)) ease-out,border-color calc(.2s / var(--motion-speed));transform-origin:center;}
   @media(hover:hover) and (pointer:fine) {
-    .brand:hover .mark {animation:eg-logo-turn calc(.8s / var(--motion-speed)) ease-in-out both;}
-    .game:hover {transform:perspective(900px) rotateX(3deg) rotateY(-4deg);border-color:var(--accent);position:relative;z-index:1;}
-    .play:hover,.filters button:hover {animation:eg-pixel-blink calc(.36s / var(--motion-speed)) steps(1,end) 2;}
+    .brand:hover .mark {animation:eg-logo-turn calc(1.15s / var(--motion-speed)) linear infinite;}
+    .game:hover {transform:perspective(800px) rotateX(7deg) rotateY(-8deg) translateY(-3px);border-color:var(--accent);position:relative;z-index:1;}
+    .play:hover,.filters button:hover {animation:eg-pixel-blink calc(.65s / var(--motion-speed)) steps(1,end) infinite;}
   }
   .brand:focus-visible .mark {animation:eg-logo-turn calc(.8s / var(--motion-speed)) ease-in-out both;}
   .play:focus-visible,.filters button:focus-visible {animation:eg-pixel-blink calc(.36s / var(--motion-speed)) steps(1,end) 2;}
@@ -85,7 +85,12 @@ button, input { letter-spacing: inherit; font-weight: 400; }
   .search input {width:100%;}
 }
 @media(prefers-reduced-motion:reduce) {
-  header,main,footer,.mark,.game,.play,.filters button,.intro h1::after {
+  body,header,main,footer,.mark,.game,.play,.filters button,.intro h1::after {
     animation:none !important;transition:none !important;transform:none !important;
   }
+}
+
+/* Touch feedback without persistent hover or blocking navigation. */
+@media(prefers-reduced-motion:no-preference) {
+  .play:active,.filters button:active {background:var(--bg);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);}
 }

@@ -32,3 +32,33 @@ jobs:
           name: catalog-design-screenshots
           path: audit-artifacts/
           if-no-files-found: ignore
+
+  published-audit:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock playwright@1.51.1
+      - run: npx playwright install --with-deps chromium
+      - name: Confirm published revision and font
+        run: |
+          BASE=https://euclidi.github.io/euclidi-games/
+          for i in $(seq 1 30); do
+            if curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID-$i" | grep -q 'catalog-retro.css?v=2' && curl -fsS "${BASE}assets/brand/catalog-retro.css?v=2" | grep -q 'revision 2'; then break; fi
+            sleep 10
+          done
+          curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID" | grep -q 'catalog-retro.css?v=2'
+          curl -fsS "${BASE}assets/brand/press-start-2p/PressStart2P-Regular.ttf" -o /tmp/press-start.ttf
+          cmp /tmp/press-start.ttf assets/brand/press-start-2p/PressStart2P-Regular.ttf
+          mkdir -p audit-artifacts
+          CATALOG_URL="$BASE" node tests/catalog-design.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: published-catalog-design-screenshots
+          path: audit-artifacts/
+          if-no-files-found: ignore

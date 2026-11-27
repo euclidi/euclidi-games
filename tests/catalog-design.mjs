@@ -23,6 +23,10 @@ try {
     assert(style.font.every(x=>x.includes('Press Start 2P')));
     assert.equal(style.weight,'400');assert.equal(style.tracking,'1px');
     assert(!style.overflow,JSON.stringify(style));assert(style.logo>0);assert.notEqual(style.cursor,'none');
+    assert.equal(await page.locator('body').evaluate(x=>getComputedStyle(x).animationName),'eg-crt-startup');
+    assert.equal(await page.locator('.intro h1').evaluate(x=>getComputedStyle(x,'::after').animationIterationCount),'infinite');
+    assert.equal(await page.locator('html').evaluate(x=>getComputedStyle(x).getPropertyValue('--ui-scale').trim()),'.9');
+    await page.waitForTimeout(600);
     const n=await page.locator('.game').count();assert(n>0);
     await page.locator('#search').fill('no-result-xyz');assert.equal(await page.locator('.game:visible').count(),0);
     await page.locator('#search').fill('');assert.equal(await page.locator('.game:visible').count(),n);
@@ -36,7 +40,7 @@ try {
       await page.locator('.play').first().hover();assert.equal(await page.locator('.play').first().evaluate(x=>getComputedStyle(x).animationName),'eg-pixel-blink');
     }
     await page.emulateMedia({reducedMotion:'reduce'});await page.reload({waitUntil:'networkidle'});
-    assert.equal(await page.locator('main').evaluate(x=>getComputedStyle(x).animationName),'none');
+    assert.equal(await page.locator('body').evaluate(x=>getComputedStyle(x).animationName),'none');
     assert.equal(await page.locator('.intro h1').evaluate(x=>getComputedStyle(x,'::after').animationName),'none');
     assert.equal(errors.length,0,errors.join('\n'));
     await page.screenshot({path:'audit-artifacts/catalog-'+width+'.png',fullPage:true,animations:'disabled'});
