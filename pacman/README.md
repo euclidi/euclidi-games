@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.6.1.
+**Status:** Active — Git revision 1.6.2.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -42,4 +42,6 @@ Choose Blinky, Pinky, Inky, Clyde or create a named ghost with a classic bitmap 
 
 ## First-person camera
 
-Use VIEW 2D/3D (V on keyboard, Y on standard gamepad during play) before or during a match. Both Pac-Man and Ghost Mode use the same simulation and a local 320×240 ray-cast renderer with depth-occluded original bitmap characters, perspective pellets, textured maze and optional locator map (M / RB). In first person, directions are relative: up forward, left/right turn, down reverse. Turns are buffered until legal and the camera follows the actual heading. Overhead controls remain absolute. No CDN, WebGL or extra assets required.
+Use VIEW 2D/3D (V on keyboard, Y on standard gamepad during play) before or during a match. Both Pac-Man and Ghost Mode use the same simulation and a local 480×360 ray-cast renderer with depth-occluded original bitmap characters, perspective pellets, textured maze and optional locator map (M / RB). In first person, directions are relative: up forward, left/right turn, down reverse. Turns are buffered until legal and the camera follows the actual heading. Overhead controls remain absolute. No CDN, WebGL or extra assets required.
+
+First-person upgrade: higher-density beveled wall panels, perspective floor shading, color-coded ghost minimap, immediate accepted-turn skid decals and synthesized friction sound, rapid camera settle and a live reflected rear-view inset when a normal ghost approaches Pac-Man from behind in line of sight. Skid marks fade and do not affect game physics.

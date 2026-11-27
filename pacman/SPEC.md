@@ -42,3 +42,7 @@ Optional reverse-role game with a controlled classic or custom ghost, autonomous
 ## First-person camera (v1.6.1)
 
 Optional local grid-raycast view with shared maze geometry and game state, depth-tested bitmap billboards, relative buffered steering, smooth heading turns, optional locator map and persistent view choice. Keep overhead mode, both roles and existing controls. No external runtime dependencies.
+
+### First-person feedback amendment (v1.6.2)
+
+Higher density raycast material raster, live ghost minimap including frightened/eyes states, instant simulation turns with nonphysical fading skid decals and procedural friction transients. Rear mirror uses real rear-facing wall/sprite projection when a dangerous ghost approaches from behind in line of sight. No changed maze physics.

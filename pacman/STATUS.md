@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.6.1.
+**Lifecycle:** Active — Git revision 1.6.2.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.6.2 — enhanced first-person feedback
+
+480×360 native raster; beveled material, brighter cobalt rails, depth-shaded floor and ceiling; live color/state markers on map. Actual accepted Pac-Man turns record world-space paired skid decals and trigger separate short friction audio. Quick visual camera settle only, no simulation latency. Rear-view raycast mirror opens for approaching normal ghosts behind Pac-Man within seven tiles with direct line of sight, with brief hold; suppressed during fright or death. Tests cover rear detection, mirror render, occlusion, skid events and both roles. Device visual/audio verification pending.
 
 ## Revision 1.6.1 — first-person camera
 
