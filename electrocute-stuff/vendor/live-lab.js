@@ -76,6 +76,7 @@ export async function createLiveLab(stage,overlay,onStatus){
   const markGroup=new T.Group();scene.add(markGroup);
   const stainMat=new T.MeshBasicMaterial({color:0x39291d,transparent:true,opacity:.6,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2});
   const stainGeom=new T.CircleGeometry(1,18),stainPool=[];for(let i=0;i<85;i++){const o=new T.Mesh(stainGeom,stainMat);o.visible=false;markGroup.add(o);stainPool.push(o);}
+  const wetPool=[];for(let i=0;i<21;i++){const o=new T.Mesh(new T.CircleGeometry(1,20),new T.MeshPhysicalMaterial({color:0x7db5c6,metalness:.15,roughness:.12,clearcoat:1,transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3}));o.visible=false;markGroup.add(o);wetPool.push(o);}
   const debrisMap=new Map(),ray=new T.Raycaster(),contactCache=new Map();let W=800,H=440,S=1,active=-1,activeObj=null,dead=false,closed=false,layoutKey='',cableKeys=['',''],anchor={x:400,y:250},lastState=null;
   const pos=(x,y,z=0)=>vec(x-W/2,H/2-y,z);
   function removeChildren(g){for(const o of [...g.children]){g.remove(o);o.traverse(n=>{if(n.isMesh&&n.geometry)n.geometry.dispose();});}}
@@ -139,7 +140,7 @@ export async function createLiveLab(stage,overlay,onStatus){
     const key=[active,Math.round(x*4),Math.round(y*4),Math.round(maxGap*4)].join(':');
     if(contactCache.has(key))return contactCache.get(key);
     let hit=rayHit(x,y),gap=0,sx=x,sy=y;
-    if(!hit){for(let r of [2,5,9,13,maxGap].filter(r=>r<=maxGap+.01)){for(let i=0;i<8;i++){let a=i*Math.PI/4;let xx=x+Math.cos(a)*r,yy=y+Math.sin(a)*r;hit=rayHit(xx,yy);if(hit){gap=r/S;sx=xx;sy=yy;break;}}if(hit)break;}}
+    if(!hit&&maxGap>0){for(let r of [2,5,9,13,maxGap].filter(r=>r<=maxGap+.01)){for(let i=0;i<8;i++){let a=i*Math.PI/4;let xx=x+Math.cos(a)*r,yy=y+Math.sin(a)*r;hit=rayHit(xx,yy);if(hit){gap=r/S;sx=xx;sy=yy;break;}}if(hit)break;}}
     const v=hit?{gap,z:hit.z,x:sx,y:sy}:null;if(contactCache.size>500)contactCache.clear();contactCache.set(key,v);return v;
   }
   function autoProbes(){
@@ -200,7 +201,8 @@ export async function createLiveLab(stage,overlay,onStatus){
     clampGroup.visible=state.grounded;const clampPos=pos(anchor.x+94*S,H*.78-19*S,62*S);clampGroup.position.copy(clampPos);clampGroup.scale.setScalar(S);
     const ck=[W,H,S].join('|');if(ck!==clampKey){clampKey=ck;if(clampCable){scene.remove(clampCable);clampCable.geometry.dispose();}const a=pos(W,H*.71,48*S),b=clampPos.clone().add(vec(-21*S,0,0));clampCable=mesh(new T.TubeGeometry(new T.CubicBezierCurve3(a,a.clone().add(vec(-40*S,-35*S,20*S)),b.clone().add(vec(65*S,-36*S,10*S)),b),32,2.9*S,8,false),clampCableMaterial,scene);}
     if(clampCable)clampCable.visible=state.grounded;
-    for(let i=0;i<stainPool.length;i++){const o=stainPool[i],m=state.marks[i];o.visible=false;if(!m||state.dead)continue;const p=rayHit(anchor.x+m.x*S,anchor.y+m.y*S);if(!p)continue;o.visible=true;o.position.copy(p);o.position.z+=.45*S;o.scale.set(m.r*1.3*S,m.r*.8*S,1);o.rotation.z=m.ang;}
+    for(let i=0;i<stainPool.length;i++){const o=stainPool[i],m=state.marks[i];o.visible=false;if(!m||state.dead)continue;const p=contact(anchor.x+m.x*S,anchor.y+m.y*S,0);if(!p)continue;o.visible=true;o.position.copy(pos(p.x,p.y,p.z+.45*S));o.scale.set(m.r*1.3*S,m.r*.8*S,1);o.rotation.z=m.ang;}
+    for(let i=0;i<wetPool.length;i++){const o=wetPool[i],v=state.moisture?.[i]||0;o.visible=false;if(state.dead||v<.06)continue;const x=anchor.x+(-90+(i%7)*30)*S,y=anchor.y+(-60+Math.floor(i/7)*60)*S;const h=contact(x,y,0);if(!h)continue;o.visible=true;o.position.copy(pos(x,y,h.z+.65*S));o.scale.set((10+v*7)*S,(6+v*5)*S,1);o.material.opacity=v*.15;}
     updateDebris(state.fragments);updateEffects(state,hits);
     renderer.render(scene,camera);
   }
