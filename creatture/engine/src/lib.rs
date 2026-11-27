@@ -22,8 +22,10 @@ fn world(id:usize)->World {
  World{name:n.into(),water:w,temperature:t,light:l,mineral:m,diffusion:d}
 }
 #[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]
+struct Introduction{element:usize,dose:f64,site:usize,puzzle:bool}
+#[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]
 struct Specimen {
- version:u32, network:Network, mechanics:Mechanics, ecology:Ecology, morphology:Morphology, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, outcome_detail:String, outcome_palette:usize, position:[f64;3], velocity:[f64;3]
+ version:u32, events:Vec<Introduction>, network:Network, mechanics:Mechanics, ecology:Ecology, morphology:Morphology, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, outcome_detail:String, outcome_palette:usize, position:[f64;3], velocity:[f64;3]
 }
 fn rng(s:&mut u32)->f64{*s=s.wrapping_mul(1664525).wrapping_add(1013904223);*s as f64/4294967296.}
 fn bounded(x:f64)->f64{x.clamp(0.,1.)}
@@ -31,10 +33,10 @@ impl Specimen {
  fn new(id:usize,mut seed:u32)->Self{
   let original=seed; let mut genome=[0.;8];for x in &mut genome{*x=0.25+rng(&mut seed)*0.5;}
   let env=world(id);
-  Self{version:5,network:Network::new(),mechanics:Mechanics::new(),ecology:Ecology::new(original),morphology:Morphology::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),outcome_detail:String::new(),outcome_palette:0,position:[0.,0.7,0.],velocity:[0.;3]}
+  Self{version:6,events:vec![],network:Network::new(),mechanics:Mechanics::new(),ecology:Ecology::new(original),morphology:Morphology::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),outcome_detail:String::new(),outcome_palette:0,position:[0.,0.7,0.],velocity:[0.;3]}
  }
  fn valid(&self)->bool {
-  self.version==5 && self.network.valid() && self.mechanics.valid() && self.ecology.valid() && self.morphology.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
+  self.version==6 && self.events.len()==self.history.len() && self.events.iter().all(|e|e.element<N&&e.dose.is_finite()&&e.dose>=0.25&&e.dose<=2.&&e.site<TISSUE) && self.network.valid() && self.mechanics.valid() && self.ecology.valid() && self.morphology.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
   self.genome.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=1.) &&
   self.organs.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=MAX) &&
   self.available.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=8.) &&
@@ -47,7 +49,7 @@ impl Specimen {
  fn introduce(&mut self,i:usize,dose:f64,site:usize,puzzle:bool)->bool{
   if i>=N || !dose.is_finite() || (puzzle && self.used[i]) {return false;}
   let amount=dose.clamp(0.25,2.);
-  self.used[i]=true;self.history.push(i);self.turn+=1;
+  self.used[i]=true;self.history.push(i);self.events.push(Introduction{element:i,dose:amount,site:site.min(TISSUE-1),puzzle});self.turn+=1;
   self.available[i]=(self.available[i]+amount).min(8.);
   self.nutrient+=amount*0.7;self.input_mass+=amount*0.7;
   let j=site.min(TISSUE-1);self.tissue[j]=bounded(self.tissue[j]+amount*0.2);
@@ -143,6 +145,7 @@ impl Engine{
  pub fn bud(&mut self,relation:u8)->bool{if self.state.organs[8]<0.12{return false;}let s=&mut self.state;s.ecology.spawn(s.genome,vec![s.seed],s.generation+1,&mut s.reserve,relation)}
  pub fn stimulate(&mut self,strength:f64){self.state.network.cue(strength);}
  pub fn damage(&mut self,site:usize,amount:f64){self.state.network.damage(site,amount);}
+ pub fn verify_puzzle_replay(&self)->bool{let s=&self.state;if s.events.iter().any(|e|!e.puzzle){return false;}let mut replay=Specimen::new(s.world_id,s.seed);for e in &s.events{if !replay.introduce(e.element,e.dose,e.site,true){return false;}}replay==*s}
  pub fn state_hash(&self)->String{let mut h=14695981039346656037u64;for b in self.snapshot().bytes(){h^=b as u64;h=h.wrapping_mul(1099511628211);}format!("{:016x}",h)}
  pub fn snapshot(&self)->String{serde_json::to_string(&self.state).unwrap_or_default()}
  pub fn restore(&mut self,json:&str)->bool{if let Ok(s)=serde_json::from_str::<Specimen>(json){if s.valid(){self.physics=ContactWorld::new(s.position,s.velocity);self.state=s;return true;}}false}
@@ -160,6 +163,7 @@ impl Engine{
 mod tests{
  use super::*;
  #[test]fn deterministic_and_mass_balance(){for w in 0..6{let mut a=Specimen::new(w,7);let mut b=a.clone();for i in 0..N{assert!(a.introduce(i,1.,72,true));assert!(b.introduce(i,1.,72,true));assert_eq!(a,b);assert!(a.valid());}assert!(!a.introduce(0,1.,0,true));assert!(!a.outcome.is_empty());}}
+ #[test]fn replay_preserves_discrete_dose_and_site(){let mut e=Engine::new(2,88);assert!(e.introduce(3,1.25,53,true));assert!(e.introduce(7,0.75,119,true));assert!(e.verify_puzzle_replay());e.advance(1);assert!(!e.verify_puzzle_replay());}
  #[test]fn authored_routes_reachable(){for w in 0..6{for (name,order) in content::candidate_orders(w){let mut a=Specimen::new(w,1731);for i in order{assert!(a.introduce(i,1.,72,true));}assert_eq!(a.outcome,name,"world {}",w);assert!(a.valid());}}}
  #[test]fn order_changes_anatomy(){let mut a=Specimen::new(0,3);let mut b=a.clone();for i in 0..N{a.introduce(i,1.,72,true);b.introduce(N-1-i,1.,72,true);}assert_ne!(a.organs,b.organs);}
  #[test]fn starvation_nonnegative(){let mut a=Specimen::new(0,9);for _ in 0..10000{a.bio_step();}assert!(a.valid());}

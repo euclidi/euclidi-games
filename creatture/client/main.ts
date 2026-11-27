@@ -3,6 +3,7 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {MarchingCubes} from 'three/addons/objects/MarchingCubes.js';
 import init,{Engine} from '../engine/pkg/creatture_core.js';
 import './style.css';
+import {HabitatAudio} from './audio';
 const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 const names=['Membrane','Nutrients','Water','Light','Minerals','Muscle','Nerves','Microbes','Spores','Heat','Catalyst','Resonance'];
 const marks=['◉','❋','≈','✳','◇','≋','⋔','∴','⁕','♨','⊕','◌'];
@@ -44,7 +45,7 @@ const internal=new THREE.Group();body.add(internal);internal.visible=false;
 const edges=[[0,1],[0,2],[0,4],[0,9],[1,5],[1,7],[1,10],[2,3],[2,5],[2,6],[4,5],[5,6],[6,10],[6,11],[7,8],[8,3],[9,10]];
 const pipes=edges.map(()=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(.011,.011,1,8),new THREE.MeshStandardMaterial({color:0x9b655b,transparent:true,opacity:.8}));internal.add(m);return m;});
 const organMeshes=names.map((_,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.09,18,12),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(i/12,.52,.56),roughness:.48}));internal.add(m);return m;});
-let finale=0;let lastOutcome='';let tissueFrame=0;let pose=new Array(12).fill(0);let previousWorld=-1;
+let finale=0;let lastOutcome='';let lastAction=-1,lastVoice=0;let tissueFrame=0;let pose=new Array(12).fill(0);let previousWorld=-1;
 function makeHabitat(id:number){
  while(habitat.children.length){const o=habitat.children[0] as THREE.Mesh;habitat.remove(o);o.geometry?.dispose();(o.material as THREE.Material)?.dispose();}
  floor.material.color.set(grounds[id]);const back=new THREE.Color(grounds[id]).multiplyScalar(.45);scene.background=back;scene.fog=new THREE.FogExp2(back,.045);skin.color.set(colors[id]);applyPanorama(id);
@@ -58,7 +59,7 @@ function makeHabitat(id:number){
   const mesh=new THREE.Mesh(geom,new THREE.MeshStandardMaterial({color:new THREE.Color(colors[id]).multiplyScalar(.32+(i%4)*.13),roughness:id===3?.31:.83,metalness:id===4?.55:0}));mesh.position.set(Math.cos(angle)*r,h*.45,Math.sin(angle)*r);mesh.rotation.y=angle;mesh.castShadow=true;mesh.receiveShadow=true;habitat.add(mesh);
  }
 }
-function read(){state=JSON.parse(engine.snapshot());if(previousWorld!==state.world_id){previousWorld=state.world_id;makeHabitat(previousWorld);}return state}
+function read(){state=JSON.parse(engine.snapshot());if(previousWorld!==state.world_id){previousWorld=state.world_id;makeHabitat(previousWorld);audio.setWorld(previousWorld);}return state}
 function ui(){
  el('name').textContent=state.environment.name+' / '+String(state.seed).padStart(4,'0');
  el('status').textContent=state.outcome?state.outcome+' — '+state.outcome_detail: (state.turn?'Developing '+(state.stress>.45?'under stress':'stable tissue'):'Undifferentiated specimen');
@@ -69,8 +70,8 @@ function ui(){
 }
 function envUI(){for(const [id,key] of [['water','water'],['heat','temperature'],['light','light']] as const)el<HTMLInputElement>(id).value=String(state.environment[key]);}
 function reset(id:number){engine?.free();engine=new Engine(id,seed++);read();pose.fill(0);envUI();ui();}
-let audio:AudioContext|null=null;
-function tone(i:number){if(!audio)return;const o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.setValueAtTime(130*Math.pow(2,(i+state.world_id*2)/12),audio.currentTime);g.gain.setValueAtTime(.001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.045,audio.currentTime+.045);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.6);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+.65);}
+const audio=new HabitatAudio();
+function tone(i:number){if(state)audio.event(i,state.world_id,state.position[0],state.position[2],.6);}
 function introduce(i:number){
  if(mode==='archive')return;
  const dose=mode==='puzzle'?1:Number(el<HTMLInputElement>('dose').value);
@@ -83,7 +84,8 @@ select('world').onchange=()=>{if(mode==='archive')return;reset(Number(select('wo
 select('mode').onchange=()=>{mode=select('mode').value;el('experiment').hidden=mode!=='free';el('archive').hidden=mode!=='archive';ui();};
 el('inspect').onclick=()=>{inspection=!inspection;internal.visible=inspection;skin.opacity=inspection?.27:1;skin.depthWrite=!inspection;el('panel').hidden=!inspection;el('inspect').setAttribute('aria-pressed',String(inspection));};
 el('camera').onclick=()=>{orbit.enabled=!orbit.enabled;el('camera').textContent=orbit.enabled?'Return to composition':'Inspect camera';if(!orbit.enabled){camera.position.set(4.5,3.3,7.5);orbit.target.set(0,.85,0);orbit.update();}};
-el('sound').onclick=async()=>{if(audio){await audio.close();audio=null;}else{audio=new AudioContext();await audio.resume();tone(0);}el('sound').textContent=audio?'Sound on':'Sound off';el('sound').setAttribute('aria-pressed',String(!!audio));};
+el('sound').onclick=async()=>{try{if(audio.ctx){await audio.disable();}else{await audio.enable(state.world_id);tone(0);}el('sound').textContent=audio.ctx?'Sound on':'Sound off';el('sound').setAttribute('aria-pressed',String(!!audio.ctx));}catch(e){el('log').textContent='Audio unavailable: '+String(e);}};
+for(const id of ['music','effects'])el(id).oninput=()=>{audio.setLevels(Number(el<HTMLInputElement>('music').value),Number(el<HTMLInputElement>('effects').value));};
 el('bud').onclick=()=>{if(mode==='free'){const ok=engine.bud(Number(select('relation').value));read();ui();el('log').textContent=ok?'Offspring established.':'Needs developed spores and sufficient reserve.';}};
 el('cue').onclick=()=>{if(mode==='free'){engine.stimulate(1);read();ui();}};
 el('damage').onclick=()=>{if(mode==='free'){engine.damage(site,.65);read();ui();}};
@@ -98,7 +100,11 @@ el('transfer').onclick=()=>{const s=selected();const id=Number(select('world').v
 el('breed').onclick=()=>{const s=selected();if(s&&engine.breed(s.json,seed++)){read();select('mode').value='free';select('mode').dispatchEvent(new Event('change'));envUI();ui();}};
 document.addEventListener('keydown',e=>{if((e.target as HTMLElement).matches('input,select,button'))return;const keys='1234567890-=';const i=keys.indexOf(e.key);if(i>=0)introduce(i);});
 let last=performance.now(),acc=0;let time=0;let reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;el<HTMLInputElement>('reduced').checked=reduced;el('reduced').onchange=()=>{reduced=el<HTMLInputElement>('reduced').checked;};let padHeld=false,padFocus=0,padMoveAt=0;
-function resize(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;const scale=Math.min(1,1280/w);renderer.setSize(Math.round(w*scale),Math.round(h*scale),false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+el('settings').onclick=()=>{const panel=el('settings-panel');panel.hidden=!panel.hidden;el('settings').setAttribute('aria-expanded',String(!panel.hidden));};
+el('quality').onchange=()=>resize();
+el('export').onclick=()=>{if(!state)return;const blob=new Blob([engine.snapshot()],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='creatture-'+state.seed+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+el('verify-replay').onclick=()=>{if(mode!=='puzzle'){el('log').textContent='Replay verification requires puzzle mode.';return;}const result=engine.verify_puzzle_replay();el('log').textContent=result?'Deterministic replay matched.':'Replay does not match current experiment.';};
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;const scale=Math.min(1,Number(select('quality').value)/w);renderer.setSize(Math.round(w*scale),Math.round(h*scale),false);camera.aspect=w/h;camera.updateProjectionMatrix();}
 new ResizeObserver(resize).observe(stage);resize();
 function draw(now:number){
  const dt=Math.min(.1,(now-last)/1000);last=now;time+=dt;acc+=dt;
@@ -107,6 +113,7 @@ function draw(now:number){
   if(state.outcome!==lastOutcome){lastOutcome=state.outcome;finale=state.outcome?1:0;if(finale)tone(11);}
   finale=Math.max(0,finale-dt*.4);
   if(mode==='free'&&!paused&&acc>=.1){engine.advance(Math.floor(acc*10)*Number(select('speed').value));acc=0;read();ui();}else if(mode!=='free'||paused)acc=0;
+  if(state.network.action!==lastAction&&time-lastVoice>1.2&&state.organs[11]>.12){lastAction=state.network.action;lastVoice=time;audio.event(6+lastAction,state.world_id,state.position[0],state.position[2],.23+state.organs[11]*.13);}
   const a=state.organs;for(let i=0;i<12;i++)pose[i]+=(a[i]-pose[i])*Math.min(1,dt*2.2);
   const t=reduced?0:time;const finalColor=new THREE.Color(colors[state.world_id]);if(state.outcome)finalColor.offsetHSL((state.outcome_palette-2.5)*.045,.04,.02);skin.color.lerp(finalColor,Math.min(1,dt*1.5));skin.emissive.set(finalColor);skin.emissiveIntensity=reduced?0:finale*.16;const breath=1+Math.sin(t*2.1)*.025*(1-state.stress);body.scale.set(breath,1/breath,breath);
   const target=mode==='free'?state.position:[0,.68,0];body.position.lerp(new THREE.Vector3(target[0],Math.max(.58,Math.min(1.7,target[1])),target[2]),Math.min(1,dt*4));
