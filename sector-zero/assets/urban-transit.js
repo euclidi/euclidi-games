@@ -7,6 +7,55 @@ const congestion=new Map(),keyOf=(x,z,d)=>x+","+z+","+d;
 const closedEdges=new Set(),plazas=[];
 const edgeOpen=(x,z,dir)=>{const d=D[dir];return Math.abs(x+d[0]*70)<=210&&Math.abs(z+d[1]*70)<=210&&!closedEdges.has(keyOf(x,z,dir));};
 const SIDE=8,PERSON=.76,STOP=20,CAR_LINE=2.5;
+// Scene distances are metres; the existing compressed simulation clock is retained.
+const fleetTypes={
+ sedan:{w:1.82,l:4.55,h:1.45,acc:5.2,brake:8.5,litres:52,consumption:8.2,color:0x687d85},
+ hatch:{w:1.75,l:4.05,h:1.48,acc:5.7,brake:8.7,litres:44,consumption:6.7,color:0x9c765b},
+ wagon:{w:1.88,l:4.72,h:1.62,acc:4.7,brake:8,litres:58,consumption:9.2,color:0x52645d},
+ taxi:{w:1.83,l:4.65,h:1.49,acc:5,brake:8.4,litres:55,consumption:8.5,color:0xc4a34e},
+ police:{w:1.91,l:4.78,h:1.52,acc:6.1,brake:9,litres:65,consumption:10.4,color:0x303d4a},
+ ambulance:{w:2.12,l:5.75,h:2.62,acc:3.5,brake:6.8,litres:85,consumption:15.5,color:0xe1e0d4},
+ icecream:{w:2.05,l:5.1,h:2.45,acc:3.1,brake:6.4,litres:68,consumption:13,color:0xc4b3a2},
+ delivery:{w:2.07,l:5.4,h:2.35,acc:3.8,brake:7,litres:75,consumption:12.5,color:0x8e9285},
+ bus:{w:2.42,l:8.8,h:2.7,acc:2.7,brake:5.8,litres:180,consumption:29,color:0x9b9c87}
+};
+const fleetMix=["sedan","hatch","wagon","sedan","taxi","hatch","delivery","sedan","police","wagon","hatch","ambulance","sedan","icecream","taxi","wagon","sedan"];
+const vehicleType=b=>b?.bus?"bus":fleetMix[((Math.trunc(b?.id||0)%fleetMix.length)+fleetMix.length)%fleetMix.length];
+const vehicleSpec=b=>fleetTypes[vehicleType(b)];
+function initVehicle(b){const p=vehicleSpec(b);if(!Number.isFinite(b.fuelL))b.fuelL=p.litres*(.34+(b.id%11)*.059);if(!Number.isFinite(b.velocity))b.velocity=0;if(!Number.isFinite(b.distanceM))b.distanceM=0;}
+function targetVelocity(b,desired,available,dt){const p=vehicleSpec(b);return Math.max(0,Math.min(desired,Math.sqrt(2*p.brake*Math.max(0,available)),b.velocity+p.acc*dt));}
+function consumeFuel(b,distance,dt){const p=vehicleSpec(b);b.distanceM+=distance;b.fuelL=Math.max(0,b.fuelL-distance*p.consumption/100000-(distance<.01?.0009*dt:0));}
+const cycleOffset=v=>roadHalf(v)-.95;
+// Only collectors receive cycle lanes, avoiding the arterial bus-bay overlap.
+const cycleRoad=v=>roadRank(v)===1;
+const citizenMode=c=>c.id%29===0?"skates":c.id%23===0?"skateboard":c.id%17===0?"bicycle":"walk";
+function rideMode(c){return c.ride||c.id===currentWorld?.possessed?"walk":citizenMode(c);}
+function cycleLegal(c,x,z){if(rideMode(c)!=="bicycle")return false;const gx=nearestGrid(x),gz=nearestGrid(z),dx=Math.abs(x-gx),dz=Math.abs(z-gz);return cycleRoad(gx)&&dx>=cycleOffset(gx)-.75&&dx<=SIDE+1&&dz>=12||cycleRoad(gz)&&dz>=cycleOffset(gz)-.75&&dz<=SIDE+1&&dx>=12;}
+function cyclePath(from,route){
+ if(rideMode(from)!=="bicycle")return route;
+ const out=[];let a=from;
+ for(const b of route){
+  const vertical=Math.abs(a.x-b.x)<.02, horizontal=Math.abs(a.z-b.z)<.02;
+  const fixed=vertical?a.x:a.z,g=nearestGrid(fixed),offset=Math.abs(fixed-g);
+  const start=vertical?a.z:a.x,end=vertical?b.z:b.x,len=Math.abs(end-start);
+  if(!a.cross&&!b.cross&&(vertical||horizontal)&&cycleRoad(g)&&offset>=7&&offset<=9&&len>42){
+   const sign=Math.sign(end-start),lane=g+Math.sign(fixed-g)*cycleOffset(g),lo=Math.min(start,end),hi=Math.max(start,end);
+   const p=nearestGrid(lo)+14,q=nearestGrid(hi)-14;
+   if(q-p>20){const entry=sign>0?p:q,exit=sign>0?q:p;
+    const make=(f,t)=>vertical?{x:f,z:t,precise:true}:{x:t,z:f,precise:true};
+    out.push(make(fixed,entry),make(lane,entry),make(lane,exit),make(fixed,exit));
+   }
+  }
+  out.push(b);a=b;
+ }return out;
+}
+function serviceDestination(b,x,z){
+ const fallback={x:-210+(b.id+b.trips*3+1)%7*70,z:-210+(b.id*3+b.trips+2)%7*70};
+ const types={taxi:["Housing","Market"],police:["Authority"],ambulance:["Clinic"],icecream:["Housing","Market"],delivery:["Warehouse","Market"]}[vehicleType(b)];
+ const candidates=currentWorld?.buildings?.filter(q=>types?.includes(q.type)&&q.door).map(q=>({x:nearestGrid(q.door.x),z:nearestGrid(q.door.z)})).filter(q=>q.x!==x||q.z!==z)||[];
+ return candidates.length?candidates[(b.id+(b.trips||0)*7)%candidates.length]:fallback;
+}
+
 const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
 const phaseLocks=new Set(),junctions=new Map(),transitPriority=new Map();
@@ -133,17 +182,17 @@ function busBay(b){return b.bus&&roadRank(b.dir%2===0?b.x:b.z)===0;}
 function bayOffset(b,progress){if(!b.bay)return 0;return 2.7*Math.min(clamp((progress-14)/6,0,1),clamp((28-progress)/8,0,1));}
 function carRect(b,progress=b.progress){
  const d=D[b.dir],offset=CAR_LINE+bayOffset(b,progress),x=b.x+d[0]*progress+d[1]*offset,z=b.z+d[1]*progress-d[0]*offset;
- return {x,z,hx:d[0]?(b.bus?4.4:2.35):(b.bus?1.2:1.05),hz:d[1]?(b.bus?4.4:2.35):(b.bus?1.2:1.05)};
+ const p=vehicleSpec(b),half=p.l/2,wide=p.w/2;return {x,z,hx:d[0]?half:wide,hz:d[1]?half:wide};
 }
 function intersects(p,r,pad=PERSON/2){return Math.abs(p.x-r.x)<r.hx+pad&&Math.abs(p.z-r.z)<r.hz+pad;}
 function crossClear(w,cross){
  const a=cross.a,b=cross.b,x=(a.x+b.x)/2,z=(a.z+b.z)/2,hx=Math.abs(a.x-b.x)/2+.55,hz=Math.abs(a.z-b.z)/2+.55;
  return !junctions.has(nodeKey(cross.x,cross.z))&&!w.cars.some(v=>{const r=carRect(v);return Math.abs(r.x-x)<r.hx+hx&&Math.abs(r.z-z)<r.hz+hz;});
 }
-function stopLine(b){return 70-SIDE-(b.bus?4.4:2.35)-1.2;}
+function stopLine(b){return 70-SIDE-vehicleSpec(b).l/2-1.2;}
 function plannedDir(b,x,z){
  const arrived=x===b.destX&&z===b.destZ;
- const dest=arrived?(b.bus?nextNode(b):{x:-210+(b.id+b.trips*3+1)%7*70,z:-210+(b.id*3+b.trips+2)%7*70}):{x:b.destX,z:b.destZ};
+ const dest=arrived?(b.bus?nextNode(b):serviceDestination(b,x,z)):{x:b.destX,z:b.destZ};
  const dirs=[0,1,2,3].filter(d=>edgeOpen(x,z,d)&&(!b.bus||x+D[d][0]*70===dest.x&&z+D[d][1]*70===dest.z));
  dirs.sort((a,c)=>carScore(x,z,a,dest.x,dest.z,b.dir)-carScore(x,z,c,dest.x,dest.z,b.dir));
  return {dirs,dest,arrived};
@@ -182,19 +231,21 @@ function driveTraffic(w,dt){
    }
   }
   if(!committed){limit=Math.min(limit,line);if(!reason)reason=phaseLocks.has(k)?"PEDESTRIAN CROSSING":owner?"JUNCTION OCCUPIED":stopSign&&b.stopWait<.5?"STOP SIGN":!stopSign&&signal(tx,tz,w.time,b.dir)!==b.dir%2?"RED SIGNAL":"EXIT BLOCKED";}
-  let speed=b.speed;
+  initVehicle(b);const oldVelocity=b.velocity;let speed=b.fuelL>0?b.speed:0;
   if(b.bus&&b.pendingStop)speed=Math.min(speed,Math.max(0,(STOP-b.progress)/dt));
   if(b.bus&&b.dwell>0)reason="BUS STOP";
   if(b.bay==="parked"){speed=0;reason=b.dwell>0?"BUS STOP":"WAIT TO MERGE";}
+  speed=targetVelocity(b,speed,limit-old,dt);
   let next=Math.max(old,Math.min(limit,old+speed*dt));
   const now=carRect(b),to=carRect(b,next),sweep={x:(now.x+to.x)/2,z:(now.z+to.z)/2,hx:now.hx+Math.abs(now.x-to.x)/2,hz:now.hz+Math.abs(now.z-to.z)/2};
-  for(const p of ped)if(intersects(p,sweep,.5)){const along=(p.x-now.x)*d[0]+(p.z-now.z)*d[1],half=b.bus?4.4:2.35;if(along>=-half){next=Math.min(next,Math.max(old,old+along-half-.65));reason="PEDESTRIAN AHEAD";}}
+  for(const p of ped)if(intersects(p,sweep,.5)){const along=(p.x-now.x)*d[0]+(p.z-now.z)*d[1],half=vehicleSpec(b).l/2;if(along>=-half){next=Math.min(next,Math.max(old,old+along-half-.65));reason="PEDESTRIAN AHEAD";}}
+  const travelled=Math.max(0,next-old);b.velocity=dt>0?travelled/dt:0;b.acceleration=dt>0?(b.velocity-oldVelocity)/dt:0;consumeFuel(b,travelled,dt);
   b.progress=next;if(b.bay==="merge"&&b.progress>=28)delete b.bay;
   if(next>=70-.0001&&committed){
    const dir=b.turnDir;
    if(dir!==undefined&&space(dir)&&clear(dir)){
     lane.splice(lane.indexOf(b),1);Object.assign(b,{x:tx,z:tz,dir,progress:0});
-    if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus)arrive(b);}
+    if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus)arrive(b);if(b.fuelL<vehicleSpec(b).litres*.10){b.fuelL=vehicleSpec(b).litres;b.refuels=(b.refuels||0)+1;}}
     add(b);delete b.turnDir;b.stopWait=0;
    }else reason="EXIT BLOCKED";
   }
@@ -237,10 +288,10 @@ function moveCrowd(w,dt,api){
   const key=target.x+","+target.z;
   if(st.key!==key||!st.path||!st.path.length||(!st.cross&&(st.stall||0)>3&&w.time-(st.replanAt||0)>6+c.id%7)){st.replanAt=w.time;
    if(st.cross){const end=st.cross.b;c.route=[{x:end.x,z:end.z,cross:st.cross},...pedestrianPath(end,target)];}
-   else c.route=pedestrianPath(c,target);
+   else c.route=cyclePath(c,pedestrianPath(c,target));
    st.path=c.route;st.key=key;
   }else c.route=st.path;
-  let budget=Math.min(1.55,c.speed*dt),loops=0;c.walkStatus="";const oldX=c.x,oldZ=c.z;
+  const mode=rideMode(c),factor=mode==="bicycle"?1.65:mode==="skateboard"?1.28:mode==="skates"?1.20:1;let budget=Math.min(mode==="walk"?1.55:2.05,c.speed*dt*factor),loops=0;c.walkStatus="";const oldX=c.x,oldZ=c.z;
   while(budget>.001&&c.route.length&&loops++<8){
    const p=c.route[0],dx=p.x-c.x,dz=p.z-c.z,len=Math.hypot(dx,dz);
    const tolerance=c.route.length===1?0.08:p.precise||c.route[1]?.precise?0.18:p.cross?0.40:c.route[1]?.cross?0.58:2.15;
@@ -250,7 +301,7 @@ function moveCrowd(w,dt,api){
     st.cross=p.cross;phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
    }
    const step=Math.min(.32,budget,len),ux=dx/len,uz=dz/len;
-   const legal=(x,z)=>offRoad(x,z)||st.cross&&(st.cross.axis===0?Math.abs(z-st.cross.a.z)<=1.25&&x>=Math.min(st.cross.a.x,st.cross.b.x)-.4&&x<=Math.max(st.cross.a.x,st.cross.b.x)+.4:Math.abs(x-st.cross.a.x)<=1.25&&z>=Math.min(st.cross.a.z,st.cross.b.z)-.4&&z<=Math.max(st.cross.a.z,st.cross.b.z)+.4);
+   const legal=(x,z)=>offRoad(x,z)||cycleLegal(c,x,z)||st.cross&&(st.cross.axis===0?Math.abs(z-st.cross.a.z)<=1.25&&x>=Math.min(st.cross.a.x,st.cross.b.x)-.4&&x<=Math.max(st.cross.a.x,st.cross.b.x)+.4:Math.abs(x-st.cross.a.x)<=1.25&&z>=Math.min(st.cross.a.z,st.cross.b.z)-.4&&z<=Math.max(st.cross.a.z,st.cross.b.z)+.4);
    const can=(x,z)=>legal(x,z)&&occ.free(c,x,z)&&!cars.some(r=>intersects({x,z},r,.45))&&(!inSolid(x,z)||Math.hypot(x-target.x,z-target.z)<1);
    let x=c.x+ux*step,z=c.z+uz*step;
    if(!can(x,z)){
@@ -443,7 +494,7 @@ export function prepare(w){
 }
 export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%l.nodes.length]}
 export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.pendingStop=lines[b.line].stops[b.atStop].active;b.dwell=0;b.progress=0;}
-export function gap(a,b){return a?.bus||b?.bus?10.5:5.8}
+export function gap(a,b){return (vehicleSpec(a).l+vehicleSpec(b).l)/2+1.25+(b?.velocity||0)*.12;}
 export function signal(x,z,time,dir){
  const key=nodeKey(x,z);if(phaseLocks.has(key))return -1;
  const priority=transitPriority.get(key);if(priority)return priority.dir%2;
@@ -505,7 +556,7 @@ export function after(w,dt,api){
  if(r&&r.goal!==c.goal){if(r.phase==="riding"){r.goal=c.goal;r.cancel=true}else{delete c.ride;r=null;}}
  if(!r&&c.inside<0&&c.route.length&&c.transitGoal!==c.goal){
  c.transitGoal=c.goal;
- if(c.id%4!==0&&w.buildings[c.goal]){r=itinerary(c,w.buildings[c.goal]);const rail=metroPlan(c,w.buildings[c.goal]);if(rail&&(!r||rail.estimate<r.estimate))r=rail;if(r){r.since=w.time;r.activity=c.activity;const p=r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from];r.queue=r.mode==="metro"?metroSlot(w,c,p):queueSlot(w,c,p);if(r.queue){c.ride=r;c.route=walkTo(c,r.queue);}else r=null;}}
+ if(c.id%4!==0&&citizenMode(c)==="walk"&&w.buildings[c.goal]){r=itinerary(c,w.buildings[c.goal]);const rail=metroPlan(c,w.buildings[c.goal]);if(rail&&(!r||rail.estimate<r.estimate))r=rail;if(r){r.since=w.time;r.activity=c.activity;const p=r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from];r.queue=r.mode==="metro"?metroSlot(w,c,p):queueSlot(w,c,p);if(r.queue){c.ride=r;c.route=walkTo(c,r.queue);}else r=null;}}
  }
  if(!r)continue;
  if(r.mode==="metro"){
@@ -519,7 +570,7 @@ export function after(w,dt,api){
  if(r.phase==="riding"){const b=buses.find(x=>x.id===r.bus);if(!b){resume(w,c,api);continue}const p=api.carPosition(b);c.x=p.x;c.z=p.z;c.heading=p.a;c.inside=-1;c.route=[];}
  }
  for(const b of buses){
- w.transit.vehicleKm+=(b.trafficStatus==="MOVING"?b.speed*dt:0)/1000;
+ w.transit.vehicleKm+=(b.velocity||0)*dt/1000;
  if(b.dwell<=0||b.atStop<0)continue;
  const p=lines[b.line].stops[b.atStop];
  for(const id of [...b.passengers]){const c=w.citizens[id],r=c?.ride;if(!r||r.bus!==b.id){b.passengers=b.passengers.filter(x=>x!==id);continue;}
@@ -557,9 +608,11 @@ export function panel(w){
  html+='<h3>UNDERGROUND METRO</h3><div class="stat"><span>STATIONS / TRAINS</span><b>'+metroStations.size+' / '+w.metro.trains.length+'</b></div><div class="stat"><span>WAITING</span><b>'+w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting").length+'</b></div><div class="stat"><span>ON BOARD</span><b>'+w.metro.trains.reduce((n,t)=>n+t.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS / COMPLETED</span><b>'+w.metro.boardings+' / '+w.metro.completed+'</b></div>';
  for(const t of w.metro.trains)html+='<div class="stat"><span>TRAIN '+(t.id+1)+' · '+(t.remaining>0?"IN TUNNEL":metroLines[t.line].stops[t.at].name.toUpperCase())+'</span><b>'+t.passengers.length+' / '+metroCapacity+'</b></div>';
  for(const l of metroLines){html+='<h3 style="color:'+l.color+'">'+l.name+'</h3><p>'+l.stops.map(p=>p.name).join(' · ')+'</p>';}
+ const stats=Object.keys(fleetTypes).map(k=>'<div class="stat"><span>'+k.toUpperCase()+'</span><b>'+w.cars.filter(b=>vehicleType(b)===k).length+'</b></div>').join("");
+ html+='<h3>VEHICLE FLEET</h3>'+stats+'<div class="stat"><span>DEPOT REFUELS</span><b>'+w.cars.reduce((n,b)=>n+(b.refuels||0),0)+'</b></div><div class="stat"><span>FLEET FUEL (L)</span><b>'+Math.round(w.cars.reduce((n,b)=>n+(b.fuelL||0),0))+'</b></div><h3>ACTIVE PERSONAL TRAVEL</h3>'+["bicycle","skateboard","skates"].map(m=>'<div class="stat"><span>'+m.toUpperCase()+'</span><b>'+w.citizens.filter(c=>walking(c)&&rideMode(c)===m&&c.walkingNow).length+'</b></div>').join("");
  return html+'<p>Local loops and limited-stop express services support one transfer. Riders compare estimated trip time with walking and queue in arrival order. Select a bus to locate it.</p>';
 }
-export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
+export function citizen(c){const r=c.ride;if(!r&&walking(c)&&rideMode(c)!=="walk")return '<div class="stat"><span>TRAVEL MODE</span><b>'+rideMode(c).toUpperCase()+'</b></div>';return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
 const signalGroups=new Map();
 export function updateSignals(time){const hour=((time%1440)+1440)%1440/60,night=hour<6||hour>=19;if(streetLampMaterial?.emissive){streetLampMaterial.emissive.setHex(night&&!currentWorld?.blackout?0xe6c98a:0x000000);streetLampMaterial.emissiveIntensity=night&&!currentWorld?.blackout?0.75:0;}for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
 // Split solid terrain around real shaft openings, rather than painting stairs on it.
@@ -705,10 +758,16 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  signalGroups.clear();
  replaceSurface(parent,{box,cyl,merge,mat,group});
  const asphalt=mat(0x373c3b),local=mat(0x454744),edgeMat=mat(0x76786c),white=mat(0xb9b7a2),yellow=mat(0xc6a662),dark=mat(0x28322f),glass=mat(0x576b65),steel=mat(0x68756d),green=mat(0x75946f),red=mat(0xa74c3d);
+ const cyclePaint=mat(0x425e51),cycleStripe=mat(0x9bba9d);
  const kind=v=>v===0?"avenue":Math.abs(v)===210?"ring":Math.abs(v)===140?"collector":"local";
  const width=v=>kind(v)==="avenue"?13:kind(v)==="ring"?13:kind(v)==="collector"?11.5:8.5;
  for(let v=-210;v<=210;v+=70){const w=width(v),major=kind(v)!=="local";
  for(let p=-175;p<=175;p+=70){box(parent,w,.03,70,v,.005,p,major?asphalt:local);box(parent,70,.03,w,p,.006,v,major?asphalt:local);
+ if(cycleRoad(v)){for(const side of [-1,1]){
+ const o=side*cycleOffset(v),inner=o-side*.76;
+ box(parent,1.5,.016,46,v+o,.027,p,cyclePaint);box(parent,46,.016,1.5,p,.028,v+o,cyclePaint);
+ for(let j=-19;j<=19;j+=6){box(parent,.10,.012,3,v+inner,.046,p+j,cycleStripe);box(parent,3,.012,.10,p+j,.046,v+inner,cycleStripe);}
+ }}
  for(const side of [-1,1]){box(parent,.13,.025,56,v+side*(w/2-.25),.032,p,edgeMat);box(parent,56,.025,.13,p,.032,v+side*(w/2-.25),edgeMat);}
  for(let j=-20;j<=20;j+=8){if(kind(v)!=="avenue"&&kind(v)!=="ring"){box(parent,.15,.02,3.8,v,.04,p+j,yellow);box(parent,3.8,.02,.15,p+j,.04,v,yellow);}}
  if(kind(v)==="avenue"||kind(v)==="ring"){for(const q of [-.18,.18]){box(parent,.12,.025,44,v+q,.041,p,yellow);box(parent,44,.025,.12,p,.041,v+q,yellow);}}

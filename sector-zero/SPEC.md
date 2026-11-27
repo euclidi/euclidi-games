@@ -30,3 +30,6 @@ Preserve original or appropriately licensed assets and record their source, lice
 
 - [Environmental integration notes](../sector-zero-patches/README.md)
 - [Transit source](assets/urban-transit.js)
+
+## Urban mobility extension (2026-11-26)
+Use metre-scale vehicles and street cross-sections; distinct vehicle classes, visible occupants, independently steered/rotating wheels and suspension load transfer; surface-dependent braking, fuel economy and physical refuelling. Distinct service roles must perform actual jobs, not just drive recoloured cars. Integrate cycle lanes, personal mobility, storefront errands and pedestrian crossings while preserving existing systems. Require real scene inspection and population regression tests before release.
