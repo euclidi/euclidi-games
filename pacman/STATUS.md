@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.4.7.
+**Lifecycle:** Active — Git revision 1.4.8.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.4.8 — ghost skirt animation
+
+Eight distinct bitmap hem frames replace two-frame flicker. Three scallops travel continuously across the lower silhouette, with stable upper body, connected pixels and seamless wrap. Each ghost advances by its own actual movement distance; idle house ghosts have a slower cycle. Death/ready freeze motion. Two focused regression tests and 36,000 simulation ticks passed in JS evaluation. Actual visual playtest remains pending; eight-frame animation is a deliberate enhancement rather than original two-frame arcade parity.
 
 ## Revision 1.4.7 — fruit contact fix
 
