@@ -2,13 +2,19 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.4.x.
+**Lifecycle:** Active — Git revision 1.4.3.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
 
-## Validation evidence
+## Revision 1.4.3 — title menu
+
+Added a native bitmap title screen with animated sprites, mode selection and separate new-game/resume actions. Gameplay freezes while the title menu is open. No new graphics dependency or cover artwork.
+
+Simulated runtime test passed 531 frames: initial menu, frozen simulation, mode change without launching, start, return/resume, keyboard navigation and controller start. This is a mock DOM/compositor test, not actual browser or device validation. Pages publication is not independently verified for this revision.
+
+## Previous validation evidence
 
 Six logic tests passed including 36,000 simulation ticks, audio buffers, reachability and death/respawn. Chromium ready/start/input smoke passed.
 
