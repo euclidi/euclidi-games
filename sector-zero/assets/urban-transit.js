@@ -110,7 +110,7 @@ function driveTraffic(w,dt){
   let owner=junctions.get(k),committed=owner===b;
   const stopSign=stopControlled(tx,tz);if(stopSign&&b.progress>=line-.05&&!committed)b.stopWait=(b.stopWait||0)+dt;else if(!committed)b.stopWait=0;
   const plan=plannedDir(b,tx,tz);
-  const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&v.progress<14+gap(v,b)+3);
+  const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&!(v.bay==="parked"&&!b.bus)&&v.progress<14+gap(v,b)+3);
   const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
   if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
@@ -521,7 +521,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
   if(stopControlled(x,z)){
    for(let dir=0;dir<4;dir++){
     const d=D[dir],a={x:x-d[0]*11.5+d[1]*(roadHalf(dir%2===0?x:z)+.4),z:z-d[1]*11.5-d[0]*(roadHalf(dir%2===0?x:z)+.4)};
-    pole(a.x,a.z,2.65);const o=C(.66,.66,.075,a.x,2.68,a.z,m.red,8);o.rotation.x=Math.PI/2;o.rotation.y=dir%2?Math.PI/2:0;o.rotation.order="YXZ";const n=D[(dir+2)%4];streetLabels.push({text:"STOP",x:a.x+n[0]*.045,y:2.68,z:a.z+n[1]*.045,w:.86,h:.35,dir:(dir+2)%4,bg:"#a73c32",fg:"#ffffff"});plate("ALL WAY",a.x,1.95,a.z,.8,.32,(dir+2)%4,m.white,"#e7e3d8","#252525");footprint(a.x,a.z,.19,.19);count("stop signs");
+    pole(a.x,a.z,2.65);const border=C(.69,.69,.065,a.x,2.68,a.z,m.white,8),o=C(.62,.62,.085,a.x,2.68,a.z,m.red,8);for(const mesh of [border,o]){mesh.rotation.x=Math.PI/2;mesh.rotation.y=dir%2?Math.PI/2:0;mesh.rotation.order="YXZ";}const n=D[(dir+2)%4];streetLabels.push({text:"STOP",x:a.x+n[0]*.045,y:2.68,z:a.z+n[1]*.045,w:.86,h:.35,dir:(dir+2)%4,bg:"#a73c32",fg:"#ffffff"});plate("ALL WAY",a.x,1.95,a.z,.8,.32,(dir+2)%4,m.white,"#e7e3d8","#252525");footprint(a.x,a.z,.19,.19);count("stop signs");
    }
   }
   // Crossing request posts and bollards are placed on the curb, not the walking path.
@@ -537,7 +537,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
   B(.2,1.1,2.85,x+3.5,.58,z,m.iron);footprint(x+3.5,z,.24,2.85);
   const px=x-3.45,pz=z+1.55;pole(px,pz,3.2,.11,m.green);B(.52,.52,.52,px,3.15,pz,m.lamp);
   plate("METRO",x,2.9,z+1.55,3.8,.58,0,m.green,"#315b49");for(const xx of [x-1.85,x+1.85])pole(xx,z+1.55,2.9,.07,m.iron);
-  plate(p.name.toUpperCase(),x,2.2,z+1.55,3.8,.42,0,m.black,"#252d2b");count("subway entrances");
+  plate(p.name.toUpperCase(),x,2.2,z+1.55,3.8,.42,0,m.black,"#252d2b");plate(metroLines.map((l,i)=>l.stops.includes(p)?"M"+(i+1):"").filter(Boolean).join(" / "),x,1.57,z+1.55,1.7,.38,0,m.blue,"#465d78");count("subway entrances");
  }
  merge(g);
 }
