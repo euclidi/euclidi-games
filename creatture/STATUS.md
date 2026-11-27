@@ -12,3 +12,6 @@ Local environment lacks Rust, Blender and dependency network access. GitHub repo
 
 ## 0.1.1 — transport and neural development pass
 The first commit's native Rust test step passed on GitHub Actions run 45980921711; WASM/browser checks were still pending when this pass began. Added a 12-node resource compartment network with 17 transport edges, local energy supplies, organ integrity, tissue injury and repair, bounded recurrent six-unit circuit, cue conditioning/habituation, heritable circuit coefficients, simple thermal transfer rejection, transport links and live readouts. New tests cover conservation, repair, conditioning, injury effects. These changes are uncompiled until the new CI result. Regional tissue is still a coarse field; not a complete organ system. Recurrent circuit is small and not the complete approved neural system. The archive snapshots now use version 2; version 1 experimental snapshots are rejected rather than migrated. No production art or release claims.
+
+## CI correction
+Run 45980921711 passed native Rust tests and the WASM/Vite production build (712.07 kB WASM, 529.81 kB JS before gzip). Chromium installation failed before tests: Playwright 1.51.1 does not support the Ubuntu 26.04 runner. Pin runner to Ubuntu 24.04; actual browser tests remain pending. Subsequent network changes need their own validation.

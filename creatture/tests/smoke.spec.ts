@@ -13,3 +13,5 @@ for(const viewport of [{width:1280,height:800},{width:390,height:844}]){
  });
 }
 test('all six world selectors',async({page})=>{await page.goto('/');await expect(page.locator('#name')).toContainText('Primordium');for(const [i,n] of ['Primordium','Abyss','Mycelium','Silica','Prosthesis','Communion'].entries()){await page.locator('#world').selectOption(String(i));await expect(page.locator('#name')).toContainText(n);}});
+
+test('regional biology inspection and stimulation',async({page})=>{await page.goto('/');await expect(page.locator('#name')).toContainText('Primordium');await page.locator('#mode').selectOption('free');for(const n of ['Membrane','Nutrients','Nerves','Muscle'])await page.getByRole('button',{name:n,exact:true}).click();await page.locator('#inspect').click();await page.locator('#cue').click();await page.locator('#damage').click();await expect(page.locator('#readout')).toContainText('Habituation');await expect(page.locator('#readout')).toContainText('Transport');await page.screenshot({path:'test-results/creatture-inspection.png'});});

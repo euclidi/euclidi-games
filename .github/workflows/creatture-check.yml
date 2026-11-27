@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: creatture
@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '22'
       - run: cargo test --manifest-path engine/Cargo.toml
-      - run: cargo install wasm-pack --locked
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
       - run: npm install
       - run: npm run build
       - run: npx playwright install --with-deps chromium
