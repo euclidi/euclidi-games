@@ -260,7 +260,7 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  }else{
  for(let j=-1;j<=1;j++){const xx=x+j*7.5,hh=height+(j===0?2:0),ll=l-(j===1?3:0);solid(7.15,hh,ll,xx,z+(l-ll)/2);
  const top=box(shell,7.5,1.2,ll+.4,xx,hh+1,z+(l-ll)/2,roof);top.rotation.z=j===0?.12:-.12;
- box(shell,5,.24,2.1,xx,3.9,z-l/2-1,trim);wallDoor(xx,z-l/2,2.1);for(let yy=6;yy+1<hh+.5;yy+=4)for(const dx of [-1.7,1.7])frontWindow(1.2,1.6,xx+dx,yy,z-l/2);}
+ const front=z+l/2-ll;box(shell,5,.24,2.1,xx,4.05,front-.99,trim);wallDoor(xx,front,2.1);for(let yy=6;yy+1<hh+.5;yy+=4)for(const dx of [-1.7,1.7])frontWindow(1.2,1.6,xx+dx,yy,front);}
  }
  }else if(a==="Covered market"){
  const height=5.5;solid(w,4,8,x,z+l/2-4,0,steel);slab(w+1,l+1,height,x,z,roof);
@@ -268,8 +268,8 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  for(const dx of [-6,6])for(let dz=-12;dz<=8;dz+=6){box(shell,4,1.05,2.5,x+dx,1,z+dz,trim);box(shell,4.2,.12,2.7,x+dx,1.6,z+dz,white);box(shell,4.5,.15,3.4,x+dx,3.4,z+dz,((dz+12)/6)%2?rust:roof);colliders.push({x:x+dx,z:z+dz,w:4,l:2.5,h:1.6});}
  box(shell,w,1,.25,x,4.85,z-l/2-.1,steel);
  }else if(a==="Trading arcade"){
- solid(w,7,l);slab(w+1,l+1,7.6);for(let j=-1;j<=1;j++){const xx=x+j*6;const canopy=box(shell,5.5,.45,l-4,xx,8.6,z,glass);canopy.rotation.z=j*.15;}
- for(let j=-1;j<=1;j++){if(j!==0)frontWindow(6.2,2.3,x+j*7,2.4,z-l/2);box(shell,7,.3,3.6,x+j*7,4.1,z-l/2-1.7,steel);}
+ solid(w,7,l);slab(w+1,l+1,7.6);for(let j=-1;j<=1;j++){const xx=x+j*6;const canopy=box(shell,5.5,.45,l-4,xx,7.87,z,glass);canopy.rotation.z=j*.04;}
+ for(let j=-1;j<=1;j++){if(j!==0)frontWindow(6.2,2.3,x+j*7,2.4,z-l/2);box(shell,7,.3,3.6,x+j*7,4.1,z-l/2-1.65,steel);}
  }else if(b.type==="Factory"||b.type==="Warehouse"){
  const height=a==="Freight depot"?7:a==="Power works"?10:Math.max(7,h);
  solid(w,height,l,x,z,0,steel);slab(w+1,l+1,height+.6);
@@ -309,10 +309,11 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  // Small, physically mounted signs. The backing plate intersects the facade,
  // the lettering plane sits just beyond the plate; no detached parcel labels.
  const open=a==="Covered market";
- const signX=open?x:frontage.x,face=open?z-l/2-.225:front;
- const signW=Math.min(open?w-2:frontage.w-1.1,b.type==="Housing"?5.9:9.4);
- const signH=open?.72:.84;
- const signY=open?4.85:Math.min(frontage.top-signH/2-.12,4.85);
+ const residential=b.type==="Housing";
+ const signX=open?x:frontage.x+(residential?Math.min(2.55,frontage.w/2-1.05):0),face=open?z-l/2-.225:front;
+ const signW=Math.min(open?w-2:frontage.w-1.1,residential?1.65:a==="Records office"?7.7:9.4);
+ const signH=residential?.62:open?.72:.84;
+ const signY=residential?1.3:open?4.85:Math.min(frontage.top-signH/2-.12,a==="Community clinic"||a==="Dispensary"?5.25:4.85);
  const label=(b.type==="Housing"?String(b.id).padStart(2,"0"):a.toUpperCase()+" "+String(b.id).padStart(2,"0"));
  box(shell,signW+.16,signH+.12,.18,signX,signY,face-.035,dark);
  sign(label,signX,face-.14,signY,shell);
