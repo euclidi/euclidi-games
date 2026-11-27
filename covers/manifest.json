@@ -79,6 +79,22 @@
       800
     ]
   },
+  "innuendo town": {
+    "file": "covers/innuendo-town-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      951,
+      595
+    ],
+    "route": "./innuendo-town/",
+    "selector": "#canvas canvas",
+    "sha256": "eaec5709ce8e6827d9748553e570214a22e4e78cd528d0e8fe6c360de895226c",
+    "source": "7c8f5e322ef52bb96835455bd97860c0b92d792e",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
   "night watch shooter fps": {
     "file": "covers/night-watch-gameplay.webp",
     "kind": "gameplay",
