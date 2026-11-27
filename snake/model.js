@@ -1,3 +1,12 @@
+function bendGrass(plants,body,food,dt){
+ let contact=0;const blend=1-Math.exp(-dt*19),recover=Math.exp(-dt*3.7);
+ const points=body.concat(food.filter(p=>p.type!=="pellet"));
+ for(const p of plants){let bx=p.bx||0,by=p.by||0,nearest=null,d2=196;
+ for(const q of points){const dx=p.x-q.x,dy=p.y-q.y,dist=dx*dx+dy*dy;if(dist<d2){nearest={dx,dy};d2=dist}}
+ if(nearest){const d=Math.sqrt(d2),a=d>.01?Math.atan2(nearest.dy,nearest.dx):(p.v||0)*1.57,force=1-d/14;bx+=(Math.cos(a)*force*8-bx)*blend;by+=(Math.sin(a)*force*8-by)*blend;contact+=force}
+ else{bx*=recover;by*=recover}p.bx=bx;p.by=by;
+ }return Math.min(1,contact/4);
+}
 /* SNAKE LCD Organic v0.1 — deterministic simulation, no browser dependencies. */
 function createGame(cfg, seed=123456, saved=null) {
   const W=480,H=320,C=16, TAU=Math.PI*2, clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -20,6 +29,9 @@ function createGame(cfg, seed=123456, saved=null) {
     for(let i=0;i<(classic&&cfg.food==="pellets"?1:classic?3:7);i++)newFood();
   }
   if(!saved)seedWorld();
+  // Populate local grass clusters without changing existing rock or prey spawn decisions.
+  if(!saved&&cfg.habitat==="grassland"){const origins=s.plants.slice();for(let i=0;i<origins.length;i+=2){let p=origins[i];for(let k=0;k<3;k++){let a=rand()*TAU,d=5+rand()*15,x=p.x+Math.cos(a)*d,y=p.y+Math.sin(a)*d;if(x>4&&x<W-4&&y>4&&y<H-4&&!solid(x,y,4))s.plants.push({x,y,v:Math.floor(rand()*4),size:4+rand()*9,bx:0,by:0})}}}
+  let grassClock=0;
   function emit(e){s.event=e}
   function die(reason){s.dead=reason;emit("death")}
   function eat(i){let f=s.food[i];if(!f)return;s.food.splice(i,1);const prey=f.type!=="pellet",amount=prey?2:1;s.score+=prey?25:10;s.caught++;s.hunger=clamp(s.hunger+(prey?30:12),0,100);s.bolus.push({age:0,size:prey?1:.35});if(classic)s.pending+=amount;else s.goal+=amount*12;if(cfg.growth==="instant"&&!classic)s.length=s.goal;emit(prey?"prey":"eat");newFood()}
@@ -60,7 +72,7 @@ function createGame(cfg, seed=123456, saved=null) {
     const fi=s.food.findIndex(f=>distance(f,h)<(f.type==="pellet"?8:10));if(fi>=0)eat(fi);
     if(cfg.mode!=="classic"){s.hunger=Math.max(0,s.hunger-dt*(cfg.difficulty==="hard"?2.1:cfg.difficulty==="easy"?.65:1.15));if(s.hunger===0){s.health-=dt*5;if(s.health<=0)die("Starvation")}}
   }
-  function step(dt){if(s.dead)return;s.age+=dt;s.bolus=s.bolus.filter(b=>(b.age+=dt)<15);preyStep(dt);if(classic){s.acc+=dt;let period=gridPeriod();while(s.acc>=period&&!s.dead){s.acc-=period;gridStep()}if(!s.dead){let fi=s.food.findIndex(f=>Math.floor(f.x/C)===s.cells[0].x&&Math.floor(f.y/C)===s.cells[0].y);if(fi>=0)eat(fi)}}else organicStep(dt)}
+  function step(dt){if(s.dead)return;s.age+=dt;s.bolus=s.bolus.filter(b=>(b.age+=dt)<15);preyStep(dt);if(classic){s.acc+=dt;let period=gridPeriod();while(s.acc>=period&&!s.dead){s.acc-=period;gridStep()}if(!s.dead){let fi=s.food.findIndex(f=>Math.floor(f.x/C)===s.cells[0].x&&Math.floor(f.y/C)===s.cells[0].y);if(fi>=0)eat(fi)}}else{organicStep(dt);grassClock+=dt;if(grassClock>=1/30){if(cfg.habitat==="grassland"||cfg.habitat==="wetlands")s.grassContact=bendGrass(s.plants,s.body,s.food,grassClock);grassClock=0}}}
   function gridPeriod(){return Math.max(.065,16/(Number(cfg.speed)+Math.min(85,s.score*.11)))}
   function visualBody(){if(!classic)return s.body;let t=clamp(s.acc/gridPeriod(),0,1);return s.cells.map((p,i)=>{let old=s.prevCells[i]||p,dx=p.x-old.x,dy=p.y-old.y;if(Math.abs(dx)>1||Math.abs(dy)>1)return{x:p.x*C+8,y:p.y*C+8};return{x:(old.x+dx*t)*C+8,y:(old.y+dy*t)*C+8}})}
   return {s,cfg,classic,step,steer,visualBody,gridPeriod,consume:()=>{let e=s.event;s.event="";return e},serialize:()=>JSON.parse(JSON.stringify(s))};

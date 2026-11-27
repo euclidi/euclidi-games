@@ -208,3 +208,18 @@ aside,html[data-layout=mobile] aside{display:none}
 .lcd-color{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}.lcd-color label{display:grid;font-size:8px;text-align:center;gap:1px}.lcd-color input{width:100%;min-width:0;accent-color:var(--ink);margin:0}
 #settingsNote{margin:0;font-size:.76em;line-height:1.2;min-height:0}.lcd-settings-foot{border-top:1px solid var(--ink);padding-top:3px}.lcd-settings-foot button:first-child{margin-right:auto}
 @media(max-height:420px) and (orientation:landscape){.lcd-settings{gap:2px;padding:4px;font-size:11px}.lcd-settings button{min-height:22px;padding:2px 4px}.lcd-setting-row{min-height:25px;padding:1px 0}.lcd-tabs{padding-bottom:2px}.lcd-cycle button{min-height:22px}#settingsNote{font-size:9px}}
+
+/* 0.1.6 live preview and classic boot */
+.settings-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:8px;min-width:0;min-height:0;overflow:hidden}
+.settings-workspace.no-preview{grid-template-columns:minmax(0,1fr)}
+.settings-preview{display:flex;flex-direction:column;justify-content:center;min-width:0;min-height:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--ink) 55%,var(--paper));padding:4px;gap:3px}
+.settings-preview[hidden]{display:none}
+.preview-heading{display:flex;align-items:center;justify-content:space-between;gap:3px;font-size:9px;flex-wrap:wrap}
+#previewLabel{font-size:8px;opacity:.8}
+#previewMode{font-size:9px;min-height:20px;padding:1px 3px}
+#previewCanvas{width:100%;height:auto;max-height:100%;aspect-ratio:3/2;object-fit:contain;image-rendering:pixelated;min-height:0;display:block}
+#lcdSettings #options{height:100%;min-width:0}
+.classic-boot{position:absolute;inset:0;z-index:2;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;font-family:monospace;font-weight:800;letter-spacing:.12em}
+.classic-boot[hidden]{display:none}.classic-boot strong{font-size:clamp(32px,9vw,84px);letter-spacing:.15em}.classic-boot span,.classic-boot small{font-size:11px}
+@media(orientation:portrait){.settings-workspace{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,.85fr) minmax(0,1fr);gap:5px}.settings-workspace.no-preview{grid-template-rows:minmax(0,1fr)}.settings-preview{align-items:center}.preview-heading{width:100%}#previewCanvas{height:calc(100% - 24px);width:auto;max-width:100%}}
+@media(orientation:landscape) and (max-height:420px){.settings-workspace{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:5px}.settings-preview{padding:2px}.preview-heading{font-size:8px}.lcd-setting-row{grid-template-columns:minmax(0,1fr) minmax(105px,50%)}}

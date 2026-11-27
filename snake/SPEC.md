@@ -19,3 +19,7 @@ Compact categorized settings with live display/audio controls and next-game conf
 ## Stationary LCD amendment
 
 User requested complete removal of tilt, maximum aspect-preserving playfield, and in-LCD settings. Supersedes earlier motion requirements. No sensor listeners, no separate modal or native dropdown/color popup; responsive stage fit at 3:2.
+
+## Mode presentation and preview amendment
+
+Visual settings must have an on-LCD live preview. Classic has distinct segmented model, faint grid, vintage startup and retro music; organic survival has atmosphere, spatial proximity cues for prey, grass bend/recovery and directional contact shadows. No tilt; retain 3:2 fit. Original retro-inspired music and boot rather than copyrighted historical recordings.
