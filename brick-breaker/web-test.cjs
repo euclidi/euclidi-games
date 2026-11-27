@@ -2,7 +2,7 @@ const {chromium}=require('playwright');
 (async()=>{const browser=await chromium.launch({headless:true,args:['--no-sandbox']});try{const page=await browser.newPage({viewport:{width:1280,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:8765/brick-breaker/?test=1');await page.waitForFunction(()=>window.BrickBreaker?.snapshot().state==='ready',{},{timeout:45000});
 const snap=()=>page.evaluate(()=>BrickBreaker.snapshot());
 const check=(v,m)=>{if(!v)throw Error(m);console.log('PASS',m)};
-let s=await snap();check(s.bricks>50&&s.lives===3&&s.hz===120,'initial physical world');await page.locator('#launch').click();check((await snap()).state==='playing','launch');
+let s=await snap();check(s.bricks>35&&s.lives===3&&s.hz===120&&s.plan==="THE HANGING FURNACE",'initial physical world');await page.locator('#launch').click();check((await snap()).state==='playing','launch');
 await page.evaluate(()=>{BrickBreaker.test.hit();BrickBreaker.test.advance(90)});s=await snap();check(s.stats.contacts>0,'actual ball-brick contact');
 await page.evaluate(()=>{BrickBreaker.test.clear()});check((await snap()).state==='upgrade','clear chamber upgrade');await page.locator('#choices button').first().click();check((await snap()).wave===2,'next chamber');
 await page.evaluate(()=>BrickBreaker.test.lose());check((await snap()).lives===2,'ball loss consumes life');
