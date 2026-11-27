@@ -1,0 +1,20 @@
+{
+  "source": "https://lpc.opengameart.org/content/64x-textures-an-overlays",
+  "author": "FacadeGaikan",
+  "license": "CC0 per publisher",
+  "archive_sha256": "dc0e33a51aae29427ac05c68f4628bdd63adbc8079d1e8538f5eda155bcfd194",
+  "files": {
+    "Bricks.png": "d6d025b129ef74ce6f2fef60f901bec26b7aa81d73f011bb0a4fb6ef79a2aaa1",
+    "Stone.png": "06d620f6d0c02d1f2b1fa0dabf78f8f3a39ad022f2483364e18d3e75541bd77c",
+    "Planks.png": "9543f0cd1b45c430a918753ae5613220190823de8dbf5933d7b70b08766c9dfd",
+    "Glass.png": "0461384303888c7f094dbc35899289511181397016dd175fceb9bec46e6198ab",
+    "Iron.png": "5112c278fa8ccbf6185eccad593a2817e4d334e1748431d99a613e49fd4c3e79",
+    "Sand.png": "106729fd8e7ed08fb32bc47d9c4382f1e47e88ef656eaaeb31f381c1846b8a64",
+    "WaterF1.png": "4ed0de330b429e89e9daaaf9a8b29663ec4be2e5b8215684a8eabbfd5a33f6b5",
+    "WoolSnow.png": "14d505dc038bd35e319c55a353bc89ba79ef1d8f38eddafcbd7a08254d836e15",
+    "CrateOver.png": "fc2b9fd8639cd41b0a3c68f51eceab871e0ef193ef5b7ac25024c0ba17c83e80",
+    "LavaF1.png": "51ddb6f3d7d0558b425ec3bc7c7703c99445c43a6dda5ec41a0918f7e3e7f9eb",
+    "Mud.png": "34950c00c7e9c775889964b12489b67f8e409dbfe62e88bdad6cde5810fb6846",
+    "Ice.png": "6da17d8ec9290db7f745022cdf9539789cd1d1beae2aa21b65be884430462120"
+  }
+}
