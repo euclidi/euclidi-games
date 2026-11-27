@@ -1,4 +1,4 @@
-# Dummy Lab — W1.14
+# Dummy Lab — W1.15
 
 Observe an autonomous articulated humanoid from a furnished laboratory, inspect its behavior and interact with it from the observation area.
 
@@ -37,3 +37,5 @@ Open Actions, select a rubber ball, block or cylinder and Spawn; choose pick up 
 ## Observation room
 
 Walk near a chair or vending machine. F / R3 / on-screen interaction: sit, stand, dispense or collect. Seated A/D or left stick spins the chair; mouse/right stick looks independently. R / L3 cycles vending selection near the machine, otherwise toggles tiptoe. Actions includes tiptoe toggle. Vending stock resets with game reset. [Reference attribution](THIRD_PARTY.md).
+
+Actions → Physical tests → Motion: Compliant switches to experimental dynamic joint drive. Nudge/Shove apply physical impulses while active. Toggle off for compliant motion; loss of balance triggers passive fall then approximate recovery. Diagnostics report foot contact force, COM, motor effort, assist force and joint anchor error.

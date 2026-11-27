@@ -1,4 +1,4 @@
-# Dummy Lab — W1.14 — Current status
+# Dummy Lab — W1.15 — Current status
 
 Neutral anatomy and stance revision (2026-11-27). W1.8 URL retained as the established catalog route; previous source is available in Git history. The cover is not changed.
 
@@ -41,3 +41,7 @@ Confirmed two W1.13 browser audit startup timeouts (runs 45997056292 and 4599719
 ## W1.14 compliant articulation / continuous gait
 
 Replaced step-midpoint-driven pelvis motion with acceleration-limited continuous translation and yaw; adaptive swing placement, stance load transfer, foot roll and pelvis-height dynamics. Added pelvic, thoracic, atlas, clavicle, scapular and forearm twist articulation; split torso/forearm geometry and solve IK in shoulder/hip frames. Local angular spring-damper state retains velocity between target poses, with feet re-solved and selected contact hands re-solved after compliance. Extra lumbar rigid body in falls. Applied compliant articulation to player too. Development CPU Three.js r180 harness with stubbed DOM and physics: 11,520 ticks, 15 action scenarios, 3,199 walking ticks, max rounded per-tick walking speed change 0.03 m/s, largest walking hip reach gap 0.033 m, 57 compliant local transforms. Final write restores outward shoulder abduction; final source syntax parsed, but full final-source CPU rerun and browser/Rapier tests remain pending. Normal locomotion is still a compliant target-driven hybrid rather than an active ragdoll. Contact/grasp/get-up are approximate. Cover unchanged.
+
+## W1.15 experimental active physics
+
+Added opt-in real Rapier dynamic articulated rig (19 bodies, 18 spherical constraints; pelvis, lumbar, thorax, neck, head, arms, feet and toes). Equal-and-opposite angular PD motor impulses and bounded swing-foot internal impulses. Contact-normal/impulse-based foot support, mass-weighted COM and capture point, bounded root force and orientation assistance with live diagnostics, actual disturbance impulses and passive fall transfer. Soft limits are target-relative excursion resistance, not hard anatomical hinge limits. Existing compliant motion remains default; active mode is experimental and may fall, with prior approximate recovery returning to compliant. No simulated muscle tissue, force-driven player, force-driven grip or contact-driven get-up. Syntax parsed locally; pinned Rapier runtime/browser acceptance pending. Cover unchanged.

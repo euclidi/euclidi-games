@@ -1,4 +1,4 @@
-name: Dummy Lab W1.13 browser validation
+name: Dummy Lab W1.15 browser validation
 on:
   push:
     branches: [main]
@@ -20,6 +20,7 @@ jobs:
           node dummy-lab-w18/locomotion-audit.mjs
           node --check dummy-lab-w18/gait.js
           node --check dummy-lab-w18/behavior.js
+          node --check dummy-lab-w18/active.js
           node --check dummy-lab-w18/vending.js
           node --check dummy-lab-w18/main.js
           node --check dummy-lab-w18/monitors.js
