@@ -1,0 +1,80 @@
+{
+  "method": "All official helper vertices evaluated on actual three rig poses. Point projection tests only; not garment simulation or visual validation.",
+  "result": {
+    "neutral": {
+      "signedVolume": 0.057738395359111336,
+      "helpers": {
+        "helper-tights": {
+          "vertices": 2674,
+          "inside": 18,
+          "beforeBelow3mm": 234,
+          "corrected": 234,
+          "failed": 14,
+          "minSignedDistance": -0.005488594193599001,
+          "minAfter": -0.0009956929666891684,
+          "maxMove": 0.007441518913097271
+        },
+        "helper-skirt": {
+          "vertices": 720,
+          "inside": 2,
+          "beforeBelow3mm": 11,
+          "corrected": 11,
+          "failed": 0,
+          "minSignedDistance": -0.0007943439540924828,
+          "minAfter": 0.0030009999999999586,
+          "maxMove": 0.003795343954092477
+        }
+      }
+    },
+    "wide": {
+      "signedVolume": 0.058035638098215124,
+      "helpers": {
+        "helper-tights": {
+          "vertices": 2674,
+          "inside": 26,
+          "beforeBelow3mm": 234,
+          "corrected": 234,
+          "failed": 14,
+          "minSignedDistance": -0.005488594193599028,
+          "minAfter": -0.0009956929666893196,
+          "maxMove": 0.007441518913097386
+        },
+        "helper-skirt": {
+          "vertices": 720,
+          "inside": 4,
+          "beforeBelow3mm": 14,
+          "corrected": 14,
+          "failed": 0,
+          "minSignedDistance": -0.0039066686703657155,
+          "minAfter": 0.003000999999999957,
+          "maxMove": 0.0069076686703657105
+        }
+      }
+    },
+    "shift": {
+      "signedVolume": 0.05768076362830486,
+      "helpers": {
+        "helper-tights": {
+          "vertices": 2674,
+          "inside": 35,
+          "beforeBelow3mm": 259,
+          "corrected": 259,
+          "failed": 14,
+          "minSignedDistance": -0.006509266698299723,
+          "minAfter": -0.00101534344113019,
+          "maxMove": 0.009510266698299722
+        },
+        "helper-skirt": {
+          "vertices": 720,
+          "inside": 1,
+          "beforeBelow3mm": 12,
+          "corrected": 12,
+          "failed": 0,
+          "minSignedDistance": -0.00023370645943780998,
+          "minAfter": 0.003000999999999979,
+          "maxMove": 0.0032347064594378063
+        }
+      }
+    }
+  }
+}
