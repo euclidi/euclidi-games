@@ -5,6 +5,7 @@ import init,{Engine} from '../engine/pkg/creatture_core.js';
 import './style.css';
 import {HabitatAudio} from './audio';
 import {groundMaterial,makeTerrain,skinTexture} from './terrain';
+import {AnatomyField,bodyProfile,organProfile} from './anatomy';
 const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 const names=['Membrane','Nutrients','Water','Light','Minerals','Muscle','Nerves','Microbes','Spores','Heat','Catalyst','Resonance'];
 const marks=['◉','❋','≈','✳','◇','≋','⋔','∴','⁕','♨','⊕','◌'];
@@ -33,14 +34,15 @@ function applyPanorama(id:number){requestedPanorama=id;const cached=panoramas.ge
 const body=new THREE.Group();scene.add(body);
 const colonies=new THREE.Group();scene.add(colonies);const companionMeshes=new Map<number,THREE.Mesh>();const companionGeometry=new THREE.SphereGeometry(1,40,28);
 const skin=new THREE.MeshPhysicalMaterial({color:colors[0],roughness:.44,clearcoat:.22,clearcoatRoughness:.34,transparent:true,opacity:1,bumpMap:skinTexture(),bumpScale:.025});
-const surface=new MarchingCubes(40,skin,true,false,24000);surface.isolation=72;surface.scale.setScalar(1.8);surface.castShadow=true;surface.receiveShadow=true;body.add(surface);
+const surface=new MarchingCubes(48,skin,true,false,32000);surface.isolation=72;surface.scale.setScalar(1.8);surface.castShadow=true;surface.receiveShadow=true;body.add(surface);const anatomy=new AnatomyField(surface);
+const mouthMaterial=new THREE.MeshStandardMaterial({color:0x493628,roughness:.78});const mouth=new THREE.Mesh(new THREE.BufferGeometry(),mouthMaterial);mouth.visible=false;body.add(mouth);
 const eyes=new THREE.Group();body.add(eyes);
 const iris=new THREE.MeshPhysicalMaterial({color:0xc7b77a,roughness:.28,clearcoat:.8});
 const pupil=new THREE.MeshStandardMaterial({color:0x111811,roughness:.15});
-const eyeLids:THREE.Mesh[]=[];const pupils:THREE.Mesh[]=[];const eyeAnchors=[new THREE.Vector3(),new THREE.Vector3()];
+const eyeLids:THREE.Mesh[]=[];const pupils:THREE.Mesh[]=[];const eyeAnchors=[new THREE.Vector3(),new THREE.Vector3()];let eyeAttached=false;
 for(const side of [-1,1]){
- const eye=new THREE.Mesh(new THREE.SphereGeometry(.15,32,24),iris);eye.position.set(side*.22,.19,.47);eye.scale.set(1,.93,.8);eyes.add(eye);eyeLids.push(eye);
- const dot=new THREE.Mesh(new THREE.SphereGeometry(.072,24,16),pupil);dot.position.set(side*.22,.19,.57);dot.scale.z=.5;eyes.add(dot);pupils.push(dot);
+ const eye=new THREE.Mesh(new THREE.SphereGeometry(.122,32,24),iris);eye.position.set(side*.22,.19,.47);eye.scale.set(1,.93,.8);eyes.add(eye);eyeLids.push(eye);
+ const dot=new THREE.Mesh(new THREE.SphereGeometry(.058,24,16),pupil);dot.position.set(side*.22,.19,.57);dot.scale.z=.5;eyes.add(dot);pupils.push(dot);
 }
 const internal=new THREE.Group();body.add(internal);internal.visible=false;
 const edges=[[0,1],[0,2],[0,4],[0,9],[1,5],[1,7],[1,10],[2,3],[2,5],[2,6],[4,5],[5,6],[6,10],[6,11],[7,8],[8,3],[9,10]];
@@ -121,37 +123,52 @@ function draw(now:number){
   const target=mode==='free'?state.position:[0,.68,0];body.position.lerp(new THREE.Vector3(target[0],Math.max(.58,Math.min(1.7,target[1])),target[2]),Math.min(1,dt*4));
   body.rotation.y=mode==='free'&&state.mechanics.enabled?0:Math.sin(t*.6+state.genome[0]*3)*.16+state.neural*.18;
   if(++tissueFrame%2===0){
-   surface.reset();
-   const balls:{x:number,y:number,z:number,s:number}[]=[];
-   const ball=(p:number[],r:number)=>{const x=.5+p[0]/3.6,y=.5+p[1]/3.6,z=.5+p[2]/3.6,s=Math.pow(r/3.6,2)*84;if(x>.025&&x<.975&&y>.025&&y<.975&&z>.025&&z<.975){surface.addBall(x,y,z,s,12);balls.push({x,y,z,s});}};
-   const nodes=state.morphology.nodes;
+   anatomy.clear();
+   const nodes=state.morphology.nodes,w=state.world_id,root=nodes[0];
+   const axes=bodyProfile(w,root.radius,state.genome);
+   anatomy.ellipsoid([0,0,0],axes,.05);
    for(const n of nodes){
-    if(!n.exterior||(n.organ===5&&mode==='free'&&state.mechanics.enabled))continue;
-    const p=n.pos.slice();if(n.id!==0){p[1]+=Math.sin(t*1.6+n.id*.8)*.016*n.maturity;p[0]+=Math.sin(t*.9+n.id*.7)*.012*n.maturity;}
-    const r=n.radius*(n.id===0?1:Math.min(1,.35+pose[n.organ]*.7));
-    ball(p,r);
-    if(n.id!==0){const par=nodes[n.parent];const distance=Math.hypot(...p.map((x,i)=>x-par.pos[i]));const count=Math.min(5,Math.max(1,Math.ceil(distance/Math.max(.09,r*.9))));for(let j=1;j<count;j++){const f=j/count;ball(p.map((x,i)=>par.pos[i]*(1-f)+x*f),Math.max(.035,r*(.75+.25*f)));}}
+    if(n.id===0||!n.exterior||(n.organ===5&&mode==='free'&&state.mechanics.enabled))continue;
+    const p=n.pos.slice(),m=n.maturity;
+    p[1]+=Math.sin(t*1.6+n.id*.8)*.017*m;p[0]+=Math.sin(t*.9+n.id*.7)*.012*m;
+    const r=n.radius*Math.min(1,.64+pose[n.organ]*.35);
+    const par=nodes[n.parent],from=par.organ===n.organ||!par.exterior?[0,0,0]:par.pos;
+    const paired=par.organ===n.organ;
+    const attach=from.map((v,i)=>v+(p[i]-v)*.22);
+    // Narrow flexible stems leave the distinct lobe visible instead of filling
+    // the space between every organ with spherical mass.
+    const stem=Math.min(r*.74,.11);
+    anatomy.link(attach,p,stem*1.15,stem, n.organ===2?[1,.52,1]:[1,1,1]);
+    anatomy.ellipsoid(p,organProfile(n.organ,r,w),.045);
+    if(n.organ===5&&mode!=='free'){
+     const foot=[p[0]*1.07,p[1]-.065,p[2]+.12];
+     anatomy.link(p,foot,r*.70,r*.68);anatomy.ellipsoid(foot,[r*.82,r*.47,r*1.12],.035);
+    }
+    if(n.organ===11&&m>.12){const tip=[p[0]*1.12,p[1]+.14+m*.12,p[2]+.035];anatomy.link(p,tip,r*.58,.028);anatomy.ellipsoid(tip,[.055,.06,.055],.025);}
+    if(n.organ===8&&m>.16&&w===2){for(let k=0;k<3;k++){const a=k*2.094+n.id;const q=[p[0]+Math.cos(a)*r*.8,p[1]+r*.36,p[2]+Math.sin(a)*r*.8];anatomy.link(p,q,r*.45,r*.33);anatomy.ellipsoid(q,[r*.53,r*.35,r*.53],.03);}}
    }
-   // Muscular appendages use physical node positions in free cultivation.
    if(mode==='free'&&state.mechanics.enabled&&pose[5]>.03)for(const chain of state.mechanics.limbs){
-    let prev:number[]|null=null;for(let j=0;j<chain.length;j++){const p=chain[j].map((v,k)=>v-body.position.getComponent(k));const r=Math.max(.07,.13+pose[5]*.03-j*.009);ball(p,r);if(prev)ball(p.map((v,k)=>(v+prev![k])*.5),r*.87);prev=p;}
+    let prev:number[]|null=null;for(let j=0;j<chain.length;j++){const p=chain[j].map((v,k)=>v-body.position.getComponent(k));const r=Math.max(.065,.13+pose[5]*.03-j*.009);anatomy.ellipsoid(p,[r,r*.87,r],.03);if(prev)anatomy.link(prev,p,r,r);prev=p;}
    }
-   // Find the visible implicit surface at the eye locations, instead of hard-coded
-   // offsets. The equation matches Three.js MarchingCubes.addBall.
-   const field=(x:number,y:number,z:number)=>balls.reduce((sum,b)=>sum+Math.max(0,b.s/(.000001+(x-b.x)**2+(y-b.y)**2+(z-b.z)**2)-12),0);
-   for(let i=0;i<2;i++){const sign=i===0?-1:1;const x=.5+sign*(.18+state.genome[0]*.045)/3.6;const y=.5+(.17+pose[6]*.025)/3.6;let z=.5;
-    for(let q=.94;q>=.50;q-=.004){if(field(x,y,q)>=surface.isolation){z=q;break;}}
-    eyeAnchors[i].set((x-.5)*3.6,(y-.5)*3.6,(z-.5)*3.6+.025);
-   }
-   surface.update();
+   const head=nodes.find(n=>n.organ===6&&n.exterior);
+   eyeAttached=!!head&&head.maturity>.06&&[0,1,4,5].includes(w);
+   if(head&&eyeAttached){
+    const spacing=Math.min(.16,head.radius*.58),eyeY=head.pos[1]+head.radius*.24;
+    for(let i=0;i<2;i++){const x=head.pos[0]+(i===0?-1:1)*spacing;const z=anatomy.front(x,eyeY);if(z===null){eyeAttached=false;break;}eyeAnchors[i].set(x,eyeY,z-.048);}
+    const points:THREE.Vector3[]=[];const width=head.radius*.70;const open=state.network.action===0?.045:state.network.action===1?.020:.012;
+    for(let i=0;i<=10;i++){const u=(i/10)*2-1,x=head.pos[0]+u*width,y=head.pos[1]-head.radius*.37+(state.network.action===1?-1:1)*.028*(1-u*u),z=anatomy.front(x,y);if(z!==null)points.push(new THREE.Vector3(x,y,z+.008));}
+    mouth.visible=eyeAttached&&points.length>=4;
+    if(mouth.visible){mouth.geometry.dispose();mouth.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),12,open*.30,6,false);}
+   }else mouth.visible=false;
+   anatomy.finish();
   }
-  eyes.visible=pose[6]>.09&&state.world_id!==2;eyes.scale.setScalar(1);
+  eyes.visible=eyeAttached;eyes.scale.setScalar(1);
   const alert=state.network.action===1?1:state.network.action===2?.45:0;
   const sleepy=state.network.action===4?.55:0;
   const blink=reduced?0:Math.pow(Math.max(0,Math.cos(t*(.9+state.genome[2]*.6)+state.genome[2]*5)),42);
-  const eyeSize=Math.min(1.15,.64+pose[6]*.19);
-  eyeLids.forEach((e,i)=>{const anchor=eyeAnchors[i];const yScale=(1-.90*blink)*(1-.42*sleepy+.1*alert);e.position.copy(anchor);e.scale.set(eyeSize,eyeSize*.93*yScale,eyeSize*.8);
-   const d=pupils[i];d.visible=blink<.72;d.position.copy(anchor);d.position.z+=.104*eyeSize;d.position.x+=Math.sin(t*.8+state.neural)*.023*eyeSize;d.position.y+=alert*.012;d.scale.set(eyeSize,eyeSize*yScale,eyeSize*.5);
+  const eyeSize=Math.min(1.02,.70+pose[6]*.12);
+  eyeLids.forEach((e,i)=>{const anchor=eyeAnchors[i];const yScale=(1-.90*blink)*(1-.42*sleepy+.1*alert);e.position.copy(anchor);e.scale.set(eyeSize,eyeSize*.93*yScale,eyeSize*.75);
+   const d=pupils[i];d.visible=blink<.72;d.position.copy(anchor);d.position.z+=.081*eyeSize;d.position.x+=Math.sin(t*.8+state.neural)*.013*eyeSize;d.position.y+=alert*.008;d.scale.set(eyeSize,eyeSize*yScale,eyeSize*.42);
   });
   organMeshes.forEach((m,i)=>{m.visible=a[i]>.03;m.scale.setScalar((.65+a[i]*.35)*(.6+.4*state.network.integrity[i]));const n=state.morphology.nodes.find(n=>n.organ===i);if(n)m.position.set(n.pos[0]*.67,n.pos[1]*.67,n.pos[2]*.67);else m.position.set(0,0,0);});
   pipes.forEach((m,i)=>{const [x,y]=edges[i],p=organMeshes[x].position,q=organMeshes[y].position,d=q.clone().sub(p);m.visible=a[x]>.03&&a[y]>.03;m.position.copy(p).add(q).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());m.scale.set(1+Math.abs(state.network.flux[i])*500,d.length(),1+Math.abs(state.network.flux[i])*500);m.material.color.setHex(state.network.flux[i]>=0?0xc58b6d:0x6399b1);});

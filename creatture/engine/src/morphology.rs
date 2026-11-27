@@ -30,8 +30,8 @@ impl Morphology{
   // Constrained grammar: each organ can create an anchored primary structure and, as
   // its regulatory signal matures, a supported secondary structure. Nodes never float.
   self.nodes[0].radius=(0.47+0.045*organs[0]+0.035*organs[1]).min(0.76);
-  let positions:[[f64;3];12]=[[0.,0.1,0.],[0.,-0.12,0.09],[0.,0.,-0.31],[0.,0.39,-0.10],[0.,0.16,-0.36],[0.37,-0.22,0.],[0.,0.26,0.30],[-0.26,0.02,-0.19],[0.,0.34,-0.28],[0.,-0.16,-0.29],[0.19,0.12,0.12],[0.24,0.39,0.12]];
-  let exterior=[true,false,true,true,true,true,false,true,true,false,false,true];
+  let positions:[[f64;3];12]=[[0.,0.1,0.],[0.,-0.12,0.09],[0.62,0.,-0.32],[0.,0.62,-0.15],[0.,0.30,-0.56],[0.72,-0.36,0.18],[0.,0.18,0.67],[-0.55,0.05,-0.35],[0.22,0.76,-0.38],[0.,-0.16,-0.29],[0.19,0.12,0.12],[0.32,0.73,0.35]];
+  let exterior=[true,false,true,true,true,true,true,true,true,false,false,true];
   for i in 1..12{
    if self.regulation[i]<0.025&& !self.nodes.iter().any(|n|n.organ==i){continue;}
    let mut parent=self.nodes.iter().position(|n|n.organ==requirements[i]).unwrap_or(0);
@@ -43,23 +43,23 @@ impl Morphology{
    if w==3{target[1]*=1.25;target[2]*=0.85;}
    if w==4{target[0]*=1.15;target[1]*=0.85;}
    let maturity=self.regulation[i];
-   let target_radius=(0.07+0.20*maturity)*(0.8+0.4*genome[(i+3)%8]);
+   let target_radius=(match i{6=>0.15+0.23*maturity,5=>0.09+0.16*maturity,11=>0.055+0.10*maturity,_=>0.08+0.16*maturity})*(0.8+0.4*genome[(i+3)%8]);
    let index=if let Some(k)=self.nodes.iter().position(|n|n.organ==i){k}else{
     let k=self.nodes.len();let pos=self.nodes[parent].pos;self.nodes.push(Node{id:k,parent,organ:i,pos,radius:0.025,exterior:exterior[i],maturity:0.});k};
    let n=&mut self.nodes[index];
-   let spread=0.55+0.85*maturity;
+   let spread=0.65+0.85*maturity;
    for j in 0..3{let q=target[j]*spread;n.pos[j]+=0.035*(q-n.pos[j]);}
    n.radius+=0.035*(target_radius-n.radius);n.maturity=maturity;
-   if [2,3,5,8,11].contains(&i)&&maturity>0.22 {
+   if [2,3,5,8,11].contains(&i)&&maturity>0.12 {
     // One paired/branching daughter per eligible organ; inherited asymmetry is bounded.
     let branch_id=12+i;
     let k=if let Some(k)=self.nodes.iter().position(|n|n.id!=0&&n.organ==i&&n.parent==index){k}else{
      let k=self.nodes.len();let pos=self.nodes[index].pos;
      self.nodes.push(Node{id:k,parent:index,organ:i,pos,radius:0.025,exterior:true,maturity:0.});k};
-    let root=self.nodes[index].pos;let child=&mut self.nodes[k];
-    let dir=if i==5||i==11{-1.}else{1.};
-    let q=[dir*target[0].abs().max(0.12)*(1.2+genome[branch_id%8]*0.5),target[1]*1.35,target[2]*1.2];
-    for j in 0..3{let goal=(root[j]*0.3+q[j]*0.7)*spread;child.pos[j]+=0.035*(goal-child.pos[j]);}
+    let child=&mut self.nodes[k];
+    let dir=if [2,5,8,11].contains(&i){-1.}else{1.};
+    let q=[dir*target[0].abs().max(0.23)*(1.05+genome[branch_id%8]*0.22),target[1]*1.10,target[2]*1.05];
+    for j in 0..3{let goal=q[j]*spread;child.pos[j]+=0.035*(goal-child.pos[j]);}
     child.radius+=0.035*(target_radius*0.68-child.radius);child.maturity=maturity;
    }
   }
