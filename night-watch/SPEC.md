@@ -9,3 +9,7 @@ Retain simulation, map, controls and local software raycaster. Increase native r
 
 ## Graphics revision 0.3.0
 Replace generic procedural wall and floor art with locally vendored authored raster textures; give each existing compound wing a distinct surface palette. Use authored first-person weapon and pickup sprites, retain hooded sentry sprites and combat behavior. No third-party runtime requests. Preserve original geometry and physics. See asset license and sources.
+
+
+## Mission and artwork revision 0.4.0
+29×23 compound with seven named rooms, a dogleg insertion corridor, side-route armory and infirmary, storage cover, records and extraction. Eight guards with authored directional masked-soldier sprites, movement/aim/fire/pain/death art; box-style supplies and authored scenery. Wall signage and persistent area/objective information. Guard detection requires sight and facing (or nearby visible target), reaction time, and staggered firing. Start protection is geometric, not invulnerability. Retain controls, core weapons and scoring. Acceptance: connected named rooms, legal placement, no spawn exposure or idle damage over 30 seconds, reaction delay, key-gated extraction, browser startup, art loading and layout checks.

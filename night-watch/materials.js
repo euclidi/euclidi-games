@@ -1,5 +1,7 @@
 // Original deterministic 128px raster material atlas and baked, wall-occluded lighting.
 import {W,H,solid,ray} from './core.js';
+import {fixtures} from './level.js';
+export {fixtures};
 export const SIZE=128;
 const hash=(x,y,s=0)=>{let n=Math.imul(x+17,374761393)^Math.imul(y+31,668265263)^Math.imul(s+3,1274126177);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967295};
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -15,7 +17,6 @@ if(ed<2)return [23,29,30];if(ed<4)return tone([65,74,72],x<5||y<5?24:-15);if(y>1
 if(x>15&&x<113&&y>17&&y<98){let seam=x===16||x===112||y===18||y===97;if(seam)return [35,42,41];if(y>36&&y<82&&x>29&&x<98){let r=y%8;if(r<3)return tone([21,28,28],n*.25);if(r===3)return tone([119,126,117],n*.5);return tone([75,86,83],n*.65)}}return tone([83,94,91],n+(noise(x,y,14,seed+8)>.72?8:0))}
 function slab(x,y,seed,ceil=false){let ed=Math.min(x,127-x,y,127-y),n=grain(x,y,seed);if(ed<2)return tone([25,30,29],n*.4);if(ed===2)return tone([66,71,67],n*.5);let base=ceil?[68,75,75]:[80,86,81];if(!ceil&&hash(x,y,seed+7)>.95)n-=16;return tone(base,n+(ceil&&((x%32===0)||(y%32===0))?-11:0))}
 export const atlas={wall:[0,1,2,3].map(s=>tex((x,y)=>masonry(x,y,s))),steel:tex((x,y)=>panel(x,y,12)),floor:[0,1,2,3].map(s=>tex((x,y)=>slab(x,y,s+22))),ceiling:tex((x,y)=>slab(x,y,41,true)),lamp:tex((x,y)=>{let ed=Math.min(x,127-x,y,127-y);if(ed<8)return [37,44,43];if(ed<13)return [92,100,96];if(x>26&&x<102&&y>44&&y<84){return y%9<2?[127,137,126]:[207,222,199]}return [58,65,61]})};
-export const fixtures=[[2.5,2.5],[5.5,4.5],[10.5,2.5],[16.5,3.5],[4.5,7.5],[13.5,6.5],[8.5,6.5],[2.5,10.5],[5.5,12.5],[10.5,9.5],[16.5,12.5]];
 const fixtureKeys=new Uint8Array(W*H);for(let [x,y] of fixtures)fixtureKeys[Math.floor(y)*W+Math.floor(x)]=1;
 export function isFixture(x,y){return x>=0&&y>=0&&x<W&&y<H&&fixtureKeys[y*W+x]===1}
 const R=4,LW=W*R+1,LH=H*R+1,light=new Float32Array(LW*LH);

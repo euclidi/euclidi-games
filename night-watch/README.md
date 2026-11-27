@@ -1,6 +1,6 @@
 # Night Watch
 
-Standalone retro first-person shooter, version 0.3.0. Explore a compact compound, collect weapons and supplies, fight hooded sentries, recover a keycard and extract.
+Standalone retro first-person shooter, version 0.4.0. Mission 01: Relay Station. Enter through a safe insertion vestibule, advance through security and the storage hall, find the access card in records, then extract. Optional armory and infirmary supply rooms. Authored masked-guard sprites replace the original hooded art.
 
 [Play](https://euclidi.github.io/euclidi-games/night-watch/) · [Catalog](https://euclidi.github.io/euclidi-games/) · [Specification](SPEC.md) · [Roadmap](ROADMAP.md) · [Status](STATUS.md)
 
