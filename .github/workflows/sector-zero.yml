@@ -1,0 +1,75 @@
+name: Sector Zero acceptance
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sector-zero/**'
+      - '.github/workflows/sector-zero.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sector-zero-acceptance
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Population and metro logic
+        run: node sector-zero/tests/overhaul.mjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.51.1
+          npx playwright install --with-deps chromium
+      - name: Metro and camera desktop/mobile checks
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/sector-zero-http.log 2>&1 &
+          SERVER=$!
+          trap 'kill "$SERVER" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8765/sector-zero/ >/dev/null && break; sleep 1; done
+          mkdir -p sector-zero-audit
+          node --input-type=module <<'JS'
+          import {chromium} from 'playwright';
+          import assert from 'node:assert/strict';
+          const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+          for(const mobile of [false,true]){
+            const p=await browser.newPage({viewport:mobile?{width:390,height:844}:{width:1280,height:800},isMobile:mobile,hasTouch:mobile});
+            const errors=[];p.on('pageerror',e=>errors.push(e.message));
+            try{
+              const res=await p.goto('http://127.0.0.1:8765/sector-zero/',{waitUntil:'domcontentloaded'});
+              assert(res?.ok());await p.waitForFunction(()=>window.sectorZeroAudit?.().ready,{},{timeout:60000});
+              await p.locator('#boot').waitFor({state:'hidden'});await p.locator('[data-speed="0"]').click();
+              await p.waitForFunction(()=>window.sectorZeroAudit().render.frame>5);
+              const start=await p.evaluate(()=>window.sectorZeroAudit());
+              assert.equal(start.population,1000);assert.equal(start.vehicles,150);assert(start.render.drawCalls>0);
+              await p.screenshot({path:'sector-zero-audit/'+(mobile?'mobile':'desktop')+'-surface.png'});
+              await p.getByRole('button',{name:'METRO WALK',exact:true}).click();
+              await p.locator('#metro-choice').selectOption('5');await p.locator('#metro-enter').click();
+              await p.waitForFunction(()=>{const a=window.sectorZeroAudit();return a.metro?.label.includes('Central')&&a.underground&&a.camera.zoom===32&&a.camera.x>4;});
+              const before=await p.evaluate(()=>window.sectorZeroAudit().camera);
+              if(mobile)assert(await p.locator('#touchwalk').isVisible());
+              else{
+                await p.keyboard.down('w');await p.waitForTimeout(700);await p.keyboard.up('w');
+                const after=await p.evaluate(()=>window.sectorZeroAudit().camera);
+                assert(Math.hypot(after.x-before.x,after.z-before.z)>.05,'Metro walking did not move camera');
+              }
+              await p.screenshot({path:'sector-zero-audit/'+(mobile?'mobile':'desktop')+'-metro.png'});
+              await p.locator('#metro-close').click();await p.locator('#lower').click();
+              await p.waitForFunction(()=>!window.sectorZeroAudit().underground&&!window.sectorZeroAudit().metro);
+              assert.equal(errors.length,0,errors.join('; '));
+              console.log('PASS',mobile?'mobile emulation':'desktop',JSON.stringify(start.render));
+            }finally{await p.close();}
+          }
+          await browser.close();
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sector-zero-browser-audit
+          path: sector-zero-audit/
+          if-no-files-found: ignore
