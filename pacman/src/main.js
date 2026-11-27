@@ -2,7 +2,7 @@
 import * as Phaser from './bitmap-runtime.js';
 import {rows,engine,FRUIT_SITE} from './core.js?v=148';
 import {arcadeAudio as audio} from './arcade-audio.js';
-import {deathFrame,deathPixels,ghostBodyRow,ghostFrame,ghostMasks,DEATH_HOLD} from './fidelity.js?v=150';
+import {deathFrame,deathPixels,ghostBodyRow,ghostFrame,ghostMasks,ghostShift,DEATH_HOLD} from './fidelity.js?v=151';
 import {CONTROL_MODES,nextControl,controlVector,drawStick} from './touch-controls.js?v=144';
 import {SETTINGS,normalizeSettings,scoreKey,settingText} from './settings.js?v=146';
 import {choosePad,createGInput,vibratePad} from './ginput.js?v=146';
@@ -21,7 +21,14 @@ function tex(sc,name,w,h,draw){let t=sc.textures.createCanvas(name,w,h);t.contex
 function textures(sc){
 tex(sc,'maze',224,248,c=>{c.fillStyle='#000';c.fillRect(0,0,224,248);const wall=(x,y)=>x>=0&&x<28&&y>=0&&y<31&&rows[y][x]==='#';const ext=(x,y)=>y>=9&&y<=19&&y!==14&&(x<5||x>22)&&!wall(x,y);for(let y=0;y<248;y++)for(let x=0;x<224;x++){let tx=x>>3,ty=y>>3;if(!wall(tx,ty))continue;let d=999,e=999;for(let yy=ty-1;yy<=ty+1;yy++)for(let xx=tx-1;xx<=tx+1;xx++){if(wall(xx,yy))continue;let dx=Math.max(xx*8-x,0,x-(xx*8+7)),dy=Math.max(yy*8-y,0,y-(yy*8+7)),q=dx*dx+dy*dy;if(xx<0||xx>=28||yy<0||yy>=31||ext(xx,yy))e=Math.min(e,q);else d=Math.min(d,q)}if(d>=16&&d<26||e>=1&&e<5)p(c,x,y,blue)}c.fillStyle='#ffb8de';c.fillRect(104,12*8+3,16,2)});
 for(let d=0;d<4;d++)for(let f=0;f<3;f++)tex(sc,'p'+d+f,16,16,c=>{let widths=[6,10,12,12,14,14,14,14,14,14,12,12,10,6];for(let y=0;y<14;y++)for(let x=0;x<14;x++){if(x<(14-widths[y])/2||x>=(14+widths[y])/2)continue;let a=x-6.5,b=y-6.5,k=Math.atan2(b,a)-[-Math.PI/2,Math.PI,Math.PI/2,0][d];k=Math.atan2(Math.sin(k),Math.cos(k));if(f===0||Math.abs(k)>[0,.32,.73][f])p(c,x+1,y+1,yellow)}});
-for(let id=0;id<7;id++)for(let d=0;d<4;d++)for(let f=0;f<ghostMasks.length;f++)tex(sc,'g'+id+d+f,16,16,c=>{if(id!==5){for(let y=0;y<16;y++)for(let x=0;x<16;x++){let row=ghostBodyRow(y,f);if(row[x]==='1')p(c,x,y,id===4?'#2121ff':id===6?'#fff':colors[id])}}if(id===4||id===6){let col=id===4?peach:'#ff0000';for(let a of [4,10]){p(c,a,6,col);p(c,a+1,6,col);p(c,a,7,col);p(c,a+1,7,col)}for(let x=3;x<13;x++)p(c,x,10+((x>>1)&1),col);return}let dx=[0,-1,0,1][d],dy=[-1,0,1,0][d],shift=d===1?-1:d===3?1:0;for(let a of [4+shift,10+shift]){for(let y=4;y<10;y++)for(let x=a-1;x<=a+2;x++)if(!(y===4&&(x===a-1||x===a+2))&&!(y===9&&(x===a-1||x===a+2)))p(c,x,y,'#fff');for(let y=6+dy;y<8+dy;y++)for(let x=a+dx;x<a+dx+2;x++)p(c,x,y,blue)}});
+for(let id=0;id<7;id++)for(let d=0;d<4;d++)for(let f=0;f<ghostMasks.length;f++)tex(sc,'g'+id+d+f,16,16,c=>{
+ // Face pixels follow the exact same material-space deformation as the cloth.
+ const ink=(x,y,col)=>p(c,x+(id===5?0:ghostShift(y,f)),y,col);
+ if(id!==5){for(let y=0;y<16;y++){let row=ghostBodyRow(y,f);for(let x=0;x<16;x++)if(row[x]==='1')p(c,x,y,id===4?'#2121ff':id===6?'#fff':colors[id])}}
+ if(id===4||id===6){let col=id===4?peach:'#ff0000';for(let a of [4,10]){ink(a,6,col);ink(a+1,6,col);ink(a,7,col);ink(a+1,7,col)}for(let x=3;x<13;x++)ink(x,10+((x>>1)&1),col);return}
+ let dx=[0,-1,0,1][d],dy=[-1,0,1,0][d],shift=d===1?-1:d===3?1:0;
+ for(let a of [4+shift,10+shift]){for(let y=4;y<10;y++)for(let x=a-1;x<=a+2;x++)if(!(y===4&&(x===a-1||x===a+2))&&!(y===9&&(x===a-1||x===a+2)))ink(x,y,'#fff');for(let y=6+dy;y<8+dy;y++)for(let x=a+dx;x<a+dx+2;x++)ink(x,y,blue)}
+});
 for(let f=0;f<13;f++)tex(sc,'death'+f,16,16,c=>{for(let [x,y] of deathPixels(f))p(c,x,y,yellow)});
 tex(sc,'dot',2,2,c=>{c.fillStyle=peach;c.fillRect(0,0,2,2)});tex(sc,'power',8,8,c=>{for(let y=0;y<8;y++)for(let x=0;x<8;x++)if((x-3.5)**2+(y-3.5)**2<14)p(c,x,y,peach)});
 const fruits=['..gg..gg......','...ggg.g......','....ggg.......','...g..gg......','..gg...gg.....','.rrrr..rrrr...','rrrrrr.rrrrrr.','rrrrrr.rrrrrr.','rrrrrr.rrrrrr.','.rrrr...rrrr..','..rr.....rr...'];

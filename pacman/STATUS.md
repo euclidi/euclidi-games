@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.5.0.
+**Lifecycle:** Active — Git revision 1.5.1.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.5.1 — unified fabric sway
+
+Replaced the independently varying scallops with a fixed three-lobed material silhouette and a single traveling deformation through the whole body and face. 16 sampled poses include brief extrema holds; cycle length 6.4 tiles instead of 2.4. Constant area and height, exact row mapping, connectivity, face alignment and loop tests passed. This is a stylized fabric sway, not a 3D cloth solver or verified arcade-ROM animation; live visual quality still needs playtesting.
 
 ## Revision 1.5.0 — preserve ghost proportions
 
