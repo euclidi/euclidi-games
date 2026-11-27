@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.5.2.
+**Status:** Active — Git revision 1.5.3.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -33,3 +33,5 @@ Serve the repository with a local HTTP server from its root (for example `python
 No ROM or official recordings bundled; sprite, audio, timing and intermission fidelity not certified 1:1. Intermissions/fruit simplified; measured device and listening tests remain.
 
 Gamepad: browser Gamepad API, standard/legacy mappings, device slot, deadzone and optional supported vibration. D-pad/stick navigates title; A confirms, Start starts/pauses, Back/Select opens menu, B returns, LB/RB switches settings tabs. Legacy mapping is a fallback, not native Windows DirectInput or the GTA GInput plugin.
+
+CUSTOMIZE PAC: choose color, finish, eyes and accessory; animated preview, direction selector and classic reset. Changes save locally and apply to the current or new game without modifying physics or scores.

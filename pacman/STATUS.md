@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.5.2.
+**Lifecycle:** Active — Git revision 1.5.3.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.5.3 — character customization
+
+Compact editor with 10 colors, four finishes, four eye styles, five accessories and an animated four-direction preview. Saved choices update live atlas, title sprite, life icons and death color. Classic default pixel identity and 9,600 cosmetic/direction/frame combinations passed bounds/uniqueness tests. Accessories disappear during death by design. Gameplay/collision rules unchanged. Browser and physical-device visual testing remain pending.
 
 ## Revision 1.5.2 — arcade-style ghost motion
 
