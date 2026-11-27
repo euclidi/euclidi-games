@@ -3,8 +3,8 @@ import * as T from 'three';import {V,Q} from './geometry.js';import {angle,clamp
 // grounded foot targets, displacement-triggered steps, persistent anchors,
 // and pelvis adjustment from foot spread. Original JS implementation.
 export function groundProbe(R,world,p,base=0){
- const y=base+.28;const hit=world.castRay(new R.Ray({x:p.x,y,z:p.z},{x:0,y:-1,z:0}),.56,true,R.QueryFilterFlags.ONLY_FIXED);
- const ground=hit?y-hit.timeOfImpact:base;
+ const y=base+.28;const hit=world.castRay(new R.Ray({x:p.x,y,z:p.z},{x:0,y:-1,z:0}),.56,false,R.QueryFilterFlags.ONLY_FIXED);
+ const t=hit?.timeOfImpact??hit?.toi;const ground=Number.isFinite(t)&&t>.025?y-t:base;
  return clamp(Number.isFinite(ground)?ground:base,base-.12,base+.24)+.075;
 }
 export function targetFoot(center,heading,s,vel,lead,ground,width=.135){
@@ -34,7 +34,7 @@ export function createPlayerGait(r,R,world){
    headings[i]=st.yaw0+angle(st.yaw0,yaw+sign*.055)*p.progress;
    roll[i]=tip?.34:.22*(1-u)-.14*Math.sin(Math.PI*u);roll[1-i]=tip?.42:.32*clamp((u-.55)/.45,0,1);
    weights[1-i]=.5+.5*Math.sin(Math.PI*u);weights[i]=1-weights[1-i];
-   if(u>=1){feet[i].copy(st.to);step=null;cycle++;roll[i]=0}
+   if(u>=1){feet[i].copy(st.to);step=null;cycle++;roll[i]=tip?.34:0}
   }else{for(let i=0;i<2;i++)roll[i]+=(Number(tip)*.42-roll[i])*(1-Math.exp(-dt*12));weights[0]=weights[1]=.5}
   const spread=Math.hypot(feet[0].x-feet[1].x,feet[0].z-feet[1].z),targetHeight=(tip?.925:.894)-clamp((spread-.27)*.14,0,.075)-.012*Math.sin(Math.PI*u);
   let h=targetHeight;

@@ -1,6 +1,6 @@
 import * as T from 'three';import {V,Q,UP} from './geometry.js';import {ACTIONS,GLASS,angle,clamp,smooth,nextAction} from './math.js';import {makeRig,legIK,armIK,curl,contact,neutralArm,rolledLeg} from './rig.js?v=1.11.1';
 import {stepProfile,captureOffset,spring} from './dynamics.js?v=1.11';import {createFallRig} from './physical.js?v=1.11.1';
-import {groundProbe,targetFoot} from './gait.js?v=1.13';
+import {groundProbe,targetFoot} from './gait.js?v=1.13.1';
 const forward=y=>V(Math.sin(y),0,Math.cos(y)),right=y=>V(Math.cos(y),0,-Math.sin(y)),durations={'wander':5,'jog':3,'backpedal':2.2,'sidestep':2.5,'tiptoe':3,'inspect':3,'stretch':3,'scratch head':3.5,'shrug':2,'wave':3,'inspect hands':3,'hands on hips':3,'dance':5,'crouch':3,'look at player':3,'approach player':4,'retreat':3,'startle':1,'brace':1.5,'duck':1.5,'avoid prop':2,'knock on glass':4,'head tilt':3,'hands on knees':4.5,'jump':2.2,'exercise':8,'wall push-ups':8,'handstand push-ups':10,'pick up item':5,'carry item':4,'throw item':2.6,'drop item':1.6,'recover':2.8,'stumble':1.5};
 const moving=new Set(['wander','jog','backpedal','sidestep','tiptoe','dance','approach player','retreat','avoid prop']);
 export function createDummy(scene,event,lab,R,world){const r=makeRig(scene),center=V(0,0,-1.2),plants=[V(-.15,.075,-1.2),V(.15,.075,-1.2)],goal=V(),history=[];let yaw=0,clock=0,age=0,seed=723,action='wander',phase='walk',step=null,next=0,manual=false,knocks=0,reach=0,cool=0,curiosity=.6,boredom=.3,wariness=.05,playfulness=.6;const fall=createFallRig(R,world,r),velocity=V(),disturbance=V(),lastVel=V();let pending=null,transition=null,fallAge=0,recovery=null,item=null,gripStart=null,gripStage=false,dropStage=false,stability=0,tripCooldown=0,stepRoll=[0,0],footHeading=[0,0],weight=[.5,.5],motionAge=0;
@@ -21,7 +21,7 @@ function pose(h=.83,relaxed=false){
  r.spine.rotation.set(0,0,0);r.neck.rotation.set(0,0,0);r.head.rotation.set(0,0,relaxed?-.018:0);r.root.updateMatrixWorld(true);
  for(let i=0;i<2;i++){
   const s=r.legs[i].s,heading=yaw+s*(relaxed?.085:0);
-  reach=Math.max(reach,rolledLeg(r,i,plants[i],phase==='walk'?footHeading[i]:heading,phase==='walk'?stepRoll[i]:0,plants[i].y>.081));
+  reach=Math.max(reach,rolledLeg(r,i,plants[i],phase==='walk'?footHeading[i]:heading,phase==='walk'?stepRoll[i]:0,phase==='walk'&&step?.i===i&&plants[i].y>groundProbe(R,world,plants[i])+.006));
   neutralArm(r.arms[i],clock);
  }
 }
