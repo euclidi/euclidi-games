@@ -12,11 +12,18 @@ async function fit(p,phase){
  assert(info.bounds.find(r=>r.id==='stage').height>=70,phase+' machine too short');
 }
 for(const [engine,name] of [[chromium,'chromium'],[firefox,'firefox']]){
- const browser=await engine.launch(name==='chromium'?{args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']}:{firefoxUserPrefs:{'webgl.force-enabled':true,'webgl.disabled':false}});
+ const browser=await engine.launch(name==='chromium'?{args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']}:{headless:!process.env.DISPLAY,firefoxUserPrefs:{'webgl.force-enabled':true,'webgl.disabled':false,'webgl.enable-webgl2':true,'gfx.webrender.software':true}});
  try{
  const p=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});p.setDefaultTimeout(60000);const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')console.log('browser error',m.text())});
  await p.goto(base+'?view=classic');const count=await p.locator('article.game').count();assert(count>0);
- await p.goto(base+'library/');await p.waitForFunction(()=>['true','error'].includes(document.body.dataset.ready),null,{timeout:90000});assert.equal(await p.locator('body').getAttribute('data-ready'),'true',await p.locator('#loading').textContent());
+ await p.goto(base+'library/');await p.waitForFunction(()=>['true','error'].includes(document.body.dataset.ready),null,{timeout:90000});const ready=await p.locator('body').getAttribute('data-ready');
+ if(ready==='error'){
+  const canWebGL=await p.evaluate(()=>{try{return !!document.createElement('canvas').getContext('webgl2')}catch{return false}});
+  assert.equal(canWebGL,false,'Renderer failed despite available WebGL2');
+  assert(await p.locator('#loading a').isVisible());await p.locator('#loading a').click();assert.equal(await p.locator('article.game').count(),count);
+  console.log('UNSUPPORTED WEBGL2 ENVIRONMENT:',name,'Classic fallback verified; mechanical rendering NOT tested');await p.close();
+  if(name==='chromium')throw new Error('Required Chromium WebGL2 unavailable');continue;
+ }
  assert.equal(Number(await p.locator('body').getAttribute('data-inventory')),count);assert.equal(await p.locator('#motion').inputValue(),'on');
  await p.waitForFunction(()=>Number(document.body.dataset.frames)>0);
  for(const [width,height] of [[320,568],[360,640],[390,844],[412,915],[667,375],[844,390],[768,1024],[1280,720],[1920,1080]]){
@@ -25,9 +32,9 @@ for(const [engine,name] of [[chromium,'chromium'],[firefox,'firefox']]){
  await p.setViewportSize({width:390,height:844});await p.waitForFunction(()=>document.body.dataset.viewport==='390x844');
  await p.locator('#categories').selectOption('Arcade');await p.waitForFunction(()=>document.body.dataset.busy==='false'&&!document.getElementById('retrieve').disabled);await fit(p,'category');
  await p.locator('#search-open').click();await p.locator('#search').fill('PAC-MAN');await p.locator('#search-form button[type=submit]').click();await p.waitForFunction(()=>document.querySelectorAll('#titles button').length===1&&document.getElementById('name').textContent==='PAC-MAN'&&!document.getElementById('retrieve').disabled);
- await p.locator('#inspect-open').click();assert(await p.locator('#inspection').isVisible());const ib=await p.locator('#inspection').boundingBox();await p.mouse.move(ib.x+ib.width/2,ib.y+ib.height/2);await p.mouse.down();await p.mouse.move(ib.x+ib.width*.85,ib.y+ib.height*.65,{steps:6});await p.mouse.up();await p.waitForFunction(()=>Math.abs(Number(document.body.dataset.inspect)+.25)>.1);await p.screenshot({path:'audit-artifacts/'+prefix+'-'+name+'-inspection.png'});await p.locator('#inspect-close').click();
+ await p.locator('#inspect-open').click();assert(await p.locator('#inspection').isVisible());await fit(p,'inspection mode');const ib=await p.locator('#inspection').boundingBox();await p.mouse.move(ib.x+ib.width/2,ib.y+ib.height/2);await p.mouse.down();await p.mouse.move(ib.x+ib.width*.85,ib.y+ib.height*.65,{steps:6});await p.mouse.up();await p.waitForFunction(()=>Math.abs(Number(document.body.dataset.inspect)+.25)>.1);await p.screenshot({path:'audit-artifacts/'+prefix+'-'+name+'-inspection.png'});await p.locator('#inspect-close').click();
  await p.locator('#details-open').click();assert.equal(await p.locator('#docs a').count(),4);await p.locator('#details-dialog [data-close]').click();await fit(p,'before retrieval');
- await p.locator('#retrieve').click();await fit(p,'during retrieval');await p.waitForFunction(()=>document.body.dataset.delivery==='ready',null,{timeout:60000});assert(await p.locator('#play').isVisible());assert((await p.locator('#play').getAttribute('href')).includes('/pacman/'));await fit(p,'delivered');await p.screenshot({path:'audit-artifacts/'+prefix+'-'+name+'-delivered.png'});
+ await p.locator('#retrieve').click();await fit(p,'during retrieval');await p.waitForFunction(()=>document.body.dataset.delivery==='ready',null,{timeout:60000});assert(await p.locator('#play').isVisible());assert((await p.locator('#play').getAttribute('href')).includes('/pacman/'));await fit(p,'delivered');await p.setViewportSize({width:320,height:568});await p.waitForFunction(()=>document.body.dataset.viewport==='320x568');await fit(p,'small screen delivered');await p.setViewportSize({width:844,height:390});await p.waitForFunction(()=>document.body.dataset.viewport==='844x390');await fit(p,'landscape delivered');await p.setViewportSize({width:390,height:844});await p.waitForFunction(()=>document.body.dataset.viewport==='390x844');await p.screenshot({path:'audit-artifacts/'+prefix+'-'+name+'-delivered.png'});
  await p.locator('#return').click();await p.waitForFunction(()=>document.body.dataset.delivery==='empty'&&!document.getElementById('retrieve').disabled);await fit(p,'returned');
  await p.locator('#settings-open').click();await p.locator('#motion').selectOption('off');await p.locator('#settings-dialog [data-close]').click();await p.locator('#retrieve').click();await p.waitForFunction(()=>document.body.dataset.delivery==='ready',null,{timeout:60000});await fit(p,'motion off delivery');
  assert.equal(errs.length,0,errs.join('\n'));console.log('PASS mechanical',name,count);await p.close();

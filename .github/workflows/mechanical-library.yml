@@ -29,16 +29,16 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/site" &
           trap 'kill $! 2>/dev/null || true' EXIT
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8765/euclidi-games/library/ >/dev/null && break; sleep 1; done
-          node tests/mechanical-library.mjs
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a node tests/mechanical-library.mjs
       - name: Verify live mechanical library
         run: |
           BASE=https://euclidi.github.io/euclidi-games/
           for i in $(seq 1 30); do
-            if curl -fsS "${BASE}library/library.js?v=6" -o /tmp/published.js && cmp -s /tmp/published.js library/library.js; then break; fi
+            if curl -fsS "${BASE}library/library.js?v=7" -o /tmp/published.js && cmp -s /tmp/published.js library/library.js; then break; fi
             sleep 10
           done
           cmp /tmp/published.js library/library.js
-          CATALOG_URL="$BASE" node tests/mechanical-library.mjs
+          CATALOG_URL="$BASE" LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a node tests/mechanical-library.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
