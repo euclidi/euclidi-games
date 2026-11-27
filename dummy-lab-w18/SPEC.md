@@ -35,3 +35,7 @@ Preserve original or appropriately licensed assets and record their source, lice
 ## Supporting records
 
 - [W1.7 archived version](../dummy-lab/README.md)
+
+## W1.12 display and input requirements
+
+Desktop click-to-lock via the browser Pointer Lock API; relative mouse motion, Escape release, input clearing on blur or release, drag fallback and retained touch/gamepad. Native resolution by default, DPR capped at 2 with 8.3 MP desktop / 2.3 MP mobile pixel budgets; optional 480p. Three independent actual chamber renders on monitor surfaces, camera layer exclusion to avoid feedback recursion, staggered target refresh. Preserve existing behavior and physics.
