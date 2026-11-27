@@ -26,3 +26,10 @@ Kenney Particle Pack (CC0-1.0), https://kenney.nl/assets/particle-pack. Original
 ## V6 authored specimen pilot
 - Three.js r180 (MIT), https://github.com/mrdoob/three.js/tree/r180. Vendored module/core builds, GLTFLoader, BufferGeometryUtils and license under vendor/three; only import specifiers adapted for static hosting.
 - Kenney Food Kit (CC0), https://kenney.nl/assets/food-kit. Original soda-can.glb (27,124 bytes) and soda-can-crushed.glb (32,044 bytes) from https://github.com/Hidencod/tge-assets/tree/main/packs/food-kit, embedded verbatim as base64 in vendor/can-models.js. GLB v2 headers, declared lengths, mesh/material metadata and absence of required compression extensions checked. Optional WebGL raster-to-alpha-sprite pipeline lazily loads both states; original art is default and failure fallback. Model parsing/rendering and visual alignment have not been verified in a browser. The other candidate models (watermelon, toaster, vintage television) are not integrated yet.
+
+
+## V7 — unified live 3D chamber
+- Kenney Food Kit (CC0): soda can, crushed soda can, watermelon. Furniture Kit (CC0): toaster and vintage television. Original GLBs vendored in `vendor/can-models.js` and `vendor/live-models/` from https://github.com/Hidencod/tge-assets. 
+- RobotExpressive by Tomas Laulhe, modified by Don McCurdy, CC0, from Three.js r180 examples. Original GLB encoded in five chunks; upstream README retained.
+- Duck by Sony (2006), SCEA Shared Source License 1.0, from Khronos glTF Sample Assets. Original GLB encoded in two chunks; upstream README and full license retained. Not CC0.
+- Bulb, chamber, probes, cables, and clamp custom functional geometry. Bulb has lathed envelope, threaded base, support wires and emissive filament. Shared Three.js renderer and lighting; existing Matter.js/audio/VFX retained. No specimen rasterization in live mode. Exact model appearance and browser decode/render remain unverified.
