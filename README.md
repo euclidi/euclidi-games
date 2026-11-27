@@ -25,6 +25,8 @@ Projects are actively developed and may contain unfinished features or experimen
 
 | [SNAKE — LCD Organic](snake/README.md) | Active — experimental 0.1.1 compatibility build | [Spec](snake/SPEC.md) · [Roadmap](snake/ROADMAP.md) · [Status](snake/STATUS.md) |
 
+| [RICOCHET](ricochet/README.md) | Development 0.1 — unverified | [Spec](ricochet/SPEC.md) · [Roadmap](ricochet/ROADMAP.md) · [Status](ricochet/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
