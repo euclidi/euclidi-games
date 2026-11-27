@@ -7,3 +7,7 @@ Approved stack: TypeScript, Vite, PixiJS v8, WebGL2, GLSL LCD shader, specialize
 ## Compatibility build 0.1
 
 Direct WebGL2/GLSL pixel presentation and JS simulation supplied as a provisional implementation because local network/package installation was unavailable. No claim of PixiJS or XPBD equivalence. Preserve the approved stack as target; see status for exact deviations.
+
+## Display and handheld amendment (2026-11-27)
+
+Sharper indexed LCD sampling with minimal default persistence; convincing molded handheld chassis, automatic touch/mobile detection, safe-area viewport fitting in portrait and landscape, orientation-driven chassis tilt with permission, neutral calibration and reduced-motion support. Display and control plane remain stationary to preserve clarity and input alignment. Tilt is cosmetic only.
