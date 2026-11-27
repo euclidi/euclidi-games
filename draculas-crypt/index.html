@@ -1,0 +1,647 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080d12"><title>Dracula — The Vigil | Euclidi Games</title><style>html,body{margin:0;background:#080d12;color:#e0d1ba;height:100%;overflow:hidden}#cpr8#cpr8{height:100dvh;min-height:0;max-height:none}#catalog-return{position:absolute;top:12px;right:12px;z-index:3;color:#c4b7a5;background:#090f14e8;border:1px solid #86745680;text-decoration:none;padding:10px 12px;font:11px Arial,sans-serif}#catalog-return:focus-visible{outline:2px solid #dbc59d}#cpr8#cpr8 .status{top:60px}#cpr8#cpr8[data-renderer=software] .status::after{content:' · SOFTWARE VIEW';color:#a9a9a9}@media(max-width:790px){#cpr8#cpr8 .status{top:73px}#cpr8#cpr8 .ui{bottom:max(10px,env(safe-area-inset-bottom));max-width:calc(100% - 16px)}#cpr8#cpr8 button{min-height:34px}}@media(max-height:480px){#cpr8#cpr8 .ui{bottom:4px}#cpr8#cpr8 .help{display:none}}</style></head><body>
+<div id="cpr8" data-version="0.12.0"><a id="catalog-return" data-catalog-return aria-label="Back to game catalog" href="../">Catalog</a>
+ <canvas aria-label="Interactive Three.js Dracula crypt with a resident rat priest"></canvas>
+ <div class="tint"></div>
+ <div class="mark"><span class="crest">D</span><div>DRACULA <small>THE VIGIL · A GOTHIC CRYPT</small></div></div>
+ <div class="status"><span class="lightdot"></span><span data-act>BEGINNING VIGIL</span></div>
+ <div class="center-status" data-boot>AWAKENING THE CRYPT</div>
+ <div class="ui"><div class="views"><button data-v="wide" class="sel">CHAMBER</button><button data-v="tomb">COFFIN</button><button data-v="priest">PRIEST</button><button data-v="cloth">VESTMENTS</button><button data-v="gate">GATE</button></div><div class="toggles"><button data-pause>PAUSE</button><button data-follow>FOLLOW OFF</button><button data-fire>FLAMES ON</button><button data-mist>MIST ON</button><button data-sound>SOUND OFF</button></div></div>
+ <div class="help">DRAG TO ORBIT · SCROLL TO ZOOM · CONTROLLER STICKS / SHOULDER BUTTONS · TAP PRIEST</div>
+</div>
+<style>
+#cpr8{position:relative;overflow:hidden;isolation:isolate;width:100%;height:min(82vh,750px);min-height:440px;background:#080d12;color:#e0d1ba;font:10px Arial,sans-serif;letter-spacing:.09em;-webkit-user-select:none;user-select:none}#cpr8 canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}#cpr8 canvas:active{cursor:grabbing}
+#cpr8 .tint{position:absolute;inset:0;pointer-events:none;background:linear-gradient(#04070bbc,transparent 21%,transparent 66%,#04080cda)}#cpr8 .mark{position:absolute;top:17px;left:18px;display:flex;align-items:center;gap:11px;font:17px Georgia,serif;letter-spacing:.19em;text-shadow:0 2px 8px #000;pointer-events:none}#cpr8 .crest{display:grid;place-items:center;border:1px solid #987b53;border-radius:15px 15px 2px 2px;width:30px;height:38px;font:23px Georgia,serif;color:#d1b991}#cpr8 .mark small{display:block;font:8px Arial,sans-serif;letter-spacing:.17em;color:#acaaa4;margin-top:6px}#cpr8 .status{position:absolute;right:18px;top:23px;font:9px Arial,sans-serif;color:#c9b591;text-shadow:0 2px 5px #000}#cpr8 .lightdot{display:inline-block;width:5px;height:5px;background:#c49c64;border-radius:50%;margin-right:8px;box-shadow:0 0 7px #e3b575}#cpr8 .center-status{position:absolute;top:49%;left:0;right:0;text-align:center;font:12px Georgia,serif;letter-spacing:.2em;color:#dac2a1;pointer-events:none}#cpr8 .help{position:absolute;left:0;right:0;bottom:92px;text-align:center;font:9px Arial,sans-serif;letter-spacing:.07em;color:#aaa8a0;text-shadow:0 2px 4px #000;pointer-events:none}
+#cpr8 .ui{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);max-width:calc(100% - 12px);display:flex;gap:8px;padding:5px;background:#090f14ef;border:1px solid #86745680;box-shadow:0 5px 25px #000a;white-space:nowrap}#cpr8 .views,#cpr8 .toggles{display:flex;gap:1px;align-items:center}#cpr8 .toggles{border-left:1px solid #8173577a;padding-left:7px}#cpr8 button{background:transparent;color:#c4b7a5;border:1px solid transparent;padding:10px 8px;font:9px Arial,sans-serif;letter-spacing:.03em;cursor:pointer;touch-action:manipulation}#cpr8 button.sel{background:#443423;color:#ffebce;border-color:#9b7b52}#cpr8 button:hover{background:#3c342b}#cpr8 button:focus-visible{outline:1px solid #bca37c}
+@media(max-width:790px){#cpr8{height:78vh;min-height:445px}#cpr8 .ui{flex-direction:column;align-items:center;gap:2px;padding:4px}#cpr8 .toggles{border:0;border-top:1px solid #75664f70;padding:3px 0 0}#cpr8 button{padding:8px 7px;font-size:8px}#cpr8 .help{bottom:112px;font-size:8px}#cpr8 .status{top:67px;left:19px;right:auto;font-size:8px}#cpr8 .mark{font-size:14px;left:13px;top:13px}#cpr8 .mark small{font-size:7px}}@media(max-width:395px){#cpr8 button{font-size:7px;padding:8px 5px}}
+</style>
+<script type="module">
+(async()=>{
+const host=document.querySelector('#cpr8');let canvas=host.querySelector('canvas');const msg=host.querySelector('[data-boot]'),activity=host.querySelector('[data-act]');
+let T;const software=new URLSearchParams(location.search).get("renderer")==="software";if(!software)for(const url of ['https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js','https://esm.sh/three@0.160.1']){try{T=await Promise.race([import(url),new Promise((_,reject)=>setTimeout(()=>reject(Error('timeout')),8000))]);break}catch(e){}}
+let renderer=null;try{if(T)renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'})}catch(e){}if(!renderer){const replacement=canvas.cloneNode(true);canvas.replaceWith(replacement);canvas=replacement;host.dataset.renderer='software';fallback();return}host.dataset.renderer='webgl';
+let rng=214567;const rand=()=>{rng=(Math.imul(rng,1664525)+1013904223)>>>0;return rng/4294967296},R=(a,b)=>a+(b-a)*rand();
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<700?1.3:1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.48;
+const scene=new T.Scene();scene.background=new T.Color(0x0a1015);scene.fog=new T.FogExp2(0x161e22,.025);const camera=new T.PerspectiveCamera(55,1,.15,85);scene.add(new T.HemisphereLight(0x8da7bc,0x211c19,.58));
+const moon=new T.DirectionalLight(0xa5c1e1,2.2);moon.position.set(-4,8,-11);moon.target.position.set(0,1,-1);scene.add(moon,moon.target);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);Object.assign(moon.shadow.camera,{left:-9,right:9,top:11,bottom:-11,near:.5,far:38});moon.shadow.bias=-.0004;moon.shadow.normalBias=.025;const gateLight=new T.PointLight(0x789ac6,6.6,12,2);gateLight.position.set(0,3.8,-9.15);scene.add(gateLight);
+function texture(wood=false){let c=document.createElement('canvas');c.width=c.height=256;let ctx=c.getContext('2d'),im=ctx.createImageData(256,256),p=im.data;for(let y=0;y<256;y++)for(let x=0;x<256;x++){let i=(y*256+x)*4,v;if(wood){v=75+14*Math.sin(x*.24+Math.sin(y*.027)*4)+8*Math.sin(x*.046)+R(-9,9);p[i]=v+35;p[i+1]=v*.65;p[i+2]=v*.46}else{v=148+10*Math.sin(x*.034+y*.024)+7*Math.cos(x*.092-y*.054)+R(-16,16);p[i]=v+7;p[i+1]=v+5;p[i+2]=v+2}p[i+3]=255}ctx.putImageData(im,0,0);let t=new T.CanvasTexture(c);t.wrapS=t.wrapT=T.RepeatWrapping;t.colorSpace=T.SRGBColorSpace;t.anisotropy=4;return t}
+// Independent procedural, tileable texture families. Every opaque surface is mapped.
+// Each family has color, roughness and bump relief; the maps use the material's UVs.
+function mappedFamily(kind,amount=256){
+ const c=document.createElement('canvas'),rc=document.createElement('canvas'),hc=document.createElement('canvas');
+ c.width=c.height=rc.width=rc.height=hc.width=hc.height=amount;
+ const cx=c.getContext('2d'),rx=rc.getContext('2d'),hx=hc.getContext('2d');
+ const A=cx.createImageData(amount,amount),B=rx.createImageData(amount,amount),H=hx.createImageData(amount,amount);
+ const palette={
+ stone:[153,151,140],ash:[188,179,158],dark:[83,94,96],floor:[141,145,139],
+ iron:[69,75,75],bronze:[142,111,65],gold:[205,172,108],mahogany:[99,47,30],
+ ebony:[49,27,23],wax:[235,205,159],fur:[144,125,108],muzzle:[196,171,148],pink:[150,102,104],
+ black:[22,20,19],eye:[32,25,23],cloth:[66,61,70],mantle:[98,44,53],stole:[128,62,68],
+ trim:[189,154,96],pages:[189,177,145],void:[28,36,39]
+ };
+ const base=palette[kind]||palette.stone, metal=['iron','bronze','gold','trim'].includes(kind),fabric=['cloth','mantle','stole'].includes(kind),organ=['fur','muzzle','pink'].includes(kind);
+ for(let y=0;y<amount;y++)for(let x=0;x<amount;x++){
+   const k=(y*amount+x)*4,u=x/amount,v=y/amount;
+   const noise=R(-1,1),coarse=Math.sin(x*.049+y*.021)*.55+Math.sin(x*.17-y*.093)*.25;
+   let grain=0,age=0,rough=.83,height=.50;
+   if(kind==='mahogany'||kind==='ebony'){
+     const wave=Math.sin(x*.16+Math.sin(y*.025)*5)+.36*Math.sin(x*.42+y*.021)+.22*Math.sin(x*.81);
+     grain=wave*14+noise*4;age=Math.sin(y*.007+x*.03)*5;rough=.61+noise*.09;height=.47+wave*.12;
+   }else if(fabric){
+     const weft=((x%5)<2?1:-1),warp=((y%5)<2?1:-1);
+     grain=weft*4+warp*3+noise*3+coarse*3;rough=.91+noise*.045;height=.50+(weft+warp)*.07;
+   }else if(organ){
+     const strands=Math.sin((x+Math.sin(y*.04)*6)*1.8)*.55+Math.sin(x*.56+y*.015)*.45;
+     grain=strands*5+noise*6;rough=.83+noise*.08;height=.48+strands*.06;
+   }else if(metal){
+     const brush=Math.sin(x*.7+y*.016)*2+Math.sin(x*.18)*2;
+     const oxid=(Math.sin(x*.058+y*.09)+Math.cos(x*.133-y*.017)+noise)/3;
+     grain=brush+noise*5;age=(kind==='bronze'||kind==='iron')&&oxid>.42?-13:0;
+     rough=(kind==='iron'?.60:.38)+Math.abs(noise)*.16;height=.49+brush*.014+noise*.02;
+   }else if(kind==='wax'){
+     grain=coarse*2+noise*2;rough=.70+noise*.055;height=.5+noise*.01;
+   }else if(kind==='pages'){
+     grain=coarse*4+noise*4+(y%19===0?-11:0);rough=.87+noise*.045;height=.51+coarse*.04;
+   }else{
+     const speck=noise*14+coarse*12+Math.sin(x*.017+y*.061)*5;
+     const fiss=(Math.sin(x*.12+y*.21)>.989?-22:0);
+     grain=speck+fiss;rough=.83+noise*.10;height=.50+speck*.012+fiss*.004;
+   }
+   const i=k;
+   for(let ch=0;ch<3;ch++)A.data[i+ch]=Math.max(2,Math.min(250,base[ch]+grain+age+(ch===0?1:ch===2?-1:0)));
+   const ru=Math.max(8,Math.min(255,Math.round(rough*255))),hh=Math.max(0,Math.min(255,Math.round(height*255)));
+   for(let ch=0;ch<3;ch++){B.data[i+ch]=ru;H.data[i+ch]=hh}
+   A.data[i+3]=B.data[i+3]=H.data[i+3]=255;
+ }
+ cx.putImageData(A,0,0);rx.putImageData(B,0,0);hx.putImageData(H,0,0);
+ if(kind==='pages'){
+  cx.fillStyle='rgba(61,46,34,.28)';cx.font='8px Georgia';
+  for(let j=10;j<amount-8;j+=19)cx.fillText('IN NOMINE  AETERNA  REQUIES  DOMINE',12,j);
+ }
+ function tx(canvas,isColor){let t=new T.CanvasTexture(canvas);t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=8;if(isColor)t.colorSpace=T.SRGBColorSpace;return t}
+ return {map:tx(c,true),roughnessMap:tx(rc,false),bumpMap:tx(hc,false)};
+}
+const surface={};for(const key of ['stone','ash','dark','floor','iron','bronze','gold','mahogany','ebony','wax','fur','muzzle','pink','black','eye','cloth','mantle','stole','trim','pages','void'])surface[key]=mappedFamily(key);
+function textile(key,repeatX=2,repeatY=3){let s=surface[key];for(const prop of ['map','roughnessMap','bumpMap'])s[prop].repeat.set(repeatX,repeatY);return s}
+const mat=(color,roughness=1,metalness=0,extras={})=>new T.MeshStandardMaterial({color,roughness,metalness,...extras});
+const M={
+ stone:mat(0xffffff,.99,0,{...surface.stone,bumpScale:.034}),
+ cut:mat(0xffffff,.95,0,{...surface.ash,bumpScale:.024}),
+ dark:mat(0xffffff,.99,0,{...surface.dark,bumpScale:.035}),
+ floor:mat(0xffffff,.96,0,{...surface.floor,bumpScale:.029}),
+ void:mat(0xffffff,.99,0,{...surface.void,bumpScale:.018}),
+ iron:mat(0xffffff,.86,.72,{...surface.iron,bumpScale:.006}),
+ bronze:mat(0xffffff,.81,.72,{...surface.bronze,bumpScale:.005}),
+ gold:mat(0xffffff,.69,.76,{...surface.gold,bumpScale:.003}),
+ wood:mat(0xffffff,.9,.08,{...surface.mahogany,bumpScale:.013}),
+ woodDark:mat(0xffffff,.94,.05,{...surface.ebony,bumpScale:.016}),
+ wax:mat(0xffffff,.92,0,{...surface.wax,bumpScale:.003}),
+ fur:mat(0xffffff,.96,0,{...surface.fur,bumpScale:.009}),
+ muzzle:mat(0xffffff,.96,0,{...surface.muzzle,bumpScale:.007}),
+ pink:mat(0xffffff,.96,0,{...surface.pink,bumpScale:.003}),
+ black:mat(0xffffff,.48,0,{...surface.black,bumpScale:.002}),
+ eye:mat(0xffffff,.32,.02,{...surface.eye,bumpScale:.001}),
+ cloth:mat(0xffffff,.99,0,{...textile('cloth',2,4),side:T.DoubleSide,bumpScale:.007}),
+ mantle:mat(0xffffff,.98,0,{...textile('mantle',2,3),side:T.DoubleSide,bumpScale:.008}),
+ stole:mat(0xffffff,.98,0,{...textile('stole',1,4),side:T.DoubleSide,bumpScale:.007}),
+ trim:mat(0xffffff,.86,.47,{...surface.trim,bumpScale:.004}),
+ pages:mat(0xffffff,.98,0,{...surface.pages,bumpScale:.008})
+};
+const cubeShape=new T.Shape();{const a=.5,r=.075,pts=[[-a+r,-a],[a-r,-a],[a,-a+r],[a,a-r],[a-r,a],[-a+r,a],[-a,a-r],[-a,-a+r]];pts.forEach((p,i)=>i?cubeShape.lineTo(...p):cubeShape.moveTo(...p));cubeShape.closePath()}const cube=new T.ExtrudeGeometry(cubeShape,{depth:.86,bevelEnabled:true,bevelSize:.035,bevelThickness:.035,bevelSegments:3,curveSegments:2});cube.translate(0,0,-.43);cube.computeVertexNormals();const sph=new T.SphereGeometry(1,32,24);
+function carvedBlockGeometry(){
+ const q=new T.Shape(),a=.46,b=.46,r=.055,pts=[[-a+r,-b],[a-r,-b],[a,-b+r],[a,b-r],[a-r,b],[-a+r,b],[-a,b-r],[-a,-b+r]];
+ pts.forEach((p,i)=>i?q.lineTo(...p):q.moveTo(...p));q.closePath();
+ const g=new T.ExtrudeGeometry(q,{depth:.85,steps:1,bevelEnabled:true,bevelSize:.060,bevelThickness:.075,bevelSegments:2});g.translate(0,0,-.425);g.computeVertexNormals();return g;
+}
+const dressedBlock=carvedBlockGeometry();
+function add(g,m,par=scene,x=0,y=0,z=0){let o=new T.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;par.add(o);return o}
+function box(w,h,d,m,x,y,z,par=scene){let o=add(cube,m,par,x,y,z);o.scale.set(w,h,d);return o}
+function ell(rx,ry,rz,m,x,y,z,par=scene){let o=add(sph,m,par,x,y,z);o.scale.set(rx,ry,rz);return o}
+function cyl(r1,r2,h,m,x,y,z,par=scene,n=24){return add(new T.CylinderGeometry(r1,r2,h,n),m,par,x,y,z)}
+function rod(a,b,r,m,par=scene){let A=new T.Vector3(...a),B=new T.Vector3(...b),v=B.clone().sub(A),o=add(new T.CylinderGeometry(r,r,v.length(),10),m,par);o.position.copy(A.add(B).multiplyScalar(.5));o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),v.normalize());return o}
+function tube(p,r,m,par=scene){return add(new T.TubeGeometry(new T.CatmullRomCurve3(p.map(q=>new T.Vector3(...q))),24,r,8),m,par)}
+function lathe(prof,m,x,y,z,par=scene,n=28){return add(new T.LatheGeometry(prof.map(p=>new T.Vector2(...p)),n),m,par,x,y,z)}
+function ring(R,r,m,x,y,z,par=scene){let o=add(new T.TorusGeometry(R,r,9,36),m,par,x,y,z);o.rotation.x=Math.PI/2;return o}
+function chamfer(w,h,d,m,x,y,z,r=.055){let a=w/2,b=h/2,sh=new T.Shape(),p=[[-a+r,-b],[a-r,-b],[a,-b+r],[a,b-r],[a-r,b],[-a+r,b],[-a,b-r],[-a,-b+r]];p.forEach((q,i)=>i?sh.lineTo(...q):sh.moveTo(...q));sh.closePath();return add(new T.ExtrudeGeometry(sh,{depth:d-2*r,bevelEnabled:true,bevelSize:r*.5,bevelThickness:r*.5,bevelSegments:2}),m,scene,x,y,z-d/2+r)}
+const arch=(q,w,start,rise)=>start+rise*Math.pow(Math.max(0,1-Math.abs(q)/w),.74);
+// Four-bay Gothic crypt with mortar joints and genuinely recessed burial vaults.
+box(11.2,.48,18,M.dark,0,-.31,0);let tile=new T.InstancedMesh(dressedBlock,M.floor,215),tmp=new T.Object3D(),color=new T.Color(),id=0;for(let row=0;row<18;row++)for(let col=0;col<11;col++){if(row%2&&col===10)continue;
+ tmp.position.set(-4.97+col*.99+(row%2)*.45,-.015+R(-.008,.008),-8.35+row*.98);
+ tmp.scale.set(.955+R(-.008,.006),.135,.938+R(-.006,.008));tmp.rotation.set(0,R(-.01,.01),0);tmp.updateMatrix();tile.setMatrixAt(id,tmp.matrix);color.setHSL(R(.09,.115),R(.025,.045),R(.61,.79));tile.setColorAt(id++,color)}tile.count=id;tile.receiveShadow=true;scene.add(tile);
+const bays=[-6.4,-2.12,2.15,6.46];let blocks=new T.InstancedMesh(dressedBlock,M.stone,600),bcount=0;function brick(x,y,z,w,h,d){tmp.position.set(x,y,z);tmp.scale.set(w,h,d);tmp.rotation.set(0,0,0);tmp.updateMatrix();blocks.setMatrixAt(bcount,tmp.matrix);color.setHSL(R(.09,.125),R(.025,.05),R(.56,.79));blocks.setColorAt(bcount++,color)}
+for(let s of [-1,1])for(let j=0;j<12;j++)for(let i=0;i<16;i++){let z=-8.4+i*1.11+(j%2)*.50,y=.24+j*.42;if(z>8.6||bays.some(q=>Math.abs(z-q)<1.2&&y<4.38))continue;brick(s*5.28,y,z,.58,.395,1.08)}
+for(let s of [-1,1])for(let j=0;j<11;j++)for(let i=0;i<11;i++){let x=-4.9+i*.99+(j%2)*.44,y=.24+j*.42;if(x>5.1||Math.abs(x)<2.1&&y<5)continue;brick(x,y,s*8.78,.96,.395,.54)}blocks.count=bcount;blocks.receiveShadow=true;scene.add(blocks);
+const W=5.12,roof=x=>arch(x,W,4.27,2.91);let vs=[],uv=[],faces=[],nx=44,nz=56;for(let j=0;j<=nz;j++)for(let i=0;i<=nx;i++){let x=-W+2*W*i/nx,z=-8.8+17.6*j/nz;vs.push(x,roof(x),z);uv.push(i/nx*4,j/nz*8)}for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){let a=j*(nx+1)+i,b=a+1,c=a+nx+1;faces.push(a,c,b,b,c,c+1)}let vg=new T.BufferGeometry();vg.setAttribute('position',new T.Float32BufferAttribute(vs,3));vg.setAttribute('uv',new T.Float32BufferAttribute(uv,2));vg.setIndex(faces);vg.computeVertexNormals();let roofmat=M.stone.clone();roofmat.side=T.DoubleSide;add(vg,roofmat);
+for(let z of [-8.68,-4.34,0,4.34,8.68]){let pts=[];for(let i=0;i<=32;i++){let x=-W+2*W*i/32;pts.push([x,roof(x)-.018,z])}tube(pts,.125,M.cut)}
+// 32-sided shafts with carved longitudinal flutes; caps sit directly on their shafts.
+function carvedColumn(x,z,bottom=.49,height=3.26){
+ const segments=48,rows=20,vs=[],uv=[],idx=[];
+ for(let j=0;j<=rows;j++){let v=j/rows,y=bottom+height*v,taper=1-.025*v;
+  for(let i=0;i<=segments;i++){let a=Math.PI*2*i/segments;
+   let flute=Math.pow(.5+.5*Math.cos(a*12),7),r=(.246-.017*flute)*taper;
+   vs.push(r*Math.cos(a),y,r*Math.sin(a));uv.push(i/segments*4,v*3);
+  }
+ }
+ for(let j=0;j<rows;j++)for(let i=0;i<segments;i++){let a=j*(segments+1)+i,b=a+segments+1;idx.push(a,b,a+1,a+1,b,b+1)}
+ const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vs,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();add(g,M.stone,scene,x,0,z);
+}
+for(let s of [-1,1])for(let z of [-8.68,-4.34,0,4.34,8.68]){
+ let x=s*4.98;chamfer(.85,.19,.84,M.cut,x,.07,z,.06);
+ lathe([[.28,0],[.35,.05],[.38,.095],[.29,.17],[.254,.22]],M.cut,x,.15,z);
+ carvedColumn(x,z,.49,3.28);
+ ring(.262,.022,M.cut,x,.54,z);ring(.257,.023,M.cut,x,3.70,z);
+ lathe([[.24,0],[.27,.035],[.31,.10],[.38,.16],[.41,.24],[.43,.29]],M.cut,x,3.74,z);
+ for(let k=0;k<4;k++){let angle=k*Math.PI/2;ell(.084,.14,.105,M.cut,x+.29*Math.cos(angle),4.01,z+.29*Math.sin(angle))}
+ chamfer(.86,.19,.86,M.cut,x,4.25,z,.048)
+}
+function archedRecess(side,z){
+ let sh=new T.Shape();sh.moveTo(-1.16,.60);sh.lineTo(1.16,.60);sh.lineTo(1.16,3.18);
+ for(let j=24;j>=0;j--){let q=-1.16+2.32*j/24;sh.lineTo(q,arch(q,1.17,3.18,1.31))}
+ sh.lineTo(-1.16,.60);sh.closePath();
+ let backMat=M.void.clone();backMat.side=T.DoubleSide;
+ let o=add(new T.ShapeGeometry(sh),backMat,scene,side*5.63,0,z);o.rotation.y=side*Math.PI/2;o.castShadow=false;
+ // Narrow side returns make the opening read as a pocket rather than a painted rectangle.
+ for(let edge of [-1.13,1.13]){let inner=side*5.39;rod([inner,.78,z+edge],[inner,3.23,z+edge],.044,M.dark)}
+}
+for(let s of [-1,1])for(let z of bays){archedRecess(s,z);for(let q of [-1.16,1.16])chamfer(.26,2.68,.23,M.cut,s*5.05,1.54,z+q,.035);let p=[];for(let i=0;i<=26;i++){let a=-1.17+i*2.34/26;p.push([s*5.05,arch(a,1.17,3.18,1.31),z+a])}tube(p,.125,M.cut);chamfer(.85,.28,1.84,M.dark,s*5.12,.54,z,.035);chamfer(.83,.11,1.87,M.cut,s*5.12,.77,z,.03);lathe([[0,0],[.15,0],[.20,.04],[.12,.09],[.10,.17],[.19,.27],[.23,.41],[.15,.54],[.13,.59]],M.bronze,s*5.07,.83,z);ring(.14,.012,M.gold,s*5.07,1.42,z)}
+// Burial markers recessed in each wall bay: incised plaques, moulding and sepulchral reliefs.
+for(let side of [-1,1])for(let z of bays){
+ const x=side*5.008;for(let y of [1.62,2.00]){
+  let plaque=chamfer(.055,.25,.91,M.cut,x,y,z,.014);plaque.rotation.y=side*Math.PI/2;
+  for(let k=0;k<4;k++)rod([x-side*.045,y+.077-k*.048,z-.29],[x-side*.045,y+.077-k*.048,z+.28],.004,M.dark);
+ }
+ // Wall sockets project towards the aisle, each with a single carved cross.
+ rod([x-side*.055,2.46,z],[x-side*.055,2.89,z],.023,M.cut);
+ rod([x-side*.055,2.77,z-.19],[x-side*.055,2.77,z+.19],.017,M.cut);
+}
+// Hand-carved bosses at the crown of each vault rib.
+for(let z of [-8.68,-4.34,0,4.34,8.68]){
+ const boss=ell(.20,.085,.19,M.cut,0,roof(0)-.07,z);
+ boss.rotation.x=Math.PI/2;
+ for(let k=0;k<8;k++){const a=k*Math.PI/4;ell(.046,.025,.046,M.cut,Math.sin(a)*.14,roof(0)-.092,z+Math.cos(a)*.14)}
+}
+// Forged gate and stair beyond.
+let gateSh=new T.Shape();gateSh.moveTo(-2.05,.05);gateSh.lineTo(2.05,.05);gateSh.lineTo(2.05,3.62);
+ for(let j=30;j>=0;j--){let x=-2.02+4.04*j/30;gateSh.lineTo(x,arch(x,2.06,3.62,1.79))}gateSh.closePath();
+ let gateMat=M.void.clone();gateMat.side=T.DoubleSide;let gateBack=add(new T.ShapeGeometry(gateSh),gateMat,scene,0,0,-8.88);gateBack.castShadow=false;
+ let gatePts=[];for(let i=0;i<=28;i++){let x=-2.02+i*4.04/28;gatePts.push([x,arch(x,2.06,3.62,1.79),-8.50])}tube(gatePts,.17,M.cut);for(let x of [-2.07,2.07])chamfer(.35,3.7,.44,M.cut,x,1.84,-8.49);for(let i=0;i<15;i++){let x=-1.91+i*3.82/14,h=arch(x,2.03,3.61,1.68);rod([x,.12,-8.31],[x,h,-8.31],.029,M.iron);add(new T.ConeGeometry(.078,.22,6),M.iron,scene,x,h+.09,-8.31)}for(let y of [1.05,2.17,3.32])box(4,.075,.09,M.iron,0,y,-8.28);
+// Functional looking gate lock, strap hinges, rivets and heraldic bars.
+const latch=chamfer(.26,.32,.095,M.bronze,.81,1.61,-8.17,.028);
+lathe([[.025,0],[.075,.020],[.094,.036],[.044,.058]],M.iron,.80,1.61,-8.10).rotation.x=Math.PI/2;
+for(let z of [-8.24,-8.30])for(let side of [-1,1]){
+ for(let y of [.56,2.85]){rod([side*1.90,y,z],[side*1.21,y,z],.033,M.iron);
+  for(let x of [1.36,1.70,1.89])ell(.020,.020,.016,M.bronze,side*x,y,z+.018);
+ }
+}
+// Carved tomb with taper, pitched joinery and bronze bands.
+const TZ=-1.56;chamfer(3.05,.28,4.16,M.dark,0,.16,TZ,.085);chamfer(2.80,.29,3.92,M.cut,0,.44,TZ,.07);chamfer(2.48,.18,3.61,M.dark,0,.68,TZ,.045);const poly=[[-.45,-1.27],[.45,-1.27],[.60,-1.02],[.71,-.54],[.66,.1],[.45,1.16],[.31,1.30],[-.31,1.30],[-.45,1.16],[-.66,.1],[-.71,-.54],[-.60,-1.02]];
+function extrude(q,y,depth,m){let shape=new T.Shape();q.forEach((p,i)=>i?shape.lineTo(p[0],-p[1]):shape.moveTo(p[0],-p[1]));shape.closePath();let o=add(new T.ExtrudeGeometry(shape,{depth,bevelEnabled:true,bevelSize:.027,bevelThickness:.027,bevelSegments:2}),m,scene,0,y,TZ);o.rotation.x=-Math.PI/2}extrude(poly,.78,.56,M.woodDark);extrude(poly.map(p=>[p[0]*1.04,p[1]*1.04]),1.34,.10,M.wood);let lp=[],lf=[];for(let i=0;i<poly.length;i++){let a=poly[i],b=poly[(i+1)%poly.length],j=lp.length/3;lp.push(a[0]*1.04,1.47,TZ+a[1]*1.04,b[0]*1.04,1.47,TZ+b[1]*1.04,0,1.59,TZ+b[1],0,1.59,TZ+a[1]);lf.push(j,j+1,j+2,j,j+2,j+3);rod([a[0]*1.04,1.47,TZ+a[1]*1.04],[b[0]*1.04,1.47,TZ+b[1]*1.04],.019,M.gold)}let lg=new T.BufferGeometry();lg.setAttribute('position',new T.Float32BufferAttribute(lp,3));lg.setAttribute('uv',new T.Float32BufferAttribute(Array.from({length:lp.length/3},(_,i)=>[lp[i*3]/1.7+.5,(lp[i*3+2]-TZ)/3.2+.5]).flat(),2));lg.setIndex(lf);lg.computeVertexNormals();let lidMat=M.wood.clone();lidMat.side=T.DoubleSide;add(lg,lidMat);rod([0,1.60,TZ-1.05],[0,1.60,TZ+.91],.019,M.gold);rod([-.21,1.60,TZ-.53],[.21,1.60,TZ-.53],.023,M.gold);
+for(let side of [-1,1])for(let z of [TZ-.71,TZ+.45]){ell(.052,.10,.16,M.bronze,side*.67,1.10,z);let handle=add(new T.TorusGeometry(.145,.029,8,24),M.gold,scene,side*.73,1.02,z);handle.rotation.y=Math.PI/2}
+for(let side of [-1,1])for(let z of [-8.66,-4.34,0,4.34,8.66]){let xx=side*4.98;ring(.245,.025,M.cut,xx,.63,z);ring(.245,.024,M.cut,xx,3.71,z)}
+// Carved tracery is fastened to the wood, and stone mouldings follow the plinth.
+for(let side of [-1,1]){for(let z of [TZ-1.64,TZ+1.64]){
+  rod([side*1.36,.76,z],[side*1.36,.79,z],.023,M.cut);ell(.060,.042,.052,M.cut,side*1.36,.81,z)
+}}
+for(let z of [TZ-1.05,TZ+.15,TZ+.92]){
+ let y=z<TZ?1.594:1.598;
+ for(let side of [-1,1]){rod([side*.13,y-.004,z],[side*.25,y-.004,z+.06],.010,M.gold);ell(.021,.020,.030,M.gold,side*.25,y,z+.07)}
+}
+for(let side of [-1,1])for(let z of [TZ-.71,TZ+.45]){
+ ell(.054,.051,.060,M.gold,side*.70,1.10,z);
+ for(let j=0;j<5;j++){let a=j*2*Math.PI/5;ell(.016,.018,.013,M.gold,side*.70,1.10+.055*Math.cos(a),z+.065*Math.sin(a))}
+}
+
+// Fitted candle sockets and branching scroll arms.
+const flames=[],flights=[];
+const flameGeo=new T.LatheGeometry([[.018,0],[.064,.035],[.076,.10],[.050,.17],[.034,.23],[.003,.33]].map(v=>new T.Vector2(...v)),14);
+const flameMat=new T.MeshBasicMaterial({color:0xffab48,transparent:true,opacity:.77,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide});
+const hotMat=new T.MeshBasicMaterial({color:0xfff0c9,transparent:true,opacity:.88,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide});
+let flameCanvas=document.createElement('canvas');flameCanvas.width=flameCanvas.height=96;let gx=flameCanvas.getContext('2d'),grad=gx.createRadialGradient(48,48,0,48,48,47);grad.addColorStop(0,'rgba(255,228,166,.72)');grad.addColorStop(.18,'rgba(255,171,75,.29)');grad.addColorStop(.52,'rgba(240,112,42,.09)');grad.addColorStop(1,'rgba(220,88,21,0)');gx.fillStyle=grad;gx.fillRect(0,0,96,96);let flameGlow=new T.CanvasTexture(flameCanvas);
+
+function candle(x,y,z,size=.85){lathe([[0,0],[.13*size,.009],[.19*size,.038],[.18*size,.063],[.07*size,.085]],M.bronze,x,y,z);ring(.185*size,.011,M.gold,x,y+.055,z);lathe([[.048*size,0],[.063*size,.018],[.062*size,.075]],M.gold,x,y+.07,z);lathe([[.058*size,0],[.064*size,.018],[.061*size,.035],[.064*size,.055]],M.wax,x,y+.139,z);lathe([[.060*size,0],[.064*size,.22*size],[.055*size,.37*size],[.029*size,.385*size],[0,.37*size]],M.wax,x,y+.143,z);rod([x,y+.45*size,z],[x+.004,y+.50*size,z],.006,M.iron);let f=add(flameGeo,flameMat.clone(),scene,x,y+.48*size,z),h=add(flameGeo,hotMat.clone(),scene,x,y+.48*size,z);f.scale.set(size,size,size);h.scale.set(size*.46,size*.45,size*.46);let halo=new T.Sprite(new T.SpriteMaterial({map:flameGlow,color:0xffad62,transparent:true,opacity:.25,depthWrite:false,blending:T.AdditiveBlending}));halo.position.set(x,y+.67*size,z);halo.scale.set(.55*size,.8*size,1);scene.add(halo);flames.push({f,h,halo,ph:R(0,7)})}
+function lum(x,y,z,power){let l=new T.PointLight(0xffa55d,power,5.2,2);l.position.set(x,y,z);scene.add(l);flights.push({l,power,ph:R(0,7)})}
+function stand(x,z){lathe([[0,0],[.28,.02],[.33,.07],[.25,.11],[.13,.18],[.09,.29]],M.bronze,x,.02,z);ring(.27,.014,M.gold,x,.085,z);lathe([[.09,0],[.075,.14],[.061,.40],[.10,.49],[.064,.56],[.058,.80],[.095,.91]],M.bronze,x,.31,z);for(let i=-2;i<=2;i++){let xx=x+i*.24,yy=1.48-Math.abs(i)*.058;if(i)tube([[x,1.24,z],[x+i*.10,1.30,z],[xx,yy-.12,z],[xx,yy,z]],.028,M.bronze);else rod([x,1.23,z],[xx,yy,z],.05,M.bronze);candle(xx,yy,z,.89)}lum(x,1.95,z,4.1)}for(let s of [-1,1])for(let z of [TZ-1.84,TZ+1.84])stand(s*1.91,z);
+for(let s of [-1,1])for(let z of bays){let x=s*4.78;
+ // Rounded forged backplate bolts flush to the exposed wall face.
+ let plate=lathe([[.08,0],[.18,.025],[.20,.055],[.14,.075]],M.bronze,s*5.0,3.075,z);plate.rotation.z=s*Math.PI/2;
+ for(let a of [0,Math.PI/2,Math.PI,Math.PI*1.5])ell(.021,.023,.018,M.gold,s*4.965,3.075+.15*Math.cos(a),z+.15*Math.sin(a));
+ tube([[s*4.96,3.08,z],[s*4.90,2.97,z],[x,3.17,z]],.045,M.bronze);
+ ell(.060,.072,.06,M.gold,x,3.17,z);candle(x,3.22,z,.84);lum(x,3.81,z,2.1)
+}
+const chandelierY=5.15,chz=3.5;ring(.85,.042,M.bronze,0,chandelierY,chz);rod([0,7.04,chz],[0,5.43,chz],.028,M.iron);for(let i=0;i<6;i++){let a=i*Math.PI/3,x=.85*Math.cos(a),z=chz+.85*Math.sin(a);tube([[0,5.45,chz],[x*.64,5.31,chz+(z-chz)*.64],[x,chandelierY,z]],.025,M.bronze);candle(x,chandelierY+.05,z,.61)}lum(0,5.55,chz,5.0);
+// Resident rat priest: face with proper muzzle, eyelids, ears, hands, accessories.
+const rat=new T.Group();scene.add(rat);rat.position.set(3.14,.035,3.25);const pm={fur:M.fur,skin:M.pink,eye:M.eye,robe:M.cloth,mantle:M.mantle};
+const neck=ell(.13,.19,.14,pm.fur,0,1.43,-.10,rat),torso=ell(.25,.38,.245,M.cloth,0,1.10,.02,rat);let breast=ell(.29,.21,.28,M.mantle,0,1.34,.02,rat);lathe([[.24,0],[.31,.04],[.36,.12],[.32,.18],[.22,.22]],M.mantle,0,1.30,0,rat);ring(.25,.023,M.trim,0,1.35,0,rat);
+const head=new T.Group();head.position.set(0,1.56,-.13);rat.add(head);
+function ratSkull(parent){
+ const profile=[[-.24,.115,.09,-.045],[-.17,.18,.155,-.016],[-.065,.225,.20,.003],[.055,.207,.20,.012],[.16,.14,.146,.001],[.23,.025,.035,-.012]];
+ const seg=32,v=[],uv=[],idx=[];
+ profile.forEach((q,j)=>{let [z,rx,ry,cy]=q;for(let i=0;i<=seg;i++){let a=i*2*Math.PI/seg;let scallop=1+.009*Math.cos(a*13+j*.6);v.push(Math.cos(a)*rx*scallop,cy+Math.sin(a)*ry,z);uv.push(i/seg,j/(profile.length-1))}});
+ for(let j=0;j<profile.length-1;j++)for(let i=0;i<seg;i++){let a=j*(seg+1)+i,b=a+seg+1;idx.push(a,b,a+1,a+1,b,b+1)}
+ let g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(v,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();add(g,M.fur,parent)
+}
+ratSkull(head);for(let s of [-1,1]){
+ let ear=ell(.116,.151,.064,M.fur,s*.205,.17,.09,head);ear.rotation.z=-s*.22;
+ let inner=ell(.080,.113,.027,M.pink,s*.215,.174,.038,head);inner.rotation.z=-s*.22;
+ // Thin inner cartilaginous fold and the rolled lip of each ear.
+ tube(Array.from({length:13},(_,j)=>{let a=(j/12)*Math.PI*1.80+.60;return[s*.205+Math.cos(a)*.093,.171+Math.sin(a)*.121,.007]}),.008,M.muzzle,head);
+ ell(.065,.068,.038,M.muzzle,s*.131,.033,-.17,head);
+ ell(.033,.043,.017,M.eye,s*.137,.035,-.208,head);
+ ell(.010,.011,.005,M.pages,s*.128,.051,-.225,head);
+ // Lower and upper eyelids are modeled separately, not a circular painted eye.
+ tube([[s*.096,.065,-.198],[s*.132,.082,-.214],[s*.174,.067,-.197]],.009,M.fur,head);
+ tube([[s*.109,.001,-.196],[s*.139,-.008,-.211],[s*.167,.006,-.198]],.005,M.muzzle,head);
+ ell(.093,.066,.124,M.muzzle,s*.087,-.096,-.243,head);
+ for(let j=0;j<4;j++){let y=-.098+j*.017;
+  ell(.006,.006,.007,M.pink,s*(.090+(j%2)*.038),y,-.357,head);
+  tube([[s*.12,y,-.33],[s*(.23+j*.015),-.10+(j-1.5)*.031,-.38],[s*(.43+j*.021),-.10+(j-1.5)*.058,-.33]],.0027,M.pages,head)}
+}
+// Slender tapered muzzle, dark nose, jaw and whisker pads.
+let rings=[],inds=[],ns=18;for(const [zz,yy,rx,ry] of [[-.15,.015,.142,.105],[-.25,-.03,.114,.087],[-.33,-.06,.082,.057],[-.426,-.081,.041,.030]]){for(let j=0;j<ns;j++){let a=j*2*Math.PI/ns;rings.push(Math.cos(a)*rx,yy+Math.sin(a)*ry,zz)}}for(let j=0;j<3;j++)for(let k=0;k<ns;k++){let a=j*ns+k,b=j*ns+(k+1)%ns,c=(j+1)*ns+k,d=(j+1)*ns+(k+1)%ns;inds.push(a,b,c,b,d,c)}let mg=new T.BufferGeometry();mg.setAttribute('position',new T.Float32BufferAttribute(rings,3));mg.setAttribute('uv',new T.Float32BufferAttribute(Array.from({length:rings.length/3},(_,i)=>[(i%ns)/(ns-1),Math.floor(i/ns)/3]).flat(),2));mg.setIndex(inds);mg.computeVertexNormals();add(mg,M.muzzle,head);ell(.047,.034,.045,M.pink,0,-.088,-.438,head);
+ for(let s of [-1,1])ell(.009,.006,.006,M.black,s*.023,-.085,-.475,head);
+ tube([[-.061,-.145,-.33],[0,-.155,-.357],[.061,-.145,-.33]],.008,M.pink,head);
+ // Separate jaw profile makes the lower muzzle legible in silhouette.
+ ell(.082,.026,.090,M.muzzle,0,-.152,-.290,head);
+for(let side of [-1,1]){
+ tube([[side*.084,.108,-.207],[side*.132,.105,-.203],[side*.18,.081,-.162]],.013,M.fur,head);
+ ell(.023,.019,.012,M.pink,side*.09,-.113,-.34,head);
+}
+ell(.18,.065,.18,M.cloth,0,.185,.09,head);const capRim=ring(.175,.012,M.trim,0,.19,.06,head);
+// Lofted sleeve geometry gives a natural taper and gathered fabric at the shoulder.
+function sleeveGeometry(topRadius,bottomRadius){
+ const vs=[],uv=[],indices=[],rad=32,steps=16;
+ for(let j=0;j<=steps;j++){let t=j/steps,y=.5-t,ruffle=1+.035*Math.sin(t*26)+.012*Math.sin(t*52),profile=Math.sin(Math.PI*(.12+.76*t))*.018,r=(topRadius*(1-t)+bottomRadius*t+profile)*ruffle;
+  for(let i=0;i<=rad;i++){let a=i*2*Math.PI/rad;vs.push(Math.cos(a)*r,y,Math.sin(a)*r);uv.push(i/rad, t)}
+ }
+ for(let j=0;j<steps;j++)for(let i=0;i<rad;i++){let a=j*(rad+1)+i,b=a+rad+1;indices.push(a,b,a+1,a+1,b,b+1)}
+ const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vs,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();g.parameters={height:1};return g
+}
+const shoes=[],legs=[],arms=[],sleeveCaps=[],tail=new T.Group();rat.add(tail);tail.position.set(0,.31,.40);tube([[0,0,0],[.06,-.15,.25],[.13,-.14,.58],[.10,-.10,.92],[-.04,-.03,1.17]],.036,M.pink,tail);
+for(let s of [-1,1]){const leg=new T.Group();rat.add(leg);legs.push({s,leg});
+ // Curved leather slipper with a raised toe, seams and individual keratin claws.
+ ell(.113,.082,.198,M.woodDark,s*.15,.095,-.055,leg);
+ ell(.106,.050,.134,M.iron,s*.15,.082,-.112,leg);
+ for(let j=-1;j<=1;j++){
+  let xx=s*.15+j*.063;ell(.026,.027,.090,M.fur,xx,.067,-.210,leg);
+  let claw=add(new T.ConeGeometry(.017,.062,9),M.pages,leg,xx,.072,-.286);claw.rotation.x=-Math.PI/2;
+ }
+ tube([[s*.057,.10,.003],[s*.15,.138,-.02],[s*.245,.10,.003]],.005,M.bronze,leg);
+ let upper=add(sleeveGeometry(.155,.134),M.mantle,rat),lower=add(sleeveGeometry(.116,.078),M.cloth,rat);
+ upper.userData.cap={a:[0,0,0],b:[0,0,0],r:.147};lower.userData.cap={a:[0,0,0],b:[0,0,0],r:.114};sleeveCaps.push(upper.userData.cap,lower.userData.cap);
+ let cuff=add(new T.TorusGeometry(.086,.018,10,24),M.trim,rat,s*.3,.90,-.13),hand=ell(.074,.068,.082,M.muzzle,s*.3,.87,-.17,rat);let fingers=[];for(let j=-1;j<=1;j++)fingers.push(ell(.018,.045,.026,M.muzzle,s*.3+j*.040,.81,-.2,rat));let thumb=ell(.030,.045,.036,M.muzzle,s*.24,.84,-.23,rat);
+ // Fingertips and understated nails; fingers follow the animated palms.
+ let nails=fingers.map(()=>ell(.012,.013,.009,M.pages,0,0,0,rat));
+ arms.push({s,upper,lower,hand,cuff,fingers,thumb,nails})}
+const upAxis=new T.Vector3(0,1,0);
+ function align(obj,A,B){let a=new T.Vector3(...A),b=new T.Vector3(...B),v=a.clone().sub(b);
+ // Sleeve's +Y rim is the shoulder, -Y rim is the wrist. Prior code reversed it.
+ const length=v.length();obj.position.copy(a.add(b).multiplyScalar(.5));obj.quaternion.setFromUnitVectors(upAxis,v.normalize());
+ obj.scale.y=length/obj.geometry.parameters.height;
+ const cap=obj.userData.cap;if(cap){for(let i=0;i<3;i++){cap.a[i]=A[i];cap.b[i]=B[i]}}
+ }
+// Chain / medallion belongs to the fitted upper vestment, not moving dress.
+tube([[-.145,1.33,-.24],[0,1.16,-.31],[.145,1.33,-.24]],.011,M.trim,rat);ell(.05,.071,.019,M.gold,0,1.13,-.31,rat);rod([0,1.16,-.34],[0,1.10,-.34],.011,M.cloth,rat);rod([-.026,1.132,-.34],[.026,1.132,-.34],.011,M.cloth,rat);
+// Book rests on an actual pedestal, near his final routine station.
+lathe([[.26,0],[.30,.05],[.13,.16],[.115,.92],[.20,1.0]],M.cut,3.86,.02,4.55);let lectern=chamfer(.78,.09,.62,M.wood,3.86,1.17,4.55,.025);lectern.rotation.x=-.17;let book=chamfer(.57,.035,.41,M.pages,3.86,1.254,4.53,.012);book.rotation.x=-.17;
+ let pageLeaf=chamfer(.277,.009,.373,M.pages,3.999,1.276,4.53,.006);pageLeaf.rotation.x=-.17;pageLeaf.rotation.z=-.018;
+ tube([[3.57,1.235,4.50],[3.71,1.25,4.49],[3.86,1.26,4.50],[4.16,1.25,4.51]],.007,M.gold);
+ let binding=chamfer(.62,.024,.45,M.woodDark,3.86,1.225,4.53,.013);binding.rotation.x=-.17;
+ for(let k=0;k<3;k++)rod([3.62,1.26,4.40+k*.11],[4.10,1.26,4.40+k*.11],.003,M.iron);
+// Fixed-step Verlet cloth; anchored two top rings; geometry, trim, collision in RAT LOCAL SPACE.
+function cloth(cols,rows,sample,closed,m,collide){let n=cols*rows,p=new Float32Array(n*3),last=new Float32Array(n*3),springs=[],index=[],pin=new Uint8Array(n);let id=(i,j)=>j*cols+(closed?(i+cols)%cols:i);for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){let k=id(i,j)*3,q=sample(i/(closed?cols:cols-1),j/(rows-1));p.set(q,k);last.set(q,k);if(j<2)pin[id(i,j)]=1}function link(a,b,scale=1){let i=a*3,j=b*3;springs.push([a,b,Math.hypot(p[i]-p[j],p[i+1]-p[j+1],p[i+2]-p[j+2])*scale])}for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){if(i+1<cols||closed)link(id(i,j),id(i+1,j));if(j+1<rows){link(id(i,j),id(i,j+1));if(i+1<cols||closed){link(id(i,j),id(i+1,j+1));link(id(i+1,j),id(i,j+1))}}if(j+2<rows)link(id(i,j),id(i,j+2),1.012)}for(let j=0;j<rows-1;j++)for(let i=0;i<(closed?cols:cols-1);i++){let a=id(i,j),b=id(i+1,j),c=id(i,j+1),d=id(i+1,j+1);index.push(a,c,b,b,c,d)}let g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(p,3).setUsage(T.DynamicDrawUsage));g.setAttribute('uv',new T.Float32BufferAttribute(Array.from({length:n},(_,id)=>[id%cols/(closed?cols:cols-1),Math.floor(id/cols)/(rows-1)]).flat(),2));g.setIndex(index);g.computeVertexNormals();let clothMesh=add(g,m,rat);clothMesh.castShadow=false;
+ function step(h,t,speed,angular){let h2=h*h;for(let j=2;j<rows;j++)for(let i=0;i<cols;i++){let k=id(i,j)*3,x=p[k],y=p[k+1],z=p[k+2],vx=(x-last[k])*.985,vy=(y-last[k+1])*.985,vz=(z-last[k+2])*.985;last[k]=x;last[k+1]=y;last[k+2]=z;let v=j/(rows-1);p[k]=x+vx+(.26*Math.sin(t*1.9+i*.6)*v-speed*.42-angular*z*.3)*h2;p[k+1]=y+vy-11*h2;p[k+2]=z+vz+(.14*Math.cos(t*1.3+i*.3)*v+speed*.55+angular*x*.3)*h2}
+ for(let pass=0;pass<5;pass++){for(let c of springs){let a=c[0]*3,b=c[1]*3,dx=p[b]-p[a],dy=p[b+1]-p[a+1],dz=p[b+2]-p[a+2],length=Math.hypot(dx,dy,dz)||1,f=(length-c[2])/length,wa=pin[c[0]]?0:.5,wb=pin[c[1]]?0:.5;if(!wa&&!wb)continue;if(!wa)wb=1;else if(!wb)wa=1;p[a]+=dx*f*wa;p[a+1]+=dy*f*wa;p[a+2]+=dz*f*wa;p[b]-=dx*f*wb;p[b+1]-=dy*f*wb;p[b+2]-=dz*f*wb}for(let j=2;j<rows;j++)for(let i=0;i<cols;i++){let k=id(i,j)*3;collide(p,k,j/(rows-1));p[k+1]=Math.max(.125,p[k+1]);if(!Number.isFinite(p[k])||!Number.isFinite(p[k+1])||Math.abs(p[k])>3||Math.abs(p[k+2])>3){let q=sample(i/(closed?cols:cols-1),j/(rows-1));p.set(q,k);last.set(q,k)}}}
+ for(let j=0;j<2;j++)for(let i=0;i<cols;i++){let k=id(i,j)*3,q=sample(i/(closed?cols:cols-1),j/(rows-1));p.set(q,k);last.set(q,k)}g.attributes.position.needsUpdate=true;g.computeVertexNormals()}
+ return {p,g,id,cols,rows,step};}
+let footZ=[0,0];
+function bodyCollision(p,k,frac){
+ let x=p[k],y=p[k+1],z=p[k+2],rx=y>.83?.306:.238,rz=y>.83?.302:.247;
+ let d=Math.sqrt(x*x/(rx*rx)+z*z/(rz*rz));
+ if(d<1){let v=1/Math.max(.001,d);p[k]=d<.001?rx:x*v;p[k+2]=d<.001?0:z*v}
+ // Independent leg capsules update with the foot swing, keeping cloth off the shins.
+ for(let i=0;i<2;i++){
+  let side=i?1:-1,cx=side*.16,cy=.40,cz=footZ[i]*.67,
+  dx=p[k]-cx,dy=p[k+1]-cy,dz=p[k+2]-cz;
+  const core=Math.max(0,1-Math.abs(dy)/.40),radius=.135+.06*core;
+  let dist=Math.sqrt(dx*dx+dz*dz);
+  if(y>.14&&y<.79&&dist<radius){let v=radius/Math.max(dist,.001);p[k]=cx+(dist<.001?radius:dx*v);p[k+2]=cz+(dist<.001?0:dz*v)}
+ }
+ // Capsule collision in rat-local space, entirely scalar for performance.
+ // Refresh particle position after torso/leg collisions before sleeve tests.
+ x=p[k];y=p[k+1];z=p[k+2];
+ for(const cap of sleeveCaps){
+  const a=cap.a,b=cap.b,dx=b[0]-a[0],dy=b[1]-a[1],dz=b[2]-a[2];
+  const along=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy+(z-a[2])*dz)/Math.max(.00001,dx*dx+dy*dy+dz*dz)));
+  const cx=a[0]+dx*along,cy=a[1]+dy*along,cz=a[2]+dz*along;
+  let nx=x-cx,ny=y-cy,nz=z-cz,d2=nx*nx+ny*ny+nz*nz,r2=cap.r*cap.r;
+  if(d2<r2){let d=Math.sqrt(d2);if(d<.000001){nx=.001;ny=0;nz=0;d=.001}
+   const scale=cap.r/d;x=cx+nx*scale;y=cy+ny*scale;z=cz+nz*scale;
+  }
+ }
+ p[k]=x;p[k+1]=y;p[k+2]=z;
+}
+let dress=cloth(28,13,(u,v)=>{let a=u*Math.PI*2,r=.283+.22*v+.012*Math.sin(12*a)*v;return [Math.cos(a)*r,1.17-1.045*v,Math.sin(a)*r]},true,M.cloth,bodyCollision);
+let mantle=cloth(15,11,(u,v)=>{let a=(u-.5)*2.04;return [Math.sin(a)*(.32+.20*v),1.37-.91*v,Math.cos(a)*(.22+.21*v)]},false,M.mantle,(p,k,f)=>{bodyCollision(p,k,f);p[k+2]=Math.max(.265,p[k+2])});
+const stoles=[];for(const side of [-1,1])stoles.push(cloth(5,10,(u,v)=>[side*.15+(u-.5)*.083,1.30-.59*v,-.315-.028*v],false,M.stole,(p,k,f)=>{bodyCollision(p,k,f);p[k+2]=Math.min(-.315,p[k+2])}));
+const stoleBorders=stoles.map(q=>{let dat=new Float32Array(q.rows*3),g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(dat,3));rat.add(new T.Line(g,new T.LineBasicMaterial({color:0xc4a36d})));return {g,dat,q}});
+
+let trimPos=new Float32Array((dress.cols+1)*3),trimG=new T.BufferGeometry();trimG.setAttribute('position',new T.BufferAttribute(trimPos,3));rat.add(new T.Line(trimG,new T.LineBasicMaterial({color:0xc09c67})));
+const routes=[{x:3.14,z:3.25,face:0,rest:2,name:'KEEPING VIGIL'},{x:2.82,z:-1.50,face:Math.PI/2,rest:6,name:'PRAYING AT THE COFFIN'},{x:3.03,z:-4.65,face:0,rest:4,name:'TENDING THE CANDLES'},{x:3.50,z:2.13,face:-Math.PI/2,rest:3.8,name:'INSPECTING THE OSSUARY'},{x:3.45,z:4.18,face:-Math.PI/2,rest:5.2,name:'READING THE BURIAL REGISTER'}];let route=0,rest=2,velocity=0,headingSpeed=0,travel=0,walkPhase=0,paused=false,following=false,fireOn=true,mistOn=true,soundOn=false;
+const views={wide:[.17,.15,11.8,0,2.18,-1.5],tomb:[.47,.39,5.6,0,1.10,TZ],priest:[-2.45,.12,4.2,3.12,1.2,3.1],cloth:[-2.40,.12,2.7,3.12,1.15,3.1],gate:[-.21,.18,7.7,0,2.5,-8.25]};let target={yaw:.17,pitch:.15,dist:11.8,x:0,y:2.18,z:-1.5},view={...target};
+function changeView(name){let a=views[name].slice();if(name==='priest'||name==='cloth'){a[3]=rat.position.x;a[5]=rat.position.z}else if(following){following=false;host.querySelector('[data-follow]').textContent='FOLLOW OFF'};['yaw','pitch','dist','x','y','z'].forEach((k,i)=>target[k]=a[i]);host.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('sel',b.dataset.v===name))}host.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',()=>changeView(b.dataset.v)));
+host.querySelector('[data-pause]').onclick=e=>{paused=!paused;e.currentTarget.textContent=paused?'RESUME':'PAUSE'};host.querySelector('[data-follow]').onclick=e=>{following=!following;e.currentTarget.textContent=following?'FOLLOW ON':'FOLLOW OFF';if(following)changeView('priest')};host.querySelector('[data-fire]').onclick=e=>{fireOn=!fireOn;e.currentTarget.textContent=fireOn?'FLAMES ON':'FLAMES OFF';for(let f of flames){f.f.visible=f.h.visible=f.halo.visible=fireOn}for(let q of flights)q.l.intensity=fireOn?q.power:0};
+let fogGroup=new T.Group();scene.add(fogGroup);const wisps=[];let fg=document.createElement('canvas');fg.width=fg.height=128;let fgc=fg.getContext('2d'),gd=fgc.createRadialGradient(64,64,0,64,64,64);gd.addColorStop(0,'rgba(175,199,211,.32)');gd.addColorStop(.6,'rgba(177,202,210,.14)');gd.addColorStop(1,'rgba(170,195,210,0)');fgc.fillStyle=gd;fgc.fillRect(0,0,128,128);let fogTex=new T.CanvasTexture(fg);for(let i=0;i<10;i++){let o=add(new T.PlaneGeometry(R(2.1,3.6),R(.8,1.3)),new T.MeshBasicMaterial({map:fogTex,side:T.DoubleSide,transparent:true,opacity:R(.11,.23),depthWrite:false}),fogGroup,R(-4,4),R(.12,.23),R(-8,8));o.rotation.x=-Math.PI/2;wisps.push({o,x:o.position.x,z:o.position.z,p:R(0,6),v:R(.06,.19)})}host.querySelector('[data-mist]').onclick=e=>{mistOn=!mistOn;e.currentTarget.textContent=mistOn?'MIST ON':'MIST OFF';fogGroup.visible=mistOn};
+let soundCtx=null,master=null,nextDrip=0;host.querySelector('[data-sound]').onclick=async e=>{const button=e.currentTarget;try{soundCtx=soundCtx||new(window.AudioContext||window.webkitAudioContext)();await soundCtx.resume();if(!master){master=soundCtx.createGain();master.gain.value=0;master.connect(soundCtx.destination);let o=soundCtx.createOscillator(),f=soundCtx.createBiquadFilter();o.type='sine';o.frequency.value=54;f.type='lowpass';f.frequency.value=160;o.connect(f).connect(master);o.start()}soundOn=!soundOn;master.gain.setTargetAtTime(soundOn?.035:0,soundCtx.currentTime,.3);button.textContent=soundOn?'SOUND ON':'SOUND OFF'}catch(err){button.textContent='SOUND N/A'}};
+function drip(){if(!soundOn||!soundCtx)return;let t=soundCtx.currentTime,o=soundCtx.createOscillator(),g=soundCtx.createGain();o.frequency.setValueAtTime(500+R(-100,100),t);o.frequency.exponentialRampToValueAtTime(220,t+.18);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.025,t+.014);g.gain.exponentialRampToValueAtTime(.0001,t+.23);o.connect(g).connect(master);o.start(t);o.stop(t+.24)}
+const ptr=new Map();let pinch=0,down=null;const picker=new T.Raycaster(),mouse=new T.Vector2();function bound(){target.pitch=Math.max(-.14,Math.min(.78,target.pitch));target.dist=Math.max(2.3,Math.min(16,target.dist))}canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);ptr.set(e.pointerId,[e.clientX,e.clientY]);down={x:e.clientX,y:e.clientY};pinch=0});canvas.addEventListener('pointermove',e=>{if(!ptr.has(e.pointerId))return;let a=ptr.get(e.pointerId),dx=e.clientX-a[0],dy=e.clientY-a[1];ptr.set(e.pointerId,[e.clientX,e.clientY]);if(ptr.size===2){let p=[...ptr.values()],d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]);if(pinch)target.dist+=(pinch-d)*.025;pinch=d}else{target.yaw-=dx*.005;target.pitch+=dy*.0045}bound()});for(let e of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(e,q=>{if(e==='pointerup'&&down&&Math.hypot(q.clientX-down.x,q.clientY-down.y)<9&&ptr.size===1){let r=canvas.getBoundingClientRect();mouse.set((q.clientX-r.left)/r.width*2-1,1-(q.clientY-r.top)/r.height*2);picker.setFromCamera(mouse,camera);if(picker.intersectObjects(rat.children,true).length)changeView('priest')}ptr.delete(q.pointerId);pinch=0;down=null});canvas.addEventListener('wheel',e=>{e.preventDefault();target.dist+=Math.sign(e.deltaY)*Math.min(1.5,Math.abs(e.deltaY)*.012);bound()},{passive:false});canvas.addEventListener('contextmenu',e=>e.preventDefault());
+// Gamepad API: standard pads and DInput-compatible devices exposed to the browser.
+// On unknown mappings, default axes are conservative: left stick orbits, right Y zooms.
+let lastShoulder=0;const dead=a=>Math.abs(a||0)>.17?Math.sign(a)*((Math.abs(a)-.17)/.83):0;
+function cameraPad(dt){const list=navigator.getGamepads?.()||[],g=Array.from(list).find(q=>q?.connected);if(!g)return;
+ const ax=g.axes||[];target.yaw-=dead(ax[0])*dt*1.65;target.pitch+=dead(ax[1])*dt*1.07;
+ if(ax.length>3)target.dist+=dead(ax[3])*dt*3.2;
+ const l=g.buttons?.[4]?.pressed?1:0,r=g.buttons?.[5]?.pressed?1:0,current=l?-1:r?1:0;
+ if(current&&!lastShoulder){const order=['wide','tomb','priest','cloth','gate'],active=order.findIndex(q=>host.querySelector(`[data-v="${q}"]`).classList.contains('sel'));changeView(order[(active+current+order.length)%order.length])}
+ lastShoulder=current;bound();
+}
+function resize(){let w=host.clientWidth,h=host.clientHeight;renderer.setSize(Math.max(w,1),Math.max(h,1),false);camera.aspect=w/h;camera.fov=w/h<1.08?65:55;camera.updateProjectionMatrix()}const res=new ResizeObserver(resize);res.observe(host);resize();msg.style.display='none';let visible=true;const io=new IntersectionObserver(e=>{visible=e[0]?.isIntersecting??true});io.observe(host);let clock=new T.Clock(),acc=0,simTime=0;const lerp=(a,b,s)=>a+(b-a)*s;
+function simulation(dt){if(paused){activity.textContent='PRIEST PAUSED';return}simTime+=dt;const goal=routes[route],dx=goal.x-rat.position.x,dz=goal.z-rat.position.z,dist=Math.hypot(dx,dz);let moving=rest<=0&&!paused;let speedGoal=moving?.58:0;velocity=lerp(velocity,speedGoal,1-Math.exp(-4*dt));let angle=moving?Math.atan2(-dx,-dz):goal.face,err=Math.atan2(Math.sin(angle-rat.rotation.y),Math.cos(angle-rat.rotation.y)),turn=Math.max(-1.8*dt,Math.min(1.8*dt,err));rat.rotation.y+=turn;headingSpeed=turn/dt;
+if(moving&&dist>.001){let advance=Math.min(dist,velocity*dt*Math.max(.03,Math.cos(err)));rat.position.x+=dx/dist*advance;rat.position.z+=dz/dist*advance;travel+=advance;walkPhase+=advance*12.1;if(dist<.14){rest=goal.rest;activity.textContent=goal.name}}else if(!paused){rest-=dt;if(rest<=0){route=(route+1)%routes.length;rest=0}}if(paused)activity.textContent='PRIEST PAUSED';else if(moving)activity.textContent='WALKING THE SIDE AISLE';else activity.textContent=goal.name;
+const walk=velocity/.58,bob=(Math.sin(walkPhase*2)*.011+.006)*walk,praying=!moving&&goal.name.includes('PRAYING'),reading=!moving&&goal.name.includes('READING'),tending=!moving&&goal.name.includes('TENDING');rat.position.y=.025+bob;
+for(let i=0;i<2;i++){let phase=walkPhase+i*Math.PI,rz=Math.cos(phase)*.115*walk,raise=Math.pow(Math.max(0,Math.sin(phase)),1.7)*.085*walk;legs[i].leg.position.set(0,raise,rz);legs[i].leg.rotation.x=Math.sin(phase)*.13*walk;footZ[i]=rz}
+for(let a of arms){let s=a.s,phase=walkPhase+(s>0?0:Math.PI),swing=Math.sin(phase)*.17*walk,A=[s*.275,1.28,0],B=[s*.34,1.04,-.07+swing*.5],C=[s*.32,.85,-.17+swing];if(praying){B=[s*.27,1.07,-.18];C=[s*.07,1.11,-.39]}if(reading){B=[s*.28,1.09,-.12];C=[s*.17,1.09,-.33]}if(tending&&s<0){B=[s*.31,1.13,-.17];C=[s*.29,1.26,-.38]}align(a.upper,A,B);align(a.lower,B,C);a.hand.position.set(...C);a.cuff.position.set(C[0]+(B[0]-C[0])*.07,C[1]+(B[1]-C[1])*.07,C[2]+(B[2]-C[2])*.07);
+ a.cuff.quaternion.copy(a.lower.quaternion);a.cuff.rotateX(Math.PI/2);a.fingers.forEach((f,j)=>{f.position.set(C[0]+(j-1)*.040,C[1]-.045,C[2]-.045);a.nails[j].position.set(C[0]+(j-1)*.040,C[1]-.083,C[2]-.062)});a.thumb.position.set(C[0]-s*.07,C[1]-.015,C[2]-.055)}
+head.rotation.x=lerp(head.rotation.x,praying?.15:reading?.06:Math.sin(simTime*.71)*.023,.13);head.rotation.y=.045*Math.sin(simTime*.8);tail.rotation.y=.09*Math.sin(simTime*1.8)+Math.sin(walkPhase)*.1*walk;
+// Cloth shares rat-local coordinates. Priest body bob applies once to EVERYTHING, not twice to pins.
+dress.step(dt,simTime,velocity,headingSpeed);mantle.step(dt,simTime,velocity*.6,headingSpeed);for(let q of stoles)q.step(dt,simTime,velocity*.3,headingSpeed);for(let b of stoleBorders){for(let j=0;j<b.q.rows;j++){let k=b.q.id(0,j)*3;b.dat.set(b.q.p.subarray(k,k+3),j*3)}b.g.attributes.position.needsUpdate=true}for(let i=0;i<=dress.cols;i++){let k=dress.id(i%dress.cols,dress.rows-1)*3;trimPos.set(dress.p.subarray(k,k+3),i*3)}trimG.attributes.position.needsUpdate=true}
+function render(){if(!host.isConnected){renderer.dispose();res.disconnect();io.disconnect();if(soundCtx)soundCtx.close();return}requestAnimationFrame(render);let dt=Math.min(.05,clock.getDelta());if(!visible)return;acc=Math.min(.09,acc+dt);let steps=0;while(acc>=1/90&&steps++<5){simulation(1/90);acc-=1/90}if(following){target.x=rat.position.x;target.y=1.10;target.z=rat.position.z}cameraPad(dt);
+const k=1-Math.exp(-7*dt);for(let key of Object.keys(target))view[key]=lerp(view[key],target[key],k);const aim=new T.Vector3(view.x,view.y,view.z),pos=new T.Vector3(aim.x+view.dist*Math.sin(view.yaw)*Math.cos(view.pitch),aim.y+view.dist*Math.sin(view.pitch),aim.z+view.dist*Math.cos(view.yaw)*Math.cos(view.pitch));pos.x=Math.max(-4.8,Math.min(4.8,pos.x));pos.z=Math.max(-8.15,Math.min(8.15,pos.z));pos.y=Math.max(.7,Math.min(6.60,pos.y));camera.position.copy(pos);camera.lookAt(aim);if(fireOn){for(let a of flames){let k=Math.sin(simTime*8+a.ph);a.f.scale.y=(.93+.16*k);a.f.rotation.z=.13*Math.sin(simTime*5+a.ph);a.h.scale.y=.43+.06*k;a.halo.material.opacity=.22+.06*k}for(let a of flights)a.l.intensity=a.power*(.95+.07*Math.sin(simTime*8+a.ph))}if(mistOn)for(let w of wisps){w.o.position.x=w.x+Math.sin(simTime*w.v+w.p)*.29;w.o.position.z=w.z+Math.cos(simTime*w.v*.7+w.p)*.20}if(soundOn&&simTime>nextDrip){drip();nextDrip=simTime+R(2.5,6.5)}renderer.render(scene,camera)}requestAnimationFrame(render);
+// Honest functional no-library fallback: small interactive, software-rendered scene.
+function fallback(){
+ const root=host,CZ=-1.56,boot=msg,archY=(q,w,h,r)=>h+r*Math.pow(Math.max(0,1-Math.abs(q)/w),.74);
+ activity.textContent='SOFTWARE VIEW · 3D ENGINE UNAVAILABLE';boot.style.display='none';
+ let ctx=canvas.getContext('2d');if(!ctx){boot.textContent='GRAPHICS UNAVAILABLE';boot.style.display='block';return}
+ const cams={priest:{yaw:-2.45,pitch:.15,dist:4.3,x:3.05,y:1.1,z:3.1},wide:{yaw:.18,pitch:.12,dist:10.9,x:0,y:2.35,z:-1.55},tomb:{yaw:.41,pitch:.38,dist:5.7,x:0,y:1.14,z:-1.53},cloth:{yaw:-2.40,pitch:.13,dist:2.9,x:3.05,y:1.05,z:3.1},gate:{yaw:-.15,pitch:.22,dist:7.6,x:0,y:2.5,z:-8.3}};
+ let following=false;root.querySelector('[data-follow]').addEventListener('click',e=>{following=!following;e.currentTarget.textContent=following?'FOLLOW ON':'FOLLOW OFF'});let fallbackPaused=false;root.querySelector('[data-pause]').addEventListener('click',e=>{fallbackPaused=!fallbackPaused;e.currentTarget.textContent=fallbackPaused?'RESUME':'PAUSE'});
+ let goal={...cams.wide},now={...cams.wide},pointer=new Map(),pinch=0,mist=true,lit=true,playing=false,AC,master,noise,time=0,dpr=1,w=1,h=1;
+ function resize2(){w=root.clientWidth;h=root.clientHeight;dpr=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.max(1,Math.round(w*dpr));canvas.height=Math.max(1,Math.round(h*dpr));ctx.setTransform(dpr,0,0,dpr,0,0)}resize2();const ro2=new ResizeObserver(resize2);ro2.observe(root);
+ for(let btn of root.querySelectorAll('[data-v]'))btn.addEventListener('click',()=>{Object.assign(goal,cams[btn.dataset.v]);if(['priest','cloth'].includes(btn.dataset.v)){goal.x=fbR.x;goal.z=fbR.z}else if(following){following=false;root.querySelector('[data-follow]').textContent='FOLLOW OFF'};root.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('sel',b===btn))});
+ root.querySelector('[data-fire]').addEventListener('click',e=>{lit=!lit;e.currentTarget.textContent=lit?'FLAMES ON':'FLAMES OFF'});
+ root.querySelector('[data-mist]').addEventListener('click',e=>{mist=!mist;e.currentTarget.textContent=mist?'MIST ON':'MIST OFF'});
+ root.querySelector('[data-sound]').addEventListener('click',async e=>{const button=e.currentTarget;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();await AC.resume();if(!master){master=AC.createGain();master.connect(AC.destination);let o=AC.createOscillator();o.type='sine';o.frequency.value=57;o.connect(master);o.start()}playing=!playing;master.gain.setTargetAtTime(playing?.016:0,AC.currentTime,.2);button.textContent=playing?'SOUND ON':'SOUND OFF'}catch(err){button.textContent='SOUND N/A'}});
+ function limit(){goal.pitch=Math.max(-.13,Math.min(.75,goal.pitch));goal.dist=Math.max(2.7,Math.min(17,goal.dist))}
+ canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointer.set(e.pointerId,{x:e.clientX,y:e.clientY});pinch=0});
+ canvas.addEventListener('pointermove',e=>{if(!pointer.has(e.pointerId))return;let p=pointer.get(e.pointerId),dx=e.clientX-p.x,dy=e.clientY-p.y;pointer.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointer.size===2){let a=[...pointer.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinch)goal.dist+=(pinch-d)*.024;pinch=d}else{goal.yaw-=dx*.0055;goal.pitch+=dy*.0044}limit()});
+ for(let ev of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(ev,e=>{pointer.delete(e.pointerId);pinch=0});
+ canvas.addEventListener('wheel',e=>{e.preventDefault();goal.dist+=Math.sign(e.deltaY)*Math.min(1.8,Math.abs(e.deltaY)*.014);limit()},{passive:false});
+ function vsub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]]}function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]}function cross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]}function norm(a){let l=Math.hypot(...a)||1;return a.map(x=>x/l)}
+ // Canvas texture swatches keep the offline view from reverting to flat rectangles.
+ const paint={};
+ function makePattern(key,base){let c=document.createElement('canvas');c.width=c.height=96;let g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,96,96);
+  let seed=key.length*7919;const n=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+  for(let i=0;i<3700;i++){const l=Math.floor(n()*55),x=n()*96,y=n()*96;g.fillStyle=n()>.53?`rgba(235,224,195,${l/1700})`:`rgba(8,12,15,${l/800})`;g.fillRect(x,y,n()*2+.3,n()*1.8+.3)}
+  if(key==='wood'){for(let i=0;i<45;i++){g.strokeStyle=`rgba(27,9,4,${n()*.2})`;g.lineWidth=n()*1.3+.3;let x=n()*96;g.beginPath();g.moveTo(x,0);g.bezierCurveTo(x+n()*12-6,30,x+n()*12-6,70,x+n()*10-5,96);g.stroke()}}
+  if(key==='cloth'){for(let i=0;i<96;i+=4){g.strokeStyle='#ada2a01c';g.beginPath();g.moveTo(i,0);g.lineTo(i,96);g.moveTo(0,i);g.lineTo(96,i);g.stroke()}}
+  return ctx.createPattern(c,'repeat');
+ }
+ paint.wall=makePattern('stone','#4b5557');paint.floor=makePattern('stone','#666a66');paint.cut=makePattern('stone','#a4a499');paint.dark=makePattern('stone','#4b5354');paint.wood=makePattern('wood','#784934');paint.woodSide=makePattern('wood','#553122');paint.cloth=makePattern('cloth','#303037');paint.mantle=makePattern('cloth','#63363e');
+ let C,R,U,F;
+ function camera2(){let aim=[now.x,now.y,now.z],cy=Math.cos(now.pitch),si=Math.sin(now.pitch),pos=[now.x+Math.sin(now.yaw)*cy*now.dist,now.y+si*now.dist,now.z+Math.cos(now.yaw)*cy*now.dist];
+ pos[0]=Math.max(-4.78,Math.min(4.78,pos[0]));pos[1]=Math.max(.72,Math.min(6.55,pos[1]));pos[2]=Math.max(-8.15,Math.min(8.13,pos[2]));
+ C=pos;F=norm(vsub(aim,pos));R=norm(cross(F,[0,1,0]));U=cross(R,F)}
+ function proj(p){let d=vsub(p,C),dep=dot(d,F);if(dep<=.62)return null;let focal=Math.min(w*1.3,h*1.15);return [w/2+dot(d,R)*focal/dep,h/2-dot(d,U)*focal/dep,dep]}
+ function path(points){let a=points.map(proj);if(a.some(x=>!x))return false;ctx.beginPath();ctx.moveTo(a[0][0],a[0][1]);for(let j=1;j<a.length;j++)ctx.lineTo(a[j][0],a[j][1]);ctx.closePath();return true}
+ function fill3(p,col,stroke=null,lw=1){if(!path(p))return;ctx.fillStyle=col;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}}
+ function line3(a,color='#b3a797',thick=1.5){let pts=a.map(proj);if(pts.some(x=>!x))return;ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.strokeStyle=color;ctx.lineWidth=thick;ctx.stroke()}
+ function box3(x,y,z,sx,sy,sz,c1,c2,c3){let X=[x-sx/2,x+sx/2],Y=[y-sy/2,y+sy/2],Z=[z-sz/2,z+sz/2];fill3([[X[0],Y[0],Z[0]],[X[1],Y[0],Z[0]],[X[1],Y[0],Z[1]],[X[0],Y[0],Z[1]]],c2);fill3([[X[0],Y[0],Z[1]],[X[1],Y[0],Z[1]],[X[1],Y[1],Z[1]],[X[0],Y[1],Z[1]]],c1,'#191f2190',.8);fill3([[X[0],Y[1],Z[0]],[X[1],Y[1],Z[0]],[X[1],Y[1],Z[1]],[X[0],Y[1],Z[1]]],c3,'#05090960',1)}
+ function polycoffin(pts,y,color,stroke='#6d543d'){fill3(pts.map(p=>[p[0],y,p[1]-1.53]),color,stroke,1.6)}
+ function coffinWalls(pts,low,high,shade){let faces=[];for(let i=0;i<pts.length;i++){let a=pts[i],b=pts[(i+1)%pts.length],face=[[a[0],low,a[1]-1.53],[b[0],low,b[1]-1.53],[b[0],high,b[1]-1.53],[a[0],high,a[1]-1.53]];let q=face.reduce((sm,p)=>sm+Math.hypot(C[0]-p[0],C[2]-p[2]),0)/4;faces.push({face,q})}faces.sort((a,b)=>b.q-a.q);for(let f of faces){fill3(f.face,shade,'#593729',.9)}}
+ // Projected metal and wax cylinders retain spatial perspective in the software renderer.
+ function spun2(x,y,z,profile,tones,n=9){
+  let faces=[];
+  for(let j=0;j<profile.length-1;j++)for(let k=0;k<n;k++){
+   let a=k*2*Math.PI/n,b=(k+1)*2*Math.PI/n,[r0,h0]=profile[j],[r1,h1]=profile[j+1];
+   // Backface cull static revolved surfaces; preserve higher facets at mobile framerates.
+   let mid=(a+b)*.5;if((C[0]-x)*Math.cos(mid)+(C[2]-z)*Math.sin(mid)<0)continue;
+   let q=[[x+r0*Math.cos(a),y+h0,z+r0*Math.sin(a)],[x+r0*Math.cos(b),y+h0,z+r0*Math.sin(b)],
+          [x+r1*Math.cos(b),y+h1,z+r1*Math.sin(b)],[x+r1*Math.cos(a),y+h1,z+r1*Math.sin(a)]];
+   let c=proj([x+(r0+r1)*.25*(Math.cos(a)+Math.cos(b)),y+(h0+h1)*.5,z+(r0+r1)*.25*(Math.sin(a)+Math.sin(b))]);
+   if(c)faces.push({q,dep:c[2],tone:tones[Math.min(j,tones.length-1)],k});
+  }
+  faces.sort((a,b)=>b.dep-a.dep);
+  for(let f of faces){let shade=(f.k%3===0)?'rgba(13,11,11,.10)':null;fill3(f.q,f.tone,shade,.25)}
+  let top=profile[profile.length-1],poly=[];
+  for(let k=0;k<n;k++){let a=k*Math.PI*2/n;poly.push([x+top[0]*Math.cos(a),y+top[1],z+top[0]*Math.sin(a)])}
+  fill3(poly,tones[tones.length-1],'#bba68a',.5);
+ }
+ function dish2(x,y,z,r=.17){
+  spun2(x,y-.03,z,[[r*.53,-.024],[r,.004],[r*.83,.028],[r*.41,.035]],['#4e4232','#7f6644','#b69a64'],10);
+  let rim=[];for(let i=0;i<=14;i++){let a=i*Math.PI/7;rim.push([x+r*.85*Math.cos(a),y+.004,z+r*.85*Math.sin(a)])}
+  line3(rim,'#c0a16b',.72)
+ }
+ function glow(p,radius,alpha=.34){let q=proj(p);if(!q)return;let rad=Math.min(220,radius*Math.min(w*1.3,h*1.15)/q[2]),g=ctx.createRadialGradient(q[0],q[1],0,q[0],q[1],rad);g.addColorStop(0,`rgba(254,187,108,${alpha})`);g.addColorStop(.16,`rgba(255,129,63,${alpha*.43})`);g.addColorStop(1,'rgba(228,92,40,0)');ctx.fillStyle=g;ctx.fillRect(q[0]-rad,q[1]-rad,rad*2,rad*2)}
+ function flame2(x,y,z,sz=1){if(!lit)return;let p=proj([x,y,z]);if(!p)return;let sc=Math.min(2.7,Math.min(w,h)*.8/p[2]);let px=Math.max(1.8,5*sc*sz),hh=Math.max(5,21*sc*sz),sway=Math.sin(time*7+x*3+z)*px*.19;glow([x,y,z],.27*sz,.32);ctx.save();ctx.translate(p[0],p[1]);ctx.beginPath();ctx.moveTo(-px*.53,0);ctx.bezierCurveTo(-px*1.3,-hh*.38,sway-px*.35,-hh*.65,sway,-hh);ctx.bezierCurveTo(sway+px*.31,-hh*.68,px*.94,-hh*.43,px*.53,0);ctx.closePath();let g=ctx.createLinearGradient(0,0,0,-hh);g.addColorStop(0,'#ff902f');g.addColorStop(.42,'#ffcb67');g.addColorStop(1,'#ff7b3e');ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.ellipse(0,-hh*.24,px*.26,hh*.23,0,0,Math.PI*2);ctx.fillStyle='#fff3b7';ctx.fill();ctx.restore()}
+ function candle2(x,y,z,sz=.33){
+  let radius=Math.min(.068,sz*.19);
+  dish2(x,y-.005,z,radius*1.7);
+  spun2(x,y,z,[[radius*.86,0],[radius,.025],[radius*.94,sz*.77],[radius*.85,sz*.96],[radius*.62,sz]],['#aa9072','#e8d2b4','#e1c6a2','#bda487'],10);
+  line3([[x,y+sz-.002,z],[x+.002,y+sz+.037,z]],'#2d2926',1.0);
+  // Hardened drips cling to the cylindrical candle rather than painting a 2D rectangle.
+  line3([[x+radius*.74,y+sz*.93,z-radius*.20],[x+radius*.78,y+sz*.61,z-radius*.19]],'#cfb596',.6);
+  flame2(x,y+sz+.037,z,.70);
+ }
+ function stand2(x,z,far=false){
+  const shade=far?'#7e6747':'#9a7951';
+  spun2(x,.10,z,[[.23,-.10],[.29,-.07],[.31,-.025],[.13,.05],[.09,.20]],['#514331','#8b7049','#ad8c5a','#6c563b'],12);
+  spun2(x,.27,z,[[.088,0],[.076,.14],[.052,.43],[.090,.65],[.057,1.03]],['#7b6645','#b08c56','#706043','#aa8959'],9);
+  for(let i=-2;i<=2;i++){let xx=x+i*.25,cy=1.50-Math.abs(i)*.06;
+   if(i){line3([[x,1.28,z],[x+i*.09,1.34,z],[xx,cy-.14,z],[xx,cy,z]],shade,3.2);
+    line3([[x+i*.12,1.35,z],[xx,cy-.13,z]],'#c7a371',.65)}
+   else line3([[x,1.30,z],[xx,cy,z]],shade,3.5);
+   dish2(xx,cy,z,.105);candle2(xx,cy+.05,z,.285)
+  }
+ }
+ function sconce2(side,z){let x=side*4.78;line3([[side*5.35,3.10,z],[side*5.02,2.98,z],[x,3.12,z]],'#9f845b',2.5);candle2(x,3.15,z,.33)}
+ function cloud(t){if(!mist)return;ctx.fillStyle='rgba(177,188,197,.017)';for(let i=0;i<30;i++){let x=w*(i/29)+35*Math.sin(t*.19+i*1.8),y=h*.67+15*Math.sin(i*1.7+t*.2);ctx.beginPath();ctx.ellipse(x,y,Math.max(20,w*.1),Math.max(8,h*.046),0,0,Math.PI*2);ctx.fill()}}
+ const coffin=[[-.39,-1.21],[.39,-1.21],[.60,-.98],[.71,-.52],[.64,.08],[.42,1.16],[.30,1.27],[-.30,1.27],[-.42,1.16],[-.64,.08],[-.71,-.52],[-.60,-.98]];
+ const traceArch=(x,z,half,base,rise,color,weight)=>{let pp=[];for(let i=0;i<=22;i++){let q=-half+i*half*2/22;pp.push([x,archY(q,half,base,rise),z+q])}line3(pp,color,weight)};
+ // Local projected representation when Three.js CDN cannot be fetched.
+ // It has autonomous pathfinding within the side aisle and spring-driven robe edges.
+ let fbR={x:3.05,z:3.04,heading:0,idx:0,pause:1.4,step:0},fbLast=performance.now();
+ const fbRoute=[{x:3.05,z:3.04,t:3.6,label:'KEEPING VIGIL',face:0},{x:2.81,z:-1.40,t:6.5,label:'PRAYING BY THE COFFIN',face:1.57},{x:3.04,z:-4.67,t:4,label:'TENDING THE CANDLES',face:0},{x:3.45,z:2.35,t:4.4,label:'INSPECTING THE ALCOVES',face:-1.57},{x:3.12,z:3.85,t:5.5,label:'READING THE REGISTER',face:-1.57}];
+ let fbHem=Array.from({length:20},(_,i)=>({offset:0,vel:0,phase:i*.8}));let fbPadLast=0;
+ function fbUpdate(now){const dt=Math.min(.04,Math.max(0,(now-fbLast)/1000));fbLast=now;
+  if(!fallbackPaused){let goal=fbRoute[fbR.idx];if(fbR.pause>0)fbR.pause-=dt;
+  else{let dx=goal.x-fbR.x,dz=goal.z-fbR.z,d=Math.hypot(dx,dz);
+   if(d<.08){fbR.pause=goal.t;fbR.idx=(fbR.idx+1)%fbRoute.length}else{let v=Math.min(d,.55*dt);fbR.x+=dx/d*v;fbR.z+=dz/d*v;fbR.step+=dt*7.4;fbR.heading+=Math.atan2(Math.sin(Math.atan2(-dx,-dz)-fbR.heading),Math.cos(Math.atan2(-dx,-dz)-fbR.heading))*.15}}
+   if(fbR.pause>0)fbR.heading+=Math.atan2(Math.sin(goal.face-fbR.heading),Math.cos(goal.face-fbR.heading))*.07}
+  activity.textContent=fallbackPaused?'PRIEST PAUSED':fbR.pause>0?(fbR.idx===0?'KEEPING VIGIL':fbRoute[(fbR.idx+fbRoute.length-1)%fbRoute.length].label):'PRIEST WALKING THE SIDE AISLE';
+  if(!fallbackPaused)for(let i=0;i<fbHem.length;i++){let p=fbHem[i],force=Math.sin(time*1.8+p.phase)*.005+p.offset*(-.12);p.vel=(p.vel+force)*.90;p.offset=Math.min(.08,Math.max(-.08,p.offset+p.vel));}
+ }
+ function fbRat(){let X=fbR.x,Z=fbR.z,rot=fbR.heading;
+  function loc(x,y,z){return[X+x*Math.cos(rot)+z*Math.sin(rot),y,-x*Math.sin(rot)+z*Math.cos(rot)+Z]}
+  function segment(points,stroke,width){line3(points.map(q=>loc(...q)),stroke,width)}
+  function poly(points,fill,stroke){fill3(points.map(q=>loc(...q)),fill,stroke,.8)}
+  const ring=20;
+  // Shadow on the flagstones; physical hem remains above the ground.
+  let shadow=[];for(let j=0;j<=ring;j++){let a=j*Math.PI*2/ring;shadow.push(loc(Math.cos(a)*.43,.055,Math.sin(a)*.43))}fill3(shadow,'#10141977');
+  // Visible feet and ankles tread independently beneath the cloak.
+  for(let s of [-1,1]){
+   let lift=fbR.pause>0?0:Math.max(0,Math.sin(fbR.step+s*Math.PI*.5))*.09;
+   poly([[s*.12,.08+lift,-.22],[s*.24,.08+lift,-.22],[s*.23,.08+lift,.16],[s*.13,.08+lift,.16]],'#342b27','#15181a');
+  }
+  // Cloth ring with spring-smoothed hem: independent sectors move with inertia.
+  let faces=[];
+  for(let j=0;j<ring;j++){
+   let a=j*Math.PI*2/ring,b=(j+1)*Math.PI*2/ring;
+   let wave=fbHem[j].offset,waveB=fbHem[(j+1)%ring].offset;
+   let corners=[[Math.cos(a)*.29,1.17,Math.sin(a)*.29],[Math.cos(b)*.29,1.17,Math.sin(b)*.29],[Math.cos(b)*(.45+waveB),.15,Math.sin(b)*(.44+waveB)],[Math.cos(a)*(.45+wave),.15,Math.sin(a)*(.44+wave)]];
+   let center=loc((Math.cos(a)+Math.cos(b))*.20,.6,(Math.sin(a)+Math.sin(b))*.2);
+   let depth=proj(center)?.[2]??10;faces.push({corners,depth,index:j});
+  }
+  faces.sort((a,b)=>b.depth-a.depth);
+  for(let q of faces)poly(q.corners,q.index%2===0?'#2a2930':'#303039','#181d22');
+  // Gold-edged hem follows the dynamic cloth rather than a rigid box shape.
+  let hem=[];for(let j=0;j<=ring;j++){let a=j*Math.PI*2/ring,r=.448+fbHem[j%ring].offset;hem.push([Math.cos(a)*r,.15,Math.sin(a)*r])}segment(hem,'#bda170',1.2);
+  // Red rear mantle hangs behind the neck, and a scalloped collar hides attachment points.
+  poly([[-.29,1.28,.18],[.29,1.28,.18],[.48,.38,.43],[0,.29,.55],[-.48,.38,.43]],'#5a3038','#b49969');
+  poly([[-.32,1.23,-.07],[.32,1.23,-.07],[.36,1.31,.12],[0,1.45,.16],[-.36,1.31,.12]],'#512a31','#af9169');
+  // Moving sleeves and furred paws; hands draw together for prayer.
+  let pray=fbR.pause>0&&Math.abs(fbR.x-2.81)<.4;
+  for(let s of [-1,1]){
+   poly([[s*.28,1.30,-.02],[s*.39,1.20,-.04],[s*.38,.85,-.17],[s*.20,.91,-.16]],'#4c2d35','#97734e');
+   let hx=pray?s*.07:s*.32,hy=pray?1.13:.82,hz=pray?-.39:-.20;
+   let P=proj(loc(hx,hy,hz));if(P){let rad=Math.max(2.5,14/(P[2]+.5));ctx.fillStyle='#c6ada0';ctx.beginPath();ctx.ellipse(P[0],P[1],rad*.65,rad,0,0,Math.PI*2);ctx.fill()}
+  }
+  segment([[-.15,1.36,-.29],[0,1.19,-.36],[.15,1.36,-.29]],'#c59d62',1.5);
+  for(let s of [-1,1])poly([[s*.125,1.34,-.29],[s*.19,1.34,-.29],[s*.20,.68,-.32],[s*.135,.68,-.32]],'#752e36','#ba9a64');
+  segment([[0,1.20,-.37],[0,1.1,-.37]],'#e1bc7f',1.3);segment([[-.035,1.15,-.37],[.035,1.15,-.37]],'#e1bc7f',1.2);
+  // Warm furred head, outsized cartilage-backed ears and projecting muzzle.
+  let head=proj(loc(0,1.58,-.13));if(!head)return;
+  function ell(x,y,z,rx,ry,color,stroke){let p=proj(loc(x,y,z));if(!p)return;let f=Math.min(w*1.4,h*1.15)/p[2];ctx.beginPath();ctx.ellipse(p[0],p[1],Math.max(1,rx*f),Math.max(1,ry*f),0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.7;ctx.stroke()}}
+  for(let s of [-1,1]){ell(s*.22,1.76,-.08,.105,.14,'#7e756a','#3c3533');ell(s*.22,1.77,-.12,.076,.108,'#a17b79');}
+  ell(0,1.58,-.13,.215,.205,'#8c8276','#493f3a');
+  // Temple, jaw, eye-brow and cheek planes keep the face from reading as a cartoon circle.
+  ell(0,1.48,-.20,.154,.125,'#9d9184');
+  for(let s of [-1,1]){ell(s*.105,1.49,-.260,.092,.076,'#b3a294');ell(s*.133,1.644,-.265,.066,.022,'#84786d');}
+  // Tapered wedge from bridge to pink nose, with independent whisker pads.
+  poly([[0,1.575,-.29],[-.090,1.50,-.315],[-.046,1.46,-.45],[.046,1.46,-.45],[.090,1.50,-.315]],'#b9a696','#796d64');
+  ell(0,1.445,-.318,.093,.052,'#c5afa1');
+  for(let s of [-1,1]){ell(s*.135,1.612,-.33,.046,.058,'#14100f');ell(s*.127,1.632,-.35,.013,.014,'#ebe1cc')}
+  ell(0,1.49,-.47,.048,.033,'#926d6c','#382f31');
+  for(let s of [-1,1])ell(s*.022,1.494,-.491,.010,.006,'#473438');
+  segment([[-.058,1.423,-.351],[0,1.410,-.382],[.058,1.423,-.351]],'#76625c',.7);
+  // Tiny textured flecks around the ears and brow are individual tufts, not blur.
+  for(let s of [-1,1])for(let j=0;j<5;j++)segment([[s*(.164+j*.007),1.67+j*.016,-.11],[s*(.182+j*.009),1.70+j*.014,-.092]],'#887c70',.7);
+  for(let s of [-1,1])for(let j=0;j<3;j++)segment([[s*.07,1.47+j*.018,-.34],[s*.30,1.45+(j-1)*.043,-.42],[s*.43,1.44+(j-1)*.070,-.41]],'#b5ada4',.60);
+  ell(0,1.77,-.11,.17,.07,'#29272c');
+  segment([[-.16,1.76,-.21],[.16,1.76,-.21]],'#bfa36d',1);
+  // Flexible tail curling out from the rear; never emerges through the torso.
+  segment([[0,.43,.32],[.05,.29,.51],[.10,.20,.76],[-.02,.23,1.04],[-.15,.31,1.20]],'#a48782',2.3);
+ }
+
+ let lastRender2=performance.now();
+ function fbGamepad(dt){const list=navigator.getGamepads?.()||[],g=Array.from(list).find(q=>q?.connected);if(!g)return;
+  const dz=v=>Math.abs(v||0)>.16?Math.sign(v)*((Math.abs(v)-.16)/.84):0;
+  goal.yaw-=dz(g.axes?.[0])*dt*1.5;goal.pitch+=dz(g.axes?.[1])*dt*.93;
+  goal.dist+=dz(g.axes?.[3])*dt*3.2;
+  const l=g.buttons?.[4]?.pressed?1:0,r=g.buttons?.[5]?.pressed?1:0,cur=l?-1:r?1:0;
+  if(cur&&!fbPadLast){let all=['wide','tomb','priest','cloth','gate'],active=all.findIndex(q=>root.querySelector(`[data-v="${q}"]`).classList.contains('sel'));let btn=root.querySelector(`[data-v="${all[(active+cur+all.length)%all.length]}"]`);btn?.click()}
+  fbPadLast=cur;limit();
+ }
+ function render2(){if(!root.isConnected){ro2.disconnect();if(AC)AC.close();return}requestAnimationFrame(render2);let ts=performance.now(),frameDt=Math.min(.05,Math.max(0,(ts-lastRender2)/1000));lastRender2=ts;if(!fallbackPaused)time+=frameDt;fbUpdate(ts);fbGamepad(frameDt);if(following){goal.x=fbR.x;goal.z=fbR.z;goal.y=1.12}for(let k of Object.keys(now))now[k]+=(goal[k]-now[k])*(1-Math.exp(-7*frameDt));camera2();
+ let bg=ctx.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#0b141a');bg.addColorStop(.54,'#202931');bg.addColorStop(1,'#111a20');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+ // Back stone end and wall planes
+ fill3([[-5.45,0,-8.77],[5.45,0,-8.77],[5.45,4.4,-8.77],[-5.45,4.4,-8.77]],paint.wall);
+ fill3([[-5.40,0,-8.8],[-5.40,4.3,-8.8],[-5.40,4.3,8.7],[-5.40,0,8.7]],paint.wall);
+ fill3([[5.40,0,-8.8],[5.40,4.3,-8.8],[5.40,4.3,8.7],[5.40,0,8.7]],paint.wall);
+ // Ceiling barrel vault, span sections
+ let vTop=[];for(let i=0;i<=42;i++){let x=-5.4+i*10.8/42;vTop.push([x,archY(x,5.4,4.25,2.8),-8.8])}
+ let vNear=vTop.map(p=>[p[0],p[1],8.7]);fill3([...vTop,...vNear.reverse()],paint.dark);
+ // Mortar courses: irregular repeated brick lines on both walls
+ for(let side of [-1,1]){
+  for(let y=.42;y<4.0;y+=.49)line3([[side*5.40,y,-8.75],[side*5.40,y,8.6]],'#303c3e',1);
+  for(let row=0;row<8;row++)for(let z=-8.65+(row%2)*.56;z<8.55;z+=1.13)line3([[side*5.40,.26+row*.49,z],[side*5.40,.72+row*.49,z]],'#333f40',.8);
+ }
+ // Dark portal with arched top and gate bars
+ fill3([[-2.05,.0,-8.69],[2.05,.0,-8.69],[2.05,4.2,-8.69],[-2.05,4.2,-8.69]],'#0c131a');
+ let gatearch=[];for(let i=0;i<=30;i++){let x=-2.1+i*4.2/30;gatearch.push([x,archY(x,2.1,3.68,1.70),-8.57])}line3(gatearch,'#b4b2a3',4.4);
+ for(let i=0;i<=15;i++){let x=-1.98+i*3.96/15;line3([[x,.05,-8.51],[x,archY(x,2.1,3.7,1.62),-8.51]],'#141718',2.2)}for(let yy of [.82,1.85,3.22])line3([[-2.01,yy,-8.48],[2.01,yy,-8.48]],'#464844',2.4);
+ // Fog atmosphere behind architecture
+ if(mist){let gg=ctx.createRadialGradient(w*.50,h*.51,5,w*.5,h*.51,w*.58);gg.addColorStop(0,'rgba(96,133,165,.16)');gg.addColorStop(1,'rgba(15,22,27,0)');ctx.fillStyle=gg;ctx.fillRect(0,0,w,h)}
+ // Flagstone ground
+ fill3([[-5.5,-.10,-8.8],[5.5,-.10,-8.8],[5.5,-.10,8.8],[-5.5,-.10,8.8]],paint.floor);
+ for(let row=0;row<18;row++){
+  let z=-8.34+row*.98,offset=(row%2)*.49;
+  for(let col=0;col<12;col++){
+   let x=-5.50+col*.98+offset,y=-.014;
+   if(x>5.29)continue;
+   let a=x+.011,b=Math.min(5.39,x+.962);
+   fill3([[a+.017,y,z+.011],[b-.016,y,z+.011],[b,y,z+.035],[b,y,z+.957],[a+.012,y,z+.960],[a,y,z+.938]],paint.floor,'#3b4241',.42);
+   let seed=col*37+row*19;
+   if(seed%9===0)line3([[a+.16,y+.003,z+.14],[a+.27,y+.003,z+.29],[a+.23,y+.003,z+.45]],'#4b514f',.50);
+   if(seed%13===0)line3([[a+.58,y+.003,z+.36],[a+.72,y+.003,z+.57]],'#7b7e77',.30);
+  }
+ }
+ // Side niches, carved arch surrounds and pillars
+ for(let z of [-6.38,-2.10,2.18,6.48])for(let side of [-1,1]){
+  fill3([[side*5.40,.68,z-1.12],[side*5.40,.68,z+1.12],[side*5.40,3.48,z+1.12],[side*5.40,3.48,z-1.12]],paint.dark);
+  traceArch(side*5.07,z,1.12,3.16,1.13,'#c1baaa',3.5);
+  line3([[side*5.08,.40,z-1.15],[side*5.08,3.18,z-1.15]],'#b8b5a7',2.4);line3([[side*5.08,.40,z+1.15],[side*5.08,3.18,z+1.15]],'#b8b5a7',2.4);
+  box3(side*5.10,.59,z,.69,.40,1.76,'#6c706e','#4b5353','#a2a69d');
+  line3([[side*5.04,1.25,z-.55],[side*5.04,1.25,z+.55]],'#aa9c87',1.3);
+ }
+ // Stone voussoirs and weathered niches add depth to the software renderer.
+ for(let z of [-6.38,-2.10,2.18,6.48])for(let side of [-1,1]){
+  const X=side*5.07;
+  for(let k=0;k<9;k++){
+   const q=-1.12+2.24*k/8,hg=archY(q,1.12,3.16,1.13);
+   line3([[X,hg,z+q],[X,hg-.13,z+q]],'#7f8179',1.0);
+  }
+  // Burial inscriptions, a relief cross and dovetailed stone shelf.
+  for(let j=0;j<3;j++)line3([[X-side*.014,1.83-j*.10,z-.46],[X-side*.014,1.83-j*.10,z+.42]],'#6b706c',.8);
+  line3([[X-side*.025,2.28,z],[X-side*.025,2.72,z]],'#b7ab94',2.6);
+  line3([[X-side*.025,2.60,z-.21],[X-side*.025,2.60,z+.21]],'#b7ab94',2.4);
+ }
+ // Ceiling ribs and supporting columns
+ for(let z of [-8.65,-4.3,0,4.3,8.65]){
+ let v=[];for(let j=0;j<=32;j++){let x=-5.15+j*10.3/32;v.push([x,archY(x,5.15,4.34,2.73),z])}line3(v,'#bbb8ac',3.2);
+ for(let side of [-1,1]){
+  let x=side*4.95;line3([[x,.2,z],[x,4.34,z]],'#aba99f',3.1);
+  for(let v of [-.12,.12])line3([[x+v,.56,z],[x+v,3.95,z]],'#848984',1.0);
+  box3(x,.22,z,.82,.23,.72,'#989b94','#676d6b','#b9b9a9');
+ }}
+ // Coffin stone pedestal as distinct solid tiers; far candelabra drawn behind tomb.
+ for(let side of [-1,1])stand2(side*1.9,CZ-1.78,true);
+ box3(0,.13,CZ,3.04,.34,4.20,paint.dark,paint.dark,paint.cut);
+ box3(0,.40,CZ,2.74,.28,3.86,paint.cut,paint.dark,paint.cut);
+ box3(0,.64,CZ,2.40,.20,3.56,paint.dark,paint.dark,paint.cut);
+ coffinWalls(coffin,.79,1.36,paint.woodSide);
+ polycoffin(coffin.map(p=>[p[0]*1.04,p[1]*1.04]),1.36,paint.wood,'#b7905b');
+ coffinWalls(coffin.map(p=>[p[0]*1.04,p[1]*1.04]),1.36,1.46,paint.wood);
+ polycoffin(coffin.map(p=>[p[0]*.98,p[1]*.99]),1.47,paint.wood,'#c4a477');
+ // Fitted lid: a raised solid inset, not an open trough of intersecting polygons.
+ polycoffin(coffin.map(p=>[p[0]*.895,p[1]*.925]),1.498,paint.wood,'#a67e4d');
+ polycoffin(coffin.map(p=>[p[0]*.817,p[1]*.865]),1.509,paint.wood,'#543a2d');
+ line3([[0,1.548,CZ-1.12],[0,1.548,CZ+1.03]],'#e2bd70',1.7);
+ line3([[-.205,1.545,CZ-.50],[.205,1.545,CZ-.50]],'#e2bd70',2.1);
+ for(let zz of [CZ-.89,CZ+.51]){
+  line3([[-.18,1.521,zz],[.18,1.521,zz]],'#937044',.85);
+ }
+ for(let side of [-1,1])for(let z of [CZ-.65,CZ+.47]){let p=proj([side*.70,1.02,z]);if(p){ctx.strokeStyle='#cdaa73';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(p[0],p[1],7/p[2]*6,10/p[2]*6,0,0,Math.PI*2);ctx.stroke()}}
+ for(let side of [-1,1])stand2(side*1.9,CZ+1.77);
+ fbRat();
+ // Mounted sconces and suspended chandelier
+ for(let z of [-6.35,-2.1,2.1,6.35])for(let side of [-1,1])sconce2(side,z);
+ let ring=[];for(let k=0;k<=24;k++){let a=k*Math.PI/12;ring.push([.84*Math.cos(a),4.8,2.60+.84*Math.sin(a)])}line3(ring,'#ac8d59',2.4);line3([[0,7.10,2.60],[0,5.25,2.60]],'#8e7650',2.0);for(let k=0;k<8;k++){let a=k*Math.PI/4,x=.84*Math.cos(a),z=2.60+.84*Math.sin(a);line3([[0,5.37,2.60],[x,4.82,z]],'#92774b',1.6);candle2(x,4.89,z,.26)}
+ if(mist)cloud(time);
+ // Warm pools only when candles burn
+ if(lit){for(let p of [[0,5.2,2.60],[2,1.9,.29],[-2,1.9,.29],[-4.73,3.75,2.1],[4.73,3.75,-2.1]])glow(p,.9,.09)}
+ // Subtle grain works with dedicated surface patterns on offline meshes
+ ctx.fillStyle='rgba(241,235,220,.025)';for(let j=0;j<70;j++){let x=(j*61.7+17)%w,y=(j*117.5+time*.04)%h;ctx.fillRect(x,y,1,1)}
+ }
+ requestAnimationFrame(render2);
+}
+})();
+</script>
+
+</body></html>
