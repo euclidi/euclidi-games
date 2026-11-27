@@ -549,7 +549,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
  const streetName=(v,axis)=>v===0?(axis===0?"CENTRAL AVE":"UNION BLVD"):Math.abs(v)===210?(axis===0?(v<0?"WEST":"EAST"):(v<0?"NORTH":"SOUTH"))+" RING":(axis===0?"AV ":"ST ")+String(v/70+4).padStart(2,"0");
  const oriented=(axis,v,p,side,offset)=>axis===0?{x:v+side*offset,z:p}:{x:p,z:v+side*offset};
  function bench(axis,x,z){
-  const h=axis===0;for(let j=0;j<4;j++)B(h?2.35:.12,.11,h?.12:2.35,x+(h?0:(j-1.5)*.14),.48,z+(h?(j-1.5)*.14:0),m.wood);
+  const h=axis===1;for(let j=0;j<4;j++)B(h?2.35:.12,.11,h?.12:2.35,x+(h?0:(j-1.5)*.14),.48,z+(h?(j-1.5)*.14:0),m.wood);
   for(const a of [-.85,.85]){B(h?.11:.5,.46,h?.5:.11,x+(h?a:0),.25,z+(h?0:a),m.iron);B(h?.11:.1,.48,h?.1:.11,x+(h?a:-.22),.72,z+(h?-.22:a),m.iron);}
   for(const y of [.68,.85,1.02])B(h?2.35:.09,.12,h?.09:2.35,x+(h?0:-.23),y,z+(h?-.23:0),m.wood);
   footprint(x,z,h?2.4:.65,h?.65:2.4);count("benches");
