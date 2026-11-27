@@ -13,7 +13,7 @@ Unofficial browser recreation of classic arcade maze gameplay, with selectable a
 - Faithful maze topology, scoring, lives, pellet and energizer rules, timing, ghost behaviors, fruit, death and intermissions.
 - Pixel-accurate character silhouettes and animations, crisp bitmap typography, original-style sound timing and wavetable recreation using authorized assets or original synthesis.
 - A dedicated arcade-style starting menu with mode, sound, CRT settings, new game and in-session return/resume without losing progress.
-- Keyboard, swipe, controller and large touch pad; persistent high scores, accessible controls and responsive scaling.
+- Keyboard, swipe, controller and large touch pad with yellow input feedback, selectable red arcade joystick and touch-control visibility toggle; persistent high scores, accessible controls and responsive scaling.
 
 ## Technology and assets
 

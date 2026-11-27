@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.4.3.
+**Lifecycle:** Active — Git revision 1.4.4.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.4.4 — touch controls
+
+Yellow pressed-direction D-pad, red bitmap joystick with four-way gate and recentering, persistent Pad/Stick/Off setting. Simulated DOM test passed 360 frames and checks for press, drag, deadzone, cancel, keyboard feedback and toggle cycling. Device touch feel and live visual appearance not yet independently verified.
 
 ## Revision 1.4.3 — title menu
 
