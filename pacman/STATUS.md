@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.4.9.
+**Lifecycle:** Active — Git revision 1.5.0.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.5.0 — preserve ghost proportions
+
+Restored full rounded head and consistent 14-pixel height with wider, constant-width body and shallow rolling hem folds. Fabric bends sideways in the native 16×16 texture rather than removing body pixels. Removed whole-sprite bob. New frames occupy 168–169 pixels and keep facial pixels within connected silhouettes. Proportion, connectivity, eye and loop regression passed; live visual quality remains unverified.
 
 ## Revision 1.4.9 — unified ghost fabric
 
