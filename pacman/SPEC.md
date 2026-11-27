@@ -46,3 +46,7 @@ Optional local grid-raycast view with shared maze geometry and game state, depth
 ### First-person feedback amendment (v1.6.2)
 
 Higher density raycast material raster, live ghost minimap including frightened/eyes states, instant simulation turns with nonphysical fading skid decals and procedural friction transients. Rear mirror uses real rear-facing wall/sprite projection when a dangerous ghost approaches from behind in line of sight. No changed maze physics.
+
+## Night Watch — v1.7.0
+
+Separate local Wolfenstein-style raycast shooter at [night-watch/](night-watch/). One compact connected 19×15 compound, broad rooms, cover and looped corridors. Eight hooded sentries with patrol/alert-style idle and pursuit, readable attack windup, three fictional arcade weapons, reload, ammo, health, armor, keycard and extraction. Keyboard/mouse, touch and standard gamepad, pause, minimap, difficulty selector, original hand-rasterized pixel clusters. No changes to original maze simulation. Core checks and 3,600 simulation ticks passed in JS evaluation. Browser/device playtest, audio and final asset polish remain unverified. No claim of Doom engine or original licensed assets.

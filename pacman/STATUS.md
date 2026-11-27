@@ -2,7 +2,7 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.6.2.
+**Lifecycle:** Active — Git revision 1.7.0.
 
 ## Implemented / source-inspected
 
@@ -99,3 +99,7 @@ No ROM or official recordings bundled; sprite, audio, timing and intermission fi
 Compare maze geometry, glyphs, sprites and ghost skirt/death frames against authorized references.
 
 [Roadmap](ROADMAP.md) · [Specification](SPEC.md)
+
+## Night Watch — v1.7.0
+
+Separate local Wolfenstein-style raycast shooter at [night-watch/](night-watch/). One compact connected 19×15 compound, broad rooms, cover and looped corridors. Eight hooded sentries with patrol/alert-style idle and pursuit, readable attack windup, three fictional arcade weapons, reload, ammo, health, armor, keycard and extraction. Keyboard/mouse, touch and standard gamepad, pause, minimap, difficulty selector, original hand-rasterized pixel clusters. No changes to original maze simulation. Core checks and 3,600 simulation ticks passed in JS evaluation. Browser/device playtest, audio and final asset polish remain unverified. No claim of Doom engine or original licensed assets.

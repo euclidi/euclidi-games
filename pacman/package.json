@@ -1,13 +1,13 @@
 {
   "name": "maze-arcade-1980",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test test.mjs"
+    "test": "node --test test.mjs night-watch/test.mjs"
   },
   "dependencies": {
     "phaser": "3.90.0"
