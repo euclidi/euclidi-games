@@ -1,6 +1,8 @@
 use serde::{Serialize,Deserialize};
 use wasm_bindgen::prelude::*;
 use rapier3d::prelude::*;
+mod ecology;
+use ecology::Ecology;
 mod content;
 mod mechanics;
 use mechanics::Mechanics;
@@ -19,7 +21,7 @@ fn world(id:usize)->World {
 }
 #[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]
 struct Specimen {
- version:u32, network:Network, mechanics:Mechanics, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, outcome_detail:String, outcome_palette:usize, position:[f64;3], velocity:[f64;3]
+ version:u32, network:Network, mechanics:Mechanics, ecology:Ecology, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, outcome_detail:String, outcome_palette:usize, position:[f64;3], velocity:[f64;3]
 }
 fn rng(s:&mut u32)->f64{*s=s.wrapping_mul(1664525).wrapping_add(1013904223);*s as f64/4294967296.}
 fn bounded(x:f64)->f64{x.clamp(0.,1.)}
@@ -27,16 +29,16 @@ impl Specimen {
  fn new(id:usize,mut seed:u32)->Self{
   let original=seed; let mut genome=[0.;8];for x in &mut genome{*x=0.25+rng(&mut seed)*0.5;}
   let env=world(id);
-  Self{version:3,network:Network::new(),mechanics:Mechanics::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),outcome_detail:String::new(),outcome_palette:0,position:[0.,0.7,0.],velocity:[0.;3]}
+  Self{version:4,network:Network::new(),mechanics:Mechanics::new(),ecology:Ecology::new(original),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),outcome_detail:String::new(),outcome_palette:0,position:[0.,0.7,0.],velocity:[0.;3]}
  }
  fn valid(&self)->bool {
-  self.version==3 && self.network.valid() && self.mechanics.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
+  self.version==4 && self.network.valid() && self.mechanics.valid() && self.ecology.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
   self.genome.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=1.) &&
   self.organs.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=MAX) &&
   self.available.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=8.) &&
   self.tissue.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=1.) &&
   [self.nutrient,self.reserve,self.biomass,self.waste,self.input_mass].iter().all(|x|x.is_finite()&&*x>=0.) &&
-  (self.nutrient+self.reserve+self.network.mass()+self.biomass+self.waste-self.input_mass).abs()<1e-6 &&
+  (self.nutrient+self.reserve+self.network.mass()+self.ecology.mass()+self.biomass+self.waste-self.input_mass).abs()<1e-6 &&
   [self.hydration,self.stress,self.learned,self.environment.water,self.environment.temperature,self.environment.light,self.environment.mineral,self.environment.diffusion].iter().all(|x|x.is_finite()&&*x>=0.&&*x<=1.) &&
   self.position.iter().chain(self.velocity.iter()).all(|x|x.is_finite()&&x.abs()<100.)
  }
@@ -92,6 +94,7 @@ impl Specimen {
   self.learned=bounded(self.learned+0.012*self.organs[6]*(reward-self.learned));
   self.network.neural_step(&self.genome,self.organs[6]*self.network.integrity[6],self.reserve.min(1.),self.stress);
   self.neural=self.network.activation[2];
+  self.ecology.step(self.world_id,env.water,env.light,env.temperature,&self.organs,&mut self.nutrient,&mut self.reserve,&mut self.waste,self.position);
  }
  fn classify(&mut self){
   if let Some(ending)=content::resolve(self.world_id,&self.history,&self.organs){self.outcome=ending.title;self.outcome_detail=ending.description;self.outcome_palette=ending.palette;}
@@ -134,6 +137,7 @@ impl Engine{
  pub fn introduce(&mut self,i:usize,dose:f64,site:usize,puzzle:bool)->bool{self.state.introduce(i,dose,site,puzzle)}
  pub fn advance(&mut self,ticks:u32){for _ in 0..ticks.min(100){self.state.bio_step();for _ in 0..12{self.physics.step(&mut self.state);}}self.state.classify();}
  pub fn environment(&mut self,water:f64,light:f64,temperature:f64){if [water,light,temperature].iter().all(|v|v.is_finite()){self.state.environment.water=bounded(water);self.state.environment.light=bounded(light);self.state.environment.temperature=bounded(temperature);}}
+ pub fn bud(&mut self,relation:u8)->bool{if self.state.organs[8]<0.12{return false;}let s=&mut self.state;s.ecology.spawn(s.genome,vec![s.seed],s.generation+1,&mut s.reserve,relation)}
  pub fn stimulate(&mut self,strength:f64){self.state.network.cue(strength);}
  pub fn damage(&mut self,site:usize,amount:f64){self.state.network.damage(site,amount);}
  pub fn state_hash(&self)->String{let mut h=14695981039346656037u64;for b in self.snapshot().bytes(){h^=b as u64;h=h.wrapping_mul(1099511628211);}format!("{:016x}",h)}
@@ -145,7 +149,7 @@ impl Engine{
    let original=seed;let mut child=Specimen::new(self.state.world_id,original);
    for i in 0..8{child.genome[i]=bounded((self.state.genome[i]+p.genome[i])*0.5+(rng(&mut seed)-0.5)*0.09);}
    child.generation=self.state.generation.max(p.generation)+1;child.parents=vec![self.state.seed,p.seed];
-   self.physics=ContactWorld::new(child.position,child.velocity);self.state=child;return true;
+   let s=&mut self.state;return s.ecology.spawn(child.genome,child.parents,child.generation,&mut s.reserve,0);
   }}false
  }
 }
