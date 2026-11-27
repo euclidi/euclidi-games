@@ -229,6 +229,10 @@ function destination(w,c){const r=c.ride;return r?.phase==="approach"?(r.queue||
 function moveCrowd(w,dt,api){
  refreshCrowdRoutes(w);
  const occ=occupancy(w),cars=w.cars.map(b=>carRect(b)),list=w.citizens.filter(c=>c.id!==w.possessed&&c.ride?.phase!=="waiting"&&c.ride?.phase!=="riding");
+ const active=new Map();const corridor=p=>nodeKey(p.x,p.z)+":"+p.axis+":"+(p.axis===0?Math.sign(p.a.z-p.z):Math.sign(p.a.x-p.x));const directionOf=p=>p.axis===0?Math.sign(p.b.x-p.a.x):Math.sign(p.b.z-p.a.z);for(const c of list){const p=walkState.get(c)?.cross;if(p){const k=corridor(p);if(!active.has(k))active.set(k,[]);active.get(k).push(c);}}
+ const activeCrosses=()=>[...active.values()].flat().filter(c=>walkState.get(c)?.cross);
+ const landingFor=(c,p)=>{const dir=directionOf(p);return {x:p.b.x+(p.axis===0?dir*.8:0),z:p.b.z+(p.axis===1?dir*.8:0)};};
+ const yieldToLanding=c=>{if(!offRoad(c.x,c.z))return false;const blocked=activeCrosses().map(q=>walkState.get(q).cross.b).find(p=>Math.hypot(c.x-p.x,c.z-p.z)<2.2);if(!blocked)return false;let best=null;const step=Math.min(.32,c.speed*dt);for(let i=0;i<16;i++){const a=i*Math.PI/8,x=c.x+Math.cos(a)*step,z=c.z+Math.sin(a)*step;if(offRoad(x,z)&&!inSolid(x,z)&&occ.free(c,x,z)&&!cars.some(r=>intersects({x,z},r,.45))&&Math.hypot(x-blocked.x,z-blocked.z)>Math.hypot(c.x-blocked.x,c.z-blocked.z)+.02&&(!best||Math.hypot(x-blocked.x,z-blocked.z)>best.d))best={x,z,d:Math.hypot(x-blocked.x,z-blocked.z)};}if(!best)return false;occ.remove(c);c.heading=Math.atan2(best.x-c.x,best.z-c.z);c.x=best.x;c.z=best.z;occ.add(c);c.walkingNow=true;c.walkStatus="CLEARING CROSSWALK EXIT";return true;};
  // Crossing pedestrians have priority; otherwise rotate order so one ID never monopolizes a doorway.
  const n=w.citizens.length||1,shift=Math.floor(w.time*4)%n;
  list.sort((a,b)=>Number(!!walkState.get(b)?.cross)-Number(!!walkState.get(a)?.cross)||((a.id+n-shift)%n)-((b.id+n-shift)%n));
@@ -239,6 +243,7 @@ function moveCrowd(w,dt,api){
   if(c.inside===c.goal&&!c.ride&&!c.route.length){st.cross=null;st.path=null;c.walkingNow=false;continue;}
   if(!c.route.length&&!st.cross&&c.inside>=0&&!st.departing){c.walkingNow=false;continue;}
   if(st.departing||c.inside>=0){const origin=st.origin>=0?st.origin:c.inside,door=w.buildings[origin]?.door;if(door){c.x=door.x;c.z=door.z;}if(!occ.free(c,c.x,c.z)||cars.some(r=>intersects(c,r,.45))){c.inside=origin;c.walkingNow=false;c.walkStatus="DOOR QUEUE";continue;}c.inside=-1;st.departing=false;st.path=null;occ.add(c);}
+  if(!st.cross&&yieldToLanding(c)){st.path=null;continue;}
   const key=target.x+","+target.z;
   if(st.key!==key||!st.path||!st.path.length||(!st.cross&&(st.stall||0)>3&&w.time-(st.replanAt||0)>6+c.id%7)){st.replanAt=w.time;
    if(st.cross){const end=st.cross.b;c.route=[{x:end.x,z:end.z,cross:st.cross},...pedestrianPath(end,target)];}
@@ -251,8 +256,8 @@ function moveCrowd(w,dt,api){
    const tolerance=c.route.length===1?0.08:p.precise||c.route[1]?.precise?0.18:p.cross?0.40:c.route[1]?.cross?0.58:2.15;
    if(len<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;continue;}
    if(p.cross&&!st.cross){
-    if(!crossingAdmission(p.cross,w.time)||!crossClear(w,p.cross)){c.walkStatus="WAITING FOR CROSSWALK";break;}
-    st.cross=p.cross;phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
+    const k=corridor(p.cross),flow=(active.get(k)||[]).filter(q=>walkState.get(q)?.cross),landing=landingFor(c,p.cross),dir=directionOf(p.cross);const same=flow.every(q=>directionOf(walkState.get(q).cross)===dir),entryClear=flow.every(q=>Math.hypot(q.x-c.x,q.z-c.z)>2.1);if(!crossingAdmission(p.cross,w.time)||!crossClear(w,p.cross)||!same||flow.length>=2||!entryClear||!occ.free(c,landing.x,landing.z)){c.walkStatus="WAITING FOR CROSSWALK";break;}
+    st.cross=p.cross;if(!active.has(k))active.set(k,[]);active.get(k).push(c);phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
    }
    const step=Math.min(.32,budget,len),ux=dx/len,uz=dz/len;
    const legal=(x,z)=>offRoad(x,z)||st.cross&&(st.cross.axis===0?Math.abs(z-st.cross.a.z)<=1.25&&x>=Math.min(st.cross.a.x,st.cross.b.x)-.4&&x<=Math.max(st.cross.a.x,st.cross.b.x)+.4:Math.abs(x-st.cross.a.x)<=1.25&&z>=Math.min(st.cross.a.z,st.cross.b.z)-.4&&z<=Math.max(st.cross.a.z,st.cross.b.z)+.4);
@@ -263,6 +268,7 @@ function moveCrowd(w,dt,api){
     if(st.cross||offRoad(c.x,c.z))for(const [angle,side] of [[.6,1],[.6,-1],[1.1,1],[1.1,-1],[1.55,1],[1.55,-1],[1.9,1],[1.9,-1]]){const xx=c.x+(ux*Math.cos(angle)+uz*Math.sin(angle)*side)*step,zz=c.z+(uz*Math.cos(angle)-ux*Math.sin(angle)*side)*step;
      const permitted=st.cross?(st.cross.axis===0?Math.abs(zz-(nearestGrid(st.cross.a.z)+(st.cross.a.z<nearestGrid(st.cross.a.z)?-SIDE:SIDE)))<=.96:Math.abs(xx-(nearestGrid(st.cross.a.x)+(st.cross.a.x<nearestGrid(st.cross.a.x)?-SIDE:SIDE)))<=.96):offRoad(xx,zz);
      if(permitted&&can(xx,zz)&&Math.hypot(xx-p.x,zz-p.z)<len+.22){x=xx;z=zz;found=true;break;}}
+    if(!found&&st.cross&&(st.stall||0)>2){for(const angle of [2.1,-2.1,2.7,-2.7,Math.PI]){const xx=c.x+(ux*Math.cos(angle)+uz*Math.sin(angle))*step,zz=c.z+(uz*Math.cos(angle)-ux*Math.sin(angle))*step;if(can(xx,zz)){x=xx;z=zz;found=true;break;}}}
     if(!found&&!st.cross&&offRoad(c.x,c.z)&&(st.stall||0)>2){
      for(const angle of [2.1,-2.1,2.7,-2.7,Math.PI]){const xx=c.x+(ux*Math.cos(angle)+uz*Math.sin(angle))*step,zz=c.z+(uz*Math.cos(angle)-ux*Math.sin(angle))*step;
       if(offRoad(xx,zz)&&can(xx,zz)){x=xx;z=zz;found=true;st.stall=1;break;}}
