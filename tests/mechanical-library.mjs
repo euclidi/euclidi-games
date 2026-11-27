@@ -15,12 +15,13 @@ for(const [engine,name] of [[chromium,'chromium'],[firefox,'firefox']]){
  await p.waitForFunction(()=>Number(document.body.dataset.frames)>0);
  const a=await p.locator('body').getAttribute('data-drum');await p.locator('[data-cat="Arcade"]').click();
  await p.waitForFunction(()=>!document.getElementById('retrieve').disabled);
- assert.notEqual(await p.locator('body').getAttribute('data-drum'),a);
+ await p.waitForFunction(a=>document.body.dataset.drum!==a,a);
  await p.locator('#search').fill('PAC-MAN');await p.waitForFunction(()=>document.querySelectorAll('#titles button').length===1&&document.getElementById('name').textContent==='PAC-MAN'&&!document.getElementById('retrieve').disabled);
- const ib=await p.locator('#inspection').boundingBox();const r=await p.locator('body').getAttribute('data-inspect');await p.mouse.move(ib.x+ib.width/2,ib.y+ib.height/2);await p.mouse.down();await p.mouse.move(ib.x+ib.width*.85,ib.y+ib.height*.65,{steps:10});await p.mouse.up();await p.waitForTimeout(400);assert.notEqual(await p.locator('body').getAttribute('data-inspect'),r);
+ await p.locator('#inspection').scrollIntoViewIfNeeded();const ib=await p.locator('#inspection').boundingBox();const r=await p.locator('body').getAttribute('data-inspect');await p.mouse.move(ib.x+ib.width/2,ib.y+ib.height/2);await p.mouse.down();await p.mouse.move(ib.x+ib.width*.85,ib.y+ib.height*.65,{steps:10});await p.mouse.up();await p.waitForFunction(r=>document.body.dataset.inspect!==r,r);
  await p.screenshot({path:'audit-artifacts/'+name+'-'+width+'-selection.png',fullPage:true});
- await p.locator('#retrieve').click();await p.waitForFunction(()=>document.body.dataset.delivery==='ready',null,{timeout:30000});assert(await p.locator('#play').isVisible());assert((await p.locator('#play').getAttribute('href')).includes('/pacman/'));assert.equal(await p.locator('#docs a').count(),4);assert(await p.locator('#launch').isVisible());assert(Number(await p.locator('body').getAttribute('data-lift'))<.3);
+ await p.locator('#retrieve').click();await p.waitForFunction(()=>document.body.dataset.delivery==='ready',null,{timeout:30000});assert(await p.locator('#play').isVisible());assert((await p.locator('#play').getAttribute('href')).includes('/pacman/'));assert.equal(await p.locator('#docs a').count(),4);assert(await p.locator('#launch').isVisible());await p.waitForFunction(()=>Number(document.body.dataset.lift)<.3);
  await p.screenshot({path:'audit-artifacts/'+name+'-'+width+'-delivered.png',fullPage:true});
+ assert(await p.locator('#search').isDisabled());assert(await p.locator('[data-cat="Arcade"]').isDisabled());
  await p.locator('#return').click();await p.waitForFunction(()=>document.body.dataset.delivery==='empty'&&!document.getElementById('retrieve').disabled);
  await p.locator('#motion').selectOption('off');await p.locator('#retrieve').click();await p.waitForFunction(()=>document.body.dataset.delivery==='ready');
  assert.equal(errs.length,0,errs.join('\n'));console.log('PASS mechanical',name,width,count);await p.close();
