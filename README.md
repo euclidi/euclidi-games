@@ -21,6 +21,8 @@ Projects are actively developed and may contain unfinished features or experimen
 | [Brick Breaker](brick-breaker/README.md) | Active — browser 0.2 adaptation | [Spec](brick-breaker/SPEC.md) · [Roadmap](brick-breaker/ROADMAP.md) · [Status](brick-breaker/STATUS.md) |
 | [Scrap Orbit](scrap-orbit/README.md) | Archived — removed from catalog at owner's request | [Spec](scrap-orbit/SPEC.md) · [Roadmap](scrap-orbit/ROADMAP.md) · [Status](scrap-orbit/STATUS.md) |
 
+| [The Meeting Seam](meeting-seam/README.md) | Active — development 0.1 | [Spec](meeting-seam/SPEC.md) · [Roadmap](meeting-seam/ROADMAP.md) · [Status](meeting-seam/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
