@@ -9,7 +9,7 @@ const marks=['◉','❋','≈','✳','◇','≋','⋔','∴','⁕','♨','⊕','
 const worlds=['Primordium','Abyss','Mycelium','Silica','Prosthesis','Communion'];
 const colors=[0x9ba16e,0x6196a0,0xb8ab87,0x8293b6,0xa89370,0xaab980];
 const grounds=[0x454a31,0x243d4d,0x504333,0x454657,0x55534c,0x394b35];
-type State={ecology:{inhabitants:{id:number,genome:number[],parents:number[],generation:number,biomass:number,reserve:number,position:number[],age:number,relation:number,activity:number}[],births:number,deaths:number,interactions:number,recycled:number,charge:number},mechanics:{limbs:number[][][],enabled:boolean,contacts:boolean[],strain:number,volume_ratio:number,phase:number},network:{pools:number[],integrity:number[],flux:number[],regions:number[],activation:number[],association:number[],stimulus:number,habituation:number,action:number},world_id:number,environment:{name:string,water:number,light:number,temperature:number},seed:number,genome:number[],organs:number[],used:boolean[],history:number[],tissue:number[],nutrient:number,reserve:number,biomass:number,waste:number,input_mass:number,hydration:number,stress:number,learned:number,neural:number,generation:number,parents:number[],turn:number,tick:number,outcome:string,outcome_detail:string,outcome_palette:number,position:number[],velocity:number[]};
+type State={morphology:{nodes:{id:number,parent:number,organ:number,pos:number[],radius:number,exterior:boolean,maturity:number}[],activator:number[],inhibitor:number[],regulation:number[]},ecology:{inhabitants:{id:number,genome:number[],parents:number[],generation:number,biomass:number,reserve:number,position:number[],age:number,relation:number,activity:number}[],births:number,deaths:number,interactions:number,recycled:number,charge:number},mechanics:{limbs:number[][][],enabled:boolean,contacts:boolean[],strain:number,volume_ratio:number,phase:number},network:{pools:number[],integrity:number[],flux:number[],regions:number[],activation:number[],association:number[],stimulus:number,habituation:number,action:number},world_id:number,environment:{name:string,water:number,light:number,temperature:number},seed:number,genome:number[],organs:number[],used:boolean[],history:number[],tissue:number[],nutrient:number,reserve:number,biomass:number,waste:number,input_mass:number,hydration:number,stress:number,learned:number,neural:number,generation:number,parents:number[],turn:number,tick:number,outcome:string,outcome_detail:string,outcome_palette:number,position:number[],velocity:number[]};
 type Saved={id:number,name:string,json:string};
 let engine:Engine,state:State,mode='puzzle',paused=false,inspection=false,seed=1731,archive:Saved[]=[],db:IDBDatabase|null=null;
 const select=(id:string)=>el<HTMLSelectElement>(id);
@@ -31,11 +31,11 @@ function applyPanorama(id:number){requestedPanorama=id;const cached=panoramas.ge
 const body=new THREE.Group();scene.add(body);
 const colonies=new THREE.Group();scene.add(colonies);const companionMeshes=new Map<number,THREE.Mesh>();const companionGeometry=new THREE.SphereGeometry(1,40,28);
 const skin=new THREE.MeshPhysicalMaterial({color:colors[0],roughness:.43,clearcoat:.19,clearcoatRoughness:.3,transparent:true,opacity:1});
-const surface=new MarchingCubes(34,skin,false,false,16000);surface.isolation=72;surface.scale.setScalar(1.8);surface.castShadow=true;surface.receiveShadow=true;body.add(surface);
+const surface=new MarchingCubes(40,skin,false,false,24000);surface.isolation=72;surface.scale.setScalar(1.8);surface.castShadow=true;surface.receiveShadow=true;body.add(surface);
 const eyes=new THREE.Group();body.add(eyes);
-const iris=new THREE.MeshPhysicalMaterial({color:0xc7b77a,roughness:.22,clearcoat:1});
+const iris=new THREE.MeshPhysicalMaterial({color:0xc7b77a,roughness:.28,clearcoat:.8});
 const pupil=new THREE.MeshStandardMaterial({color:0x111811,roughness:.15});
-const eyeLids:THREE.Mesh[]=[];const pupils:THREE.Mesh[]=[];
+const eyeLids:THREE.Mesh[]=[];const pupils:THREE.Mesh[]=[];const eyeAnchors=[new THREE.Vector3(),new THREE.Vector3()];
 for(const side of [-1,1]){
  const eye=new THREE.Mesh(new THREE.SphereGeometry(.15,32,24),iris);eye.position.set(side*.22,.19,.47);eye.scale.set(1,.93,.8);eyes.add(eye);eyeLids.push(eye);
  const dot=new THREE.Mesh(new THREE.SphereGeometry(.072,24,16),pupil);dot.position.set(side*.22,.19,.57);dot.scale.z=.5;eyes.add(dot);pupils.push(dot);
@@ -65,7 +65,7 @@ function ui(){
  el('turn').textContent=String(state.turn).padStart(2,'0')+(mode==='puzzle'?' / 12':' introductions');
  el('log').textContent=state.history.length?'Last introduced: '+names[state.history.at(-1)!]:'Introduce an element to begin.';
  for(let i=0;i<12;i++){const b=el<HTMLButtonElement>('element-'+i);b.disabled=mode==='archive'||(mode==='puzzle'&&state.used[i]);b.title=names[i]+' · development '+state.organs[i].toFixed(2);}
- el('readout').textContent=['Genome '+state.seed+' · generation '+state.generation,'Parents: '+(state.parents.join(', ')||'none'),'Tick '+state.tick,'State hash '+engine.state_hash(),'Reserve '+state.reserve.toFixed(3),'Nutrients '+state.nutrient.toFixed(3),'Biomass '+state.biomass.toFixed(3),'Waste '+state.waste.toFixed(3),'Mass residual '+(state.input_mass-state.reserve-state.nutrient-state.biomass-state.waste-state.network.pools.reduce((a,b)=>a+b,0)-state.ecology.inhabitants.reduce((a,b)=>a+b.reserve+b.biomass,0)).toExponential(2),'Hydration '+state.hydration.toFixed(2),'Stress '+state.stress.toFixed(2),'Association '+state.learned.toFixed(3),'Neural activity '+state.neural.toFixed(3),'Cue response '+state.network.activation[2].toFixed(3),'Habituation '+state.network.habituation.toFixed(3),'Conditioning '+state.network.association[0].toFixed(3),'Behavior: '+['Feed','Withdraw','Investigate','Approach cue','Rest','Explore'][state.network.action],'Transport '+state.network.flux.reduce((a,b)=>a+Math.abs(b),0).toFixed(4),'Tissue peak '+Math.max(...state.tissue).toFixed(3),'Appendage strain '+state.mechanics.strain.toFixed(3),'Tetra volume ratio '+state.mechanics.volume_ratio.toFixed(3),'Ground contacts '+state.mechanics.contacts.map(x=>x?'1':'0').join(' / '),'Population '+(state.ecology.inhabitants.length+1),'Births '+state.ecology.births+' / losses '+state.ecology.deaths,'Resource exchanges '+state.ecology.interactions,'Recycled '+state.ecology.recycled.toFixed(3),'Charge '+state.ecology.charge.toFixed(3),'',...names.map((n,i)=>n.padEnd(10)+' '+state.organs[i].toFixed(2)+' | supply '+state.network.pools[i].toFixed(3)+' | intact '+Math.round(state.network.integrity[i]*100)+'%')].join('\n');
+ el('readout').textContent=['Genome '+state.seed+' · generation '+state.generation,'Parents: '+(state.parents.join(', ')||'none'),'Tick '+state.tick,'State hash '+engine.state_hash(),'Reserve '+state.reserve.toFixed(3),'Nutrients '+state.nutrient.toFixed(3),'Biomass '+state.biomass.toFixed(3),'Waste '+state.waste.toFixed(3),'Mass residual '+(state.input_mass-state.reserve-state.nutrient-state.biomass-state.waste-state.network.pools.reduce((a,b)=>a+b,0)-state.ecology.inhabitants.reduce((a,b)=>a+b.reserve+b.biomass,0)).toExponential(2),'Hydration '+state.hydration.toFixed(2),'Stress '+state.stress.toFixed(2),'Association '+state.learned.toFixed(3),'Neural activity '+state.neural.toFixed(3),'Cue response '+state.network.activation[2].toFixed(3),'Habituation '+state.network.habituation.toFixed(3),'Conditioning '+state.network.association[0].toFixed(3),'Behavior: '+['Feed','Withdraw','Investigate','Approach cue','Rest','Explore'][state.network.action],'Transport '+state.network.flux.reduce((a,b)=>a+Math.abs(b),0).toFixed(4),'Tissue peak '+Math.max(...state.tissue).toFixed(3),'Developmental nodes '+state.morphology.nodes.length,'Regulatory activity '+(state.morphology.regulation.reduce((a,b)=>a+b,0)/12).toFixed(3),'Morphogen inhibitor '+Math.max(...state.morphology.inhibitor).toFixed(3),'Appendage strain '+state.mechanics.strain.toFixed(3),'Tetra volume ratio '+state.mechanics.volume_ratio.toFixed(3),'Ground contacts '+state.mechanics.contacts.map(x=>x?'1':'0').join(' / '),'Population '+(state.ecology.inhabitants.length+1),'Births '+state.ecology.births+' / losses '+state.ecology.deaths,'Resource exchanges '+state.ecology.interactions,'Recycled '+state.ecology.recycled.toFixed(3),'Charge '+state.ecology.charge.toFixed(3),'',...names.map((n,i)=>n.padEnd(10)+' '+state.organs[i].toFixed(2)+' | supply '+state.network.pools[i].toFixed(3)+' | intact '+Math.round(state.network.integrity[i]*100)+'%')].join('\n');
 }
 function envUI(){for(const [id,key] of [['water','water'],['heat','temperature'],['light','light']] as const)el<HTMLInputElement>(id).value=String(state.environment[key]);}
 function reset(id:number){engine?.free();engine=new Engine(id,seed++);read();pose.fill(0);envUI();ui();}
@@ -112,19 +112,39 @@ function draw(now:number){
   const target=mode==='free'?state.position:[0,.68,0];body.position.lerp(new THREE.Vector3(target[0],Math.max(.58,Math.min(1.7,target[1])),target[2]),Math.min(1,dt*4));
   body.rotation.y=mode==='free'&&state.mechanics.enabled?0:Math.sin(t*.6+state.genome[0]*3)*.16+state.neural*.18;
   if(++tissueFrame%2===0){
-   surface.reset();const add=(x:number,y:number,z:number,s:number)=>surface.addBall(x,y,z,s,12);
-   add(.5,.48,.5,.72+pose[0]*.09+pose[1]*.09);add(.5,.57,.58,.22+pose[6]*.05);
-   for(const side of [-1,1]){
-    if(pose[5]>.03){if(mode==='free'&&state.mechanics.enabled){const chain=state.mechanics.limbs[side<0?0:1];for(let j=0;j<chain.length;j++){const p=chain[j];add(.5+(p[0]-body.position.x)/3.6,.5+(p[1]-body.position.y)/3.6,.5+(p[2]-body.position.z)/3.6,Math.max(.035,pose[5]*.065));}}else{for(let j=0;j<3;j++)add(.5+side*(.1+j*.045),.42-j*.025+Math.sin(t*3+j+side)*.013,.5-j*.025,Math.max(.03,pose[5]*.085));}}
-    if(pose[11]>.1){for(let j=0;j<3;j++)add(.5+side*(.055+j*.024),.6+j*.04,.52,pose[11]*.04);}
-    if(pose[2]>.2)add(.5+side*.15,.49,.46,pose[2]*.12);
+   surface.reset();
+   const balls:{x:number,y:number,z:number,s:number}[]=[];
+   const ball=(p:number[],r:number)=>{const x=.5+p[0]/3.6,y=.5+p[1]/3.6,z=.5+p[2]/3.6,s=Math.pow(r/3.6,2)*84;if(x>.025&&x<.975&&y>.025&&y<.975&&z>.025&&z<.975){surface.addBall(x,y,z,s,12);balls.push({x,y,z,s});}};
+   const nodes=state.morphology.nodes;
+   for(const n of nodes){
+    if(!n.exterior||(n.organ===5&&mode==='free'&&state.mechanics.enabled))continue;
+    const p=n.pos.slice();if(n.id!==0){p[1]+=Math.sin(t*1.6+n.id*.8)*.016*n.maturity;p[0]+=Math.sin(t*.9+n.id*.7)*.012*n.maturity;}
+    const r=n.radius*(n.id===0?1:Math.min(1,.35+pose[n.organ]*.7));
+    ball(p,r);
+    if(n.id!==0){const par=nodes[n.parent];const distance=Math.hypot(...p.map((x,i)=>x-par.pos[i]));const count=Math.min(5,Math.max(1,Math.ceil(distance/Math.max(.09,r*.9))));for(let j=1;j<count;j++){const f=j/count;ball(p.map((x,i)=>par.pos[i]*(1-f)+x*f),Math.max(.035,r*(.75+.25*f)));}}
    }
-   if(pose[8]>.15)for(let j=0;j<6;j++)add(.5+Math.cos(j)*.1,.5+Math.sin(j)*.1,.4,pose[8]*.04);
-   if(pose[4]>.15)add(.5,.5,.37,pose[4]*.11);
+   // Muscular appendages use physical node positions in free cultivation.
+   if(mode==='free'&&state.mechanics.enabled&&pose[5]>.03)for(const chain of state.mechanics.limbs){
+    let prev:number[]|null=null;for(let j=0;j<chain.length;j++){const p=chain[j].map((v,k)=>v-body.position.getComponent(k));const r=Math.max(.07,.13+pose[5]*.03-j*.009);ball(p,r);if(prev)ball(p.map((v,k)=>(v+prev![k])*.5),r*.87);prev=p;}
+   }
+   // Find the visible implicit surface at the eye locations, instead of hard-coded
+   // offsets. The equation matches Three.js MarchingCubes.addBall.
+   const field=(x:number,y:number,z:number)=>balls.reduce((sum,b)=>sum+Math.max(0,b.s/(.000001+(x-b.x)**2+(y-b.y)**2+(z-b.z)**2)-12),0);
+   for(let i=0;i<2;i++){const sign=i===0?-1:1;const x=.5+sign*(.18+state.genome[0]*.045)/3.6;const y=.5+(.17+pose[6]*.025)/3.6;let z=.5;
+    for(let q=.94;q>=.50;q-=.004){if(field(x,y,q)>=surface.isolation){z=q;break;}}
+    eyeAnchors[i].set((x-.5)*3.6,(y-.5)*3.6,(z-.5)*3.6+.025);
+   }
    surface.update();
   }
-  eyes.visible=pose[6]>.09;eyes.scale.setScalar(Math.min(1.3,.55+pose[6]*.32));const blink=!reduced&&Math.pow(Math.max(0,Math.cos(t*1.16+state.genome[2]*5)),42);eyeLids.forEach((e,i)=>{e.scale.y=.93*(1-.92*Number(blink));pupils[i].visible=Number(blink)<.7;pupils[i].position.x=(i?1:-1)*.22+Math.sin(t*.8)*.018;});
-  organMeshes.forEach((m,i)=>{m.visible=a[i]>.03;m.scale.setScalar((.65+a[i]*.35)*(.6+.4*state.network.integrity[i]));m.position.set(Math.cos(i*2.4)*.26,Math.sin(i*1.2)*.22,Math.sin(i*2.4)*.23);});
+  eyes.visible=pose[6]>.09&&state.world_id!==2;eyes.scale.setScalar(1);
+  const alert=state.network.action===1?1:state.network.action===2?.45:0;
+  const sleepy=state.network.action===4?.55:0;
+  const blink=reduced?0:Math.pow(Math.max(0,Math.cos(t*(.9+state.genome[2]*.6)+state.genome[2]*5)),42);
+  const eyeSize=Math.min(1.15,.64+pose[6]*.19);
+  eyeLids.forEach((e,i)=>{const anchor=eyeAnchors[i];const yScale=(1-.90*blink)*(1-.42*sleepy+.1*alert);e.position.copy(anchor);e.scale.set(eyeSize,eyeSize*.93*yScale,eyeSize*.8);
+   const d=pupils[i];d.visible=blink<.72;d.position.copy(anchor);d.position.z+=.104*eyeSize;d.position.x+=Math.sin(t*.8+state.neural)*.023*eyeSize;d.position.y+=alert*.012;d.scale.set(eyeSize,eyeSize*yScale,eyeSize*.5);
+  });
+  organMeshes.forEach((m,i)=>{m.visible=a[i]>.03;m.scale.setScalar((.65+a[i]*.35)*(.6+.4*state.network.integrity[i]));const n=state.morphology.nodes.find(n=>n.organ===i);if(n)m.position.set(n.pos[0]*.67,n.pos[1]*.67,n.pos[2]*.67);else m.position.set(0,0,0);});
   pipes.forEach((m,i)=>{const [x,y]=edges[i],p=organMeshes[x].position,q=organMeshes[y].position,d=q.clone().sub(p);m.visible=a[x]>.03&&a[y]>.03;m.position.copy(p).add(q).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());m.scale.set(1+Math.abs(state.network.flux[i])*500,d.length(),1+Math.abs(state.network.flux[i])*500);m.material.color.setHex(state.network.flux[i]>=0?0xc58b6d:0x6399b1);});
   const alive=new Set(state.ecology.inhabitants.map(o=>o.id));for(const [id,m] of companionMeshes){if(!alive.has(id)){colonies.remove(m);(m.material as THREE.Material).dispose();companionMeshes.delete(id);}}
   for(const o of state.ecology.inhabitants){let m=companionMeshes.get(o.id);if(!m){const mat=new THREE.MeshPhysicalMaterial({color:new THREE.Color(colors[state.world_id]).offsetHSL((o.genome[0]-.5)*.18,0,.03),roughness:.5,clearcoat:.2});m=new THREE.Mesh(companionGeometry,mat);m.castShadow=true;colonies.add(m);companionMeshes.set(o.id,m);m.position.set(o.position[0],.2,o.position[1]);}

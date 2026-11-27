@@ -1,6 +1,8 @@
 use serde::{Serialize,Deserialize};
 use wasm_bindgen::prelude::*;
 use rapier3d::prelude::*;
+mod morphology;
+use morphology::Morphology;
 mod ecology;
 use ecology::Ecology;
 mod content;
@@ -21,7 +23,7 @@ fn world(id:usize)->World {
 }
 #[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]
 struct Specimen {
- version:u32, network:Network, mechanics:Mechanics, ecology:Ecology, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, outcome_detail:String, outcome_palette:usize, position:[f64;3], velocity:[f64;3]
+ version:u32, network:Network, mechanics:Mechanics, ecology:Ecology, morphology:Morphology, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, outcome_detail:String, outcome_palette:usize, position:[f64;3], velocity:[f64;3]
 }
 fn rng(s:&mut u32)->f64{*s=s.wrapping_mul(1664525).wrapping_add(1013904223);*s as f64/4294967296.}
 fn bounded(x:f64)->f64{x.clamp(0.,1.)}
@@ -29,10 +31,10 @@ impl Specimen {
  fn new(id:usize,mut seed:u32)->Self{
   let original=seed; let mut genome=[0.;8];for x in &mut genome{*x=0.25+rng(&mut seed)*0.5;}
   let env=world(id);
-  Self{version:4,network:Network::new(),mechanics:Mechanics::new(),ecology:Ecology::new(original),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),outcome_detail:String::new(),outcome_palette:0,position:[0.,0.7,0.],velocity:[0.;3]}
+  Self{version:5,network:Network::new(),mechanics:Mechanics::new(),ecology:Ecology::new(original),morphology:Morphology::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),outcome_detail:String::new(),outcome_palette:0,position:[0.,0.7,0.],velocity:[0.;3]}
  }
  fn valid(&self)->bool {
-  self.version==4 && self.network.valid() && self.mechanics.valid() && self.ecology.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
+  self.version==5 && self.network.valid() && self.mechanics.valid() && self.ecology.valid() && self.morphology.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
   self.genome.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=1.) &&
   self.organs.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=MAX) &&
   self.available.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=8.) &&
@@ -94,6 +96,7 @@ impl Specimen {
   self.learned=bounded(self.learned+0.012*self.organs[6]*(reward-self.learned));
   self.network.neural_step(&self.genome,self.organs[6]*self.network.integrity[6],self.reserve.min(1.),self.stress);
   self.neural=self.network.activation[2];
+  self.morphology.step(self.world_id,&self.genome,&self.organs,&self.tissue,&self.network.integrity,self.hydration,self.tick);
   self.ecology.step(self.world_id,env.water,env.light,env.temperature,&self.organs,&mut self.nutrient,&mut self.reserve,&mut self.waste,self.position);
  }
  fn classify(&mut self){
