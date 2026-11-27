@@ -1,3 +1,7 @@
+# v0.3 — graphics and local asset pipeline (development branch)
+
+Source changes implement PBR materials, facility detailing, differentiated equipment, lighting and manifest-backed artwork. The importer and smoke test are committed; the asset pack and browser acceptance remain unverified. The public build has not been promoted. The workflow is now configured for same-repository pull-request updates. See [ROADMAP](ROADMAP.md).
+
 # v0.2 — Asset-first corrective pass
 
 Three Poly Haven CC0 PBR material integrations and four authored industrial glTF model integrations are in source. Local-first loading, runtime success/failure reporting, measured model bounds and collision envelopes, a reproducible vendor script, and a scoped GitHub Actions acquisition workflow are committed. Spatial impact audio uses Web Audio panners. JavaScript syntax passed. Asset download and workflow outcome are unverified; local network DNS prevents the download, visual inspection and browser test. Weapons, alien hands, targets and much of the architecture still use procedural geometry. Quaternius packs were reviewed but their stylized look does not match the approved grounded direction. Actual asset acceptance and full-scope playtesting remain outstanding.
