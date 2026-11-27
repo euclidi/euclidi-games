@@ -766,6 +766,57 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  }}
  merge(parent);for(const s of signalGroups.values())for(const phase of s.phases)merge(phase);updateSignals(420);
 }
+// Authored repeatable masonry/concrete texture: no painted windows competing with geometry.
+const finishedFacade=new WeakSet();
+function finishFacade(material,style){
+ if(!material?.map?.image?.getContext||finishedFacade.has(material))return;
+ finishedFacade.add(material);const texture=material.map,canvas=texture.image,ctx=canvas.getContext("2d");
+ canvas.width=canvas.height=128;let seed=24617+style*7727;const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+ const colors=[[119,119,106],[106,115,111],[129,113,100],[132,129,115]],rgb=colors[style%4],im=ctx.createImageData(128,128);
+ for(let y=0;y<128;y++)for(let x=0;x<128;x++){
+  const mortar=style===2&&(y%16<2||(x+(Math.floor(y/16)%2)*16)%32<2);
+  const panel=style!==2&&(x%64<1||y%64<1),weather=(rand()-.5)*19+Math.sin(x*.12+y*.06)*3+(y%64>57?-8:0),n=(y*128+x)*4;
+  for(let c=0;c<3;c++)im.data[n+c]=clamp(rgb[c]+weather-(mortar?28:panel?23:0),0,255);
+  im.data[n+3]=255;
+ }
+ ctx.putImageData(im,0,0);texture.repeat?.set(1,1);texture.magFilter=1003;texture.minFilter=1008;texture.generateMipmaps=true;texture.anisotropy=4;texture.needsUpdate=true;
+}
+function worldUV(mesh,x,y,z){
+ const a=mesh?.geometry?.attributes,p=a?.position,n=a?.normal,uv=a?.uv;if(!p||!n||!uv)return;
+ for(let i=0;i<p.count;i++){
+  const px=p.getX(i)+x,py=p.getY(i)+y,pz=p.getZ(i)+z;
+  if(Math.abs(n.getY(i))>.5)uv.setXY(i,px/4,pz/4);else if(Math.abs(n.getX(i))>.5)uv.setXY(i,pz/4,py/4);else uv.setXY(i,px/4,py/4);
+ }
+ uv.needsUpdate=true;
+}
+function furnishInterior(b,inside,{box,cyl,roof,steel,white,dark,trim,glass,door}){
+ const {x,z,w,l}=b;
+ const B=(a,h,d,dx,y,dz,m)=>box(inside,a,h,d,x+dx,y,z+dz,m);
+ const C=(a,bb,h,dx,y,dz,m)=>cyl(inside,a,bb,h,x+dx,y,z+dz,m,8);
+ const table=(dx,dz,ww=3.1,ll=1.5)=>{B(ww,.15,ll,dx,1.38,dz,roof);for(const sx of [-1,1])for(const sz of [-1,1])B(.12,.8,.12,dx+sx*(ww/2-.22),.94,dz+sz*(ll/2-.2),steel);};
+ const chair=(dx,dz)=>{B(.56,.12,.58,dx,1.0,dz,steel);B(.56,.5,.12,dx,1.3,dz+.24,steel);for(const sx of [-1,1])for(const sz of [-1,1])B(.07,.46,.07,dx+sx*.21,.76,dz+sz*.21,dark);};
+ const shelf=(dx,dz,ww=3.2)=>{for(const side of [-1,1])B(.15,2.2,1.0,dx+side*ww/2,1.65,dz,steel);for(let y=.7;y<2.8;y+=.68){B(ww,.1,.95,dx,y,dz,steel);for(let j=0;j<5;j++)B(.35,.35,.45,dx-ww*.36+j*ww*.18,y+.23,dz,j%2?trim:dark);}};
+ const bed=(dx,dz)=>{B(1.15,.32,2.1,dx,.72,dz,steel);B(1.07,.2,2.02,dx,.98,dz,white);B(.92,.11,.46,dx,1.14,dz-.69,white);B(1.07,.10,1.32,dx,1.12,dz+.33,trim);B(1.2,.85,.13,dx,.94,dz-1.07,roof);};
+ if(b.type==="Housing"){
+  for(const side of [-1,1]){bed(side*(w/2-2.1),-l/2+4.7);bed(side*(w/2-2.1),l/2-5);shelf(side*(w/2-2.2),0,2.4);}
+  table(0,3.5,3,1.8);chair(0,5);chair(0,2);B(3.3,1.1,.88,-4,.99,-5,steel);B(3.3,.10,.94,-4,1.59,-5,white);B(.55,.09,.55,-4,1.66,-5,dark);C(.24,.24,.16,-3,1.71,-5,steel);
+ }else if(b.type==="Clinic"){
+  for(let dz=-l/2+6;dz<l/2-3;dz+=7){bed(-w/2+3,dz);B(.9,1.0,.6,-w/2+4.4,1,dz,white);B(.16,2.0,3.2,-w/2+5.2,1.55,dz,glass);}
+  table(w/2-4,-6,4,2);chair(w/2-4,-4.5);shelf(w/2-3,5);
+ }else if(b.type==="Factory"||b.type==="Warehouse"){
+  for(let dz=-l/2+5;dz<l/2-3;dz+=7)for(const side of [-1,1]){
+   const dx=side*(w/2-4);
+   if(b.type==="Warehouse"){shelf(dx,dz,4.0);B(2.0,.17,1.5,dx,.61,dz+2,roof);for(let j=0;j<3;j++)B(.63,.72,.9,dx+(j-1)*.66,1.05,dz+2,trim);}
+   else{B(3,1.45,2.8,dx,1.25,dz,steel);B(2.75,.16,2.65,dx,2.03,dz,dark);C(.68,.68,.25,dx,2.22,dz,trim);B(.68,.6,.15,dx+1.1,1.6,dz-1.48,glass);}
+  }
+ }else if(b.type==="Market"){
+  for(let dz=-l/2+5;dz<l/2-3;dz+=6){shelf(-w/2+3.5,dz,4.6);shelf(w/2-3.5,dz,4.6);}
+  table(0,-l/2+4,4,1.65);B(.48,.35,.40,.8,1.66,-l/2+4,dark);
+ }else{
+  for(let dz=-l/2+5;dz<l/2-3;dz+=7){for(const side of [-1,1]){const dx=side*(w/2-4);table(dx,dz,3.8,1.6);chair(dx,dz+1.2);B(.68,.48,.12,dx,1.70,dz-.32,glass);B(.25,.13,.26,dx,1.49,dz-.28,steel);}}
+  shelf(0,l/2-3,4.2);
+ }
+}
 export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,registry}){
  attachStreetLabels(sign);
  const [facades,roof,steel,walk,dark,white,trim,glass,rust,black,door]=materials;
@@ -773,9 +824,10 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  const base=group(),shell=group(),inside=group();parent.add(base,shell,inside);
  const {x,z,w,l,h}=b, a=b.architecture;
  const f=facades[(b.i*3+b.j*5+b.k+b.id)%facades.length];
+ finishFacade(f,b.id%4);
  const masonry=b.id%3===0?rust:b.id%3===1?f:steel;
  const walls=[];
- const solid=(ww,hh,ll,xx=x,zz=z,y=0,m=f)=>{box(shell,ww,hh,ll,xx,y+hh/2+.5,zz,m);colliders.push({x:xx,z:zz,w:ww,l:ll,h:y+hh+.5});if(y===0)solids.push({x:xx,z:zz,w:ww,l:ll});walls.push({x:xx,z:zz,w:ww,l:ll,bottom:y+.5,top:y+hh+.5});};
+ const solid=(ww,hh,ll,xx=x,zz=z,y=0,m=f)=>{const mesh=box(shell,ww,hh,ll,xx,y+hh/2+.5,zz,m);if(m===f)worldUV(mesh,xx,y+hh/2+.5,zz);colliders.push({x:xx,z:zz,w:ww,l:ll,h:y+hh+.5});if(y===0)solids.push({x:xx,z:zz,w:ww,l:ll});walls.push({x:xx,z:zz,w:ww,l:ll,bottom:y+.5,top:y+hh+.5});};
  // Recess the frame into the actual wall face and keep the glass inside its perimeter.
  const frontWindow=(ww,hh,xx,yy,front)=>{
   box(shell,ww+.18,hh+.18,.16,xx,yy,front-.025,steel);
@@ -902,12 +954,13 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  }
  box(inside,w,.15,l,x,.55,z,roof);for(const dx of [-1,1])box(inside,.3,.8,l,x+dx*w/2,.95,z,f);
  box(inside,w,.8,.3,x,.95,z+l/2,f);
- for(let j=-1;j<=1;j++){box(inside,5,.8,2,x-6,1,z+j*9,steel);box(inside,4,.18,1.8,x-6,1.5,z+j*9,white);box(inside,1.8,1.2,1.8,x+6,1.2,z+j*9,dark);}
+ furnishInterior(b,inside,{box,cyl,roof,steel,white,dark,trim,glass,door});
  inside.visible=false;merge(base);merge(inside);const labels=shell.children.filter(o=>o.material?.isMeshBasicMaterial);for(const o of labels)shell.remove(o);merge(shell);for(const o of labels)shell.add(o);
  registry.push({b,r:shell,interior:inside});
 }
 // The existing LOWER view becomes a rail cutaway, not the legacy decorative grid.
 let undergroundBuilt=false;const trainMeshes=new Map();
+let explorer=null,explorerMesh=null;
 function buildUnderground(){
  if(undergroundBuilt||!lowerRoot||!streetKit)return;
  undergroundBuilt=true;const {group,box,cyl,merge,mat}=streetKit;
@@ -948,6 +1001,58 @@ function buildUnderground(){
   }
   box(g,1.7,1.25,.55,0,1.1,0,dark);merge(g);lowerRoot.add(g);trainMeshes.set(i,g);
  }
+}
+// Independent station explorer. Navigation is bounded to real platform geometry,
+ // and boarding uses the existing scheduled train rather than a parallel timetable.
+export function metroChoices(){
+ return metroLines.flatMap((l,line)=>l.stops.flatMap((p,stop)=>[-1,1].map(side=>({line,stop,side,label:l.name.slice(0,2)+" / "+p.name+" / "+(side<0?"A":"B")}))));
+}
+function platformPoint(line,stop,side,along=0,cross=5.5){
+ const p=metroLines[line].stops[stop];return {x:p.nx+(line===0?side*cross:along),y:(line===0?.12:-3)+.875,z:p.nz+(line===0?along:side*cross)};
+}
+function ensureExplorer(){
+ if(explorerMesh||!lowerRoot||!streetKit)return;
+ const {group,box,cyl,mat}=streetKit;const g=group(),coat=mat(0x8c9b9b),skin=mat(0xcaa17f),hair=mat(0x35332e),pants=mat(0x414845),boots=mat(0x262d29);
+ const body=cyl(g,.23,.32,.65,0,1.16,0,coat,7);cyl(g,.17,.19,.29,0,1.64,0,skin,8);cyl(g,.19,.185,.12,0,1.8,-.02,hair,8);
+ const legs=[-1,1].map(i=>{const part=group();g.add(part);part.position.set(i*.15,.88,0);cyl(part,.11,.085,.38,0,-.19,0,pants,7);cyl(part,.085,.075,.34,0,-.54,0,pants,7);box(part,.18,.14,.32,0,-.73,.07,boots);return part;});
+ const arms=[-1,1].map(i=>{const part=group();g.add(part);part.position.set(i*.31,1.38,0);cyl(part,.095,.075,.49,0,-.245,0,coat,7);cyl(part,.07,.07,.16,0,-.56,0,skin,7);return part;});
+ lowerRoot.add(g);g.visible=false;explorerMesh={g,legs,arms};
+}
+export function metroEnter(line=0,stop=2,side=1){
+ buildUnderground();ensureExplorer();if(!explorerMesh||!metroLines[line]?.stops[stop]||![1,-1].includes(side))return false;
+ explorer={line,stop,side,along:0,cross:5.5,heading:0,distance:0,train:null};
+ explorerMesh.g.visible=true;return true;
+}
+export function metroExit(){explorer=null;if(explorerMesh)explorerMesh.g.visible=false;}
+export function metroExploreInfo(w){
+ if(!explorer)return null;const e=explorer,t=e.train===null?null:w.metro.trains.find(t=>t.id===e.train);
+ const docked=t&&t.remaining<=0;
+ const candidate=e.train===null?w.metro.trains.find(t=>t.line===e.line&&t.at===e.stop&&t.remaining<=0&&t.dwell>0&&(e.line===0?t.dir:-t.dir)===e.side):null;
+ return {label:metroLines[e.line].name+" / "+metroLines[e.line].stops[e.stop].name,train:t?.id??null,canBoard:!!candidate&&Math.abs(e.along)<7.5&&e.cross<5.05,canExit:!!docked,platform:e.side<0?"A":"B"};
+}
+export function metroBoard(w){
+ if(!explorer)return false;const e=explorer,info=metroExploreInfo(w);
+ if(e.train!==null){if(!info.canExit)return false;const t=w.metro.trains.find(t=>t.id===e.train);e.stop=t.at;e.side=e.line===0?t.dir:-t.dir;e.train=null;e.along=0;e.cross=4.35;return true;}
+ if(!info.canBoard)return false;const t=w.metro.trains.find(t=>t.line===e.line&&t.at===e.stop&&t.remaining<=0&&t.dwell>0&&(e.line===0?t.dir:-t.dir)===e.side);
+ e.train=t.id;return true;
+}
+export function metroExploreTick(w,dt,dx,dz){
+ if(!explorer||!explorerMesh)return null;const e=explorer,{g,legs,arms}=explorerMesh;
+ if(e.train!==null){
+  const t=w.metro.trains.find(t=>t.id===e.train);if(!t){metroExit();return null;}e.stop=t.at;updateTrainMeshes(w);
+  const train=trainMeshes.get(t.id);g.visible=false;
+  if(train)return {x:train.position.x,y:train.position.y+1.3,z:train.position.z};return platformPoint(e.line,e.stop,e.side,e.along,e.cross);
+ }
+ const norm=Math.max(1,Math.hypot(dx,dz)),speed=3.1*clamp(dt,0,.06),da=(e.line===0?dz:dx)*speed/norm,dc=(e.line===0?dx:dz)*e.side*speed/norm;
+ const old=platformPoint(e.line,e.stop,e.side,e.along,e.cross);
+ // Account for body radius at the actual platform edges and furniture against rear wall.
+ e.along=clamp(e.along+da,-10.95,10.95);e.cross=clamp(e.cross+dc,4.38,6.15);
+ const p=platformPoint(e.line,e.stop,e.side,e.along,e.cross),travel=Math.hypot(p.x-old.x,p.z-old.z);e.distance+=travel;
+ if(travel>.001)e.heading=Math.atan2(p.x-old.x,p.z-old.z);
+ const stride=travel>.001?Math.sin(e.distance*6.2)*.42:0;
+ g.visible=true;g.position.set(p.x,p.y,p.z);g.rotation.y=e.heading;
+ for(let i=0;i<2;i++){legs[i].rotation.x=(i===0?1:-1)*stride;arms[i].rotation.x=(i===0?-1:1)*stride*.78;}
+ return p;
 }
 function updateTrainMeshes(w){
  if(!undergroundBuilt)return;
