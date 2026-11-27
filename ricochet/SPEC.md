@@ -12,3 +12,6 @@ Automatically select desktop, tablet, mobile portrait or mobile landscape presen
 
 ## v0.5.0 approved fidelity amendment
 Localized soft desaturation/vignette and peg rim/shadow separation in foliage; consistent pause/result input gating; friendly editor validation and Back to Editor; shared brick, bumper, static, moving and rotating obstacles with properties; five persistent Incremental upgrades with visual mechanical feedback; previews for all seven abilities; interface copy and navigation polish. Existing scope remains binding. See STATUS for implementation versus verified behavior.
+
+## Presentation follow-up
+Preserve mechanics and progression while treating menus, chapter selection, companion collection, pause/results and workshop as one continuous miniature exhibition. Establish one improved environment benchmark before expanding art production. Existing pre-rendered 3D production requirement remains binding.
