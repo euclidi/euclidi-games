@@ -29,3 +29,5 @@ Foliage backdrop localized desaturation and lower waterfall contrast; baked peg 
 
 ## v0.5.1 presentation pass
 Replaced the stacked web-panel title/submenus with a shared scenic stage, continue shortcut, chapter/board selector, real board composition previews, navigational hierarchy, context-aware returns, dedicated pause overlay, score-first result view and workbench rows. Replaced the glossy sphere woodland forest with an original branching raster environment benchmark with foliage silhouettes, bark, stone strata and a quiet river. Other worlds, character figurines and workshop models are unchanged interim assets. This is still Canvas-generated raster art displayed in PixiJS, not offline pre-rendered 3D or final-quality production art. No new cover or bulk art assets. Existing physics and eight modes preserved at source level. Static syntax and DOM identifier checks only; visual quality, browser navigation and deployment unverified at commit time.
+
+Accessibility follow-up: explicit main navigation accessible names; corrected landscape-only stage height selector; extended smoke assertions for chapter locking. Browser results remain pending.
