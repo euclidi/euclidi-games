@@ -1,3 +1,0 @@
-# Asset credits
-Three.js reused from ../library/vendor/three.module.min.js; license ../library/vendor/THREE-LICENSE.txt. Planet textures are original procedural raster textures generated at runtime; geometry and synthesized effects are original code. No external art downloaded and no cover art published. REBOUND, PositionBasedDynamics, MoorDyn, PyElastica, Chrono, WaterBall, Spill and Rapier remain candidate reference technologies, not integrated dependencies.
-V0.2: original procedural planet, creature and dial textures; original code-generated observatory and creature geometry. No external art assets or new cover.

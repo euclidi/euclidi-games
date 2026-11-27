@@ -1,1 +1,0 @@
-import assert from 'node:assert/strict';import {createMine} from './core.mjs';const m=createMine();for(let i=0;i<18000;i++)m.step(1/30);assert(m.removed>100);assert(m.miners.every(a=>a.earned>0));assert(m.posts.length>4);assert(m.credits>0);console.log('PASS mining progression');

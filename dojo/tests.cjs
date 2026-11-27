@@ -1,1 +1,0 @@
-const assert=require("node:assert/strict"),p=require("./p2.min.js"),{rig,BASE,tests}=require("./physics.js");const a=rig(p,BASE,tests[0]),b=rig(p,BASE,tests[0]);assert.deepEqual(a.frames,b.frames);assert.equal(a.frames.length,101);assert.ok(a.metrics.finite);assert.ok(a.frames.every(f=>f.length===68));console.log("PASS: deterministic finite replay, 101 frames");

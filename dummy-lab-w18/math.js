@@ -1,6 +1,0 @@
-export const ACTIONS=['wander','jog','backpedal','sidestep','tiptoe','inspect','stretch','scratch head','shrug','wave','inspect hands','hands on hips','dance','crouch','look at player','approach player','retreat','startle','brace','duck','avoid prop','knock on glass','head tilt','hands on knees','jump','exercise','wall push-ups','handstand push-ups','pick up item','carry item','throw item','drop item','stumble','recover'];
-export const clamp=(n,l,h)=>Math.max(l,Math.min(h,n)),smooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t)},angle=(a,b)=>Math.atan2(Math.sin(b-a),Math.cos(b-a));
-export const GLASS=3.15,WRIST=.26,UPPER=.30,LOWER=.26,THIGH=.42,SHIN=.42,PALM_WIDTH=.142,PALM_DEPTH=.078;
-export function triangle(a,b,d){d=clamp(d,Math.abs(a-b)+1e-5,a+b-1e-5);const along=(a*a-b*b+d*d)/(2*d);return {along,height:Math.sqrt(Math.max(0,a*a-along*along)),distance:d};}
-export function inside(x,z,boxes,pad=.21){return boxes.some(b=>Math.abs(x-b.x)<b.w/2+pad&&Math.abs(z-b.z)<b.d/2+pad);}
-export function nextAction(seed){return (Math.imul(seed,1664525)+1013904223)>>>0;}
