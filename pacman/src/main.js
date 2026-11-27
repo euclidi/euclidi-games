@@ -1,7 +1,7 @@
 
 import * as Phaser from './bitmap-runtime.js?v=157';
 import {rows,engine,FRUIT_SITE} from './core.js?v=162';
-import {arcadeAudio as audio} from './arcade-audio.js?v=162';
+import {arcadeAudio as audio} from './arcade-audio.js?v=173';
 import {deathFrame,deathPixels,ghostBodyRow,ghostFrame,ghostMasks,DEATH_HOLD} from './fidelity.js?v=152';
 import {CONTROL_MODES,nextControl,controlVector,drawStick} from './touch-controls.js?v=144';
 import {SETTINGS,normalizeSettings,scoreKey,settingText} from './settings.js?v=146';
