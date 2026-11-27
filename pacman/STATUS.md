@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.5.1.
+**Lifecycle:** Active — Git revision 1.5.2.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.5.2 — arcade-style ghost motion
+
+Removed all lateral deformation, body offsets, per-ghost phase shifts and distance-driven skirt motion. Two hand-rasterized symmetric silhouettes alternate every eight active simulation ticks, with fixed face and upper body. Reference: [masonicGIT/pacman sprite geometry](https://github.com/masonicGIT/pacman/blob/master/src/sprites.js) and [animation cadence](https://github.com/masonicGIT/pacman/blob/master/src/Ghost.js). These are independently authored bitmap masks, not an original-ROM extraction. Symmetry, center, height, fixed body, frame timing and freeze tests plus 36,000 simulation ticks passed. Live visual parity remains unverified.
 
 ## Revision 1.5.1 — unified fabric sway
 

@@ -1,8 +1,8 @@
 
 import * as Phaser from './bitmap-runtime.js';
-import {rows,engine,FRUIT_SITE} from './core.js?v=148';
+import {rows,engine,FRUIT_SITE} from './core.js?v=152';
 import {arcadeAudio as audio} from './arcade-audio.js';
-import {deathFrame,deathPixels,ghostBodyRow,ghostFrame,ghostMasks,ghostShift,DEATH_HOLD} from './fidelity.js?v=151';
+import {deathFrame,deathPixels,ghostBodyRow,ghostFrame,ghostMasks,DEATH_HOLD} from './fidelity.js?v=152';
 import {CONTROL_MODES,nextControl,controlVector,drawStick} from './touch-controls.js?v=144';
 import {SETTINGS,normalizeSettings,scoreKey,settingText} from './settings.js?v=146';
 import {choosePad,createGInput,vibratePad} from './ginput.js?v=146';
@@ -22,8 +22,8 @@ function textures(sc){
 tex(sc,'maze',224,248,c=>{c.fillStyle='#000';c.fillRect(0,0,224,248);const wall=(x,y)=>x>=0&&x<28&&y>=0&&y<31&&rows[y][x]==='#';const ext=(x,y)=>y>=9&&y<=19&&y!==14&&(x<5||x>22)&&!wall(x,y);for(let y=0;y<248;y++)for(let x=0;x<224;x++){let tx=x>>3,ty=y>>3;if(!wall(tx,ty))continue;let d=999,e=999;for(let yy=ty-1;yy<=ty+1;yy++)for(let xx=tx-1;xx<=tx+1;xx++){if(wall(xx,yy))continue;let dx=Math.max(xx*8-x,0,x-(xx*8+7)),dy=Math.max(yy*8-y,0,y-(yy*8+7)),q=dx*dx+dy*dy;if(xx<0||xx>=28||yy<0||yy>=31||ext(xx,yy))e=Math.min(e,q);else d=Math.min(d,q)}if(d>=16&&d<26||e>=1&&e<5)p(c,x,y,blue)}c.fillStyle='#ffb8de';c.fillRect(104,12*8+3,16,2)});
 for(let d=0;d<4;d++)for(let f=0;f<3;f++)tex(sc,'p'+d+f,16,16,c=>{let widths=[6,10,12,12,14,14,14,14,14,14,12,12,10,6];for(let y=0;y<14;y++)for(let x=0;x<14;x++){if(x<(14-widths[y])/2||x>=(14+widths[y])/2)continue;let a=x-6.5,b=y-6.5,k=Math.atan2(b,a)-[-Math.PI/2,Math.PI,Math.PI/2,0][d];k=Math.atan2(Math.sin(k),Math.cos(k));if(f===0||Math.abs(k)>[0,.32,.73][f])p(c,x+1,y+1,yellow)}});
 for(let id=0;id<7;id++)for(let d=0;d<4;d++)for(let f=0;f<ghostMasks.length;f++)tex(sc,'g'+id+d+f,16,16,c=>{
- // Face pixels follow the exact same material-space deformation as the cloth.
- const ink=(x,y,col)=>p(c,x+(id===5?0:ghostShift(y,f)),y,col);
+ // Face stays fixed relative to the centered ghost silhouette.
+ const ink=(x,y,col)=>p(c,x,y,col);
  if(id!==5){for(let y=0;y<16;y++){let row=ghostBodyRow(y,f);for(let x=0;x<16;x++)if(row[x]==='1')p(c,x,y,id===4?'#2121ff':id===6?'#fff':colors[id])}}
  if(id===4||id===6){let col=id===4?peach:'#ff0000';for(let a of [4,10]){ink(a,6,col);ink(a+1,6,col);ink(a,7,col);ink(a+1,7,col)}for(let x=3;x<13;x++)ink(x,10+((x>>1)&1),col);return}
  let dx=[0,-1,0,1][d],dy=[-1,0,1,0][d],shift=d===1?-1:d===3?1:0;
@@ -43,7 +43,7 @@ function drawTitle(sc,time){if(!settings.motion)time=0;
  centered(c,'MAZE ARCADE',23,peach);centered(c,'PAC-MAN',45,'#b24600',3);largeWord(c,'PAC-MAN',Math.floor((224-53*3)/2),42,3,yellow);
  centered(c,'1980',72,'#fff');
  const sprite=(k,x,y,size=16)=>c.drawImage(sc.textures.get(k).getSourceImage(),x,y,size,size);
- for(let i=0;i<4;i++)sprite('g'+i+'3'+ghostFrame(time*.009,i*.25),28+i*45,82,32);
+ for(let i=0;i<4;i++)sprite('g'+i+'3'+ghostFrame(Math.floor(time*60/1000)),28+i*45,82,32);
  ['BLINKY','PINKY','INKY','CLYDE'].forEach((n,i)=>{let xx=44+i*45-Math.floor((n.length*6-2)/2); // compact bitmap names
  for(let j=0;j<n.length;j++){let g=font[n[j]];for(let y=0;y<7;y++){let a=parseInt(g.slice(y*2,y*2+2),16);for(let x=0;x<5;x++)if(a&(16>>x))p(c,xx+j*6+x,117+y,colors[i])}}});
  c.fillStyle=blue;c.fillRect(24,136,176,1);
@@ -81,7 +81,7 @@ if(state.edge.menu||state.edge.back){openMenu();return}if(state.edge.start){if(r
 if(!paused){acc+=Math.min(delta,100);while(acc>=1000/60){run.tick();acc-=1000/60}}let s=run.s;if(this.prev!==s.pellets)this.rebuild();for(let [k,v] of this.dots){if(!s.pellets.has(k)){v.destroy();this.dots.delete(k)}else if(s.pellets.get(k)==='o')v.setVisible(!settings.blink||(s.frame/12|0)%2===0)}
 let actor=(a,i,key,visible)=>{let [x,y]=run.position(a),px=Math.round((x+.5)*8),py=Math.round(y*8+28);let pair=this.actors[i];pair[0].setTexture(key).setPosition(px,py).setVisible(visible);let other=px<8?px+224:px>216?px-224:null;pair[1].setTexture(key).setPosition(other??0,py).setVisible(visible&&a.y===14&&other!==null)};
 let df=s.phase==='dead'?deathFrame(s.timer):-1;actor(s.player,0,df>=0?'death'+df:'p'+s.player.d+(s.phase==='dead'?0:s.player.p===0?0:[0,1,2,1][s.frame/3%4|0]),s.phase!=='intermission'||(s.frame/8|0)%2===0);
-s.ghosts.forEach((g,i)=>{let id=g.state==='eyes'?5:g.state==='fright'?settings.blink&&s.fright<2&&(s.frame/6|0)%2===0?6:4:i;actor(g,i+1,'g'+id+g.d+ghostFrame(g.skirtTravel,i*.25),(s.phase!=='dead'||df<0)&&s.phase!=='intermission' )});this.fruit.setTexture('fruit'+Math.min(5,s.level-1)).setVisible(s.fruit>0&&s.phase==='play');
+s.ghosts.forEach((g,i)=>{let id=g.state==='eyes'?5:g.state==='fright'?settings.blink&&s.fright<2&&(s.frame/6|0)%2===0?6:4:i;actor(g,i+1,'g'+id+g.d+ghostFrame(s.ghostAnimTicks),(s.phase!=='dead'||df<0)&&s.phase!=='intermission' )});this.fruit.setTexture('fruit'+Math.min(5,s.level-1)).setVisible(s.fruit>0&&s.phase==='play');
 let high=Math.max(Number(read(scoreKey(mode,activeRules),0)),s.score);if(high>Number(read(scoreKey(mode,activeRules),0)))write(scoreKey(mode,activeRules),high);let msg=paused?'PAUSED':s.phase==='ready'?'READY!':s.phase==='over'?s.lives===0?'GAME OVER':'PRESS START':s.phase==='clear'?'STAGE CLEAR':s.phase==='intermission'?'INTERMISSION':'';let fruitPopup=s.phase==='play'&&s.fruitAwardTime>0?s.fruitAward:0;let h=[s.score,high,s.lives,s.level,msg,fruitPopup].join('|');if(h!==this.lastHud){this.lastHud=h;let c=this.hud.context;c.clearRect(0,0,224,288);word(c,'1UP',24,0);word(c,'HIGH SCORE',72,0);word(c,String(s.score).padStart(5,' '),8,8);word(c,String(high).padStart(5,' '),88,8);for(let i=0;i<Math.min(6,Math.max(0,s.lives-1));i++)c.drawImage(this.textures.get('p12').getSourceImage(),16+i*16,272);for(let i=0;i<Math.min(7,s.level);i++)c.drawImage(this.textures.get('fruit'+Math.max(0,Math.min(5,s.level-1-i))).getSourceImage(),200-i*16,272);if(fruitPopup){let t=String(fruitPopup),x=Math.round((FRUIT_SITE.x+.5)*8-(t.length*8-3)/2);word(c,t,x,FRUIT_SITE.y*8+25,'#ffb8ff')}if(msg){let x=Math.floor((224-(msg.length*8-3))/2);c.fillStyle='#000';c.fillRect(x-1,164,msg.length*8,8);word(c,msg,x,164,msg==='GAME OVER'?'#ff0000':yellow)}this.hud.refresh()}siren(s);
 }}
 $('start').onclick=start;$('pause').onclick=pause;$('mode').onclick=()=>cycleMode();$('menu').onclick=openMenu;$('resume').onclick=resumeGame;$('sound').onclick=()=>{muted=!muted;write('maze-mute',muted?'1':'0');audio.setMuted(muted);if(!muted)unlock();labels()};$('screen').classList.toggle('crt',read('maze-crt','0')==='1');$('crt').onclick=()=>{let a=$('screen').classList.toggle('crt');write('maze-crt',a?'1':'0');labels()};document.addEventListener('visibilitychange',()=>{if(settings.autoPause&&document.hidden&&run?.s.phase==='play'&&!paused)pause()});
