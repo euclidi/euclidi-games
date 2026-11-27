@@ -91,7 +91,7 @@ function occupancy(w){
  function add(c){const k=cellKey(c.x,c.z);if(!bins.has(k))bins.set(k,new Set());bins.get(k).add(c);pos.set(c,k);}
  function remove(c){const k=pos.get(c);if(k!==undefined){bins.get(k)?.delete(c);pos.delete(c);}}
  function free(c,x,z){const ix=Math.floor(x/2),iz=Math.floor(z/2);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)for(const p of bins.get((ix+i)+","+(iz+j))||[])if(p!==c&&Math.hypot(p.x-x,p.z-z)<PERSON)return false;return true;}
- for(const c of w.citizens)if(walking(c))add(c);
+ for(const c of w.citizens)if(walking(c)&&!walkState.get(c)?.departing)add(c);
  return{add,remove,free};
 }
 function offRoad(x,z){return Math.abs(x-nearestGrid(x))>=roadHalf(nearestGrid(x))+.42&&Math.abs(z-nearestGrid(z))>=roadHalf(nearestGrid(z))+.42;}
@@ -107,7 +107,7 @@ function moveCrowd(w,dt,api){
   const target=destination(w,c);if(!target)continue;
   if(c.inside===c.goal&&!c.ride&&!c.route.length){st.cross=null;continue;}
   if(!c.route.length&&!st.cross&&c.inside>=0&&!st.departing)continue;
-  if(st.departing||c.inside>=0){if(!occ.free(c,c.x,c.z)){c.inside=st.origin??c.inside;continue;}c.inside=-1;st.departing=false;occ.add(c);}
+  if(st.departing||c.inside>=0){if(!occ.free(c,c.x,c.z)){c.inside=st.origin>=0?st.origin:c.inside;continue;}c.inside=-1;st.departing=false;occ.add(c);}
   const key=target.x+","+target.z;
   if(st.ref!==c.route||st.key!==key||!c.route.length){
    if(st.cross){const end=st.cross.b;c.route=[{x:end.x,z:end.z,cross:st.cross},...pedestrianPath(end,target)];}
@@ -208,9 +208,10 @@ export function prepare(w){
  return w;
 }
 export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%l.nodes.length]}
-export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.dwell=lines[b.line].stops[b.atStop].active?1.8:0;b.progress=b.dwell?STOP:0;}
+export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.pendingStop=lines[b.line].stops[b.atStop].active;b.dwell=0;b.progress=0;}
 export function gap(a,b){return a?.bus||b?.bus?10.5:5.8}
 export function signal(x,z,time,dir){
+ if(phaseLocks.has(nodeKey(x,z)))return -1;
  const arterialX=x===0||Math.abs(x)===210,arterialZ=z===0||Math.abs(z)===210;
  const cycle=((time+(x/70+z/70+6)*.85)%8+8)%8;
  const green=arterialX&&!arterialZ?5:arterialZ&&!arterialX?3:4;
@@ -254,12 +255,13 @@ export function before(w,dt,api){
  for(const b of w.cars){const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
  for(const b of w.cars)if(b.bus){b.dwell=Math.max(0,b.dwell-dt);b.speed=b.dwell>0?0:Math.min(lines[b.line].speed,roadSpeed(b.x,b.z,b.dir)+2)*(w.rain?.82:1);
  b.passengers=b.passengers.filter(id=>{const c=w.citizens[id];if(!c||id===w.possessed||c.ride?.bus!==b.id){if(c?.ride?.bus===b.id)delete c.ride;return false}return true;});}
- for(const b of w.cars)avoidCar(b,w,dt);
+ for(const b of w.cars){if(b.bus&&b.pendingStop)b.speed=Math.min(b.speed,Math.max(0,(STOP-b.progress)/dt));avoidCar(b,w,dt);}
  // Original simulation remains responsible for intent, economy and needs, not motion.
  for(const c of w.citizens){if(c.id===w.possessed)continue;const st=walkState.get(c);st.speed=c.speed;st.origin=c.inside;c.speed=0;if(c.ride?.phase==="waiting"||c.ride?.phase==="riding")c.route=[{x:c.x,z:c.z}];}
 }
 export function after(w,dt,api){
  const buses=w.cars.filter(b=>b.bus);
+ for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;}
  for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st)st.cross=null;}
  for(const c of w.citizens){
  if(c.id===w.possessed){delete c.ride;continue}
@@ -309,7 +311,7 @@ export function panel(w){
 }
 export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+lines[r.line].name+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
 const signalGroups=new Map();
-export function updateSignals(time){for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;}}
+export function updateSignals(time){for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
 export function drawRoads(parent,{box,cyl,merge,mat,group}){
  const asphalt=mat(0x373c3b),local=mat(0x454744),edgeMat=mat(0x76786c),white=mat(0xb9b7a2),yellow=mat(0xc6a662),dark=mat(0x28322f),glass=mat(0x576b65),steel=mat(0x68756d),green=mat(0x75946f),red=mat(0xa74c3d);
  const kind=v=>v===0?"avenue":Math.abs(v)===210?"ring":Math.abs(v)===140?"collector":"local";
@@ -324,10 +326,10 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  }
  for(let z=-210;z<=210;z+=70){box(parent,13,.03,13,v,.006,z,asphalt);
  for(const s of [-1,1]){for(let k=-roadHalf(v)+.5;k<roadHalf(v);k+=1.2)box(parent,.58,.026,2,v+k,.043,z+s*SIDE,white);for(let k=-roadHalf(z)+.5;k<roadHalf(z);k+=1.2)box(parent,2,.026,.58,v+s*SIDE,.043,z+k,white);}
- const ax=v===0||Math.abs(v)===210,az=z===0||Math.abs(z)===210,key=(v+z)+":"+(ax&&!az?5:az&&!ax?3:4);
- let sig=signalGroups.get(key);if(!sig){sig={x:v,z,phases:[group(),group()]};signalGroups.set(key,sig);parent.add(...sig.phases);}
+ const ax=v===0||Math.abs(v)===210,az=z===0||Math.abs(z)===210,key=nodeKey(v,z);
+ let sig=signalGroups.get(key);if(!sig){sig={x:v,z,phases:[group(),group(),group()]};signalGroups.set(key,sig);parent.add(...sig.phases);}
  for(const approach of [0,1]){const sx=v+(approach===0?7:-7),sz=z+(approach===0?7:-7);cyl(parent,.11,.14,4.4,sx,2.2,sz,steel);box(parent,approach===0?.55:.42,1.35,approach===0?.42:.55,sx,4.25,sz,dark);
- for(let phase=0;phase<2;phase++){const go=phase===approach,g=sig.phases[phase];
+ for(let phase=0;phase<3;phase++){const go=phase===approach,g=sig.phases[phase];
  for(const side of [-1,1]){const xx=sx+(approach===1?side*.23:0),zz=sz+(approach===0?side*.23:0);
  box(g,approach===0?.28:.08,.28,approach===0?.08:.28,xx,go?4:4.6,zz,go?green:red);}}}
 
