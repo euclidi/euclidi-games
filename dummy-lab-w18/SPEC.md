@@ -1,4 +1,4 @@
-# Dummy Lab — W1.8 — Development specification
+# Dummy Lab — W1.9 — Development specification
 
 **Revision:** documentation baseline, 2026-11-26. **Lifecycle:** Active — current catalog release.
 
@@ -13,6 +13,8 @@ Observe an autonomous articulated humanoid from a furnished laboratory, inspect 
 - Autonomous behavior with independent gaze, movement, reactions and diverse activities rather than repetitive scripted loops.
 - Articulated anatomy with aligned hands, limbs and feet; believable contact, weight, falls and transitions; accessible slow motion and diagnostics.
 - Furnished observation room, chamber glass, computers, chairs and props; controlled exposure, shadows, first-person and free camera, input and sound.
+
+Neutral posture must use mirrored anatomical thumb orientation, relaxed finger cascade, inward-facing palms, lightly flexed knees and stable foot contacts. Explicit contact poses override the neutral wrist frame.
 
 ## Technology and assets
 

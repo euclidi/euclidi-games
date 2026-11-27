@@ -1,8 +1,8 @@
-# Dummy Lab — W1.8
+# Dummy Lab — W1.9
 
 Observe an autonomous articulated humanoid from a furnished laboratory, inspect its behavior and interact with it from the observation area.
 
-**Status:** Active — current catalog release.
+**Status:** W1.9 stance revision; browser and visual verification pending. Existing URL retained.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/dummy-lab-w18/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 

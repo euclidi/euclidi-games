@@ -1,27 +1,15 @@
-# Dummy Lab — W1.8 — Current status
+# Dummy Lab — W1.9 — Current status
 
-**Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
+Neutral anatomy and stance revision (2026-11-27). W1.8 URL retained as the established catalog route; previous source is available in Git history. The cover is not changed.
 
-**Lifecycle:** Active — current catalog release.
+## Changes
 
-## Implemented / source-inspected
+- Correct radial thumb orientation and index-to-little finger ordering on both hands.
+- Relaxed progressive finger flexion, thumb opposition, forearm pronation, subtle wrist deviation and gait-dependent arm swing.
+- Raised standing pelvis, staggered feet, slight outward foot headings, asymmetric loading and subdued torso compensation. Spawn in inspection stance before autonomous wandering.
+- IK forearm roll follows palm orientation instead of forcing a large twist into the wrist; explicit contact targets retained.
+- Observer pose and eye height updated. All 28 existing action entries remain.
 
-28 action entries, proximity/noise reactions, articulated rig and IK, furnished observation room, adjustable exposure without player headlamp, first-person/free camera, action preview and session logging.
+## Verification limits
 
-## Validation evidence
-
-W1.8 Chromium startup and Actions panel passed; five shared math tests passed; shared math.js matched W1.7 in the catalog audit.
-
-- [Catalog browser and logic audit](https://github.com/euclidi/euclidi-games/actions/runs/45913066891)
-
-Tests are limited to their stated coverage. Browser startup is not full gameplay certification; CI results refer to the tested commit, not future changes.
-
-## Outstanding and unverified
-
-Body remains kinematic; environment uses Rapier but powered balancing, physical falls and contact-driven actions are not certified. Visual hand alignment and room fidelity still need human review; mobile performance unmeasured.
-
-## Next work
-
-Audit hand/limb alignment, planted steps, camera comfort, room materials and lighting against player feedback.
-
-[Roadmap](ROADMAP.md) · [Specification](SPEC.md)
+Source anchors and analytical geometry checks passed (see pose-audit.mjs). These are not a live browser test, collision certification, or proof of natural animation. W1.8 startup evidence does not certify W1.9. Browser rendering, contact regression, transition smoothness and user visual approval remain outstanding. Body remains kinematic; no powered balancing or fall simulation added.
