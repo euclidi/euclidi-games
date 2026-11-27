@@ -30,3 +30,7 @@ Serve the repository with a local HTTP server from its root (for example `python
 ## Limitations
 
 The current source implements six bus routes, 18 buses, 32 architecture variants, road-dependent vehicle speeds and one-transfer journeys. Browser validation is pending. Irregular streets, rail, deeper social systems, interior fidelity, full Recast integration, environmental integration and measured population performance require validation or development. The patch directory is not a playable release.
+
+### Street infrastructure and underground transit
+
+The city includes street-name and speed signs, all-way-stop junctions, crossing posts, utility distribution poles with sagging conductors, transformers and cabinets, streetlights, hydrants, benches, cycle racks, bins, storm drainage, manholes, bus shelters and arterial bus pullouts. The Transit Control panel includes infrastructure inventory, vehicle wait reasons, two metro corridors, nine entrances, four trains, train positions, rider counts and interchange journeys. Metro trips are simulated underground; an explorable underground scene is not yet implemented.
