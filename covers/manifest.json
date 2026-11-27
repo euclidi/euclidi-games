@@ -1,0 +1,178 @@
+{
+  "backyard astronaut": {
+    "file": "covers/backyard-astronaut-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1280,
+      800
+    ],
+    "route": "./backyard-astronaut/v2/",
+    "selector": "canvas",
+    "sha256": "8138de799d2fb45e0b86225dc0e292479cfed4dec4efa1eeda00283fa7846553",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "brick breaker": {
+    "file": "covers/brick-breaker-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1030,
+      580
+    ],
+    "route": "./brick-breaker/?v=0.3",
+    "selector": "#field",
+    "sha256": "efc0f6148a2b05cab0d2a85d0caff864ebb7bc5e5013fba1edd0bb3a27664268",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "dojo x": {
+    "file": "covers/dojo-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1096,
+      572
+    ],
+    "route": "./dojo/",
+    "selector": "#c",
+    "sha256": "640a8133f0e4f8954ca5bb6e53d468e55bc6d79ecf9687accfbcf9176eb3d198",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "dummy lab": {
+    "file": "covers/dummy-lab-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1280,
+      800
+    ],
+    "route": "./dummy-lab-w18/",
+    "selector": "canvas",
+    "sha256": "d8b24dc3ee6ddd5ddbfe8c4f2639a09767483e6885f8e3450ff3a57b50c88902",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "night watch shooter fps": {
+    "file": "covers/night-watch-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1264,
+      790
+    ],
+    "route": "./night-watch/",
+    "selector": "#game",
+    "sha256": "ab8ca496e31e1d1a2fbd190a936ac113874ec1fb11fc7ae90f1290f1328160d2",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "pac-man": {
+    "file": "covers/pacman-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      224,
+      288
+    ],
+    "route": "./pacman/",
+    "selector": "#board canvas",
+    "sha256": "899edc00affb5a4d585a2f2fc6e9d96546f7899f7b38cb26fada906385e05b32",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "ricochet": {
+    "file": "covers/ricochet-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      766,
+      575
+    ],
+    "route": "./ricochet/?v=0.4.3",
+    "selector": "#screen canvas",
+    "sha256": "1ae1935ab025f215622065a23f6ec7d28f48bc502765fafc89c909f0de49b5d2",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "sanctuary": {
+    "file": "covers/sanctuary-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1280,
+      800
+    ],
+    "route": "./sanctuary/",
+    "selector": "#view",
+    "sha256": "40b76f07916851be97e66cc524c0bdb35f3a671252dd7be8fd101f6e6b2cb83c",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "sector zero": {
+    "file": "covers/sector-zero-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1280,
+      800
+    ],
+    "route": "./sector-zero/",
+    "selector": "#game canvas",
+    "sha256": "27a0799f676e8b75686a153534006fc394891712b491fde305dc325ecd6d3ca6",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "snake lcd organic": {
+    "file": "covers/snake-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1166,
+      764
+    ],
+    "route": "./snake/?v=0.1.7",
+    "selector": "#device",
+    "sha256": "08100d1d9c9575d42ec5cd559b53b30d33c131b1fe13f6e28c444b74cb1d9702",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
+  "the meeting seam": {
+    "file": "covers/meeting-seam-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      1152,
+      492
+    ],
+    "route": "./meeting-seam/",
+    "selector": "#cave",
+    "sha256": "3cf2549b01e7ddf7abc10c4f26b0dd2fb9d0f20525683650eea1f0ef8e101746",
+    "source": "dacbf4072eb3e12a43796d61cbef80fc2e58fb26",
+    "viewport": [
+      1280,
+      800
+    ]
+  }
+}
