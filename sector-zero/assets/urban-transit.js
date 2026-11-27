@@ -54,6 +54,56 @@ function tree(goal){
  for(const [dx,dz] of D){const a=x+dx,b=z+dz;if(a<0||a>13||b<0||b>13)continue;const k=b*14+a,step=Math.abs(coord[x]-coord[a])+Math.abs(coord[z]-coord[b]);const c=cost[v]+step+(step===SIDE*2?9:0)+Math.min(36,cornerLoad[v]*1.6);if(c<cost[k]){cost[k]=c;next[k]=v;}}}
  const result={cost,next};trees.set(target,result);return result;
 }
+// Parcel-level visibility routing with clearance around actual building and fixture footprints.
+const parcelCache=new Map();
+function parcel(p){
+ const x=Math.floor(p.x/70)*70,z=Math.floor(p.z/70)*70;
+ return {x0:x+roadHalf(x)+.43,x1:x+70-roadHalf(x+70)-.43,z0:z+roadHalf(z)+.43,z1:z+70-roadHalf(z+70)-.43,key:x+","+z};
+}
+function segmentHits(a,b,r){
+ let low=0,high=1;
+ for(const [p,d,min,max] of [[a.x,b.x-a.x,r.x0,r.x1],[a.z,b.z-a.z,r.z0,r.z1]]){
+  if(Math.abs(d)<1e-9){if(p<=min||p>=max)return false;continue;}
+  const t1=(min-p)/d,t2=(max-p)/d;low=Math.max(low,Math.min(t1,t2));high=Math.min(high,Math.max(t1,t2));if(high-low<1e-7)return false;
+ }
+ return high-low>1e-7;
+}
+function parcelData(bounds){
+ const stamp=solids.length+":"+streetSolids.length,old=parcelCache.get(bounds.key);
+ if(old?.stamp===stamp)return old;
+ const rects=[...solids,...streetSolids].map(r=>({x0:r.x-r.w/2-.58,x1:r.x+r.w/2+.58,z0:r.z-r.l/2-.58,z1:r.z+r.l/2+.58})).filter(r=>r.x0<bounds.x1&&r.x1>bounds.x0&&r.z0<bounds.z1&&r.z1>bounds.z0);
+ const inside=p=>p.x>=bounds.x0&&p.x<=bounds.x1&&p.z>=bounds.z0&&p.z<=bounds.z1&&!rects.some(r=>p.x>r.x0&&p.x<r.x1&&p.z>r.z0&&p.z<r.z1);
+ const clear=(a,b)=>inside(a)&&inside(b)&&!rects.some(r=>segmentHits(a,b,r));
+ const nodes=[];
+ for(const r of rects)for(const x of [r.x0-.035,r.x1+.035])for(const z of [r.z0-.035,r.z1+.035]){
+  const p={x:clamp(x,bounds.x0,bounds.x1),z:clamp(z,bounds.z0,bounds.z1)};
+  if(inside(p)&&!nodes.some(q=>dist(p,q)<.05))nodes.push(p);
+ }
+ for(const x of [bounds.x0,bounds.x1])for(const z of [bounds.z0,bounds.z1])if(inside({x,z}))nodes.push({x,z});
+ const adj=nodes.map(()=>[]);
+ for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++)if(clear(nodes[i],nodes[j])){const d=Math.hypot(nodes[i].x-nodes[j].x,nodes[i].z-nodes[j].z);adj[i].push([j,d]);adj[j].push([i,d]);}
+ const data={stamp,inside,clear,nodes,adj};parcelCache.set(bounds.key,data);return data;
+}
+function localDetour(a,b){
+ const bounds=parcel(a);if(parcel(b).key!==bounds.key)return [b];
+ const {inside,clear,nodes,adj}=parcelData(bounds);
+ if(!inside(a)||!inside(b)||clear(a,b))return [b];
+ const n=nodes.length,start=n,goal=n+1,points=[...nodes,a,b],cost=Array(n+2).fill(Infinity),prev=Array(n+2).fill(-1),done=new Uint8Array(n+2);
+ const distance=(i,j)=>Math.hypot(points[i].x-points[j].x,points[i].z-points[j].z);
+ const endLinks=nodes.map(p=>clear(p,b));cost[start]=0;
+ for(let step=0;step<n+2;step++){
+  let i=-1;for(let j=0;j<n+2;j++)if(!done[j]&&Number.isFinite(cost[j])&&(i<0||cost[j]+distance(j,goal)<cost[i]+distance(i,goal)))i=j;
+  if(i<0)break;if(i===goal){const out=[];for(let k=goal;k!==start;k=prev[k])out.push({...points[k],precise:true});return out.reverse();}
+  done[i]=1;const links=i===start?nodes.flatMap((p,j)=>clear(a,p)?[[j,distance(start,j)]]:[]):[...adj[i],...(endLinks[i]?[[goal,distance(i,goal)]]:[])];
+  for(const [j,d] of links)if(cost[i]+d<cost[j]){cost[j]=cost[i]+d;prev[j]=i;}
+ }
+ return [b]; // No teleportation if a parcel is physically disconnected.
+}
+function routeAroundParcels(from,route){
+ const out=[];let last=from;
+ for(const p of route){if(p.cross)out.push(p);else out.push(...localDetour(last,p));last=p;}
+ return out;
+}
 function pedestrianPath(from,to){
  let best=null;
  for(const a of cornerOptions(from))for(const b of cornerOptions(to)){const t=tree(b.corner),start=a.corner.iz*14+a.corner.ix,cost=a.cost+b.cost+t.cost[start];if(!best||cost<best.cost)best={a,b,t,start,cost};}
@@ -73,7 +123,7 @@ function pedestrianPath(from,to){
   }else push(p,cross);
   prev=p;
  }
- push({x:to.x,z:to.z});return out;
+ push({x:to.x,z:to.z});return routeAroundParcels(from,out);
 }
 function busBay(b){return b.bus&&roadRank(b.dir%2===0?b.x:b.z)===0;}
 function bayOffset(b,progress){if(!b.bay)return 0;return 2.7*Math.min(clamp((progress-14)/6,0,1),clamp((28-progress)/8,0,1));}
@@ -166,7 +216,7 @@ function moveCrowd(w,dt,api){
   const target=destination(w,c);if(!target)continue;
   if(c.inside===c.goal&&!c.ride&&!c.route.length){st.cross=null;st.path=null;c.walkingNow=false;continue;}
   if(!c.route.length&&!st.cross&&c.inside>=0&&!st.departing){c.walkingNow=false;continue;}
-  if(st.departing||c.inside>=0){if(!occ.free(c,c.x,c.z)){c.inside=st.origin>=0?st.origin:c.inside;c.walkingNow=false;continue;}c.inside=-1;st.departing=false;occ.add(c);}
+  if(st.departing||c.inside>=0){const origin=st.origin>=0?st.origin:c.inside,door=w.buildings[origin]?.door;if(door){c.x=door.x;c.z=door.z;}if(!occ.free(c,c.x,c.z)||cars.some(r=>intersects(c,r,.45))){c.inside=origin;c.walkingNow=false;c.walkStatus="DOOR QUEUE";continue;}c.inside=-1;st.departing=false;st.path=null;occ.add(c);}
   const key=target.x+","+target.z;
   if(st.key!==key||!st.path||!st.path.length||(!st.cross&&(st.stall||0)>6&&w.time-(st.replanAt||0)>12+c.id%11)){st.replanAt=w.time;
    if(st.cross){const end=st.cross.b;c.route=[{x:end.x,z:end.z,cross:st.cross},...pedestrianPath(end,target)];}
@@ -176,7 +226,7 @@ function moveCrowd(w,dt,api){
   let budget=Math.min(1.55,c.speed*dt),loops=0;c.walkStatus="";const oldX=c.x,oldZ=c.z;
   while(budget>.001&&c.route.length&&loops++<8){
    const p=c.route[0],dx=p.x-c.x,dz=p.z-c.z,len=Math.hypot(dx,dz);
-   const tolerance=p.cross?0.28:c.route[1]?.cross?0.65:c.route.length===1?0.08:1.55;
+   const tolerance=c.route.length===1?0.08:p.precise||c.route[1]?.precise?0.18:p.cross?0.28:c.route[1]?.cross?0.35:1.55;
    if(len<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;continue;}
    if(p.cross&&!st.cross){
     if(signal(p.cross.x,p.cross.z,w.time,0)===p.cross.axis||!crossClear(w,p.cross)||!occ.free(c,p.x,p.z)){c.walkStatus="WAITING FOR CROSSWALK";break;}
@@ -200,7 +250,7 @@ function moveCrowd(w,dt,api){
    if(Math.hypot(x-p.x,z-p.z)<len-.05)st.stall=Math.max(0,(st.stall||0)-dt);occ.remove(c);c.heading=Math.atan2(x-c.x,z-c.z);c.x=x;c.z=z;occ.add(c);budget-=step;
    if(Math.hypot(p.x-c.x,p.z-c.z)<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;}
   }
-  c.walkingNow=Math.hypot(c.x-oldX,c.z-oldZ)>.025;
+  c.walkingNow=Math.hypot(c.x-oldX,c.z-oldZ)>.025;c.walkDistance=(c.walkDistance||0)+Math.hypot(c.x-oldX,c.z-oldZ);
   if(!c.route.length&&!c.ride&&Math.hypot(c.x-target.x,c.z-target.z)<.1){occ.remove(c);c.inside=c.goal;st.cross=null;}
  }
 }
@@ -499,7 +549,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
  const streetName=(v,axis)=>v===0?(axis===0?"CENTRAL AVE":"UNION BLVD"):Math.abs(v)===210?(axis===0?(v<0?"WEST":"EAST"):(v<0?"NORTH":"SOUTH"))+" RING":(axis===0?"AV ":"ST ")+String(v/70+4).padStart(2,"0");
  const oriented=(axis,v,p,side,offset)=>axis===0?{x:v+side*offset,z:p}:{x:p,z:v+side*offset};
  function bench(axis,x,z){
-  const h=axis===1;for(let j=0;j<4;j++)B(h?2.35:.12,.11,h?.12:2.35,x+(h?0:(j-1.5)*.14),.48,z+(h?(j-1.5)*.14:0),m.wood);
+  const h=axis===0;for(let j=0;j<4;j++)B(h?2.35:.12,.11,h?.12:2.35,x+(h?0:(j-1.5)*.14),.48,z+(h?(j-1.5)*.14:0),m.wood);
   for(const a of [-.85,.85]){B(h?.11:.5,.46,h?.5:.11,x+(h?a:0),.25,z+(h?0:a),m.iron);B(h?.11:.1,.48,h?.1:.11,x+(h?a:-.22),.72,z+(h?-.22:a),m.iron);}
   for(const y of [.68,.85,1.02])B(h?2.35:.09,.12,h?.09:2.35,x+(h?0:-.23),y,z+(h?-.23:0),m.wood);
   footprint(x,z,h?2.4:.65,h?.65:2.4);count("benches");
@@ -643,7 +693,9 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  for(const a of [-2.6,2.6]){box(parent,.13,2.6,.13,x+d[0]*a-d[1]*.27,1.4,z+d[1]*a+d[0]*.27,steel);}
  box(parent,h?5.2:.12,1.65,h?.12:5.2,x-d[1]*.28,1.65,z+d[0]*.28,glass);
  box(parent,h?3.7:.38,.16,h?.38:3.7,x,.65,z,dark);for(const a of [-1.35,1.35])box(parent,.14,.55,.14,x+d[0]*a,.34,z+d[1]*a,steel);
- const px=x+d[0]*3.2,pz=z+d[1]*3.2;cyl(parent,.08,.1,3.2,px,1.6,pz,steel);
+ for(const a of [-2.6,2.6])streetSolids.push({x:x+d[0]*a-d[1]*.27,z:z+d[1]*a+d[0]*.27,w:.13,l:.13});
+ streetSolids.push({x:x-d[1]*.28,z:z+d[0]*.28,w:h?5.2:.12,l:h?.12:5.2},{x,z,w:h?3.7:.38,l:h?.38:3.7});
+ const px=x+d[0]*3.2,pz=z+d[1]*3.2;cyl(parent,.08,.1,3.2,px,1.6,pz,steel);streetSolids.push({x:px,z:pz,w:.2,l:.2});
  box(parent,h?.95:.14,.78,h?.14:.95,px,3.05,pz,color);
  const names=lines.filter(l=>l.stops.some(q=>q.active&&q.x===p.x&&q.z===p.z)).map(l=>l.name[0]).join(" ");const face=p.dir%2===0?1:0,normal=D[face];streetLabels.push({text:"BUS "+names,x:px+normal[0]*.08,y:3.05,z:pz+normal[1]*.08,w:.86,h:.64,dir:face,bg:"#334c50",fg:"#f2e9d3"});inventory["bus shelters"]=(inventory["bus shelters"]||0)+1;
  // Paint the stop zone along the curb rather than over the moving lane.
@@ -750,7 +802,11 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  // different frontages, and open structures use their actual canopy fascia.
  const frontage=walls.slice().sort((p,q)=>(p.z-p.l/2)-(q.z-q.l/2)||Math.abs(p.x-x)-Math.abs(q.x-x))[0];
  const front=frontage.z-frontage.l/2;
- if(!["Covered market","Duplex courts","Row residences","Night bazaar","Corner shops"].includes(a)&&b.type!=="Warehouse")wallDoor(frontage.x,front,2.6);
+ if(!["Covered market","Duplex courts","Row residences","Night bazaar","Corner shops"].includes(a)&&b.type!=="Warehouse"){
+ wallDoor(frontage.x,front,2.6);
+ const entrance={x:frontage.x,z:front-.75};
+ if(b.door&&offRoad(entrance.x,entrance.z)&&!inSolid(entrance.x,entrance.z)){b.door.x=entrance.x;b.door.z=entrance.z;}
+ }
  if(["Tenement","Workers' hostel","Records office","Police station","Community clinic","Dispensary","Courtyard flats"].includes(a)){
  const wall=frontage;
  for(let y=6.5;y+1.15<wall.top;y+=4){
@@ -870,7 +926,7 @@ function renderPeople(parent,kit){
  const n=base[0].count,now=typeof performance!=="undefined"?performance.now()/1000:0;
  for(let i=0;i<n;i++){
   base[0].getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14],c=bins.get(Math.round(x*100)+","+Math.round(z*100));if(!c){for(const a of accessories)put(a,i,x,-20,z,0,0,.001,.001,.001,0);continue;}
-  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow||c.id===w.possessed&&c.route?.length,cycle=move?Math.sin(now*7.8+a.phase):0,step=cycle*.38,bob=move?Math.abs(cycle)*.025:0;
+  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow||c.id===w.possessed&&c.route?.length,cycle=move?Math.sin((c.walkDistance||0)*5.8+a.phase):0,step=cycle*.38,bob=move?Math.abs(cycle)*.025:0;
   const part=(mesh,side,y,front,rx,sx,sy,sz,col)=>put(mesh,i,x+Math.cos(heading)*side+Math.sin(heading)*front,y*h+bob,z-Math.sin(heading)*side+Math.cos(heading)*front,heading,rx,sx,sy,sz,col);
   part(base[0],0,1.08,0,0,wide,h,a.style===1?1.15:.96,a.shirt);
   part(base[1],0,1.59,0,0,.95,h,.96,a.skin);
