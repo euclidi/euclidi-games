@@ -2,13 +2,19 @@ import {createMine} from './core.mjs';
 import {createArt} from './art.mjs';
 const $=s=>document.querySelector(s),cv=$('#cave'),c=cv.getContext('2d');
 let m=createMine(),rate=1,view='both',tool='inspect',paused=false,stress=false,sound=false,ac,views=[],lastRev=-1;
-const layer=()=>Object.assign(document.createElement('canvas'),{width:m.W,height:m.H}),terrain=layer(),world=layer(),shade=layer(),r=terrain.getContext('2d'),g=world.getContext('2d'),l=shade.getContext('2d');
+const layer=()=>Object.assign(document.createElement('canvas'),{width:m.W,height:m.H}),terrain=layer(),world=layer(),shade=layer(),actors=layer(),actorShade=layer(),r=terrain.getContext('2d'),wg=world.getContext('2d'),ag=actors.getContext('2d',{willReadFrequently:true}),as=actorShade.getContext('2d'),l=shade.getContext('2d');
+let g=wg, silhouette=null;
 const art=createArt();
 function box(ctx,x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.max(1,Math.round(w)),Math.max(1,Math.round(h)))}
 function hash(x,y){let h=Math.imul(x+123,374761393)^Math.imul(y+17,668265263);return ((h^(h>>>13))>>>0)%1000/1000}
 const colors=[[89,87,81],[112,108,100],[53,61,62]];
-function redraw(){let im=r.createImageData(m.W,m.H);for(let y=0;y<m.H;y++)for(let x=0;x<m.W;x++){let i=(y*m.W+x)*4,k=m.idx(x,y),p=colors[m.material[k]],s=m.density[k]?1:.35,h=(hash(x,y)-.5)*22+Math.sin(y*.4+Math.sin(x*.05)*4)*6,e=m.density[k]&&!m.solid(x,y+2)?-22:m.density[k]&&!m.solid(x-2,y)?18:0;for(let j=0;j<3;j++)im.data[i+j]=(p[j]+h+e)*s;im.data[i+3]=255}r.putImageData(im,0,0);lastRev=m.revision}
-function lamp(x,y,rad,d=0){l.save();l.beginPath();let a=d<0?Math.PI:0,span=d?.75:Math.PI;if(d)l.moveTo(x,y);for(let i=0;i<=32;i++){let ang=a-span+2*span*i/32,X=x,Y=y;for(let t=3;t<=rad;t+=3){X=x+Math.cos(ang)*t;Y=y+Math.sin(ang)*t;if(m.solid(X,Y))break}if(!d&&i===0)l.moveTo(X,Y);else l.lineTo(X,Y)}l.closePath();l.clip();l.globalCompositeOperation='destination-out';let gr=l.createRadialGradient(x,y,0,x,y,rad);gr.addColorStop(0,'#000');gr.addColorStop(.45,'rgba(0,0,0,.92)');gr.addColorStop(1,'rgba(0,0,0,0)');l.fillStyle=gr;l.fillRect(x-rad,y-rad,rad*2,rad*2);l.restore()}
+function noise(x,y,scale){let X=x/scale,Y=y/scale,i=Math.floor(X),j=Math.floor(Y),u=X-i,v=Y-j;u=u*u*(3-2*u);v=v*v*(3-2*v);return (hash(i,j)*(1-u)+hash(i+1,j)*u)*(1-v)+(hash(i,j+1)*(1-u)+hash(i+1,j+1)*u)*v}
+function redraw(){const im=r.createImageData(m.W,m.H);for(let y=0;y<m.H;y++)for(let x=0;x<m.W;x++){const i=(y*m.W+x)*4,k=m.idx(x,y),p=colors[m.material[k]],solid=m.density[k]>0;let warp=noise(x,y,31)*16+noise(x,y,9)*4,fold=y+warp+Math.sin(x*.024)*6,bed=Math.sin(fold*.29),grain=(noise(x,y,3)-.5)*17,facet=(noise(x,y,13)-.5)*30,vein=bed>.91?10:bed<-.92?-13:0,fracture=Math.abs(noise(x+noise(x,y,20)*14,y,11)-.51)<.025?-19:0;
+let light=grain+facet+vein+fracture+(hash(x,y)-.5)*6;if(solid){if(!m.solid(x,y-2))light+=25;else if(!m.solid(x,y+2))light-=24;if(!m.solid(x-2,y))light+=13;if(!m.solid(x+2,y))light-=17;}else{light=light*.65-7;if(m.solid(x,y-3)||m.solid(x-3,y)||m.solid(x+3,y))light-=9}
+for(let j=0;j<3;j++)im.data[i+j]=solid?p[j]+light:Math.max(0,p[j]*.35+light);im.data[i+3]=255}r.putImageData(im,0,0);lastRev=m.revision}
+function blockedActor(x,y){let X=Math.round(x),Y=Math.round(y);return silhouette&&X>=0&&X<m.W&&Y>=0&&Y<m.H&&silhouette[(Y*m.W+X)*4+3]>100}
+function lamp(x,y,rad,d=0,own=false){l.save();l.beginPath();let a=d<0?Math.PI:0,span=d?.72:Math.PI;if(d)l.moveTo(x,y);for(let i=0;i<=96;i++){let ang=a-span+2*span*i/96,X=x,Y=y,dx=Math.cos(ang),dy=Math.sin(ang),inside=own&&blockedActor(x,y);for(let t=1;t<=rad;t+=1.5){let nx=x+dx*t,ny=y+dy*t;if(m.solid(nx,ny)){X=nx;Y=ny;break}let hit=blockedActor(nx,ny);if(!hit)inside=false;else if(!inside){X=nx;Y=ny;break}X=nx;Y=ny}if(!d&&i===0)l.moveTo(X,Y);else l.lineTo(X,Y)}l.closePath();l.clip();l.globalCompositeOperation='destination-out';let gr=l.createRadialGradient(x,y,0,x,y,rad);gr.addColorStop(0,'#000');gr.addColorStop(.32,'rgba(0,0,0,.94)');gr.addColorStop(.7,'rgba(0,0,0,.45)');gr.addColorStop(1,'rgba(0,0,0,0)');l.fillStyle=gr;l.fillRect(x-rad,y-rad,rad*2,rad*2);l.restore()}
+function actorLighting(lights){as.clearRect(0,0,m.W,m.H);as.drawImage(actors,0,0);as.globalCompositeOperation='source-atop';as.fillStyle='rgba(9,15,19,.42)';as.fillRect(0,0,m.W,m.H);as.globalCompositeOperation='source-over';for(const [x,y] of lights){let intensity=0;for(const fx of m.lamps){let fy=m.roof(fx)+16,dist=Math.hypot(fx-x,fy-y);if(dist>=83)continue;let clear=true;for(let t=3;t<dist;t+=3)if(m.solid(fx+(x-fx)*t/dist,fy+(y-fy)*t/dist)){clear=false;break}if(clear)intensity=Math.max(intensity,1-dist/83)}as.save();as.beginPath();as.rect(x-44,y-18,88,78);as.clip();as.globalAlpha=.20+intensity*.65;as.drawImage(actors,0,0);as.restore()}wg.drawImage(actorShade,0,0)}
 function sprite(img,x,y,w=img.width,h=img.height){g.drawImage(img,Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
 function part(img,x,y,angle,ax,ay,w,h){g.save();g.translate(Math.round(x),Math.round(y));g.rotate(angle);sprite(img,-ax,-ay,w,h);g.restore()}
 function person(a,i){
@@ -33,7 +39,7 @@ function person(a,i){
  else if(a.moving&&['push','haul'].includes(a.job)){part(art.arms[i],shoulderX,shoulderY,.85,4,2,10,15)}
  else if(working){part(art.arms[i],shoulderX,shoulderY,-.8+Math.sin(a.phase*12)*.4,4,2,10,15)}
  else part(art.arms[i],shoulderX,shoulderY,sway,4,2,10,15);
- g.restore();return [x+d*9,F-54+crouch-bob,d]
+ g.restore();return [x+d*10,F-54+crouch-bob,d]
 }
 function wallFixtures(){for(let x of m.lamps){let y=m.roof(x)+20;sprite(art.fixture,x-10,y-10,20,22)}}
 function props(){
@@ -43,12 +49,12 @@ function props(){
  for(let a of m.miners){let x=a.cart,img=a.d>0?art.cart:art.barrow;g.save();g.translate(Math.round(x),F);g.scale(a.d,1);for(let i=0;i<a.load*2;i++)sprite(art.rocks[i%3],-15+hash(i,8)*25,-22-hash(i,6)*10,8,6);sprite(img,-23,-22,46,22);g.restore()}
  for(let p of m.chips)sprite(art.rocks[p.mat%3],p.x,p.y,Math.max(2,p.s*1.8),Math.max(2,p.s*1.4))
 }
-function draw(){if(lastRev!==m.revision)redraw();let F=m.F;g.drawImage(terrain,0,0);g.imageSmoothingEnabled=false;
+function draw(){if(lastRev!==m.revision)redraw();g=wg;let F=m.F;g.drawImage(terrain,0,0);g.imageSmoothingEnabled=false;
 for(let i=0;i<m.rail.length;i++)if(m.rail[i]){let x=i*16;for(let z=2;z<16;z+=8){box(g,x+z,F-1,5,7,'#76583c');box(g,x+z,F-1,5,1,'#bc945f')}if(m.rail[i]===2){box(g,x,F-3,16,2,'#b1b9b0');box(g,x,F+4,16,2,'#6e817c')}}
 // Depth order: mounted fixtures and structure are behind all foreground actors.
 // Illumination is composited separately; it never redraws the fixture geometry.
 wallFixtures();props();
-let lights=m.miners.map(person);l.clearRect(0,0,m.W,m.H);box(l,0,0,m.W,m.H,'rgba(8,12,15,.56)');for(let x of m.lamps){let y=m.roof(x)+16;lamp(x,y,83)}for(let [x,y,d] of lights){lamp(x,y,135,d);lamp(x,y,29)}g.drawImage(shade,0,0);
+ag.clearRect(0,0,m.W,m.H);g=ag;let lights=m.miners.map(person);g=wg;silhouette=ag.getImageData(0,0,m.W,m.H).data;l.clearRect(0,0,m.W,m.H);box(l,0,0,m.W,m.H,'rgba(8,12,15,.69)');for(let x of m.lamps){let y=m.roof(x)+16;lamp(x,y,83)}for(let [x,y,d] of lights){lamp(x,y,135,d,true);lamp(x,y,24,0,true)}g.drawImage(shade,0,0);actorLighting(lights);
 if(stress)for(let x=8;x<m.W-8;x+=8)if(m.open(x)){let v=m.span(x);box(g,x,m.roof(x),8,3,v>100?'#d16b55':v>75?'#d6b56a':'#79ad8c')}
 c.fillStyle='#111514';c.fillRect(0,0,800,340);c.imageSmoothingEnabled=false;views=[];
 function vp(dx,dw,x,z,label){let sw=dw/z,sh=340/z,sx=Math.max(0,Math.min(m.W-sw,x-sw/2)),sy=Math.max(0,Math.min(m.H-sh,F-sh*.77));c.drawImage(world,sx,sy,sw,sh,dx,0,dw,340);views.push({dx,dw,sx,sy,sw,sh,dh:340});box(c,dx+8,8,label.length*8+12,22,'#252923');c.fillStyle='#e3d7b9';c.font='12px monospace';c.fillText(label,dx+14,23)}
@@ -61,5 +67,5 @@ $('#up0').onclick=()=>m.upgrade(0);$('#up1').onclick=()=>m.upgrade(1);
 $('#sound').onclick=()=>{sound=!sound;try{if(sound){ac=ac||new AudioContext();ac.resume()}}catch(e){sound=false}$('#sound').textContent=sound?'Sound on':'Sound off'};
 function impact(){if(!sound||!ac)return;let n=Math.floor(ac.sampleRate*.11),b=ac.createBuffer(1,n,ac.sampleRate),v=b.getChannelData(0);for(let i=0;i<n;i++)v[i]=(Math.random()*2-1)*Math.exp(-i/n*6)*.12;let s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start()}
 cv.addEventListener('pointerdown',e=>{e.preventDefault();let b=cv.getBoundingClientRect(),X=(e.clientX-b.left)*800/b.width,Y=(e.clientY-b.top)*340/b.height,v=views.find(v=>X>=v.dx&&X<v.dx+v.dw&&Y<v.dh);if(v){m.act(tool,v.sx+(X-v.dx)/v.dw*v.sw,v.sy+Y/v.dh*v.sh);draw();hud()}});
-window.meetingSeam={get state(){return m},get paused(){return paused},render:draw,art,layerOrder:['terrain','rail','wallFixtures','props','miners','lighting','overlay']};draw();hud();document.documentElement.dataset.gameReady='true';let last=performance.now(),acc=0,render=0,old=0;
+window.meetingSeam={get state(){return m},get paused(){return paused},render:draw,art,layerOrder:['terrain','rail','wallFixtures','props','actorMask','backgroundLighting','foregroundActors','overlay']};draw();hud();document.documentElement.dataset.gameReady='true';let last=performance.now(),acc=0,render=0,old=0;
 function loop(now){let dt=Math.min(.08,(now-last)/1000);last=now;if(!paused){acc+=dt*rate;while(acc>=1/30){m.step(1/30);acc-=1/30}}if(now-render>40){draw();hud();if(m.removed!==old){impact();old=m.removed}render=now}requestAnimationFrame(loop)}requestAnimationFrame(loop);
