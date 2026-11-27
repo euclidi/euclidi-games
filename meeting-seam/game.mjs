@@ -41,7 +41,7 @@ function person(a,i){
  else part(art.arms[i],shoulderX,shoulderY,sway,4,2,10,15);
  g.restore();return [x+d*10,F-54+crouch-bob,d]
 }
-function wallFixtures(){for(let x of m.lamps){let y=m.roof(x)+20;sprite(art.fixture,x-10,y-10,20,22)}}
+function wallFixtures(){for(let x of m.lamps){let y=m.roof(x)+16;sprite(art.fixture,x-9,y-10,18,22)}}
 function props(){
  let F=m.F;
  for(let p of m.posts){let y=m.roof(p.x),a=p.d>0?art.timber:art.steel;for(let j=y;j<F;j+=12){let h=Math.min(12,F-j);g.drawImage(a,0,0,a.width,h,Math.round(p.x-5),Math.round(j),10,h)}g.save();g.translate(p.x,y);g.rotate(Math.PI/2);sprite(a,-3,-15,7,30);g.restore()}
@@ -50,7 +50,7 @@ function props(){
  for(let p of m.chips)sprite(art.rocks[p.mat%3],p.x,p.y,Math.max(2,p.s*1.8),Math.max(2,p.s*1.4))
 }
 function draw(){if(lastRev!==m.revision)redraw();g=wg;let F=m.F;g.drawImage(terrain,0,0);g.imageSmoothingEnabled=false;
-for(let i=0;i<m.rail.length;i++)if(m.rail[i]){let x=i*16;for(let z=2;z<16;z+=8){box(g,x+z,F-1,5,7,'#76583c');box(g,x+z,F-1,5,1,'#bc945f')}if(m.rail[i]===2){box(g,x,F-3,16,2,'#b1b9b0');box(g,x,F+4,16,2,'#6e817c')}}
+for(let i=0;i<m.rail.length;i++)if(m.rail[i]){sprite(m.rail[i]===2?art.rail:art.sleepers,i*16,F-6,16,12)}
 // Depth order: mounted fixtures and structure are behind all foreground actors.
 // Illumination is composited separately; it never redraws the fixture geometry.
 wallFixtures();props();
