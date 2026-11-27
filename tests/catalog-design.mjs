@@ -20,6 +20,10 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().startsWith(base)&&r.status()>=400)errors.push(r.status()+' '+r.url());});
    assert((await page.goto(base+'?design-audit='+Date.now(),{waitUntil:'networkidle'})).ok());
    await page.locator('#crt-replay').waitFor();
+   const palette=await page.evaluate(()=>{const s=getComputedStyle(document.documentElement);return Object.fromEntries(['--bg','--panel','--line','--fg','--muted','--accent'].map(k=>[k,s.getPropertyValue(k).trim()]))});
+   assert.deepEqual(palette,{'--bg':'#111111','--panel':'#191919','--line':'#353535','--fg':'#eeeeee','--muted':'#a6a6a6','--accent':'#dddddd'});
+   assert.equal(await page.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(17, 17, 17)');
+   assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),'#111111');
    assert.equal(await page.locator('body').getAttribute('data-motion'),'on');
    assert.equal(await page.locator('#motion-mode').inputValue(),'on');
    assert.equal(await page.locator('#motion-status').textContent(),'On (default)');

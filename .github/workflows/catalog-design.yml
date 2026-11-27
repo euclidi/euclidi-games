@@ -32,7 +32,7 @@ jobs:
         run: |
           BASE=https://euclidi.github.io/euclidi-games/
           for i in $(seq 1 30); do
-            if curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID-$i" -o /tmp/live-catalog.html && grep -q 'data-design-revision="6"' /tmp/live-catalog.html && curl -fsS "${BASE}assets/brand/catalog-retro.css?v=6" -o /tmp/live-catalog.css && cmp -s /tmp/live-catalog.css assets/brand/catalog-retro.css; then break; fi
+            if curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID-$i" -o /tmp/live-catalog.html && grep -q 'data-design-revision="6"' /tmp/live-catalog.html && curl -fsS "${BASE}assets/brand/catalog-retro.css?v=7" -o /tmp/live-catalog.css && cmp -s /tmp/live-catalog.css assets/brand/catalog-retro.css; then break; fi
             sleep 10
           done
           grep -q 'data-design-revision="6"' /tmp/live-catalog.html
