@@ -8,7 +8,7 @@ on:
     paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   smoke:
     runs-on: ubuntu-24.04
@@ -34,26 +34,3 @@ jobs:
           name: innuendo-town-qa
           path: town-*.png
           if-no-files-found: ignore
-      - name: Package verified playtest build
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev/innuendo-town'
-        run: |
-          python3 -m pip install --break-system-packages Pillow
-          cp innuendo-town/node_modules/phaser/LICENSE.md innuendo-town/vendor/PHASER-LICENSE.md || cp innuendo-town/node_modules/phaser/LICENSE innuendo-town/vendor/PHASER-LICENSE.md
-          python3 innuendo-town/qa/package_preview.py
-          python3 tools/publish-covers.py --check || echo "Existing catalog cover audit failures; verify Innuendo Town separately"
-          python3 tools/check_catalog_returns.py || echo "Existing catalog navigation audit failures; verify Innuendo Town separately"
-          python3 - <<'PY'
-          import json, hashlib
-          from pathlib import Path
-          p=Path('covers/innuendo-town-gameplay.webp')
-          r=json.loads(Path('covers/manifest.json').read_text())['innuendo town']
-          assert r['sha256']==hashlib.sha256(p.read_bytes()).hexdigest()
-          assert r['route']=='./innuendo-town/'
-          assert 'data-catalog-return' in Path('innuendo-town/index.html').read_text()
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html covers/manifest.json covers/innuendo-town-gameplay.webp
-          git add -f innuendo-town/vendor/phaser.min.js innuendo-town/vendor/PHASER-LICENSE.md
-          git commit -m "Package Innuendo Town tested playtest build with actual gameplay cover"
-          git push origin HEAD:dev/innuendo-town
