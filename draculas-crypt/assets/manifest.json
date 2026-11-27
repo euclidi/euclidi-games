@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "provider": "Poly Haven",
+  "license": "CC0-1.0",
+  "files": [
+    {
+      "asset": "rock_01",
+      "map": "diff",
+      "file": "rock_01-diff.jpg",
+      "source": "https://github.com/HoneyPony/gwj41/blob/7fb26b05b0f6637b9fbf488708deca996f6c4262/polyhaven/rock_01_1k.gltf/textures/rock_01_diff_1k.jpg",
+      "original": "https://polyhaven.com/a/rock_01",
+      "bytes": 688083,
+      "git_blob_sha": "10e54a0e37eed20b51ae6c1f5fe03cad66e50e19",
+      "license": "CC0-1.0",
+      "verification": "Pinned mirror blob identity and JPEG signature; official hash comparison pending"
+    },
+    {
+      "asset": "rock_01",
+      "map": "nor_gl",
+      "file": "rock_01-nor_gl.jpg",
+      "source": "https://github.com/HoneyPony/gwj41/blob/7fb26b05b0f6637b9fbf488708deca996f6c4262/polyhaven/rock_01_1k.gltf/textures/rock_01_nor_gl_1k.jpg",
+      "original": "https://polyhaven.com/a/rock_01",
+      "bytes": 798807,
+      "git_blob_sha": "4ab02d1884f00dba47258a3f0bfb3788fda76de9",
+      "license": "CC0-1.0",
+      "verification": "Pinned mirror blob identity and JPEG signature; official hash comparison pending"
+    },
+    {
+      "asset": "rock_01",
+      "map": "rough",
+      "file": "rock_01-rough.jpg",
+      "source": "https://github.com/HoneyPony/gwj41/blob/7fb26b05b0f6637b9fbf488708deca996f6c4262/polyhaven/rock_01_1k.gltf/textures/rock_01_rough_1k.jpg",
+      "original": "https://polyhaven.com/a/rock_01",
+      "bytes": 383709,
+      "git_blob_sha": "481c50657b370a118510ba69617e57a1b6289c06",
+      "license": "CC0-1.0",
+      "verification": "Pinned mirror blob identity and JPEG signature; official hash comparison pending"
+    }
+  ]
+}
