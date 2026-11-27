@@ -19,3 +19,6 @@ return {hold,transmitted,slip:force>capacity*1.38,free:o.progress>=1};
 export function pointsFor(t,seconds,challenge){return Math.round(t.hold*10+(challenge?Math.max(0,80-seconds)*2:0))}
 export function safeSave(storage,key,value){try{storage.setItem(key,JSON.stringify(value))}catch{}}
 export function safeLoad(storage,key,defaultValue){try{return JSON.parse(storage.getItem(key))??defaultValue}catch{return defaultValue}}
+
+// Missing controller inputs are false, never NaN.
+export const digitalAxis=(positive,negative)=>Number(!!positive)-Number(!!negative);
