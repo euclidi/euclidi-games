@@ -32,20 +32,18 @@ jobs:
         run: |
           BASE=https://euclidi.github.io/euclidi-games/
           for i in $(seq 1 30); do
-            if curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID-$i" -o /tmp/live-catalog.html && grep -q 'data-design-revision="8"' /tmp/live-catalog.html && curl -fsS "${BASE}assets/brand/catalog-retro.css?v=10" -o /tmp/live-catalog.css && cmp -s /tmp/live-catalog.css assets/brand/catalog-retro.css; then break; fi
+            if curl -fsS "${BASE}?design-audit=$GITHUB_RUN_ID-$i" -o /tmp/live-catalog.html && grep -q 'data-design-revision="9"' /tmp/live-catalog.html && curl -fsS "${BASE}assets/brand/catalog-retro.css?v=11" -o /tmp/live-catalog.css && cmp -s /tmp/live-catalog.css assets/brand/catalog-retro.css; then break; fi
             sleep 10
           done
-          grep -q 'data-design-revision="8"' /tmp/live-catalog.html
+          grep -q 'data-design-revision="9"' /tmp/live-catalog.html
           cmp /tmp/live-catalog.css assets/brand/catalog-retro.css
           curl -fsS "${BASE}assets/brand/catalog-motion.js?v=6" -o /tmp/live-motion.js
           cmp /tmp/live-motion.js assets/brand/catalog-motion.js
-          curl -fsS "${BASE}assets/brand/sinistre/SinistreVF.woff2" -o /tmp/live-font.woff2
-          cmp /tmp/live-font.woff2 assets/brand/sinistre/SinistreVF.woff2
           CATALOG_URL="$BASE" node tests/catalog-design.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: catalog-design-revision-8
+          name: catalog-design-revision-9
           path: |
             audit-artifacts/
             local-audit-artifacts/

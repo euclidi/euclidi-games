@@ -1,11 +1,6 @@
-/* Sinistre by Jules Durand / Collletttivo; SIL OFL 1.1. Original variable WOFF2. */
-@font-face {
-  font-family:"Sinistre";src:url("./sinistre/SinistreVF.woff2") format("woff2");
-  font-style:normal;font-weight:400 900;font-display:swap;
-}
 /* Euclidi Games — design revision 6: harmonized pixel typography and observable motion. */
 :root {
-  --ui-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--display-font:"Sinistre",Georgia,serif;--ui-scale:1;--ui-tracking:0px;--motion-speed:1;
+  --ui-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ui-scale:1;--ui-tracking:0px;--motion-speed:1;
   --type-small:12px;--type-body:14px;
   --type-card:22px;--type-brand:16px;
   font-family:var(--ui-font);font-size:var(--type-body);font-weight:400;font-synthesis:none;
@@ -110,8 +105,8 @@ body[data-motion="off"] .mark,body[data-motion="off"] .game,body[data-motion="of
   .play {flex:1;}
 }
 
-/* Restrained display typography; functional text uses a neutral system face. */
-.intro h1,.info h2,.cover-title,.cover-title.sanctuary,.cover-title.backyard-astronaut,.cover-title.pacman,.cover-title.dojo,.cover-title.dummy-lab-w18,.cover-title.sector-zero {font-family:var(--display-font);font-weight:400;}
+/* Neutral sans-serif typography throughout the catalog. */
+.intro h1,.info h2,.cover-title,.cover-title.sanctuary,.cover-title.backyard-astronaut,.cover-title.pacman,.cover-title.dojo,.cover-title.dummy-lab-w18,.cover-title.sector-zero {font-family:var(--ui-font);font-weight:600;}
 .brand,.catalog-heading h2,.play {font-weight:600;}
 .intro p,.info p {line-height:1.55;}
 button,input,select,textarea {font-family:var(--ui-font);}
