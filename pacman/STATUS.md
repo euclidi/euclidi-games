@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.6.0.
+**Lifecycle:** Active — Git revision 1.6.1.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.6.1 — first-person camera
+
+Local 320×240 grid raycasting, textured walls and floor/ceiling, depth-tested bitmap actor/pellet/fruit billboards, smooth heading camera, optional locator map, first-person relative direction input and live view switching for both roles. Same core simulation. Ray/projection/occlusion and renderer role tests passed; browser and device visual playtest pending. Raycasting is 2.5D; actors are original billboard sprites, not 3D meshes.
 
 ## Revision 1.6.0 — Ghost Mode
 

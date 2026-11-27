@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.6.0.
+**Status:** Active — Git revision 1.6.1.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -39,3 +39,7 @@ Gamepad: browser Gamepad API, standard/legacy mappings, device slot, deadzone an
 ## Ghost Mode
 
 Choose Blinky, Pinky, Inky, Clyde or create a named ghost with a classic bitmap silhouette, body color and pupil color. Control one ghost while autonomous Pac-Man seeks pellets and evades the team. Win by catching all Pac-Man lives before he clears the board. Personal capture 1,000; team capture 250; being eaten costs 100 (minimum zero) and forces a return to the house. Separate high scores. Existing controls and settings remain supported.
+
+## First-person camera
+
+Use VIEW 2D/3D (V on keyboard, Y on standard gamepad during play) before or during a match. Both Pac-Man and Ghost Mode use the same simulation and a local 320×240 ray-cast renderer with depth-occluded original bitmap characters, perspective pellets, textured maze and optional locator map (M / RB). In first person, directions are relative: up forward, left/right turn, down reverse. Turns are buffered until legal and the camera follows the actual heading. Overhead controls remain absolute. No CDN, WebGL or extra assets required.

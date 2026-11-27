@@ -20,3 +20,5 @@ This is an ordered development backlog, not a declaration that milestones are co
 [Specification](SPEC.md) · [Current status](STATUS.md)
 
 - Ghost Mode: browser playtest, AI difficulty tuning and physical controller verification.
+
+- First-person camera: browser/device playtest and performance tuning; consider native 3D character models only if a different visual direction is requested.

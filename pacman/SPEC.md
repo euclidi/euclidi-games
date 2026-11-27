@@ -38,3 +38,7 @@ Preserve original or appropriately licensed assets and record their source, lice
 ## Ghost Mode (v1.6)
 
 Optional reverse-role game with a controlled classic or custom ghost, autonomous Pac-Man, three AI teammates, shared maze physics, frightened vulnerability and house regeneration. Pac-Man lives use starting-lives setting; catch all before pellet exhaustion. Independent ghost scores; customization limited to name, body and pupil color to preserve arcade fidelity. Pac-Man mode remains unchanged.
+
+## First-person camera (v1.6.1)
+
+Optional local grid-raycast view with shared maze geometry and game state, depth-tested bitmap billboards, relative buffered steering, smooth heading turns, optional locator map and persistent view choice. Keep overhead mode, both roles and existing controls. No external runtime dependencies.
