@@ -68,6 +68,14 @@ export async function createLiveLab(stage,overlay,onStatus){
   const cables=[null,null],probeMeshes=[makeProbe(0xa43c35),makeProbe(0x356b9b)];probeMeshes.forEach(p=>probeGroup.add(p));
   const cableMats=[standard(0x81332d,.62,.05),standard(0x275376,.62,.05)];
   const grey=standard(0x465155,.59,.45),wall=standard(0x263238,.74,.18),dark=standard(0x131d24,.63,.25),edge=standard(0x68767b,.34,.6),hazard=standard(0xd4a842,.58,.12);
+  const clampGroup=new T.Group();scene.add(clampGroup);
+  const clampSteel=standard(0x9eb4b0,.36,.6),clampRubber=standard(0x567644,.62,.08);
+  const jaw=new T.Shape();jaw.moveTo(-15,-3);jaw.lineTo(1,-3);jaw.lineTo(10,0);jaw.lineTo(1,6);jaw.lineTo(-12,7);jaw.closePath();
+  for(let sign of [-1,1]){const g=new T.ExtrudeGeometry(jaw,{depth:5,bevelEnabled:true,bevelSize:.7,bevelThickness:.7,bevelSegments:2});const j=mesh(g,clampSteel,clampGroup);j.position.y=sign*3;j.scale.y=sign;const h=chamfered(20,7,9,2,clampRubber,clampGroup);h.position.set(-17,sign*6,1);h.rotation.z=sign*.2;}
+  const clampCableMaterial=standard(0x607d47,.66,.02);let clampCable=null,clampKey='';
+  const markGroup=new T.Group();scene.add(markGroup);
+  const stainMat=new T.MeshBasicMaterial({color:0x39291d,transparent:true,opacity:.6,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2});
+  const stainGeom=new T.CircleGeometry(1,18),stainPool=[];for(let i=0;i<85;i++){const o=new T.Mesh(stainGeom,stainMat);o.visible=false;markGroup.add(o);stainPool.push(o);}
   const debrisMap=new Map(),ray=new T.Raycaster(),contactCache=new Map();let W=800,H=440,S=1,active=-1,activeObj=null,dead=false,closed=false,layoutKey='',cableKeys=['',''],anchor={x:400,y:250},lastState=null;
   const pos=(x,y,z=0)=>vec(x-W/2,H/2-y,z);
   function removeChildren(g){for(const o of [...g.children]){g.remove(o);o.traverse(n=>{if(n.isMesh&&n.geometry)n.geometry.dispose();});}}
@@ -189,6 +197,10 @@ export async function createLiveLab(stage,overlay,onStatus){
     prepare(state);
     const hits=state.probes.map(p=>contact(p.x,p.y,Math.max(2,state.maxArc*S)));
     state.probes.forEach((p,i)=>updateProbe(i,p,hits[i]));
+    clampGroup.visible=state.grounded;const clampPos=pos(anchor.x+94*S,H*.78-19*S,62*S);clampGroup.position.copy(clampPos);clampGroup.scale.setScalar(S);
+    const ck=[W,H,S].join('|');if(ck!==clampKey){clampKey=ck;if(clampCable){scene.remove(clampCable);clampCable.geometry.dispose();}const a=pos(W,H*.71,48*S),b=clampPos.clone().add(vec(-21*S,0,0));clampCable=mesh(new T.TubeGeometry(new T.CubicBezierCurve3(a,a.clone().add(vec(-40*S,-35*S,20*S)),b.clone().add(vec(65*S,-36*S,10*S)),b),32,2.9*S,8,false),clampCableMaterial,scene);}
+    if(clampCable)clampCable.visible=state.grounded;
+    for(let i=0;i<stainPool.length;i++){const o=stainPool[i],m=state.marks[i];o.visible=false;if(!m||state.dead)continue;const p=rayHit(anchor.x+m.x*S,anchor.y+m.y*S);if(!p)continue;o.visible=true;o.position.copy(p);o.position.z+=.45*S;o.scale.set(m.r*1.3*S,m.r*.8*S,1);o.rotation.z=m.ang;}
     updateDebris(state.fragments);updateEffects(state,hits);
     renderer.render(scene,camera);
   }
