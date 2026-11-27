@@ -26,3 +26,11 @@ This is an ordered development backlog, not a declaration that milestones are co
 - [ ] Verify visual fidelity and performance in the live browser, including signage orientations and nighttime fixtures.
 - [ ] Add walkable subway platforms, tunnels and trains; physical street-light illumination, electrical feeder simulation, water and drainage network behavior, manual crossing requests, and player collision coverage.
 - [ ] Resolve remaining congestion and pedestrian throughput regressions; validate full-day traffic and transit behavior continuously.
+
+### Alignment and citizen fidelity follow-up
+- [x] Remove overlapping legacy block furniture; align lane markings, street surfaces and sidewalks; suspend traffic lights on actual masts.
+- [x] Cut actual surface terrain openings and generate descending stairs; replace LOWER view with an operational rail cutaway.
+- [x] Give citizens deterministic distinct body proportions, clothing, accessories and movement-based poses; add density-aware route choice.
+- [ ] Validate the rendered city at street zoom and across camera orientations; replace remaining primitive character geometry with authored articulated assets.
+- [ ] Connect underground stair shafts physically to walkable station platforms and player navigation; implement continuous collision and terrain elevation.
+- [ ] Reduce remaining crowd congestion without reducing transit throughput; test bus dwell and transfers, junction capacity and full-day behavior.
