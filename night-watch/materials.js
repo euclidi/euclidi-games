@@ -16,8 +16,8 @@ if(x>15&&x<113&&y>17&&y<98){let seam=x===16||x===112||y===18||y===97;if(seam)ret
 function slab(x,y,seed,ceil=false){let ed=Math.min(x,127-x,y,127-y),n=grain(x,y,seed);if(ed<2)return tone([25,30,29],n*.4);if(ed===2)return tone([66,71,67],n*.5);let base=ceil?[68,75,75]:[80,86,81];if(!ceil&&hash(x,y,seed+7)>.95)n-=16;return tone(base,n+(ceil&&((x%32===0)||(y%32===0))?-11:0))}
 export const atlas={wall:[0,1,2,3].map(s=>tex((x,y)=>masonry(x,y,s))),steel:tex((x,y)=>panel(x,y,12)),floor:[0,1,2,3].map(s=>tex((x,y)=>slab(x,y,s+22))),ceiling:tex((x,y)=>slab(x,y,41,true)),lamp:tex((x,y)=>{let ed=Math.min(x,127-x,y,127-y);if(ed<8)return [37,44,43];if(ed<13)return [92,100,96];if(x>26&&x<102&&y>44&&y<84){return y%9<2?[127,137,126]:[207,222,199]}return [58,65,61]})};
 export const fixtures=[[2.5,2.5],[5.5,4.5],[10.5,2.5],[16.5,3.5],[4.5,7.5],[13.5,6.5],[8.5,6.5],[2.5,10.5],[5.5,12.5],[10.5,9.5],[16.5,12.5]];
-const fixtureKeys=new Set(fixtures.map(([x,y])=>Math.floor(x)+','+Math.floor(y)));
-export function isFixture(x,y){return fixtureKeys.has(x+','+y)}
+const fixtureKeys=new Uint8Array(W*H);for(let [x,y] of fixtures)fixtureKeys[Math.floor(y)*W+Math.floor(x)]=1;
+export function isFixture(x,y){return x>=0&&y>=0&&x<W&&y<H&&fixtureKeys[y*W+x]===1}
 const R=4,LW=W*R+1,LH=H*R+1,light=new Float32Array(LW*LH);
 for(let y=0;y<LH;y++)for(let x=0;x<LW;x++){let a=x/R,b=y/R,v=.24;for(let [lx,ly] of fixtures){let dx=lx-a,dy=ly-b,d=Math.hypot(dx,dy);if(d>5.5)continue;if(d<.01||ray(lx,ly,-dx/d,-dy/d).d>=d-.09)v+=.86/(1+d*d*.65)}light[y*LW+x]=Math.min(1.28,v)}
 export function illumination(x,y){let a=clamp(x*R,0,LW-1.001),b=clamp(y*R,0,LH-1.001),i=a|0,j=b|0,u=a-i,v=b-j,k=j*LW+i;return (light[k]*(1-u)+light[k+1]*u)*(1-v)+(light[k+LW]*(1-u)+light[k+LW+1]*u)*v}
