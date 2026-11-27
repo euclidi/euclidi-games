@@ -3,6 +3,9 @@ on:
   push:
     branches: [dev/innuendo-town]
     paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
+  pull_request:
+    branches: [main]
+    paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
   workflow_dispatch:
 permissions:
   contents: read
