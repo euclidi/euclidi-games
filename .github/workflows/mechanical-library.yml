@@ -1,0 +1,44 @@
+name: Automatic Software Library browser audit
+on:
+  push:
+    branches: [main]
+    paths: ['library/**','index.html','tests/mechanical-library.mjs','.github/workflows/mechanical-library.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock playwright@1.51.1
+      - run: npx playwright install --with-deps chromium firefox
+      - name: Syntax and browser audit
+        run: |
+          cp library/library.js /tmp/library.mjs
+          node --check /tmp/library.mjs
+          mkdir -p "$RUNNER_TEMP/site" audit-artifacts
+          ln -s "$GITHUB_WORKSPACE" "$RUNNER_TEMP/site/euclidi-games"
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/site" &
+          trap 'kill $! 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8765/euclidi-games/library/ >/dev/null && break; sleep 1; done
+          node tests/mechanical-library.mjs
+      - name: Verify live mechanical library
+        if: always() && !cancelled()
+        run: |
+          BASE=https://euclidi.github.io/euclidi-games/
+          for i in $(seq 1 30); do
+            if curl -fsS "${BASE}library/library.js?v=1" -o /tmp/published.js && cmp -s /tmp/published.js library/library.js; then break; fi
+            sleep 10
+          done
+          cmp /tmp/published.js library/library.js
+          CATALOG_URL="$BASE" node tests/mechanical-library.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mechanical-library-screenshots
+          path: audit-artifacts/
