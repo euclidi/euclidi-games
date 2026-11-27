@@ -12,3 +12,6 @@ See [SPEC](SPEC.md), [ROADMAP](ROADMAP.md) and [STATUS](STATUS.md).
 
 
 [V6 development preview](https://euclidi.github.io/euclidi-games/electrocute-stuff/v6.html): persistent specimen rack, local water brush and optional authored soda-can model. Select **WATER BRUSH ON**, drag over a specimen, then turn it off to control probes. Tab switching preserves the experiment; REPLACE OBJECT resets the selected slot. CAN MODEL PILOT is optional. See [STATUS](STATUS.md) for verification limitations.
+
+
+[V7 unified live 3D preview](https://euclidi.github.io/euclidi-games/electrocute-stuff/v7.html): the entire workbench renders with live meshes when WebGL initialization succeeds. Use RESET PROBES to fit the active specimen. LOADING / LIVE 3D / 2D FALLBACK status indicates actual renderer selection. Prior rack data imported; previous builds retained. Browser rendering remains unverified.
