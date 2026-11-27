@@ -1,5 +1,5 @@
-# Status — v0.1
+# Status — v0.2
 
-Implemented and committed on main; catalog entry committed and checked in source. 376 pure grid-rule assertions, JavaScript syntax compilation, and 13 mocked Phaser scene state-transition checks passed (movement, score, fall, rescue disc, enemy collision, clear, progression, game over, restart, tile cycling, pause/resume). These are logic checks, not live browser playtesting.
+Replaced clay-style graphics with a 240 × 256 portrait raster and custom bitmap text, seven-row board, flat pixel cube faces, hand-mapped directional mascot and compression frames, enemy sprites and rescue disc sprites. Preserved movement, scoring, lives, enemy behavior, tile cycling, pause, audio and controls.
 
-Public GitHub Pages route and catalog could not be opened by the available verification tool. Browser rendering, mobile/controller hardware checks and Pages deployment remain unverified. Phaser 3.90 CDN required. Clay-style raster textures are procedural, not photographed clay or stop-motion frames. No claim of final release quality.
+JavaScript syntax check, sprite row-width validation and 14 mocked scene checks passed after revision. Prior v0.1 had 376 grid-rule assertions. These are not live browser tests. Public Pages access could not be verified through available network tools; browser rendering and hardware playtest remain unverified.
