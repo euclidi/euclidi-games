@@ -1,0 +1,15 @@
+import {rng} from "./levels.js";
+const themes=[
+ {name:"WOODLAND",bpm:104,scale:[0,2,4,7,9],root:60,chords:[0,5,7,0],lead:"triangle",bass:"sine",gate:.72},
+ {name:"TIDAL",bpm:82,scale:[0,2,3,5,7,10],root:55,chords:[0,3,5,7],lead:"sine",bass:"triangle",gate:1.2},
+ {name:"CLOCKWORK",bpm:126,scale:[0,2,3,5,7,8,10],root:57,chords:[0,5,3,7],lead:"square",bass:"triangle",gate:.38},
+ {name:"CRYSTAL",bpm:96,scale:[0,2,4,6,7,9,11],root:62,chords:[0,2,7,9],lead:"triangle",bass:"sine",gate:.95},
+ {name:"ASTRAL",bpm:112,scale:[0,2,3,7,8,10],root:58,chords:[0,8,3,7],lead:"sine",bass:"triangle",gate:.86}
+];
+export function arrangement(board,index=0){const theme=themes[board.world||0], seed=[...board.name].reduce((a,c)=>(Math.imul(a,31)+c.charCodeAt(0))>>>0,123+index*127),r=rng(seed);let boss=!!board.boss,root=theme.root+Math.floor(r()*5)-2,pattern=[];let bpm=theme.bpm+Math.floor(r()*11)-5+(boss?19:0);for(let bar=0;bar<8;bar++){let chord=theme.chords[(bar+(index%4))%4];for(let beat=0;beat<8;beat++){let degree=Math.floor(r()*theme.scale.length),mel=theme.scale[degree]+(beat===7?12:0);let notes=[];if(beat===0||beat===4)notes.push({m:root-12+chord,v:.14,w:theme.bass,l:3.5});if(beat%2===0||r()>.52)notes.push({m:root+chord+mel,v:theme.lead==="square"?.028:.075,w:theme.lead,l:theme.gate});if(beat===0||beat===4){for(let d of [0,theme.scale.includes(3)?3:4,7])notes.push({m:root-5+chord+d,v:.023,w:"sine",l:3.7})}if((board.world===2||boss)&&beat%2===1)notes.push({m:36+(beat===3?5:0),v:.055,w:"triangle",l:.15});pattern.push(notes)}}return {name:theme.name+" / "+board.name.split(" / ").at(-1),bpm,pattern,signature:seed}}
+export class Music{
+ constructor(ctx,volume){this.ctx=ctx;this.volume=volume;this.track=null;this.step=0;this.next=0;this.nodes=new Set();this.bus=ctx.createGain();this.bus.gain.value=0;this.bus.connect(ctx.destination)}
+ set(board,index){this.stop();this.track=arrangement(board,index);this.step=0;this.next=this.ctx.currentTime+.04;return this.track}
+ stop(){for(let n of this.nodes){try{n.stop()}catch{}}this.nodes.clear();this.next=0;this.bus.gain.cancelScheduledValues(this.ctx.currentTime);this.bus.gain.setValueAtTime(0,this.ctx.currentTime)}
+ tick(active,fever=false){if(!this.track)return;let t=this.ctx.currentTime;if(!active){if(this.next)this.stop();return}if(!this.next||this.next<t-.1)this.next=t+.04;this.bus.gain.setTargetAtTime(this.volume()/100*(fever?.24:.7),t,.06);let beat=30/this.track.bpm;while(this.next<t+.15){for(let n of this.track.pattern[this.step%this.track.pattern.length]){let osc=this.ctx.createOscillator(),g=this.ctx.createGain(),start=this.next,end=start+Math.max(.06,beat*n.l);osc.type=n.w;osc.frequency.value=440*2**((n.m-69)/12);g.gain.setValueAtTime(.0001,start);g.gain.linearRampToValueAtTime(n.v,start+.018);g.gain.exponentialRampToValueAtTime(.0001,end);osc.connect(g).connect(this.bus);this.nodes.add(osc);osc.onended=()=>{this.nodes.delete(osc);osc.disconnect();g.disconnect()};osc.start(start);osc.stop(end+.01)}this.step++;this.next+=beat}}
+}

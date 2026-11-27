@@ -5,3 +5,5 @@
 - Validate visual revision 0.2 in-browser; refine independently authored production artwork, parallax and animation, actual musical tracks and ambience.
 - Finish exact solver-based trajectory guide, verify fireball collision groups and implement physical flippers, additional palette/accessibility settings, input remapping, cinematics and balancing.
 - Verify deployment and update status with test evidence. No item here is claimed complete.
+
+- Playtest and tune final-target camera, scoring-channel transitions, boss balance, music mix and professional GUI on desktop/mobile. Expand boss sprites into independently authored characters and finish soundtrack quality audit.
