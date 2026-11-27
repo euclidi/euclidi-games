@@ -1,0 +1,51 @@
+name: Dracula crypt acquire materials
+on:
+  push:
+    paths:
+      - 'draculas-crypt/asset-plan.json'
+      - 'draculas-crypt/acquire-assets.py'
+      - '.github/workflows/draculas-crypt-assets.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: dracula-asset-acquisition
+  cancel-in-progress: false
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python draculas-crypt/acquire-assets.py
+      - run: npm install --no-save --no-package-lock playwright@1.56.1 three@0.160.1
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/crypt-http.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8765/draculas-crypt/ >/dev/null && break; sleep 1; done
+          CRYPT_REQUIRE_ASSETS=1 node draculas-crypt/smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crypt-material-acquisition
+          path: |
+            draculas-crypt/assets/
+            artifacts/draculas-crypt/
+      - name: Commit verified local assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add draculas-crypt/assets/
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Acquire verified CC0 crypt material maps"
+          git pull --rebase origin main
+          git push origin HEAD:main
