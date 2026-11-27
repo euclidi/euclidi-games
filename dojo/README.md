@@ -2,7 +2,7 @@
 
 Develop recognizable emergent fighting motion through physical articulated bodies, recorded experiments and replay, rather than scripted hit outcomes.
 
-**Status:** Active — Stage 1D physical-controller research; Stage 2 gated.
+**Status:** Active — Stage 1E physical-controller research; Stage 2 gated.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/dojo/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -25,7 +25,8 @@ Serve the repository with a local HTTP server from its root (for example `python
 ## Supporting records
 
 - [Earlier combat build](legacy/dojo-ix.html)
-- [Experiment evidence](experiments/git-seed-summary.json)
+- [Initial experiment evidence](experiments/git-seed-summary.json)
+- [Stage 1E archive, batch 01](experiments/stage1e-01.json) · [batch 02](experiments/stage1e-02.json)
 - [Physical controller](physics.js)
 
 ## Limitations
