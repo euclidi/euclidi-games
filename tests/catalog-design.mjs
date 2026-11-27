@@ -30,15 +30,15 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    console.log('motion environment',name,width,await page.evaluate(()=>({hover:matchMedia('(hover:hover)').matches,fine:matchMedia('(pointer:fine)').matches,reduced:matchMedia('(prefers-reduced-motion:reduce)').matches,mode:document.body.dataset.motion})));
    await page.waitForFunction(()=>!document.querySelector('.eg-crt').classList.contains('is-playing'));
    const layout=await page.evaluate(async()=>{
-     const font=(await document.fonts.load('400 16px "Press Start 2P"')).length>0;
+     const font=(await document.fonts.load('400 16px "Sinistre"')).length>0;
      const selectors='.brand,.top nav a,.intro h1,.intro p,.eyebrow,.meta span,.count,.foot,.catalog-heading h2,.info h2,.info p,.cover-title,.cover-top,.cover-bottom,.play,.actions a,.project-docs a,.filters button,.search input';
      const items=[...document.querySelectorAll(selectors)].map(el=>{const s=getComputedStyle(el);return {text:el.textContent.trim().slice(0,55),className:el.className,font:s.fontFamily,weight:s.fontWeight,size:parseFloat(s.fontSize),tracking:s.letterSpacing,overflow:el.clientWidth>0&&el.scrollWidth>el.clientWidth+2&&el.tagName!=='INPUT'};});
      const clipped=[...document.querySelectorAll('.cover')].flatMap(cover=>{const r=cover.getBoundingClientRect();return [...cover.querySelectorAll('.cover-title,.cover-top,.cover-bottom')].filter(e=>{const t=e.getBoundingClientRect();return t.left<r.left-1||t.right>r.right+1||t.top<r.top-1||t.bottom>r.bottom+1;}).map(e=>e.textContent);});
      return {revision:document.body.dataset.designRevision,font,logo:document.querySelector('.mark').naturalWidth,overflow:document.documentElement.scrollWidth>innerWidth,items,clipped};
    });
-   assert.equal(layout.revision,'6');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
+   assert.equal(layout.revision,'7');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
    assert.equal(layout.clipped.length,0,JSON.stringify(layout.clipped));
-   for(const i of layout.items){assert(i.font.includes('Press Start 2P'),JSON.stringify(i));assert.equal(i.weight,'400',JSON.stringify(i));assert.equal(i.tracking,'1px',JSON.stringify(i));assert(i.size>=8.9&&i.size<=27.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
+   for(const i of layout.items){assert(i.font.includes('Sinistre'),JSON.stringify(i));assert(['400','700'].includes(i.weight),JSON.stringify(i));assert.equal(i.tracking,'0px',JSON.stringify(i));assert(i.size>=13.9&&i.size<=46.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
 
    assert.equal(await page.locator('a[href="./library/"]').count(),0);
    assert.equal(await page.locator('header a[href="https://euclidi.github.io/euclidi-labs/"]').count(),1);

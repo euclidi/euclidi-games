@@ -17,3 +17,5 @@ Every game directory with an entry index.html, including separately listed relea
 - Do not claim future work was completed or a deployment is live until evidence exists. Record blockers and decisions in STATUS.md.
 
 Catalog interface palette: use neutral grayscale for shared backgrounds, panels, borders, text, buttons, focus states and browser theme colors (equal RGB channels). Preserve approved logo assets and project-specific cover art/accents. Do not reintroduce an olive or other color cast into the shared interface without owner approval.
+
+Catalog typography: owner selected Sinistre by Jules Durand / Collletttivo. Use the locally hosted original Sinistre variable WOFF2 (400–900) for site text, navigation, covers, controls and startup text, with serif fallback for unsupported characters. Preserve logo artwork, project assets and game-specific interfaces. Retain the original SIL OFL license beside the font and do not substitute another face without approval.
