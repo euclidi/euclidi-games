@@ -1,0 +1,6 @@
+node_modules/
+dist/
+engine/pkg/
+engine/target/
+test-results/
+playwright-report/
