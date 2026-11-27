@@ -1233,9 +1233,119 @@ function renderPeople(parent,kit){
  }
  for(const m of [...base,...accessories,...extra]){m.count=n;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
 }
+
+/* Fleet render adapter. One instanced part per class, rather than a mesh per car.
+   The original bundled private-car instances are hidden only after matching their
+   positions against the live fleet. An unmatched legacy renderer remains intact. */
+const fleetRenderers=new WeakMap();
+function sectionGeometry(template,sections){
+ const g=template.clone(),values=[],tri=(a,b,c)=>values.push(...a,...b,...c);
+ const rings=sections.map(([z,w,low,high])=>[[-w*.78,low,z],[w*.78,low,z],[w,low+(high-low)*.26,z],[w*.93,high-(high-low)*.15,z],[w*.73,high,z],[-w*.73,high,z],[-w*.93,high-(high-low)*.15,z],[-w,low+(high-low)*.26,z]]);
+ for(let j=0;j<rings.length-1;j++)for(let i=0;i<8;i++){const k=(i+1)%8;tri(rings[j][i],rings[j][k],rings[j+1][k]);tri(rings[j][i],rings[j+1][k],rings[j+1][i]);}
+ for(const [ring,front] of [[rings[0],false],[rings.at(-1),true]])for(let i=1;i<7;i++){if(front)tri(ring[0],ring[i],ring[i+1]);else tri(ring[0],ring[i+1],ring[i]);}
+ const Attr=template.attributes.position.constructor;g.setIndex(null);for(const k of Object.keys(g.attributes))g.deleteAttribute(k);g.setAttribute("position",new Attr(new Float32Array(values),3));g.clearGroups();g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();return g;
+}
+function makeFleetTemplate(type,kit,parent,Inst,capacity){
+ const {group,box,cyl,mat}=kit,p=fleetTypes[type],root=group(),chassis=group(),w=p.w,l=p.l,h=p.h,van=["ambulance","icecream","delivery","bus"].includes(type),bus=type==="bus";
+ root.add(chassis);root.userData=root.userData||{};
+ const material=(hex,properties={})=>{const m=mat(hex).clone();Object.assign(m,properties);return m;};
+ const paint=material(0xffffff,{roughness:.32,metalness:.28}),trim=material(0x353b38,{roughness:.68}),rubber=material(0x222622,{roughness:.95}),metal=material(0x929890,{roughness:.38,metalness:.45}),glass=material(0x8fa9a7,{transparent:true,opacity:.32,depthWrite:false,roughness:.16,metalness:.08,side:2}),headlight=material(0xe2dbbd,{roughness:.28}),tail=material(0x9e3d31,{roughness:.35}),skin=material(0xffffff),clothes=material(0xffffff),interior=material(0x303530),white=material(0xe8e4d8),stripe=material(0xa44439);
+ const B=(g,a,b,c,x,y,z,m,tag)=>{const o=box(g,a,b,c,x,y,z,m);if(tag)o.userData.fleetColor=tag;return o;};
+ const shell=(g,sections,m,tag)=>{const o=B(g,1,1,1,0,0,0,m,tag);o.geometry=sectionGeometry(o.geometry,sections);return o;};
+ const wheelR=bus?.48:van?.39:.33,bodyLow=wheelR*.76,belt=van?(bus?1.34:1.04):h*.62,bodyTop=van?belt: h*.66;
+ shell(chassis,[[-l*.5,w*.40,bodyLow+.11,bodyTop-.12],[-l*.44,w*.49,bodyLow,bodyTop],[-l*.25,w*.50,bodyLow,bodyTop+.02],[l*.25,w*.50,bodyLow,bodyTop],[l*.43,w*.48,bodyLow,bodyTop-.055],[l*.5,w*.40,bodyLow+.10,bodyTop-.16]],paint,"paint");
+ const back=bus?-l*.46:van?-l*.45:type==="wagon"?-l*.39:type==="hatch"?-l*.37:-l*.30,front=bus?l*.45:van?l*.34:l*.22,roofBack=van?back+.05:back+.26,roofFront=van?front-.18:front-.49,cabTop=h-.09;
+ if(van&&!bus){
+  // Separate rear load body, front glazing and tapered nose.
+  shell(chassis,[[back,w*.45,belt-.02,h-.06],[l*.07,w*.49,belt-.02,h],[l*.12,w*.47,belt-.02,h-.04]],paint,"paint");
+  shell(chassis,[[l*.10,w*.43,belt-.02,h-.13],[l*.25,w*.42,belt-.02,h-.16],[l*.39,w*.40,belt-.02,belt+.28]],glass);
+  B(chassis,w*.86,.09,l*.16,0,h-.10,l*.20,paint,"paint");
+ }else{
+  shell(chassis,[[back,w*.44,belt-.01,belt+.18],[roofBack,w*.40,belt-.01,cabTop],[roofFront,w*.40,belt-.01,cabTop],[front,w*.44,belt-.01,belt+.15]],glass);
+  shell(chassis,[[roofBack-.04,w*.39,cabTop-.045,cabTop+.02],[roofBack+.06,w*.42,cabTop-.045,h],[roofFront-.05,w*.42,cabTop-.045,h],[roofFront+.04,w*.38,cabTop-.045,cabTop+.02]],paint,"paint");
+ }
+ // Driver's seat and actual seated occupant behind translucent windows.
+ const seatZ=van?l*.26:l*.04,seatY=van?belt-.10:belt-.09,seatX=-w*.24,headY=van?Math.min(h-.30,belt+.43):h-.26;
+ B(chassis,.42,.52,.12,seatX,seatY+.02,seatZ-.20,interior);B(chassis,.42,.12,.36,seatX,seatY-.25,seatZ,interior);
+ B(chassis,.32,.32,.20,seatX,headY-.30,seatZ,clothes,"clothes");
+ const head=B(chassis,.23,.28,.23,seatX,headY,seatZ+.02,skin,"skin");head.geometry=bodyGeometry(head.geometry,[[-.13,.073,.080],[-.08,.104,.105],[.05,.112,.109],[.115,.082,.078]],8);
+ B(chassis,.18,.055,.19,seatX,headY+.11,seatZ,trim);
+ for(const side of [-1,1]){
+  const arm=B(chassis,.085,.24,.085,seatX+side*.13,headY-.28,seatZ+.18,clothes,"clothes");arm.rotation.x=-.8;
+  B(chassis,.27,.14,.08,side*w*.33,bodyTop-.18,l*.495,headlight);
+  B(chassis,.26,.14,.08,side*w*.33,bodyTop-.17,-l*.495,tail,"brake");
+  B(chassis,.11,.11,.26,side*w*.53,belt+.04,front-.10,trim);
+  B(chassis,.035,.055,.19,side*w*.495,belt-.13,l*.03,metal);
+  for(const z of (bus?[-l*.36,-l*.12,l*.12,l*.36]:[roofBack+.13,roofFront-.07])){
+   const post=B(chassis,.045,Math.max(.24,cabTop-belt),.08,side*w*.41,(cabTop+belt)/2,z,trim);if(!van)post.rotation.x=z>0?.29:-.20;
+  }
+ }
+ B(chassis,w*.75,.095,.085,0,bodyLow+.10,l*.501,trim);B(chassis,w*.75,.095,.085,0,bodyLow+.10,-l*.501,trim);
+ B(chassis,w*.48,.14,.035,0,bodyTop-.20,l*.502,trim);B(chassis,.29,.10,.035,0,bodyLow+.25,-l*.503,white);
+ if(type==="taxi"){B(chassis,.63,.20,.27,0,h+.10,0,white);B(chassis,.54,.09,.275,0,h+.12,0,paint,"paint");}
+ if(type==="police"||type==="ambulance"){for(const side of [-1,1]){B(chassis,.37,.14,.24,side*.22,h+.09,l*.07,material(side<0?0x355d91:0xa53737),"beacon");}}
+ if(type==="police"){for(const side of [-1,1])B(chassis,.025,.42,l*.26,side*w*.499,belt-.28,0,white);}
+ if(type==="ambulance"){for(const side of [-1,1]){B(chassis,.035,.17,.75,side*w*.494,h*.60,-l*.17,stripe);B(chassis,.036,.65,.17,side*w*.494,h*.60,-l*.17,stripe);}}
+ if(type==="icecream"){B(chassis,.035,.62,l*.34,w*.494,h*.64,-l*.15,glass);B(chassis,.24,.08,l*.34,w*.54,h*.49,-l*.15,white);B(chassis,w*.65,.11,.35,0,h+.07,-l*.11,stripe);}
+ if(type==="delivery"){for(const side of [-1,1])B(chassis,.026,.19,l*.49,side*w*.494,h*.56,-l*.17,trim);}
+ if(bus){B(chassis,w*.89,.18,l*.96,0,belt-.09,0,paint,"paint");B(chassis,.045,1.10,.88,w*.48,1.15,l*.28,glass);}
+ const wheels=[];
+ for(const side of [-1,1])for(const axle of [-1,1]){
+  const pivot=group(),spin=group();root.add(pivot);pivot.add(spin);pivot.position.set(side*(w*.5-.10),wheelR,axle*l*(van?.32:.30));wheels.push({pivot,spin,front:axle>0});
+  const tire=cyl(spin,wheelR,wheelR,van?.22:.19,0,0,0,rubber,14);tire.rotation.z=Math.PI/2;
+  const hub=cyl(spin,wheelR*.57,wheelR*.57,.225,0,0,0,metal,10);hub.rotation.z=Math.PI/2;
+  B(spin,.035,wheelR*.79,.055,side*.122,0,0,trim);
+ }
+ const parts=[];root.traverse(o=>{if(!o.isMesh)return;const m=new Inst(o.geometry,o.material,capacity);m.count=0;m.frustumCulled=false;parent.add(m);parts.push({source:o,mesh:m,tag:o.userData?.fleetColor});});
+ return {root,chassis,wheels,parts};
+}
+const fleetPose=new WeakMap();
+function approachAngle(a,b){return Math.atan2(Math.sin(b-a),Math.cos(b-a));}
+function matchLegacyCars(parent,cars,position,excluded){
+ const targets=cars.map(b=>position(b)),matches=[];
+ for(const o of parent.children){if(!o.isInstancedMesh||excluded.has(o)||o.count<20||Math.abs(o.count-cars.length)>20)continue;
+  const M=o.matrix.clone();let hit=0,n=0;
+  for(let i=0;i<o.count;i+=Math.max(1,Math.floor(o.count/24))){o.getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14];if(targets.some(p=>Math.hypot(x-p.x,z-p.z)<3.2))hit++;n++;}
+  if(n>=8&&hit/n>=.92)matches.push(o);
+ }return matches;
+}
+function renderFleet(cars,position,parent,kit){
+ if(!peopleRenderer?.base?.[0]?.matrix?.clone||!parent?.children)return false;
+ const Inst=peopleRenderer.base[0].constructor;
+ let f=fleetRenderers.get(parent);
+ if(!f){f={templates:new Map(),legacy:new Set(),frames:0,privateReady:false};fleetRenderers.set(parent,f);}
+ f.frames++;
+ if(!f.privateReady||f.frames%90===1){
+  const excluded=new Set([...peopleRenderer.base,...peopleRenderer.accessories,...(peopleRenderer.anatomy?Object.values(peopleRenderer.anatomy).flat():[]),...Array.from(f.templates.values()).flatMap(t=>t.parts.map(p=>p.mesh)),...f.legacy]);
+  const legacy=matchLegacyCars(parent,cars.filter(b=>!b.bus),position,excluded);for(const o of legacy)f.legacy.add(o);
+  if(f.legacy.size)f.privateReady=true;
+ }
+ for(const o of f.legacy)o.visible=false;
+ const sets=new Map();for(const b of cars){if(!b.bus&&!f.privateReady)continue;const type=vehicleType(b);if(!sets.has(type))sets.set(type,[]);sets.get(type).push(b);}
+ const color=peopleRenderer.color;
+ for(const [type,bs] of sets){let t=f.templates.get(type);if(!t){t=makeFleetTemplate(type,kit,parent,Inst,Math.max(160,cars.length));f.templates.set(type,t);}
+  const {root,chassis,wheels,parts}=t;
+  for(let i=0;i<bs.length;i++){const b=bs[i],p=vehicleSpec(b),r=carRect(b),raw=position(b),a=Number.isFinite(raw.a)?raw.a:Math.atan2(D[b.dir][0],D[b.dir][1]),old=fleetPose.get(b)||{a,pitch:0,roll:0,bounce:0},delta=approachAngle(old.a,a);
+   old.a+=delta*.30;old.pitch+=(clamp(-(b.acceleration||0)*.009,-.065,.065)-old.pitch)*.22;
+   old.roll+=(clamp(-delta*(b.velocity||0)*.022,-.10,.10)-old.roll)*.24;
+   old.bounce+=(Math.sin((b.distanceM||0)*2.3)*Math.min(.021,(b.velocity||0)*.002)-old.bounce)*.20;fleetPose.set(b,old);
+   root.position.set(r.x,0,r.z);root.rotation.y=old.a;chassis.rotation.x=old.pitch;chassis.rotation.z=old.roll;chassis.position.y=old.bounce;
+   for(const wheel of wheels){wheel.pivot.rotation.y=wheel.front?clamp(delta,-.48,.48):0;wheel.spin.rotation.x=-(b.distanceM||0)/(b.bus?.48:p.h>2?.39:.33);}
+   root.updateMatrixWorld(true);
+   const driver=appearance(b.id+173),palette=[0x687d85,0x9c765b,0x52645d,0x837f6d,0x9b9a89,0x5e5965,0x49545e];
+   for(const part of parts){part.mesh.setMatrixAt(i,part.source.matrixWorld);if(part.tag==="paint"){color.setHex(b.bus?lines[b.line].color:["sedan","hatch","wagon"].includes(type)?palette[b.id%palette.length]:p.color);part.mesh.setColorAt(i,color);}else if(part.tag==="skin"||part.tag==="clothes"){color.setHex(part.tag==="skin"?driver.skin:driver.shirt);part.mesh.setColorAt(i,color);}else if(part.tag==="brake"){color.setHex((b.acceleration||0)<-.8?0xffffff:0x8b8b8b);part.mesh.setColorAt(i,color);}}
+  }
+  for(const part of parts){part.mesh.count=bs.length;part.mesh.instanceMatrix.needsUpdate=true;if(part.mesh.instanceColor)part.mesh.instanceColor.needsUpdate=true;}
+ }
+ for(const [type,t] of f.templates)if(!sets.has(type))for(const part of t.parts)part.mesh.count=0;
+ if(typeof window!=="undefined")window.sectorZeroFleetAudit=()=>({privateReady:f.privateReady,legacyMeshes:f.legacy.size,classes:[...sets.keys()],rendered:[...sets.values()].reduce((n,b)=>n+b.length,0)});
+ return true;
+}
+
 const busMeshes=new Map();
 export function drawBuses(cars,position,parent,{group,box,cyl,mat}){
  buildUnderground();if(currentWorld)updateTrainMeshes(currentWorld);renderPeople(parent,{group,box,cyl,mat});
+ if(renderFleet(cars,position,parent,{group,box,cyl,mat}))return;
  for(const b of cars){if(!b.bus)continue;let m=busMeshes.get(b.id);if(!m){m=group();const paint=mat(lines[b.line].color),body=mat(0x9b9c87),window=mat(0x344d51),rubber=mat(0x222722),lights=mat(0xe8dec1),tail=mat(0xa74b40);
  box(m,2.35,1.75,8.1,0,1.48,0,body);box(m,2.42,.4,8.2,0,.78,0,paint);box(m,2.3,.18,8.1,0,2.43,0,paint);if(b.line>=4){box(m,1.8,.3,4,0,2.68,-.5,window);box(m,2.03,.33,.09,0,2.33,4.14,paint);}
  box(m,2.05,.75,.08,0,1.94,4.08,window);box(m,2.05,.7,.08,0,1.94,-4.08,window);
