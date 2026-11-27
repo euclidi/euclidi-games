@@ -4,3 +4,6 @@ Local tests: module syntax passed; Chromium 1280×800 and 390×844 inline fixtur
 
 ## 0.13.0 — asset-first implementation
 Sourced three CC0 Poly Haven material families; committed acquisition script, manifest plan, provenance, atomic PBR map integration, required-scan smoke assertion and acquisition workflow. Static JavaScript parse passed. Real map bytes could not be downloaded here (DNS access blocked); acquisition workflow execution, image hashes, appearance, WebGL playtest and Pages release remain unverified. The candidate candleholder and rat source meshes are not integrated. Do not claim the procedural fallback is scanned. See [ASSETS.md](ASSETS.md).
+
+## 0.13.1 — local assets and engine
+Committed six real CC0 stone and timber maps, with source identity and byte verification, and the official MIT Three.js r160 module. The primary WebGL renderer now imports locally before trying external CDNs. Preserves full scene, procedural linen fallback and all behavior. Partial scan state (two complete families) is expected. Browser smoke started on commit `410d4c775e9ce3e7edb3d8b8697fa0c37f57aee2`, run 46010707644; outcome not yet confirmed. Linen, model substitutions, visual alignment, cloth and public Pages/catalog validation outstanding.
