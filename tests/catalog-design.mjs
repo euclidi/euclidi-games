@@ -19,7 +19,8 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    const page=await browser.newPage({viewport:{width,height},reducedMotion:width===1280?'reduce':'no-preference',...(name==='chromium'&&mobile?{isMobile:true,hasTouch:true}:{})});
    const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().startsWith(base)&&r.status()>=400)errors.push(r.status()+' '+r.url());});
    assert((await page.goto(base+'?design-audit='+Date.now(),{waitUntil:'networkidle'})).ok());
-   await page.locator('#crt-replay').waitFor();
+   await page.locator('#motion-mode').waitFor();
+   assert.equal(await page.locator('.eg-crt,#crt-replay').count(),0,'No CRT overlay or replay control');
    const palette=await page.evaluate(()=>{const s=getComputedStyle(document.documentElement);return Object.fromEntries(['--bg','--panel','--line','--fg','--muted','--accent'].map(k=>[k,s.getPropertyValue(k).trim()]))});
    assert.deepEqual(palette,{'--bg':'#111111','--panel':'#191919','--line':'#353535','--fg':'#eeeeee','--muted':'#a6a6a6','--accent':'#dddddd'});
    assert.equal(await page.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(17, 17, 17)');
@@ -28,7 +29,6 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    assert.equal(await page.locator('#motion-mode').inputValue(),'on');
    assert.equal(await page.locator('#motion-status').textContent(),'On (default)');
    console.log('motion environment',name,width,await page.evaluate(()=>({hover:matchMedia('(hover:hover)').matches,fine:matchMedia('(pointer:fine)').matches,reduced:matchMedia('(prefers-reduced-motion:reduce)').matches,mode:document.body.dataset.motion})));
-   await page.waitForFunction(()=>!document.querySelector('.eg-crt').classList.contains('is-playing'));
    const layout=await page.evaluate(async()=>{
      await document.fonts.ready;const font=getComputedStyle(document.body).fontFamily.includes('system-ui')&&!Array.from(document.fonts).some(f=>f.family.includes('Sinistre'));
      const selectors='.brand,.top nav a,.intro h1,.intro p,.eyebrow,.meta span,.count,.foot,.catalog-heading h2,.info h2,.info p,.cover-title,.cover-top,.cover-bottom,.play,.actions a,.project-docs a,.filters button,.search input';
@@ -36,7 +36,7 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
      const clipped=[...document.querySelectorAll('.cover')].flatMap(cover=>{const r=cover.getBoundingClientRect();return [...cover.querySelectorAll('.cover-title,.cover-top,.cover-bottom')].filter(e=>{const t=e.getBoundingClientRect();return t.left<r.left-1||t.right>r.right+1||t.top<r.top-1||t.bottom>r.bottom+1;}).map(e=>e.textContent);});
      return {revision:document.body.dataset.designRevision,font,logo:document.querySelector('.mark').naturalWidth,overflow:document.documentElement.scrollWidth>innerWidth,items,clipped};
    });
-   assert.equal(layout.revision,'9');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
+   assert.equal(layout.revision,'10');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
    assert.equal(layout.clipped.length,0,JSON.stringify(layout.clipped));
    for(const i of layout.items){assert(i.font.includes('system-ui')&&!i.font.includes('Sinistre'),JSON.stringify(i));assert(['400','600'].includes(i.weight),JSON.stringify(i));assert(['normal','0px'].includes(i.tracking),JSON.stringify(i));assert(i.size>=11.9&&i.size<=42.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
 
@@ -46,10 +46,6 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    assert.equal(await page.locator('footer a[href="https://github.com/euclidi/euclidi-labs"]').count(),1);
    const n=await page.locator('.game').count();assert(n>0);
    await page.screenshot({path:'audit-artifacts/'+name+'-'+width+'-layout.png',fullPage:true});
-   await page.locator('#crt-replay').click();
-   const shutter=await sampled(page,'.eg-crt','transform','::before',850);
-   assert(shutter.some(x=>x!=='none'));console.log('CRT frames',name,width,shutter);
-   await page.waitForFunction(()=>!document.querySelector('.eg-crt').classList.contains('is-playing'));
    const cursor=await sampled(page,'.intro h1','opacity','::after',1400);assert(cursor.includes('0')&&cursor.includes('1'));
    if(!mobile){
      const brand=page.locator('.brand'),mark=page.locator('.mark');
@@ -78,10 +74,8 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    await page.locator('[data-filter="All"]').click();assert.equal(await page.locator('.game:visible').count(),n);
    await page.emulateMedia({reducedMotion:'reduce'});await page.reload({waitUntil:'networkidle'});
    assert.equal(await page.locator('body').getAttribute('data-motion'),'on','Default must remain on under reduced motion');
-   assert(!(await page.locator('#crt-replay').isDisabled()));
    await page.locator('#motion-mode').selectOption('auto');
-   assert(await page.locator('#crt-replay').isDisabled());assert.equal(await page.locator('.intro h1').evaluate(e=>getComputedStyle(e,'::after').animationName),'none');
-   assert.equal(await page.locator('.eg-crt').evaluate(e=>getComputedStyle(e).display),'none');
+   assert.equal(await page.locator('.intro h1').evaluate(e=>getComputedStyle(e,'::after').animationName),'none');
    assert.equal(await page.locator('body').getAttribute('data-motion'),'off');
    await page.locator('#motion-mode').selectOption('on');
    assert.equal(await page.locator('body').getAttribute('data-motion'),'on');
