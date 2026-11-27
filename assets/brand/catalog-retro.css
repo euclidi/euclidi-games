@@ -1,0 +1,91 @@
+/* Euclidi Games — approved typography & motion, revision 1. */
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("./press-start-2p/PressStart2P-Regular.ttf") format("truetype");
+  font-style: normal; font-weight: 400; font-display: swap;
+}
+:root {
+  --ui-font: "Press Start 2P", monospace;
+  --ui-scale: .9;
+  --ui-tracking: 1px;
+  --motion-speed: 1;
+  font-family: var(--ui-font);
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: var(--ui-tracking);
+  line-height: 1.8;
+}
+.brand, .top nav, .intro h1, .intro p, .eyebrow, .meta,
+.cover-top, .cover-bottom, .count, .foot, .catalog-heading h2,
+.info h2, .info p, .play, .legacy, .project-docs, .filters button,
+.search input, .search span {
+  font-family: var(--ui-font); font-weight: 400; letter-spacing: var(--ui-tracking);
+}
+button, input { letter-spacing: inherit; font-weight: 400; }
+.brand {font-size:calc(13px * var(--ui-scale)); line-height:1.7; min-width:0;}
+.top nav {font-size:calc(11px * var(--ui-scale));gap:18px;flex-shrink:0;}
+.intro h1 {font-size:calc(clamp(24px,4vw,48px) * var(--ui-scale));line-height:1.55;overflow-wrap:anywhere;}
+.intro p {font-size:calc(13px * var(--ui-scale));line-height:2;max-width:100ch;}
+.eyebrow,.count,.foot {font-size:calc(10px * var(--ui-scale));line-height:1.85;}
+.filters button,.search input,.play {font-size:calc(11px * var(--ui-scale));line-height:1.65;}
+.filters button[aria-pressed=true] {font-weight:400;}
+.filters button {min-height:44px;}
+.search input {width:185px;}
+.search span {font-size:calc(14px * var(--ui-scale));}
+.catalog-heading {gap:12px;flex-wrap:wrap;}
+.catalog-heading h2 {font-size:calc(13px * var(--ui-scale));line-height:1.7;}
+.meta {font-size:calc(9px * var(--ui-scale));line-height:1.9;flex-wrap:wrap;justify-content:space-between;}
+.info h2 {font-size:calc(16px * var(--ui-scale));line-height:1.65;overflow-wrap:anywhere;}
+.info p {font-size:calc(11px * var(--ui-scale));line-height:2;}
+.play {min-height:44px;}
+.legacy,.project-docs {font-size:calc(10px * var(--ui-scale));line-height:1.8;}
+.project-docs a {min-height:34px;}
+/* Preserve each game's cover art lettering, layout, colors and images. */
+.cover-title {font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-synthesis:weight style;}
+.cover-title.sanctuary {font-family:Georgia,serif;}
+.cover-title.backyard-astronaut,.cover-title.dummy-lab-w18 {font-family:ui-monospace,monospace;}
+.cover-top,.cover-bottom {font-size:calc(clamp(7px,.7vw,9px) * var(--ui-scale));line-height:1.7;letter-spacing:0;flex-wrap:wrap;}
+.cover-top span,.cover-bottom span {min-width:0;overflow-wrap:anywhere;}
+/* One-time CRT startup, with no persistent flashing. */
+@keyframes eg-crt-startup {
+  0% {transform:scaleY(.025);opacity:0;}
+  30% {transform:scaleY(.025);opacity:.8;}
+  68% {transform:scaleY(1.02);opacity:1;}
+  100% {transform:none;opacity:1;}
+}
+@keyframes eg-logo-turn {to{transform:rotate(360deg);}}
+@keyframes eg-cursor {50%{opacity:0;}}
+@keyframes eg-pixel-blink {50%{background:var(--bg);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}}
+@media(prefers-reduced-motion:no-preference) {
+  header,main,footer {animation:eg-crt-startup calc(.72s / var(--motion-speed)) cubic-bezier(.2,.75,.25,1) both;transform-origin:center center;}
+  .intro h1::after {animation:eg-cursor calc(1s / var(--motion-speed)) steps(1,end) 4;}
+  .game {transition:transform calc(.2s / var(--motion-speed)) ease-out,border-color calc(.2s / var(--motion-speed));transform-origin:center;}
+  @media(hover:hover) and (pointer:fine) {
+    .brand:hover .mark {animation:eg-logo-turn calc(.8s / var(--motion-speed)) ease-in-out both;}
+    .game:hover {transform:perspective(900px) rotateX(3deg) rotateY(-4deg);border-color:var(--accent);position:relative;z-index:1;}
+    .play:hover,.filters button:hover {animation:eg-pixel-blink calc(.36s / var(--motion-speed)) steps(1,end) 2;}
+  }
+  .brand:focus-visible .mark {animation:eg-logo-turn calc(.8s / var(--motion-speed)) ease-in-out both;}
+  .play:focus-visible,.filters button:focus-visible {animation:eg-pixel-blink calc(.36s / var(--motion-speed)) steps(1,end) 2;}
+}
+.intro h1::after {content:"";display:inline-block;width:.55em;height:.92em;margin-inline-start:.25em;vertical-align:-.08em;background:currentColor;}
+@media(max-width:900px) {
+  .brand {font-size:calc(12px * var(--ui-scale));}
+  .top nav {gap:12px;font-size:calc(10px * var(--ui-scale));}
+}
+@media(max-width:550px) {
+  .top {height:auto;min-height:76px;padding-block:12px;flex-wrap:wrap;gap:9px;}
+  .top nav {width:100%;justify-content:flex-end;}
+  .brand {font-size:calc(12px * var(--ui-scale));}
+  .intro h1 {font-size:calc(clamp(24px,6vw,34px) * var(--ui-scale));}
+  .intro p {font-size:calc(12px * var(--ui-scale));}
+  .filters button {padding-inline:8px;}
+  .cover-top,.cover-bottom {font-size:calc(9px * var(--ui-scale));}
+  .info p {font-size:calc(11px * var(--ui-scale));}
+  .search input {width:100%;}
+}
+@media(prefers-reduced-motion:reduce) {
+  header,main,footer,.mark,.game,.play,.filters button,.intro h1::after {
+    animation:none !important;transition:none !important;transform:none !important;
+  }
+}
