@@ -25,7 +25,7 @@ jobs:
         run: |
           set -e
           mkdir -p meeting-seam/assets
-          for name in arthur elias; do
+          for name in arthur elias cart barrow fixture rock timber steelpost rail; do
             spritekiln render meeting-seam/art-src/$name.yaml
             dir=meeting-seam/art-src/out/$name
             cp "$dir/$name.png" "$dir/$name.json" meeting-seam/assets/
@@ -41,6 +41,12 @@ jobs:
               assert d['spritekiln']['frame_size']==128
               assert all(a in d['spritekiln']['animations'] for a in ('idle','walk','mine','work'))
               assert im.width>=128 and im.height>=128 and im.mode=='RGBA'
+          for name in ('cart','barrow','fixture','rock','timber','steelpost','rail'):
+              p=Path('meeting-seam/assets')
+              d=json.loads((p/(name+'.json')).read_text())
+              im=Image.open(p/(name+'.png'))
+              assert d['spritekiln']['frame_size']==128 and im.mode=='RGBA'
+              assert im.getbbox() is not None
           PY
       - uses: actions/upload-artifact@v4
         with:
