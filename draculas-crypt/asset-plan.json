@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "provider": "Poly Haven",
+  "license": "CC0-1.0",
+  "resolution": "1k",
+  "materials": [
+    {
+      "id": "rock_01",
+      "roles": [
+        "stone",
+        "ash",
+        "dark",
+        "floor"
+      ],
+      "maps": [
+        "diff",
+        "nor_gl",
+        "rough"
+      ],
+      "source": "https://polyhaven.com/a/rock_01",
+      "reason": "Solid weathered stone surface without baked mortar seams; existing dressed blocks and floor courses supply physical joints."
+    },
+    {
+      "id": "fine_grained_wood",
+      "roles": [
+        "mahogany",
+        "ebony"
+      ],
+      "maps": [
+        "diff",
+        "nor_gl",
+        "rough"
+      ],
+      "source": "https://polyhaven.com/a/fine_grained_wood",
+      "reason": "Aged dark wood without plank joints for the existing coffin and carved furniture."
+    },
+    {
+      "id": "rough_linen",
+      "roles": [
+        "cloth",
+        "mantle",
+        "stole"
+      ],
+      "maps": [
+        "nor_gl",
+        "rough"
+      ],
+      "source": "https://polyhaven.com/a/rough_linen",
+      "reason": "Real woven relief and roughness; preserve existing vestment palette rather than importing blue albedo."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "brass_candleholders",
+      "source": "https://polyhaven.com/a/brass_candleholders",
+      "license": "CC0-1.0",
+      "decision": "Evaluate 42k triangle source in Blender, separate holders/candles/flames, reduce LODs and align dynamic flame positions before replacement."
+    },
+    {
+      "id": "street_rat",
+      "source": "https://polyhaven.com/a/street_rat",
+      "license": "CC0-1.0",
+      "decision": "Anatomical source mesh/reference, not a ready-made biped; retopology and rigging required. Never add a second resident."
+    }
+  ]
+}
