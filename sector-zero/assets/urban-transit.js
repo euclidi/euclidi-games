@@ -152,7 +152,7 @@ function moveCrowd(w,dt,api){
 }
 function queueSlot(w,c,p){
  const d=D[p.dir],occupied=w.citizens.filter(q=>q!==c&&walking(q));
- for(let i=0;i<32;i++){const along=(i%16)*.94-5,side=Math.floor(i/16)*.96;
+ for(let i=0;i<36;i++){const along=(i%12)*.94-4,side=2.0+Math.floor(i/12)*.96;
  const q={x:p.x+d[0]*along+d[1]*side,z:p.z+d[1]*along-d[0]*side};
  if(offRoad(q.x,q.z)&&!inSolid(q.x,q.z)&&!occupied.some(o=>Math.hypot(o.x-q.x,o.z-q.z)<PERSON||o.ride?.queue&&Math.hypot(o.ride.queue.x-q.x,o.ride.queue.z-q.z)<PERSON))return q;}
  return null;
