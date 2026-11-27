@@ -1,4 +1,4 @@
-# Dummy Lab — W1.13
+# Dummy Lab — W1.14
 
 Observe an autonomous articulated humanoid from a furnished laboratory, inspect its behavior and interact with it from the observation area.
 

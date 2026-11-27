@@ -1,4 +1,4 @@
-# Dummy Lab — W1.13 — Roadmap
+# Dummy Lab — W1.14 — Roadmap
 
 Updated 2026-11-26. Active — current catalog release.
 
@@ -26,3 +26,5 @@ This is an ordered development backlog, not a declaration that milestones are co
 [Specification](SPEC.md) · [Current status](STATUS.md)
 
 - [ ] W1.13 browser acceptance: grounded gait, turning/stopping, seat clearance, safe exit, controller/touch interaction, stock and vending visuals.
+
+- [ ] W1.14 visual gait audit; real contact tests; force-driven balance, anatomical fall constraints and grip.

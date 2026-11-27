@@ -39,10 +39,10 @@ export function createFallRig(R,world,r){
   };
   const cap=(h,rad)=>R.ColliderDesc.capsule(h,rad),box=(x,y,z)=>R.ColliderDesc.cuboid(x,y,z);
   const pelvis=add(r.root,box(.18,.115,.105),V(0,.075,0),9);
-  const torso=add(r.body,box(.205,.235,.115),V(0,.42,0),18,pelvis,r.root.localToWorld(V(0,.19,0)));
+  const lumbar=add(r.spine,box(.16,.105,.105),V(0,.055,0),5,pelvis,r.spine.getWorldPosition(V()));const torso=add(r.body,box(.205,.19,.115),V(0,.48,0),13,lumbar,r.thorax.getWorldPosition(V()));
   const head=add(r.head,R.ColliderDesc.ball(.127),V(0,.156,0),4.5,torso,r.head.getWorldPosition(V()));
   for(const a of r.arms){const upper=add(a.a,cap(.078,.065),V(0,-.145,0),2.4,torso,a.a.getWorldPosition(V()));const lower=add(a.b,cap(.064,.052),V(0,-.125,0),1.6,upper,a.b.getWorldPosition(V()));add(a.h,box(.060,.08,.032),V(0,-.075,0),.55,lower,a.h.getWorldPosition(V()))}
-  for(const l of r.legs){const hip=r.root.localToWorld(V(l.s*.137,0,0)),thigh=add(l.thigh,cap(.118,.082),V(0,.21,0),6.4,pelvis,hip),shin=add(l.shin,cap(.123,.066),V(0,.21,0),3.5,thigh,l.thigh.getWorldPosition(V()));add(l.foot,box(.071,.045,.12),V(0,-.028,.034),1,shin,l.foot.getWorldPosition(V()))}
+  for(const l of r.legs){const hip=r.pelvis.localToWorld(V(l.s*.137,0,0)),thigh=add(l.thigh,cap(.118,.082),V(0,.21,0),6.4,pelvis,hip),shin=add(l.shin,cap(.123,.066),V(0,.21,0),3.5,thigh,l.thigh.getWorldPosition(V()));add(l.foot,box(.071,.045,.12),V(0,-.028,.034),1,shin,l.foot.getWorldPosition(V()))}
   torso.b.applyImpulse(shove,true);
  }
  function sync(){for(const p of parts)writeWorld(p.g,vec(p.b.translation()),quat(p.b.rotation()))}

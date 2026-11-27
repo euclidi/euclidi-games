@@ -1,4 +1,4 @@
-import * as T from 'three';import {V,Q} from './geometry.js';import {angle,clamp} from './math.js';import {rolledLeg,neutralArm,armIK,curl} from './rig.js?v=1.11.1';import {predictFoot,swingCurve} from './locomotion-math.js?v=1.13';
+import * as T from 'three';import {V,Q} from './geometry.js';import {angle,clamp} from './math.js';import {rolledLeg,neutralArm,armIK,curl} from './rig.js?v=1.14';import {createCompliance} from './motion.js?v=1.14';import {predictFoot,swingCurve} from './locomotion-math.js?v=1.13';
 // Inspired by Igor Santarek's MIT-licensed ProceduralWalk: predicted
 // grounded foot targets, displacement-triggered steps, persistent anchors,
 // and pelvis adjustment from foot spread. Original JS implementation.
@@ -12,9 +12,9 @@ export function targetFoot(center,heading,s,vel,lead,ground,width=.135){
  const p=V(x,0,z);p.y=ground(p);return p;
 }
 export function createPlayerGait(r,R,world){
- const feet=[V(),V()],headings=[0,0],roll=[0,0],weights=[.5,.5];let ready=false,step=null,next=0,clock=0,height=.875,last=V(),load=0,cycle=0;
+ const compliance=createCompliance(r),feet=[V(),V()],headings=[0,0],roll=[0,0],weights=[.5,.5];let ready=false,step=null,next=0,clock=0,height=.875,last=V(),load=0,cycle=0;
  const ground=p=>groundProbe(R,world,p,0)+.026;
- function reset(pos,yaw){for(let i=0;i<2;i++){feet[i].copy(targetFoot(pos,yaw,r.legs[i].s,V(),0,ground));headings[i]=yaw;roll[i]=0}last.copy(pos);step=null;ready=true;height=.875;load=0}
+ function reset(pos,yaw){for(let i=0;i<2;i++){feet[i].copy(targetFoot(pos,yaw,r.legs[i].s,V(),0,ground));headings[i]=yaw;roll[i]=0}last.copy(pos);step=null;ready=true;height=.875;load=0;compliance.reset()}
  function update(dt,pos,yaw,pitch,velocity,tip=false){
   clock+=dt;const speed=Math.hypot(velocity.x,velocity.z),activity=clamp(speed/1.65,0,1);
   if(!ready||last.distanceTo(pos)>.8)reset(pos,yaw);last.copy(pos);
@@ -41,9 +41,9 @@ export function createPlayerGait(r,R,world){
   for(let i=0;i<2;i++){const l=r.legs[i],hip=pos.clone().add(V(l.s*.137,0,0).applyAxisAngle(V(0,1,0),yaw));const p=feet[i],d=Math.hypot(p.x-hip.x,p.z-hip.z);h=Math.min(h,p.y+Math.sqrt(Math.max(.13,.833**2-d*d))+(roll[i]>0?.09*Math.sin(roll[i]):0))}
   height+=(h-height)*(1-Math.exp(-dt*14));load+=(-sign*.035*Math.sin(Math.PI*u)-load)*(1-Math.exp(-dt*12));
   r.root.position.copy(pos).add(V(load,height,0).applyAxisAngle(V(0,1,0),yaw));r.root.rotation.set(0,yaw,0);
-  r.spine.rotation.set(0,sign*.045*Math.sin(Math.PI*u),0);r.body.rotation.set(.035*activity,-sign*.055*Math.sin(Math.PI*u),-load*.7);r.neck.rotation.set(0,-r.body.rotation.y*.5,0);r.head.rotation.set(clamp(pitch,-.45,.45),0,0);r.root.updateMatrixWorld(true);
+  compliance.restoreOffsets();r.pelvis.rotation.set(-.018*activity,sign*.07*Math.cos(Math.PI*u)*activity,-load*.8);r.spine.rotation.set(.025*activity,-r.pelvis.rotation.y*.55,load*.4);r.thorax.rotation.set(.02*activity,-r.pelvis.rotation.y*.65,load*.3);r.body.rotation.set(.018*activity,-sign*.025*Math.sin(Math.PI*u),0);r.neck.rotation.set(0,-r.body.rotation.y*.5,0);r.atlas.rotation.set(0,-r.thorax.rotation.y*.25,0);r.head.rotation.set(clamp(pitch,-.45,.45),0,0);r.root.updateMatrixWorld(true);
   for(let i=0;i<2;i++){rolledLeg(r,i,feet[i],headings[i],roll[i],step?.i===i&&lift>.003);const swing=(r.legs[i].s===sign?1:-1)*.29*activity*Math.cos(Math.PI*u);neutralArm(r.arms[i],clock,step?swing:0,activity)}
-  return {height,load,speed,steps:cycle,weights:weights.slice()};
+  compliance.update(dt);return {height,load,speed,steps:cycle,weights:weights.slice()};
  }
  return {reset,update,get state(){return {steps:cycle,feet:feet.map(f=>f.toArray()),support:weights.slice()}}};
 }

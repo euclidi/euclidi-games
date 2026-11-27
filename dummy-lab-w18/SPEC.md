@@ -1,4 +1,4 @@
-# Dummy Lab — W1.13 — Development specification
+# Dummy Lab — W1.14 — Development specification
 
 **Revision:** documentation baseline, 2026-11-26. **Lifecycle:** Active — current catalog release.
 
@@ -43,3 +43,5 @@ Desktop click-to-lock via the browser Pointer Lock API; relative mouse motion, E
 ## W1.13 scope
 
 Adaptive ray-grounded, velocity-predicted foot targets for player and dummy, seated swivel-chair interaction with IK entry/exit, and interactive vending machine with stock, selection, dispensing and collection; keep desktop/mobile/controller inputs. Full active ragdoll and force-driven seating remain targets.
+
+Continuous body momentum, articulated shoulder girdle and spine, compliant local joint response, and planted-foot IK are required. Full active-ragdoll force control remains an outstanding target.
