@@ -58,9 +58,9 @@ create(){world=this;this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blo
 this.physics.world.setBounds(0,0,this.cols*T,this.rows*T);if(room===-1)this.buildTown();else this.buildRoom();
 let x=room===-1?clamp(S.x,10,this.cols*T-10):216,y=room===-1?clamp(S.y,10,this.rows*T-10):272;
 if(this.blocked.has(Math.floor(y/T)*this.cols+Math.floor(x/T))){x=264;y=232}
-this.player=this.person(x,y,S.look);this.player.body.setMass(5);this.physics.add.collider(this.player,this.walls);this.physics.add.collider(this.player,this.props,(_,obj)=>{if(job||performance.now()-bumpAt<2500||Math.hypot(obj.body.velocity.x,obj.body.velocity.y)<10)return;let w=this.people.find(q=>q.sprite.visible&&d(q.sprite,obj)<42);if(w){bumpAt=performance.now();S.calm=Math.max(0,S.calm-4);witnessIncident(S,-1,w.n.id,'collision');log(w.n.name+' witnessed an awkward collision.');toast('Oops. '+w.n.name+' saw that.');hud()}});this.physics.add.collider(this.props,this.walls);this.physics.add.collider(this.props,this.props);
+this.player=this.person(x,y,S.look);this.player.setTint(0xf7e7d3);this.player.body.setMass(5);this.physics.add.collider(this.player,this.walls);this.physics.add.collider(this.player,this.props,(_,obj)=>{if(job||performance.now()-bumpAt<2500||Math.hypot(obj.body.velocity.x,obj.body.velocity.y)<10)return;let w=this.people.find(q=>q.sprite.visible&&d(q.sprite,obj)<42);if(w){bumpAt=performance.now();S.calm=Math.max(0,S.calm-4);witnessIncident(S,-1,w.n.id,'collision');log(w.n.name+' witnessed an awkward collision.');toast('Oops. '+w.n.name+' saw that.');hud()}});this.physics.add.collider(this.props,this.walls);this.physics.add.collider(this.props,this.props);
 for(let n of this.people){this.physics.add.collider(n.sprite,this.walls)}
-this.cam=this.cameras.main;this.cam.setBounds(0,0,this.cols*T,this.rows*T);this.cam.setZoom(2);this.cam.roundPixels=true;this.cam.startFollow(this.player,true,.18,.18);
+this.cam=this.cameras.main;this.cam.setBounds(0,0,this.cols*T,this.rows*T);this.cam.setZoom(room===-1?1.3:1.18);this.cam.roundPixels=true;this.cam.startFollow(this.player,true,.18,.18);
 this.tint=this.add.rectangle(0,0,this.cols*T,this.rows*T,0x142844,0).setOrigin(0).setDepth(9999);
 this.input.on('pointerdown',p=>{if(dialogue)return;let v=this.cam.getWorldPoint(p.x,p.y);if(room===-1){let b=SHOPS.find(b=>v.x>=b.x*T&&v.x<(b.x+b.w)*T&&v.y>=b.y*T&&v.y<(b.y+b.h)*T);if(b){this.navigateDoor(b);return}let n=this.people.find(n=>n.sprite.visible&&d(n.sprite,v)<11);if(n){this.navigate(n.sprite.x,n.sprite.y+17,()=>{if(d(n.sprite,this.player)<32)talk(n.n);else toast('They have moved. Try again.')});return}}this.navigate(v.x,v.y)});
 $('district').textContent=room===-1?'MAIN STREET':room===8?'APARTMENT':SHOPS[room].name.toUpperCase();$('boot').hidden=true;showTab(tab);hud();if(afterRoom){let cb=afterRoom;afterRoom=null;cb()}}
@@ -68,31 +68,93 @@ tile(x,y,c,r,z=0){return this.add.image(x*T+8,y*T+8,'urban',F(c,r)).setDepth(z)}
 rect(x,y,w,h,col,z=0,a=1){return this.add.rectangle(x,y,w,h,col,a).setOrigin(0).setDepth(z)}
 label(x,y,t,z=20){return this.add.text(x,y,t,{fontFamily:'monospace',fontSize:'7px',color:'#fff0cc',backgroundColor:'#242a2d',padding:{x:3,y:2}}).setOrigin(.5).setDepth(z)}
 solid(x,y,w,h){let a=this.add.zone((x+w/2)*T,(y+h/2)*T,w*T,h*T);this.physics.add.existing(a,true);this.walls.add(a);for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)this.blocked.add(yy*this.cols+xx)}
-buildTown(){for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++){
-let road=(y>=15&&y<=19)||(y>=35&&y<=39)||[17,18,19,35,36,37,53,54,55].includes(x);
-let walk=(y>=11&&y<=14)||(y>=20&&y<=22)||(y>=32&&y<=34)||y>=40||[16,20,34,38,52,56].includes(x);
-if(road){this.tile(x,y,1,16);if((y===17||y===37)&&x%3===0)this.rect(x*T+2,y*T+7,10,1,0xd7c69c,1);if([18,36,54].includes(x)&&y%3===0)this.rect(x*T+7,y*T+2,1,10,0xd7c69c,1)}
-else if(walk)this.tile(x,y,9,1);else this.tile(x,y,1,1)}
-for(let b of SHOPS){for(let yy=0;yy<b.h-2;yy++)for(let xx=0;xx<b.w;xx++){
-let f=FACADES[b.id],c=f.roof[0]+(xx===0?0:xx===b.w-1?2:1),r=f.roof[1]+(yy===0?0:yy===b.h-3?2:1);
-this.tile(b.x+xx,b.y+yy,c,r,4)}
-let f=FACADES[b.id];for(let xx=0;xx<b.w;xx++){let c=xx===Math.floor(b.w/2)?12:xx%3===0?13:f.wall[0];this.tile(b.x+xx,b.y+b.h-2,c,4,5);this.tile(b.x+xx,b.y+b.h-1,c,5,5)}
-this.rect(b.x*T,(b.y+b.h-2)*T,b.w*T,5,f.accent,6);for(let a=0;a<b.w*T;a+=12)this.rect(b.x*T+a,(b.y+b.h-2)*T+5,6,3,f.awning,6);this.label((b.x+b.w/2)*T,(b.y+b.h-3)*T-3,f.text,12);
-this.solid(b.x,b.y,b.w,b.h);this.label((b.x+b.w/2)*T,(b.y+b.h-2)*T,b.sign,10);
-let p=door(b);this.add.circle(p.x,p.y+4,2,0xc4d99d).setDepth(10);
-for(let xx of [b.x,b.x+b.w-1]){this.tile(xx,b.y+b.h,16,8,10);this.tile(xx,b.y+b.h+1,16,9,10)}
+// Composition uses the original atlas for roofs, props, actors and ground detail;
+// custom pixel-aligned structural trims provide continuous walls and shopfronts.
+tree(x,y,variant=0){let c=variant%2?17:16;this.rect(x*T+1,y*T+20,19,7,0x222d2a,2,.28);this.tile(x,y,c,8,8);this.tile(x,y+1,c,9,9)}
+windowAt(x,y,w=22){this.rect(x-2,y-2,w+4,19,0x343d40,7);this.rect(x,y,w,15,0x66808a,8);this.rect(x+1,y+1,w-2,2,0xadc0bc,9);this.rect(x+Math.floor(w/2),y,2,15,0x34474c,9);this.rect(x,y+10,w,2,0x445c61,9)}
+storefront(b){
+ let f=FACADES[b.id],x=b.x*T,y=b.y*T,w=b.w*T,h=b.h*T,face=y+h-32,roofH=h-32;
+ this.rect(x+5,y+6,w,h,0x20272d,2,.48);
+ this.rect(x,y,w,h,0x30383a,3);
+ this.rect(x+2,y+2,w-4,roofH-2,f.accent,4);
+ // use the red/orange roof panel's continuous center tile, with custom parapet.
+ for(let yy=0;yy<b.h-2;yy++)for(let xx=0;xx<b.w;xx++){
+  let roof=this.tile(b.x+xx,b.y+yy,18,b.id%3===1?4:1,4);
+  roof.setTint(b.id%3===1?0xb5c3c0:b.id%3===2?0xc7b7bd:0xc5ac9b);
+ }
+ this.rect(x,y,w,3,0x373a3a,5);this.rect(x+2,y+3,w-4,2,0xd5b894,5);
+ this.rect(x,y,3,roofH,0x424547,5);this.rect(x+w-3,y,3,roofH,0x373d3e,5);
+ this.rect(x+5,y+6,25,18,0x444b4c,6);this.rect(x+7,y+8,21,14,0x939b91,7);
+ for(let i=0;i<4;i++)this.rect(x+9,y+9+i*3,17,1,0x5e6a66,8);
+ this.rect(x,face,w,32,0xb9ac97,6);this.rect(x,face,w,8,f.accent,7);
+ for(let xx=0;xx<w;xx+=16)this.rect(x+xx,face+8,1,23,0xa19582,7);
+ let center=x+Math.floor(b.w/2)*T+8;
+ for(let xx=x+10;xx<x+w-25;xx+=32){if(Math.abs(xx+11-center)>25)this.windowAt(xx,face+12,22)}
+ this.rect(center-10,face+9,20,23,0x364248,8);
+ this.rect(center-7,face+11,14,18,0x7c969c,9);this.rect(center+4,face+19,2,2,0xe7d1a1,10);
+ this.rect(center-12,face+30,24,2,0x615f55,10);
+ this.rect(x+3,face-3,w-6,8,f.accent,10);
+ for(let xx=4;xx<w-8;xx+=10)this.rect(x+xx,face+5,5,3,f.awning,10);
+ this.label(x+w/2,face-9,b.sign,20);
+ this.label(x+w/2,y+11,f.text,12);
+ this.solid(b.x,b.y,b.w,b.h);
+ let p=door(b);this.add.circle(p.x,p.y+3,2,0xc4d99d).setDepth(20);
+ // benches, bins, potted trees from complete single-cell or two-cell atlas art.
+ this.tile(b.x,b.y+b.h,8,9,9);this.tile(b.x+b.w-1,b.y+b.h,9,9,9);
 }
-for(let x of [1,15,33,51,70])for(let y of [2,12,23,33,40]){this.tile(x,y,18,8,5);this.tile(x,y+1,18,9,6)}
-for(let i=0;i<6;i++){let x=5+i*11,y=i%2?38:16;let v=this.add.container(x*T,y*T).setDepth(8);v.add(this.add.image(0,0,'urban',F(15+i%4,15)));v.add(this.add.image(0,16,'urban',F(15+i%4,16)));this.vehicles.push({v,lane:y*T,speed:28+i*3,dir:i%2?-1:1})}
-for(let n of RESIDENTS){let b=SHOPS[n.id%8],p=door(b),sp=this.person(p.x+(n.id<8?-26:26),p.y+18,n.look);sp.setTint(MOOD_TINT[n.id%MOOD_TINT.length]);this.people.push({n,sprite:sp,path:[],next:1+n.id*.2,destination:n.id%8})}
-for(let b of SHOPS.filter(b=>b.id%2===0)){let p=door(b);this.prop(p.x-39,p.y+13,F(4,10))}
+buildTown(){
+ // Main carriageways are continuous asphalt, not tiled lane dashes.
+ for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++){
+ let vertical=[17,18,19,35,36,37,53,54,55].includes(x),horizontal=(y>=16&&y<=18)||(y>=36&&y<=38);
+ let curb=[16,20,34,38,52,56].includes(x)||[15,19,35,39].includes(y);
+ let pave=(y>=11&&y<=15)||(y>=19&&y<=23)||(y>=32&&y<=35)||y>=39||curb;
+ if(vertical||horizontal){
+ this.rect(x*T,y*T,T,T,0x51545d,0);
+ if((y===17||y===37)&&!vertical&&x%3===0)this.rect(x*T+2,y*T+7,10,1,0xbfb289,1);
+ if([18,36,54].includes(x)&&!horizontal&&y%3===0)this.rect(x*T+7,y*T+2,1,10,0xbfb289,1);
+ if((x+y*3)%11===0)this.rect(x*T+3,y*T+4,2,1,0x696b70,1);
+ }else if(pave){
+ this.rect(x*T,y*T,T,T,curb?0xaaa697:0x96988d,0);
+ this.rect(x*T,y*T,T,1,0x777f7a,1);this.rect(x*T+(y%2?8:0),y*T,1,T,0x80867e,1);
+ if(curb)this.rect(x*T,y*T+13,T,2,0xc6c3b1,2);
+ }else{this.tile(x,y,1,1).setTint(0x78978b)}
+ }
+ for(let cx of [18,36,54])for(let cy of [17,37])for(let i=0;i<5;i++){
+ this.rect((cx-1.5)*T,cy*T-13+i*5,13,2,0xc3c2b3,3);
+ this.rect((cx+1)*T,cy*T-13+i*5,13,2,0xc3c2b3,3);
+ }
+ for(let b of SHOPS){this.storefront(b);this.tree(b.x+b.w+1,b.y+1,b.id)}
+ for(let x of [2,14,33,51,70])for(let y of [2,13,23,33,40]){if(y+1<this.rows)this.tree(x,y,0)}
+ for(let i=0;i<6;i++){let x=5+i*11,y=i%2?37:16.5;let v=this.add.container(x*T,y*T).setDepth(8);v.add(this.add.image(0,-8,'urban',F(15+i%4,15)));v.add(this.add.image(0,8,'urban',F(15+i%4,16)));v.setAngle(i%2?90:-90);this.vehicles.push({v,lane:y*T,speed:28+i*3,dir:i%2?-1:1})}
+ for(let n of RESIDENTS){let b=SHOPS[n.id%8],p=door(b),sp=this.person(p.x+(n.id<8?-26:26),p.y+18,n.look);sp.setTint(MOOD_TINT[n.id%MOOD_TINT.length]);this.people.push({n,sprite:sp,path:[],next:1+n.id*.2,destination:n.id%8})}
+ for(let b of SHOPS.filter(b=>b.id%2===0)){let p=door(b);this.prop(p.x-39,p.y+13,F(4,10))}
 }
-buildRoom(){let b=SHOPS[room];for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++){this.tile(x,y,b?.kind==='wash'?9:1,b?.kind==='wash'?1:4);if(x===0||x===this.cols-1||y===0||y===this.rows-1)this.tile(x,y,1,3,1)}
-this.solid(0,0,26,2);this.solid(0,2,1,16);this.solid(25,2,1,16);this.solid(0,18,26,1);this.label(208,26,b?b.sign:'PRIVATE RESIDENCE',50);
-let layout=INTERIORS[room]||INTERIORS[8];for(let [x,y,c,r,w,h] of layout){for(let j=0;j<w;j++)for(let k=0;k<h;k++)this.tile(x+j,y+k,c+j,r+k,4);this.solid(x,y,w,h)}
-if(b){this.rect(32,38,352,4,FACADES[b.id].accent,8);this.label(208,47,b.task.toUpperCase(),20);}
-if(b){for(let x=10;x<16;x++)this.tile(x,4,9+x%2,13,5);this.solid(10,4,6,1);let n=RESIDENTS[b.id];this.owner=this.person(216,112,n.look);this.people.push({n,sprite:this.owner,path:[]});this.label(216,97,n.name,20)}
-this.label(216,287,'EXIT',20)}
+buildRoom(){let b=SHOPS[room],accent=b?FACADES[b.id].accent:0x768376;
+ for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++){
+ let tile=this.tile(x,y,1,4);
+ tile.setTint(room===7?0x8b8399:room===5?0xa5c0c3:room===2?0xdac5a3:0xc7c4b8);
+ }
+ let w=this.cols*T,h=this.rows*T;
+ this.rect(0,0,w,32,0x353c40,2);this.rect(0,32,w,6,accent,3);
+ this.rect(0,0,16,h,0x4b5050,2);this.rect(w-16,0,16,h,0x4b5050,2);this.rect(0,h-16,w,16,0x44494a,2);
+ this.rect(16,h-18,w-32,2,0x7c7c71,3);
+ this.solid(0,0,26,2);this.solid(0,2,1,16);this.solid(25,2,1,16);this.solid(0,18,26,1);
+ this.label(208,17,b?b.sign:'PRIVATE RESIDENCE',50);
+ // central walkway, separate furnishing bays, continuous wood counter or service desk.
+ this.rect(128,42,160,215,accent,1,.16);
+ for(let x of [32,304]){this.rect(x,44,80,126,0x353e40,2,.17);this.rect(x,44,80,2,accent,3)}
+ let layout=INTERIORS[room]||INTERIORS[8];for(let [x,y,c,r,ww,hh] of layout){
+ this.rect(x*T-2,y*T-2,ww*T+4,hh*T+6,0x665b4c,3);
+ for(let j=0;j<ww;j++)for(let k=0;k<hh;k++)this.tile(x+j,y+k,c+j,r+k,4);this.solid(x,y,ww,hh)}
+ if(b){
+ this.rect(160,64,96,16,0x4c443b,5);this.rect(162,64,92,10,0xb49a72,6);this.rect(162,74,92,3,accent,7);
+ for(let i=0;i<4;i++)this.tile(10+i,4,4+i%3,10,8);
+ this.solid(10,4,6,1);let n=RESIDENTS[b.id];this.owner=this.person(216,112,n.look);this.people.push({n,sprite:this.owner,path:[]});this.label(216,97,n.name,20);
+ this.label(72,190,b.task.toUpperCase(),20);this.label(344,190,'SERVICE AREA',20);
+ }else{this.label(72,190,'LIVING AREA',20);this.label(344,190,'BEDROOM',20)}
+ this.rect(190,h-18,48,5,0xbca98a,8);this.label(216,287,'EXIT',20)
+}
+
 person(x,y,look){let p=this.physics.add.sprite(x,y,'urban',F(23,look*3));p.body.setSize(8,8).setOffset(4,8);p.setCollideWorldBounds(true);p.dir=23;p.phase=0;p.look=look;return p}
 animate(p,dt,look=p.look){let v=p.body.velocity;if(Math.abs(v.x)+Math.abs(v.y)>1){p.dir=Math.abs(v.x)>Math.abs(v.y)?v.x<0?24:26:v.y<0?25:23;p.phase+=dt*.009}else p.phase=0;p.setFrame(F(p.dir,look*3+[0,1,0,2][Math.floor(p.phase)%4]));p.setDepth(100+Math.floor(p.y))}
 prop(x,y,frame){let p=this.props.create(x,y,'urban',frame);p.body.setSize(12,12).setOffset(2,4);p.setDrag(140).setMaxVelocity(90).setBounce(.15).setCollideWorldBounds(true);return p}
