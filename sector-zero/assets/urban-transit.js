@@ -150,7 +150,12 @@ function driveTraffic(w,dt){
  const add=b=>{const k=key(b);if(!lanes.has(k))lanes.set(k,[]);lanes.get(k).push(b);};
  for(const b of cars)add(b);
  for(const [k,b] of junctions)if(!cars.includes(b)||!((nodeKey(b.x,b.z)===k&&b.progress<14)||(nodeKey(b.x+D[b.dir][0]*70,b.z+D[b.dir][1]*70)===k&&b.progress>stopLine(b))))junctions.delete(k);
- const list=cars.slice().sort((a,b)=>Number(!!b.junction)-Number(!!a.junction)||b.progress-a.progress||(b.stopWait||0)-(a.stopWait||0)||a.id-b.id);
+ const approach=b=>b.progress>=stopLine(b)-.05;
+ const list=cars.slice().sort((a,b)=>{
+  if(key(a)===key(b))return b.progress-a.progress||a.id-b.id;
+  return Number(!!b.junction)-Number(!!a.junction)||Number(approach(b))-Number(approach(a))||
+   (approach(a)&&approach(b)?(b.wait||0)-(a.wait||0):0)||b.progress-a.progress||a.id-b.id;
+ });
  for(const b of list){
   const old=b.progress, d=D[b.dir],tx=b.x+d[0]*70,tz=b.z+d[1]*70,k=nodeKey(tx,tz),origin=nodeKey(b.x,b.z),line=stopLine(b);
   const prev=junctions.get(origin);if(prev===b&&b.progress>=14){junctions.delete(origin);delete b.junction;}
