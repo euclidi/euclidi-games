@@ -9,3 +9,5 @@ Unverified: actual WebGL visuals and UI/flow, mobile sizing, physical controller
 
 ## 0.7.1
 Implemented in source: experiment/duel selector, saved condition/credit/repair, replay timeline scrub/playback, pause, keyboard and gamepad launch. Actual browser interactions not yet certified. Balance calibration: 120 seeded bouts, 13611 contacts, mean 31.70 seconds, finishes {"SPIN FINISH":92,"STADIUM OUT":6,"BURST FINISH":12,"TIME / SPIN ADVANTAGE":10}. Core syntax and deterministic energy tests passed. Earlier note about replay/workshop not implemented superseded for basic interfaces only. Full inventory, exploded views, detachable component physics, effects replay, real gamepad testing and visual quality still outstanding. Browser CI introduced; no cover or catalog claim.
+
+GitHub Actions run 46004621209 independently passed Node physics tests. Browser installation failed before game launch because Playwright 1.51.1 does not support ubuntu26.04-x64. Workflow pinned to ubuntu-24.04 for retry. Do not treat the failed job as a game runtime result.
