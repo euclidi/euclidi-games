@@ -1,0 +1,49 @@
+spritekiln: 1
+name: barrow
+kind: prop
+size: 128
+directions: 1
+palette: [gothic.yaml, props-palette.yaml]
+camera: {pitch: 12, scale: 0.015, center: [0, 0.4, 0]}
+materials:
+  metal: {ramp: mine_metal}
+  steel: {ramp: steel}
+  green: {ramp: mine_green}
+  wood: {ramp: mine_wood}
+  darkwood: {ramp: mine_wood, bands: [0, 2]}
+  rock: {ramp: mine_rock}
+  flame: {ramp: flame, emissive: true, band: 3}
+  core: {ramp: flame, emissive: true, band: 4}
+channels: {}
+bones: {}
+parts:
+  tray:
+    material: green
+    prims:
+      - ellipsoid: {c: [0, 0.54, 0.08], r: [0.33, 0.27, 0.51]}
+    cut:
+      - ellipsoid: {c: [0, 0.72, 0.08], r: [0.29, 0.30, 0.46]}
+      - box: {c: [0, 0.89, 0], half: [0.65, 0.16, 0.8]}
+  handles:
+    material: wood
+    prims:
+      - cylinder: {a: [0.23, 0.28, 0.33], b: [0.27, 0.52, -0.73], r: 0.038}
+      - cylinder: {a: [-0.23, 0.28, 0.33], b: [-0.27, 0.52, -0.73], r: 0.038}
+  legs:
+    material: steel
+    prims:
+      - chain: {pts: [[0.22, 0.40, -0.24], [0.24, 0.04, -0.26], [0.22, 0.04, -0.08], [0.22, 0.35, 0.04]], r: [0.026, 0.026, 0.026, 0.026]}
+      - chain: {pts: [[-0.22, 0.40, -0.24], [-0.24, 0.04, -0.26], [-0.22, 0.04, -0.08], [-0.22, 0.35, 0.04]], r: [0.026, 0.026, 0.026, 0.026]}
+  wheel:
+    material: metal
+    prims:
+      - cylinder: {a: [-0.09, 0.19, 0.45], b: [0.09, 0.19, 0.45], r: 0.19}
+  axle:
+    material: steel
+    prims:
+      - cylinder: {a: [-0.27, 0.19, 0.45], b: [0.27, 0.19, 0.45], r: 0.045}
+animations:
+  idle:
+    frames: 1
+    ms: 100
+    channels: {}
