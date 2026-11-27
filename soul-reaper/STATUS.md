@@ -1,0 +1,3 @@
+# 0.8.0 development preview
+
+Source changes: preserved v7; boss execution bypass, reach geometry scaling, obstacle collision, enemy warning rings, boss health bar, pause/input cleanup, distance-driven gait, camera, responsive page, standard gamepad mapping. Three.js r150 vendored locally; official GLTFLoader uses a small ES-module bridge to the pinned global build. Three CC0 grave variants use bounds-normalized replacement with fallback geometry on load error. Original binary Git hashes matched. Remaining primitive models and synthetic footsteps are approximations. Live WebGL, decode, complete playthrough and hardware input are not yet verified. Boss can be fought after 105 seconds (overtime).
