@@ -35,6 +35,39 @@
       "git_blob_sha": "481c50657b370a118510ba69617e57a1b6289c06",
       "license": "CC0-1.0",
       "verification": "Pinned mirror blob identity and JPEG signature; official hash comparison pending"
+    },
+    {
+      "asset": "fine_grained_wood",
+      "map": "diff",
+      "file": "fine_grained_wood-diff.jpg",
+      "source": "https://github.com/AlekseyChist/ashbound/blob/fd6a68e7ba5b75b830ea84d593c4555232e6d18a/assets/environment/village-house-materials-v1/fine_grained_wood_col_1k.jpg",
+      "original": "https://polyhaven.com/a/fine_grained_wood",
+      "bytes": 336305,
+      "git_blob_sha": "1571e4b6f93c9e0c4cc6133fb1afcdf428a70559",
+      "license": "CC0-1.0",
+      "verification": "Pinned mirror blob identity and JPEG signature; official hash comparison pending"
+    },
+    {
+      "asset": "fine_grained_wood",
+      "map": "nor_gl",
+      "file": "fine_grained_wood-nor_gl.jpg",
+      "source": "https://github.com/AlekseyChist/ashbound/blob/fd6a68e7ba5b75b830ea84d593c4555232e6d18a/assets/environment/village-house-materials-v1/fine_grained_wood_nor_gl_1k.jpg",
+      "original": "https://polyhaven.com/a/fine_grained_wood",
+      "bytes": 193626,
+      "git_blob_sha": "bc6b2d7d2d5e41ca3b1037f5f0ee48f65eaa28fe",
+      "license": "CC0-1.0",
+      "verification": "Pinned mirror blob identity and JPEG signature; official hash comparison pending"
+    },
+    {
+      "asset": "fine_grained_wood",
+      "map": "rough",
+      "file": "fine_grained_wood-rough.jpg",
+      "source": "https://github.com/AlekseyChist/ashbound/blob/fd6a68e7ba5b75b830ea84d593c4555232e6d18a/assets/environment/village-house-materials-v1/fine_grained_wood_rough_1k.jpg",
+      "original": "https://polyhaven.com/a/fine_grained_wood",
+      "bytes": 215155,
+      "git_blob_sha": "966b03f663b06c7f26546ae220af7ca1e41160fc",
+      "license": "CC0-1.0",
+      "verification": "Pinned mirror blob identity and JPEG signature; official hash comparison pending"
     }
   ]
 }
