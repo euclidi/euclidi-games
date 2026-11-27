@@ -1,0 +1,38 @@
+spritekiln: 1
+name: timber
+kind: prop
+size: 128
+directions: 1
+palette: [gothic.yaml, props-palette.yaml]
+camera: {pitch: 12, scale: 0.012, center: [0, 0.53, 0]}
+materials:
+  metal: {ramp: mine_metal}
+  steel: {ramp: steel}
+  green: {ramp: mine_green}
+  wood: {ramp: mine_wood}
+  darkwood: {ramp: mine_wood, bands: [0, 2]}
+  rock: {ramp: mine_rock}
+  flame: {ramp: flame, emissive: true, band: 3}
+  core: {ramp: flame, emissive: true, band: 4}
+channels: {}
+bones: {}
+parts:
+  beam:
+    material: wood
+    prims:
+      - box: {c: [0, 0.52, 0], half: [0.11, 0.52, 0.11], round: 0.016}
+  knots:
+    material: darkwood
+    prims:
+      - ellipsoid: {c: [0.108, 0.32, 0.015], r: [0.007, 0.065, 0.035], rot: [0.2, 0, 0]}
+      - ellipsoid: {c: [0.108, 0.79, -0.022], r: [0.007, 0.046, 0.025]}
+  straps:
+    material: steel
+    prims:
+      - box: {c: [0, 0.11, 0], half: [0.12, 0.025, 0.12], round: 0.012}
+      - box: {c: [0, 0.93, 0], half: [0.12, 0.025, 0.12], round: 0.012}
+animations:
+  idle:
+    frames: 1
+    ms: 100
+    channels: {}
