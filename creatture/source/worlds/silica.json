@@ -1,0 +1,62 @@
+{
+  "name": "Silica",
+  "branches": [
+    {
+      "focus": 4,
+      "first": 9,
+      "second": 2,
+      "ends": [
+        {
+          "title": "Thermal lattice",
+          "description": "A mineral structure develops with thermal adaptation.",
+          "secret": false,
+          "palette": 0
+        },
+        {
+          "title": "Dew crystal",
+          "description": "A hydrated mineral structure develops.",
+          "secret": false,
+          "palette": 1
+        }
+      ]
+    },
+    {
+      "focus": 0,
+      "first": 4,
+      "second": 5,
+      "ends": [
+        {
+          "title": "Armored geode",
+          "description": "A membrane reinforces its mineral interior.",
+          "secret": false,
+          "palette": 2
+        },
+        {
+          "title": "Walking shard",
+          "description": "Muscular structures develop within a protective membrane.",
+          "secret": false,
+          "palette": 3
+        }
+      ]
+    },
+    {
+      "focus": 3,
+      "first": 11,
+      "second": 6,
+      "ends": [
+        {
+          "title": "Prismatic signal",
+          "description": "Light and resonance support an optical structure.",
+          "secret": true,
+          "palette": 4
+        },
+        {
+          "title": "Secret lens",
+          "description": "Light-responsive sensory structures develop into an alternative form.",
+          "secret": true,
+          "palette": 5
+        }
+      ]
+    }
+  ]
+}

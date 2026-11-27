@@ -1,0 +1,62 @@
+{
+  "name": "Mycelium",
+  "branches": [
+    {
+      "focus": 8,
+      "first": 7,
+      "second": 2,
+      "ends": [
+        {
+          "title": "Spore network",
+          "description": "Spore growth is supported by microbial exchange.",
+          "secret": false,
+          "palette": 0
+        },
+        {
+          "title": "Rain web",
+          "description": "Water supports the spreading spore network.",
+          "secret": false,
+          "palette": 1
+        }
+      ]
+    },
+    {
+      "focus": 7,
+      "first": 1,
+      "second": 4,
+      "ends": [
+        {
+          "title": "Decomposer host",
+          "description": "Microbial digestion develops around early nutrients.",
+          "secret": false,
+          "palette": 2
+        },
+        {
+          "title": "Mineral threads",
+          "description": "Microbial colonies spread through mineral-rich tissue.",
+          "secret": false,
+          "palette": 3
+        }
+      ]
+    },
+    {
+      "focus": 6,
+      "first": 11,
+      "second": 3,
+      "ends": [
+        {
+          "title": "Listening colony",
+          "description": "A coordinated colony responds to resonant stimuli.",
+          "secret": true,
+          "palette": 4
+        },
+        {
+          "title": "Secret crown",
+          "description": "Light-responsive sensory tissue forms a specialized crown.",
+          "secret": true,
+          "palette": 5
+        }
+      ]
+    }
+  ]
+}

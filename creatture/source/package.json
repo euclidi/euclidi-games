@@ -1,0 +1,24 @@
+{
+  "name": "creatture",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:wasm": "wasm-pack build engine --target web --out-dir pkg",
+    "build": "npm run build:wasm && vite build",
+    "dev": "vite --host 0.0.0.0",
+    "test": "playwright test",
+    "preview": "vite preview --host 0.0.0.0",
+    "assets": "blender -b -t 4 --python tools/render_assets.py",
+    "build:art": "npm run assets && npm run build"
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  },
+  "devDependencies": {
+    "vite": "6.1.0",
+    "typescript": "5.7.3",
+    "@types/three": "0.170.0",
+    "@playwright/test": "1.51.1"
+  }
+}

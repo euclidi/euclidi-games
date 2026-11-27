@@ -1,0 +1,37 @@
+name: Creatture catalog launch verification
+on:
+  push:
+    branches: [main]
+    paths: ['creatture/**','tests/creatture-catalog.spec.mjs','.github/workflows/creatture-catalog.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  catalog:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock @playwright/test@1.51.1
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          mkdir -p "$RUNNER_TEMP/site"
+          ln -s "$GITHUB_WORKSPACE" "$RUNNER_TEMP/site/euclidi-games"
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/site" &
+          SERVER=$!
+          trap 'kill "$SERVER" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8765/euclidi-games/ >/dev/null && break; sleep 1; done
+          printf "import {defineConfig} from '@playwright/test'; export default defineConfig({testDir:'./tests',testMatch:'creatture-catalog.spec.mjs',timeout:90000,use:{launchOptions:{args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']}}});" > playwright.creatture.config.mjs
+          npx playwright test -c playwright.creatture.config.mjs
+      - name: Verify published package identity and run live browser test
+        run: |
+          BASE=https://euclidi.github.io/euclidi-games/
+          for i in $(seq 1 36); do
+            if curl -fsS "${BASE}creatture/BUILD.json?check=$GITHUB_RUN_ID-$i" -o /tmp/creatture-build.json && cmp -s /tmp/creatture-build.json creatture/BUILD.json; then break; fi
+            sleep 10
+          done
+          cmp /tmp/creatture-build.json creatture/BUILD.json
+          CREATTURE_URL="$BASE" npx playwright test -c playwright.creatture.config.mjs

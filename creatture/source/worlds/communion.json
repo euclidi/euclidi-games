@@ -1,0 +1,62 @@
+{
+  "name": "Communion",
+  "branches": [
+    {
+      "focus": 7,
+      "first": 8,
+      "second": 1,
+      "ends": [
+        {
+          "title": "Mutualist garden",
+          "description": "Microbial and spore structures support a shared form.",
+          "secret": false,
+          "palette": 0
+        },
+        {
+          "title": "Nutrient host",
+          "description": "A feeding-oriented microbial host develops.",
+          "secret": false,
+          "palette": 1
+        }
+      ]
+    },
+    {
+      "focus": 6,
+      "first": 11,
+      "second": 5,
+      "ends": [
+        {
+          "title": "Social resonator",
+          "description": "Early neural development supports communication.",
+          "secret": false,
+          "palette": 2
+        },
+        {
+          "title": "Mobile familiar",
+          "description": "A sensory host develops motor specialization.",
+          "secret": false,
+          "palette": 3
+        }
+      ]
+    },
+    {
+      "focus": 0,
+      "first": 2,
+      "second": 4,
+      "ends": [
+        {
+          "title": "Secret shelter",
+          "description": "A hydrated membrane forms a protected niche.",
+          "secret": true,
+          "palette": 4
+        },
+        {
+          "title": "Armored refuge",
+          "description": "An early membrane develops mineral reinforcement.",
+          "secret": true,
+          "palette": 5
+        }
+      ]
+    }
+  ]
+}

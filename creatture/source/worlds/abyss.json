@@ -1,0 +1,62 @@
+{
+  "name": "Abyss",
+  "branches": [
+    {
+      "focus": 2,
+      "first": 11,
+      "second": 5,
+      "ends": [
+        {
+          "title": "Pelagic resonator",
+          "description": "A water-supported body develops resonant sensory structures.",
+          "secret": false,
+          "palette": 0
+        },
+        {
+          "title": "Fin carrier",
+          "description": "Muscular propulsion develops around a hydrated body.",
+          "secret": false,
+          "palette": 1
+        }
+      ]
+    },
+    {
+      "focus": 0,
+      "first": 4,
+      "second": 9,
+      "ends": [
+        {
+          "title": "Pressure husk",
+          "description": "Mineral reinforcement protects an early membrane.",
+          "secret": false,
+          "palette": 2
+        },
+        {
+          "title": "Thermal refuge",
+          "description": "An insulated membrane develops around temperature adaptation.",
+          "secret": false,
+          "palette": 3
+        }
+      ]
+    },
+    {
+      "focus": 3,
+      "first": 6,
+      "second": 8,
+      "ends": [
+        {
+          "title": "Lantern seeker",
+          "description": "Light-responsive nervous structures develop.",
+          "secret": true,
+          "palette": 4
+        },
+        {
+          "title": "Secret bloom",
+          "description": "A light-sensitive body becomes a spore-bearing form.",
+          "secret": true,
+          "palette": 5
+        }
+      ]
+    }
+  ]
+}

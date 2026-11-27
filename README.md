@@ -33,6 +33,8 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [Night Watch](night-watch/README.md) | Active — retro FPS v0.1.0 | [Spec](night-watch/SPEC.md) · [Roadmap](night-watch/ROADMAP.md) · [Status](night-watch/STATUS.md) |
 
+| [Creatture](creatture/README.md) | Active — validated 0.1.8 development preview; full R3 outstanding | [Spec](creatture/SPEC.md) · [Roadmap](creatture/ROADMAP.md) · [Status](creatture/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)

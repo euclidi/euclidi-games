@@ -1,0 +1,62 @@
+{
+  "name": "Primordium",
+  "branches": [
+    {
+      "focus": 0,
+      "first": 2,
+      "second": 4,
+      "ends": [
+        {
+          "title": "Tidal mantle",
+          "description": "A hydrated protective membrane unfolds into a living exchange surface.",
+          "secret": false,
+          "palette": 0
+        },
+        {
+          "title": "Amber veil",
+          "description": "The membrane thickens around a mineral lattice.",
+          "secret": false,
+          "palette": 1
+        }
+      ]
+    },
+    {
+      "focus": 5,
+      "first": 1,
+      "second": 6,
+      "ends": [
+        {
+          "title": "Foraging crawler",
+          "description": "Nourished muscle forms a persistent crawling body.",
+          "secret": false,
+          "palette": 2
+        },
+        {
+          "title": "Sensory wanderer",
+          "description": "Motor development follows early neural coordination.",
+          "secret": false,
+          "palette": 3
+        }
+      ]
+    },
+    {
+      "focus": 7,
+      "first": 8,
+      "second": 3,
+      "ends": [
+        {
+          "title": "Hidden garden",
+          "description": "A microbial host nurtures a spore-bearing colony.",
+          "secret": true,
+          "palette": 4
+        },
+        {
+          "title": "Sun-fed familiar",
+          "description": "A photosensitive host develops a light-associated symbiosis.",
+          "secret": true,
+          "palette": 5
+        }
+      ]
+    }
+  ]
+}
