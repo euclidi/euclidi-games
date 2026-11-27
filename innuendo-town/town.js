@@ -15,7 +15,7 @@ function button(label,fn,disabled=false){let b=node('button',label);b.disabled=d
 function close(){dialogue=false;$('dialogue').hidden=true}
 function modal(title,lines,options){dialogue=true;world?.stop();let box=$('dialogue');box.replaceChildren(node('h2',title));for(let line of lines)box.append(node('p',line));for(let op of options)box.append(button(...op));box.hidden=false}
 function showTab(name){tab=name;let p=$('panel');p.replaceChildren(node('h3',({directory:'TOWN DIRECTORY',contacts:'RESIDENT REGISTER',news:'LOCAL NEWS',style:'CHARACTER & PROPERTY'})[name]));
-if(name==='directory')for(let b of SHOPS){let e=node('div',undefined,'entry'),v=node('div',b.name);v.append(node('small',isOpen(b,S.minute)?'Open · '+b.owner:'Closed · '+clockAt(b.open)));e.append(v,button('Go',()=>{if(job){toast('Finish the shift first.');return}close();if(room!==-1){switchRoom(-1,()=>world.navigateDoor(b))}else world.navigateDoor(b)}));p.append(e)}
+if(name==='directory')for(let b of SHOPS){let e=node('div',undefined,'entry'),v=node('div',b.name);v.append(node('small',isOpen(b,S.minute)?'Open · '+b.owner:'Closed · '+clockAt(b.open)));e.append(v,button('Go',()=>{if(!world){toast('Wait for the town to load.');return}if(job){toast('Finish the shift first.');return}close();if(room!==-1){switchRoom(-1,()=>world.navigateDoor(b))}else world.navigateDoor(b)}));p.append(e)}
 if(name==='contacts')for(let n of RESIDENTS){let e=node('div',undefined,'entry'),v=node('div',n.name);v.append(node('small',n.mood));e.append(v,node('span',String(S.relations[n.id]||0)));p.append(e)}
 if(name==='news')for(let n of S.news)p.append(node('div',n,'entry'));
 if(name==='style'){p.append(node('p','Personality: '+S.style),button('Change personality',()=>{let a=['Witty','Deadpan','Outgoing','Reserved'];S.style=a[(a.indexOf(S.style)+1)%a.length];save();showTab(name)}),button('Next avatar',()=>{S.look=(S.look+1)%6;save()}),node('p','Owned: '+(S.owned.map(i=>SHOPS[i].product).join(', ')||'No outfits')),node('p',S.home?'Apartment owned.':'Apartment · $180'),S.home?button('Visit apartment',()=>{if(!job)switchRoom(8)}):button('Purchase',()=>{S.cash-=180;S.home=true;log('Purchased an apartment.');hud();showTab(name)},S.cash<180),node('p','Completed shifts: '+S.shifts))}
@@ -43,7 +43,7 @@ if(b.kind==='pressure'){let target=[60,75,45][j.step];modal('PRESSURE TEST',['Te
 if(b.kind==='wash'){let dirty=j.dirty.reduce((a,b)=>a+b,0);modal('DETAIL THE CAR',['Clean each of the six panels. Remaining: '+dirty],j.dirty.map((v,i)=>[['Hood','Roof','Left door','Right door','Trunk','Windshield'][i],()=>{j.dirty[i]=0;jobUI()},!v]).concat([['Finish',()=>finishJob(Math.floor((6-dirty)/2))],['Cancel',cancelJob]]))}
 }
 function nextJob(){job.step++;if(job.step===3)finishJob(job.score);else jobUI()}
-function switchRoom(id,cb){if(job)return;close();if(room===-1&&world?.player){S.x=world.player.x;S.y=world.player.y}room=id;afterRoom=cb||null;world.scene.restart();save()}
+function switchRoom(id,cb){if(job||!world)return;close();if(room===-1&&world?.player){S.x=world.player.x;S.y=world.player.y}room=id;afterRoom=cb||null;world.scene.restart();save()}
 let afterRoom=null;
 function enter(b){if(!isOpen(b,S.minute)){toast(b.name+' opens at '+clockAt(b.open));return}switchRoom(b.id)}
 function rest(){S.day++;S.minute=540;S.calm=100;log('Rested at home.');hud();close()}
@@ -52,7 +52,7 @@ async function boot(){try{if(!window.Phaser){try{await loadScript('./vendor/phas
 function launch(){class Town extends Phaser.Scene{
 constructor(){super('Town')}
 preload(){if(!this.textures.exists('urban'))this.load.spritesheet('urban',urbanAtlas,{frameWidth:16,frameHeight:16});this.load.on('loaderror',()=>{$('boot').textContent='Local urban atlas failed to decode.'})}
-create(){world=this;this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blocked=new Set();this.walls=this.physics.add.staticGroup();this.props=this.physics.add.group();this.people=[];this.route=[];this.arrive=null;this.cargo=[];this.carry=null;this.goal=null;this.vehicles=[];
+create(){world=this;this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blocked=new Set();this.walls=this.physics.add.staticGroup();this.props=this.physics.add.group();this.people=[];this.route=[];this.arrive=null;this.cargo=[];this.carry=null;this.goal=null;this.vehicles=[];this.owner=null;this.marker=null;this.bay=null;this.bayMark=null;this.bayLabel=null;
 this.physics.world.setBounds(0,0,this.cols*T,this.rows*T);if(room===-1)this.buildTown();else this.buildRoom();
 let x=room===-1?clamp(S.x,10,this.cols*T-10):216,y=room===-1?clamp(S.y,10,this.rows*T-10):272;
 if(this.blocked.has(Math.floor(y/T)*this.cols+Math.floor(x/T))){x=264;y=232}
