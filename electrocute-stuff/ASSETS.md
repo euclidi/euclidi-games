@@ -21,3 +21,8 @@ V4 inline JavaScript compiled successfully. Vendored Matter.js 0.20.0 executed a
 
 ## V5 additions
 Kenney Particle Pack (CC0-1.0), https://kenney.nl/assets/particle-pack. Original `smoke_01.png` and `light_01.png`, retrieved from https://github.com/GeorgeQLe/assets-vfx-particles/tree/main/assets/kenney/particle-pack/PNG%20(Transparent) with license metadata in its manifest. PNG signatures checked; exact original images embedded in `vendor/vfx.js` and used for smoke sprites and conducting contact light. Browser image decode/render and visual fit not yet checked. No authored specimen art adopted in V5; geometry and visual fit require evaluation.
+
+
+## V6 authored specimen pilot
+- Three.js r180 (MIT), https://github.com/mrdoob/three.js/tree/r180. Vendored module/core builds, GLTFLoader, BufferGeometryUtils and license under vendor/three; only import specifiers adapted for static hosting.
+- Kenney Food Kit (CC0), https://kenney.nl/assets/food-kit. Original soda-can.glb (27,124 bytes) and soda-can-crushed.glb (32,044 bytes) from https://github.com/Hidencod/tge-assets/tree/main/packs/food-kit, embedded verbatim as base64 in vendor/can-models.js. GLB v2 headers, declared lengths, mesh/material metadata and absence of required compression extensions checked. Optional WebGL raster-to-alpha-sprite pipeline lazily loads both states; original art is default and failure fallback. Model parsing/rendering and visual alignment have not been verified in a browser. The other candidate models (watermelon, toaster, vintage television) are not integrated yet.
