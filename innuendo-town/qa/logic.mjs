@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const src=fs.readFileSync(new URL('../content.js',import.meta.url),'utf8');
+const m=await import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'));
+assert.equal(m.SHOPS.length,8);assert.equal(m.RESIDENTS.length,16);
+assert.equal(m.isOpen(m.SHOPS[7],0),true);assert.equal(m.isOpen(m.SHOPS[7],720),false);
+assert.equal(m.moneyFor(m.SHOPS[0],3),28);
+assert.equal(m.pathfind(3,3,new Set([1]),{x:0,y:0},{x:2,y:0}).length,4);
+assert.equal(m.pathfind(3,3,new Set([1,3]),{x:0,y:0},{x:2,y:2}).length,0);
+console.log('7 logic checks passed');
