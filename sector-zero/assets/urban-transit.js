@@ -11,7 +11,7 @@ const phaseLocks=new Set(),junctions=new Map();
 const nodeKey=(x,z)=>x+","+z;
 const solids=[],streetSolids=[];
 const stopControlled=(x,z)=>roadRank(x)===2&&roadRank(z)===2;
-const streetLabels=[];let streetLabelGroup=null;
+const streetLabels=[];let streetLabelGroup=null,streetLampMaterial=null;
 const inventory={};
 const walkState=new WeakMap();
 let currentWorld=null;
@@ -298,7 +298,7 @@ function metroStep(w,dt,api){
    c.ride.phase="riding";c.ride.train=t.id;c.ride.queue=null;c.route=[];t.passengers.push(c.id);w.metro.boardings++;
   }
   t.dwell=Math.max(0,t.dwell-dt);
-  if(t.dwell===0)t.remaining=2.65;
+  if(t.dwell===0){const blocked=w.metro.trains.some(q=>q!==t&&q.line===t.line&&q.dir===t.dir&&(q.at===t.at&&q.remaining>0||q.at===t.at+t.dir&&q.remaining===0));if(!blocked)t.remaining=2.65;else t.dwell=.25;}
  }
 }
 const variants={
@@ -437,7 +437,7 @@ export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
  let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","STOP SIGN","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP","WAIT TO MERGE"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap(w);
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+served(l)+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.reduce((n,b)=>n+capacity(b),0)+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/'+capacity(b)+' · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
- html+='<h3>STREET INFRASTRUCTURE</h3>'+Object.entries(inventory).map(([name,n])=>'<div class="stat"><span>'+name.toUpperCase()+'</span><b>'+n+'</b></div>').join('');
+ html+='<h3>STREET INFRASTRUCTURE</h3><div class="stat"><span>UTILITY GRID</span><b>'+(w.blackout?"BLACKOUT":"ONLINE")+'</b></div>'+Object.entries(inventory).map(([name,n])=>'<div class="stat"><span>'+name.toUpperCase()+'</span><b>'+n+'</b></div>').join('');
  html+='<h3>UNDERGROUND METRO</h3><div class="stat"><span>STATIONS / TRAINS</span><b>'+metroStations.size+' / '+w.metro.trains.length+'</b></div><div class="stat"><span>WAITING</span><b>'+w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting").length+'</b></div><div class="stat"><span>ON BOARD</span><b>'+w.metro.trains.reduce((n,t)=>n+t.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS / COMPLETED</span><b>'+w.metro.boardings+' / '+w.metro.completed+'</b></div>';
  for(const t of w.metro.trains)html+='<div class="stat"><span>TRAIN '+(t.id+1)+' · '+(t.remaining>0?"IN TUNNEL":metroLines[t.line].stops[t.at].name.toUpperCase())+'</span><b>'+t.passengers.length+' / '+metroCapacity+'</b></div>';
  for(const l of metroLines){html+='<h3 style="color:'+l.color+'">'+l.name+'</h3><p>'+l.stops.map(p=>p.name).join(' · ')+'</p>';}
@@ -445,7 +445,7 @@ export function panel(w){
 }
 export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
 const signalGroups=new Map();
-export function updateSignals(time){for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
+export function updateSignals(time){const hour=((time%1440)+1440)%1440/60,night=hour<6||hour>=19;if(streetLampMaterial?.emissive){streetLampMaterial.emissive.setHex(night&&!currentWorld?.blackout?0xe6c98a:0x000000);streetLampMaterial.emissiveIntensity=night&&!currentWorld?.blackout?0.75:0;}for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
 // Roadside assets are laid out against curb coordinates; collision footprints stay
 // out of the two sidewalk lanes. Sign planes are generated once using the existing
 // Three.js sign factory, then attached to their physical backing plates.
@@ -453,6 +453,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
  streetLabels.length=0;streetSolids.length=0;for(const k of Object.keys(inventory))delete inventory[k];
  const g=group();parent.add(g);streetLabelGroup=group();parent.add(streetLabelGroup);
  const m={iron:mat(0x535e59),black:mat(0x292e2c),wood:mat(0x77634d),concrete:mat(0x969487),stone:mat(0x797c71),red:mat(0xa73c32),yellow:mat(0xb7a35f),white:mat(0xd7d5c4),blue:mat(0x465d78),green:mat(0x3b6855),copper:mat(0x78654a),wire:mat(0x252925),glass:mat(0x586d70),lamp:mat(0xe3d9ad),rail:mat(0x86928f)};
+ streetLampMaterial=m.lamp;
  const count=k=>inventory[k]=(inventory[k]||0)+1;
  const footprint=(x,z,w,l)=>streetSolids.push({x,z,w,l});
  const B=(w,h,l,x,y,z,material)=>box(g,w,h,l,x,y,z,material);
@@ -532,7 +533,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
  for(const p of metroStations.values()){
   const x=p.x,z=p.nz+13.2;
   B(7.8,.14,3.7,x,.08,z,m.concrete);B(6.9,.05,2.8,x,.16,z,m.black);
-  for(let i=0;i<11;i++){const xx=x-3.1+i*.56;B(.58,.12,2.25,xx,.16-i*.14,z,m.stone);}
+  for(let i=0;i<11;i++){const xx=x-3.1+i*.56;B(.52,.028,2.25,xx,.25-i*.008,z,i<5?m.stone:m.iron);}
   for(const side of [-1,1]){const zz=z+side*1.55;B(7.3,.25,.16,x,.23,zz,m.concrete);for(let k=-3;k<=3;k+=1.5)pole(x+k,zz,1.12,.055,m.rail);B(7.2,.07,.075,x,1.1,zz,m.rail);footprint(x,zz,7.2,.19);}
   B(.2,1.1,2.85,x+3.5,.58,z,m.iron);footprint(x+3.5,z,.24,2.85);
   const px=x-3.45,pz=z+1.55;pole(px,pz,3.2,.11,m.green);B(.52,.52,.52,px,3.15,pz,m.lamp);
