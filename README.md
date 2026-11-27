@@ -23,6 +23,8 @@ Projects are actively developed and may contain unfinished features or experimen
 
 | [The Meeting Seam](meeting-seam/README.md) | Active — development 0.2 | [Spec](meeting-seam/SPEC.md) · [Roadmap](meeting-seam/ROADMAP.md) · [Status](meeting-seam/STATUS.md) |
 
+| [SNAKE — LCD Organic](snake/README.md) | Active — experimental 0.1 compatibility build | [Spec](snake/SPEC.md) · [Roadmap](snake/ROADMAP.md) · [Status](snake/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
