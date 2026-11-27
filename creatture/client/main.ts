@@ -15,6 +15,7 @@ let engine:Engine,state:State,mode='puzzle',paused=false,inspection=false,seed=1
 const select=(id:string)=>el<HTMLSelectElement>(id);
 worlds.forEach((n,i)=>select('world').add(new Option(n,String(i))));
 const stage=el('viewport');
+const assetBase=import.meta.env.BASE_URL+'rendered/';
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x242e28);scene.fog=new THREE.FogExp2(0x242e28,.035);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.14;stage.append(renderer.domElement);
 const camera=new THREE.PerspectiveCamera(37,1,.1,60);camera.position.set(4.5,3.3,7.5);
@@ -25,6 +26,8 @@ const rim=new THREE.DirectionalLight(0xa5c7d9,1.9);rim.position.set(3,2,-4);scen
 const floor=new THREE.Mesh(new THREE.CylinderGeometry(3.3,3.45,.23,96),new THREE.MeshStandardMaterial({color:grounds[0],roughness:.82}));floor.position.y=-.13;floor.receiveShadow=true;scene.add(floor);
 const base=new THREE.Mesh(new THREE.CylinderGeometry(3.48,3.62,.42,96),new THREE.MeshStandardMaterial({color:0x242a27,metalness:.45,roughness:.48}));base.position.y=-.43;base.receiveShadow=true;scene.add(base);
 const habitat=new THREE.Group();scene.add(habitat);
+const panoramaLoader=new THREE.TextureLoader();const panoramas=new Map<number,THREE.Texture>();let requestedPanorama=-1;
+function applyPanorama(id:number){requestedPanorama=id;const cached=panoramas.get(id);if(cached){scene.background=cached;return;}panoramaLoader.load(assetBase+'habitat-'+id+'.png',tex=>{tex.mapping=THREE.EquirectangularReflectionMapping;tex.colorSpace=THREE.SRGBColorSpace;panoramas.set(id,tex);if(requestedPanorama===id)scene.background=tex;},undefined,()=>{});}
 const body=new THREE.Group();scene.add(body);
 const colonies=new THREE.Group();scene.add(colonies);const companionMeshes=new Map<number,THREE.Mesh>();const companionGeometry=new THREE.SphereGeometry(1,40,28);
 const skin=new THREE.MeshPhysicalMaterial({color:colors[0],roughness:.43,clearcoat:.19,clearcoatRoughness:.3,transparent:true,opacity:1});
@@ -44,7 +47,7 @@ const organMeshes=names.map((_,i)=>{const m=new THREE.Mesh(new THREE.SphereGeome
 let finale=0;let lastOutcome='';let tissueFrame=0;let pose=new Array(12).fill(0);let previousWorld=-1;
 function makeHabitat(id:number){
  while(habitat.children.length){const o=habitat.children[0] as THREE.Mesh;habitat.remove(o);o.geometry?.dispose();(o.material as THREE.Material)?.dispose();}
- floor.material.color.set(grounds[id]);const back=new THREE.Color(grounds[id]).multiplyScalar(.45);scene.background=back;scene.fog=new THREE.FogExp2(back,.045);skin.color.set(colors[id]);
+ floor.material.color.set(grounds[id]);const back=new THREE.Color(grounds[id]).multiplyScalar(.45);scene.background=back;scene.fog=new THREE.FogExp2(back,.045);skin.color.set(colors[id]);applyPanorama(id);
  for(let i=0;i<30;i++){
   const angle=i*2.39996;const r=1.8+(i%7)*.19;const h=.12+(i%5)*.1;
   let geom:THREE.BufferGeometry;
@@ -73,7 +76,7 @@ function introduce(i:number){
  const dose=mode==='puzzle'?1:Number(el<HTMLInputElement>('dose').value);
  if(engine.introduce(i,dose,site,mode==='puzzle')){read();tone(i);ui();envUI();}
 }
-for(let i=0;i<12;i++){const b=document.createElement('button');b.id='element-'+i;b.innerHTML='<b aria-hidden="true">'+marks[i]+'</b>'+names[i];b.onclick=()=>introduce(i);el('tray').append(b);}
+for(let i=0;i<12;i++){const b=document.createElement('button');b.id='element-'+i;b.innerHTML='<b aria-hidden="true">'+marks[i]+'</b><span>'+names[i]+'</span>';const img=new Image();img.alt='';img.src=assetBase+'element-'+String(i).padStart(2,'0')+'.png';img.onload=()=>{const mark=b.querySelector('b');if(mark)mark.replaceWith(img);};img.onerror=()=>{};b.onclick=()=>introduce(i);el('tray').append(b);}
 let site=78;stage.addEventListener('pointerdown',e=>{const r=stage.getBoundingClientRect();site=Math.max(0,Math.min(143,Math.floor((e.clientY-r.top)/r.height*12)*12+Math.floor((e.clientX-r.left)/r.width*12)));});
 el('reset').onclick=()=>{if(confirm('Begin a new specimen? Preserve the current one first if needed.'))reset(Number(select('world').value));};
 select('world').onchange=()=>{if(mode==='archive')return;reset(Number(select('world').value));};

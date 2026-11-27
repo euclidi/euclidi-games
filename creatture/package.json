@@ -8,7 +8,9 @@
     "build": "npm run build:wasm && vite build",
     "dev": "vite --host 0.0.0.0",
     "test": "playwright test",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "assets": "blender -b -t 4 --python tools/render_assets.py",
+    "build:art": "npm run assets && npm run build"
   },
   "dependencies": {
     "three": "0.170.0"

@@ -1,0 +1,49 @@
+name: Creatture offline art and browser build
+on:
+  push:
+    branches: [creatture-r3]
+    paths: ['creatture/tools/render_assets.py', '.github/workflows/creatture-art.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  art-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: creatture
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
+      - run: sudo apt-get update && sudo apt-get install -y blender
+      - run: npm install
+      - run: npm run assets
+      - run: python3 -c "from pathlib import Path; p=Path('public/rendered'); assert len(list(p.glob('*.png')))==18; assert all(f.stat().st_size>1024 for f in p.glob('*.png'))"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: creatture-original-rendered-assets
+          path: creatture/public/rendered
+      - run: cargo test --manifest-path engine/Cargo.toml
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: creatture-art-enabled-build
+          path: creatture/dist
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: creatture-art-browser-evidence
+          path: creatture/test-results
+          if-no-files-found: ignore

@@ -18,3 +18,6 @@ Vite outputs dist/. No fallback renderer or JavaScript simulation core. Use butt
 [Approved specification](SPEC.md) · [Roadmap](ROADMAP.md) · [Status](STATUS.md)
 
 No public play URL yet. The branch is isolated from the Pages catalog pending successful builds, playtests, visual audit and owner-approved box art.
+
+## Offline art pipeline
+Install Blender 4.x and run `npm run assets` to create the original element-object PNGs and panoramic habitat textures under `public/rendered/`. `npm run build:art` renders then builds the browser application. The standard build can still run with temporary text symbols and solid background; that is not the intended production visual release. See the separate art CI workflow for generated assets and browser screenshots. Production sculpted creature assets, rigging and authored transformation sequences are outstanding.
