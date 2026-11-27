@@ -1,0 +1,8 @@
+# Status — v3.3 (2026-11-27)
+Source migrated to GitHub from intact v3.1 attachment. Earlier v3.2 file was referenced but not recoverable; its known voyage movement changes were reconstructed.
+
+Implemented in source: explicit heading control (buttons, keyboard and gamepad); world-relative movement and nautical-mile log; ocean decor transforms; fish and particles move relative to vessel; sample locations remain world-relative when released; held sample remains associated with its owning arm; stow/switch guards; 30 m sonar range with visible-species filtering and nearest contact reporting; pointer-capture cleanup; Three.js r180 pin. Original seven rooms, stations, fish rigs, sounds and controls retained.
+
+Verified: node --check on full module; independent world-transform round-trip calculations (five headings) and knot/nautical-mile conversion. Repository import should be compared with local blob SHA 1d03602d3915fffb0b89a1ffe850c1905a5d6942.
+
+Not verified: browser startup/rendering, actual station interactions, controls on physical devices, performance, or public Pages deployment. Container cannot resolve GitHub/CDN domains. No real gameplay screenshot yet. Terrain and fish wrap in repeating tiles; vertical seabed is still depth-relative, depth change is accelerated, not realistic hydrodynamics; no independent diver, no fully physical arms, no geographic persistence, no acquired external art assets. No full-scope acceptance claim.
