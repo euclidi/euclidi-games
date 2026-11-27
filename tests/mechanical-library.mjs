@@ -8,11 +8,14 @@ for(const [engine,name] of [[chromium,'chromium'],[firefox,'firefox']]){
  try{for(const [width,height] of [[1280,800],[390,844]]){
  const p=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')console.log('browser error',m.text())});
  await p.goto(base+'?view=classic');const count=await p.locator('article.game').count();assert(count>0);
- await p.goto(base+'library/');await p.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:60000});
+ await p.goto(base+'library/');await p.waitForFunction(()=>['true','error'].includes(document.body.dataset.ready),null,{timeout:60000});
+ assert.equal(await p.locator('body').getAttribute('data-ready'),'true',await p.locator('#loading').textContent());
  assert.equal(Number(await p.locator('body').getAttribute('data-inventory')),count);
  assert.equal(await p.locator('#motion').inputValue(),'on');assert.equal(await p.locator('canvas').count(),2);
  assert(await p.locator('body').evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await p.waitForFunction(()=>Number(document.body.dataset.frames)>0);
+ await p.screenshot({path:'audit-artifacts/'+name+'-'+width+'-initial.png',fullPage:true});
+ console.log('INITIAL RENDER',name,width,count);
  const a=await p.locator('body').getAttribute('data-drum');await p.locator('[data-cat="Arcade"]').click();
  await p.waitForFunction(()=>!document.getElementById('retrieve').disabled);
  await p.waitForFunction(a=>document.body.dataset.drum!==a,a);

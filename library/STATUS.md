@@ -4,3 +4,5 @@ Initial implementation of v1.1. Source committed with self-hosted Three.js, resp
 Revision 1.1.1 source review corrected front sector orientation, transfer belt/lift alignment, ejector direction and returning/re-retrieving a selected game. Added input lock while a delivered game is present; browser audit still pending.
 
 Revision 1.1.2 assigns stable physical sectors to catalog categories, groups All/search results by sector, and returns the delivered box along the transfer path before reindexing. Future additional categories are allocated sectors, but spacing has not been visually validated beyond the current inventory.
+
+V1.2 replaces the occluding drum roof with an open annular frame, adds fitted enamel enclosure parts, service panels, actual 3D cable routing, fasteners, trim, motor detailing and transfer guards; rebalances camera, box inspection scale and operator-console materials. Printed cover graphics remain provisional (except existing artwork). Browser and visual review are not certified.
