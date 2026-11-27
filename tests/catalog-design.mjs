@@ -35,6 +35,11 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    assert.equal(layout.revision,'6');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
    assert.equal(layout.clipped.length,0,JSON.stringify(layout.clipped));
    for(const i of layout.items){assert(i.font.includes('Press Start 2P'),JSON.stringify(i));assert.equal(i.weight,'400',JSON.stringify(i));assert.equal(i.tracking,'1px',JSON.stringify(i));assert(i.size>=8.9&&i.size<=27.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
+
+   assert.equal(await page.locator('a[href="./library/"]').count(),0);
+   assert.equal(await page.locator('header a[href="https://euclidi.github.io/euclidi-labs/"]').count(),1);
+   assert.equal(await page.locator('header a[href="https://github.com/euclidi/euclidi-games"]').count(),1);
+   assert.equal(await page.locator('footer a[href="https://github.com/euclidi/euclidi-labs"]').count(),1);
    const n=await page.locator('.game').count();assert(n>0);
    await page.screenshot({path:'audit-artifacts/'+name+'-'+width+'-layout.png',fullPage:true});
    await page.locator('#crt-replay').click();

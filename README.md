@@ -6,6 +6,8 @@ A collection of browser-based games, simulations, and interactive experiments. E
 
 Projects are actively developed and may contain unfinished features or experimental mechanics.
 
+Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/) · [Euclidi Labs repository](https://github.com/euclidi/euclidi-labs)
+
 ## Project documentation
 
 | Project / release | Status | Documentation |
