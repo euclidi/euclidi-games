@@ -1,0 +1,659 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Candy Land Sewer — Underworks 0.6.0</title><style>html,body{margin:0;background:#100f12;overflow:hidden}#candy-v4{height:100dvh!important;min-height:0!important;box-sizing:border-box}</style></head><body><div id="candy-v4">
+  <div id="cv4-stage"></div>
+  <div id="cv4-head"><div class="cv4-ident"><small>SUGARWORKS / DRAINAGE AUTHORITY</small><strong>THE CANDY UNDERWORKS</strong></div><div class="cv4-buttons"><a class="cv4-library" href="../" aria-label="Return to Euclidi Games">LIBRARY</a><button id="cv4-view">VIEWS <span id="cv4-idx">01</span></button><button id="cv4-settings">SETTINGS</button><button id="cv4-sound">SOUND OFF</button></div></div>
+  <div id="cv4-dot"></div><div id="cv4-prompt"></div><div id="cv4-flash"></div><div id="cv4-telemetry" hidden>PLAYER MOTION DIAGNOSTICS</div>
+  <div id="cv4-bottom"><div class="cv4-readout"><b id="cv4-room">STRAWBERRY TRUNK</b><small id="cv4-meta">SAMPLES 0 / 4 · FOUR CHAMBERS</small><small id="cv4-padstate">KEYBOARD / TOUCH</small></div><div class="cv4-actionpair"><button id="cv4-interact" type="button" disabled>INTERACT · E</button><button id="cv4-act">OPERATE SLUICE <i>F</i></button></div></div>
+  <div id="cv4-joy"><div id="cv4-joyinner"></div></div>
+  <div id="cv4-menu" hidden><div class="cv4-menuhead">SUGARWORKS // INPUT OPTIONS <button id="cv4-close">×</button></div><p>Click the scene, then WASD / arrows move · drag to look · Shift runs · E interacts · F sluice · V next view. Controller: left stick / D-pad moves, right stick looks, A interacts, Y cycles views, B runs. If a raw DirectInput pad drifts, release both sticks and select CENTER / CALIBRATE STICKS.</p><label>GAMEPAD MAPPING<select id="cv4-map"><option value="auto">Automatic</option><option value="standard">Standard / XInput</option><option value="direct">DirectInput-style (RX 2 / RY 5; adjustable)</option><option value="custom">Manual axes</option></select></label><div class="cv4-duo"><label>LOOK X<select id="cv4-rx"><option>2</option><option>3</option><option>4</option><option>5</option></select></label><label>LOOK Y<select id="cv4-ry"><option>3</option><option>5</option><option>4</option><option>2</option></select></label></div><label>DEAD ZONE<input id="cv4-dead" type="range" min=".05" max=".35" step=".01" value=".16"></label><label>GAIT INTENSITY<input id="cv4-bob" type="range" min="0" max="100" value="70"></label><label class="cv4-check"><input id="cv4-invert" type="checkbox"> INVERT VERTICAL LOOK</label><button id="cv4-calibrate" type="button">CENTER / CALIBRATE STICKS</button><label class="cv4-check"><input id="cv4-debug" type="checkbox"> SHOW MOVEMENT DIAGNOSTICS</label><button id="cv4-reset" type="button">RESET EXPLORATION</button><small id="cv4-controller">Connect a controller and press any button. Raw DirectInput availability depends on the browser and operating system.</small></div>
+  <div id="cv4-loading">ASSEMBLING THE LOWER CONDUITS…</div>
+</div>
+<style>
+#candy-v4{height:min(76vh,760px);min-height:510px;position:relative;overflow:hidden;background:#1c141c;color:#f6e1c5;border:1px solid #5b4442;font-family:system-ui,Segoe UI,sans-serif;touch-action:none}
+#cv4-stage,#cv4-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#cv4-head,#cv4-bottom{position:absolute;left:0;right:0;padding:13px 16px;display:flex;justify-content:space-between;gap:12px;pointer-events:none}
+#cv4-head{top:0;align-items:flex-start;background:linear-gradient(#151017e8,transparent)}#cv4-bottom{bottom:0;align-items:flex-end;background:linear-gradient(transparent,#141018de)}
+.cv4-ident{display:grid;gap:3px;text-shadow:0 2px 8px #000}.cv4-ident small,.cv4-readout small{font:9px ui-monospace,monospace;letter-spacing:.12em;color:#cba48c}.cv4-ident strong{font:normal 23px Georgia,serif;letter-spacing:.02em}
+.cv4-buttons{display:flex;gap:5px;pointer-events:auto}#candy-v4 button{border:1px solid #98745b;border-radius:2px;padding:9px 10px;background:#292128d9;color:#f8dfbb;font:600 10px ui-monospace,monospace;cursor:pointer;white-space:nowrap}#cv4-view span{color:#e6b67d}#cv4-act{pointer-events:auto;background:#54372b!important}#cv4-act i{font-style:normal;border:1px solid #bb9076;padding:3px 5px;margin-left:5px}
+.cv4-readout{display:grid;gap:4px;text-shadow:0 2px 8px #000}.cv4-readout b{font:600 12px ui-monospace,monospace;letter-spacing:.09em}
+#cv4-dot{position:absolute;top:50%;left:50%;width:3px;height:3px;border-radius:50%;background:#ffe8c6a0;box-shadow:0 0 0 1px #0008;transform:translate(-50%,-50%);pointer-events:none}
+#cv4-prompt{position:absolute;top:57%;left:50%;transform:translateX(-50%);font:10px ui-monospace,monospace;letter-spacing:.1em;text-shadow:0 2px 6px black;white-space:nowrap;pointer-events:none}
+#cv4-flash{position:absolute;right:16px;top:86px;color:#abf0ae;font:600 11px ui-monospace,monospace;opacity:0;pointer-events:none}
+#cv4-telemetry{position:absolute;left:13px;top:89px;white-space:pre;max-width:90%;padding:9px 11px;background:#1c171edb;border:1px solid #947762;color:#d7d7c5;font:10px/1.65 ui-monospace,monospace;pointer-events:none}#cv4-telemetry[hidden]{display:none}
+#cv4-joy{position:absolute;left:20px;bottom:94px;width:104px;height:104px;border:1px solid #e9c5a078;border-radius:50%;background:#24152288;display:none;touch-action:none}#cv4-joyinner{position:absolute;left:35px;top:35px;width:34px;height:34px;border-radius:50%;border:1px solid #f1cca7;background:#855948bd}
+#cv4-menu{position:absolute;right:12px;top:63px;width:min(365px,calc(100% - 24px));padding:16px;background:#292027f5;border:1px solid #a67f65;box-shadow:0 12px 30px #0008;max-height:calc(100% - 82px);overflow-y:auto;box-sizing:border-box;touch-action:auto;font:12px ui-monospace,monospace;z-index:9}#cv4-menu[hidden]{display:none}.cv4-menuhead{display:flex;align-items:center;justify-content:space-between;letter-spacing:.08em;font-weight:700}#cv4-close{padding:5px 9px!important;font-size:17px!important}#cv4-menu p{color:#d4b9a6;line-height:1.55}#cv4-menu label{display:block;margin-top:10px;font-size:10px}#cv4-menu select{width:100%;margin-top:5px;background:#44333a;color:#f2d4b3;border:1px solid #8d685c;padding:8px}#cv4-menu input[type=range]{width:100%;accent-color:#e7b37f}.cv4-duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cv4-check{display:flex!important;align-items:center;gap:8px}#cv4-controller{display:block;line-height:1.5;color:#be9c86;margin-top:15px}
+#cv4-loading{position:absolute;inset:0;display:grid;place-items:center;background:#211620;color:#d6b59c;font:10px ui-monospace,monospace;letter-spacing:.13em}#cv4-loading[hidden]{display:none}
+@media(pointer:coarse){#cv4-joy{display:block}}
+@media(max-width:530px){#candy-v4{min-height:510px;height:72vh}.cv4-ident strong{font-size:18px}.cv4-ident small{font-size:8px}.cv4-buttons{position:absolute;top:57px;right:9px}.cv4-buttons button{padding:8px!important;font-size:9px!important}.cv4-readout b{font-size:10px}.cv4-readout small{font-size:8px}#cv4-act{font-size:9px!important;padding:10px 7px!important}#cv4-act i{display:none}#cv4-menu{top:100px;max-height:calc(100% - 112px)}}
+
+.cv4-library{pointer-events:auto;color:#f8dfbb;text-decoration:none;border:1px solid #98745b;background:#292128;padding:9px 10px;font:600 10px ui-monospace,monospace;align-self:center}
+.cv4-actionpair{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;pointer-events:auto}#cv4-interact:disabled{opacity:.4;cursor:default}
+#cv4-head,#cv4-bottom{background:transparent;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.cv4-ident,.cv4-readout{background:#291f30e8;padding:9px 11px;border-left:3px solid #e9bd89}
+#cv4-telemetry{white-space:pre-line}#candy-v4:focus{outline:none}
+@media(max-width:600px){#cv4-head,#cv4-bottom{padding-left:8px;padding-right:8px}.cv4-buttons{top:66px;right:8px;gap:3px}.cv4-library{font-size:9px;padding:8px 5px}.cv4-actionpair{max-width:46%}.cv4-ident strong{font-size:17px}#cv4-prompt{font-size:9px;white-space:normal;text-align:center;width:80%}}
+</style>
+<script type="module">
+(async()=>{
+const root=document.getElementById('candy-v4'),$=id=>root.querySelector('#'+id),holder=$('cv4-stage'),load=$('cv4-loading');root.tabIndex=0;
+let T;
+try{T=await import('https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js')}catch(e){try{T=await import('https://unpkg.com/three@0.161.0/build/three.module.js')}catch(e2){load.textContent='3D ENGINE UNAVAILABLE — CHECK CONNECTION AND RELOAD';return}}
+let renderer;
+try{renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'})}catch(e){load.textContent='WEBGL IS UNAVAILABLE HERE';return}
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.35));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.NoToneMapping;renderer.shadowMap.enabled=false;
+holder.appendChild(renderer.domElement);
+const sc=new T.Scene();sc.background=new T.Color(0x211d2d);sc.fog=new T.FogExp2(0x2a2132,.011);
+const cam=new T.PerspectiveCamera(74,1,.08,145),v=(x,y,z)=>new T.Vector3(x,y,z);
+let seed=91817;function random(){seed=(1664525*seed+1013904223)>>>0;return seed/4294967296}
+// Five hand-chosen value bands. All scene materials share the same discrete irradiance response.
+const bands=new Uint8Array([45,85,140,205,255]);
+const ramp=new T.DataTexture(bands,5,1,T.RedFormat,T.UnsignedByteType);
+ramp.magFilter=T.NearestFilter;ramp.minFilter=T.NearestFilter;ramp.generateMipmaps=false;ramp.needsUpdate=true;
+const mat=(c,r=.65,extra={})=>new T.MeshToonMaterial({
+ color:c,gradientMap:ramp,side:extra.side||T.FrontSide,transparent:!!extra.transparent,
+ opacity:extra.opacity===undefined?1:extra.opacity,vertexColors:!!extra.vertexColors,
+ emissive:extra.emissive||0x000000,emissiveIntensity:extra.emissiveIntensity||0,
+ map:extra.map||null
+});
+const biscuit=mat(0xbb7581),cream=mat(0xf3d5a9),rose=mat(0xd45e79),
+ cocoa=mat(0x794943),dark=mat(0x342530),gold=mat(0xf1bb68),
+ licorice=mat(0x342439),mint=mat(0x67bea1),
+ pinkGlass=mat(0xeaa5c8,0,{transparent:true,opacity:.9}),
+ amber=mat(0xffcb83,0,{transparent:true,opacity:.95}),fondant=mat(0xa5d7b9);
+const ink=new T.LineBasicMaterial({color:0x281d32,transparent:true,opacity:.79,depthWrite:false});
+const goldInk=new T.LineBasicMaterial({color:0x5d3745,transparent:true,opacity:.73,depthWrite:false});
+const add=(g,m,x=0,y=0,z=0,p=sc)=>{const o=new T.Mesh(g,m);o.position.set(x,y,z);o.castShadow=false;o.receiveShadow=true;p.add(o);return o};
+const tube=(pts,r,m,p=sc,n=40)=>add(new T.TubeGeometry(new T.CatmullRomCurve3(pts.map(a=>v(...a))),n,r,10,false),m,0,0,0,p);
+function rounded(w,h,r){
+ let s=new T.Shape(),x=-w/2,y=-h/2;
+ s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);
+ s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+ s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);
+ s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s;
+}
+function edgeInk(obj,m=ink,angle=28){
+ const segments=new T.LineSegments(new T.EdgesGeometry(obj.geometry,angle),m);
+ segments.renderOrder=2;obj.add(segments);return obj;
+}
+function panel(w,h,d,m,p=sc){
+ const object=add(new T.ExtrudeGeometry(rounded(w,h,Math.min(w,h)*.15),{
+  depth:d,bevelEnabled:true,bevelSegments:3,bevelThickness:.048,
+  bevelSize:.048,curveSegments:7
+ }),m,0,0,0,p);
+ if(w>1.35&&h>.30)edgeInk(object,m===gold?goldInk:ink,38);
+ return object;
+}
+function lathe(pro,m,x,y,z,p=sc){return add(new T.LatheGeometry(pro.map(q=>new T.Vector2(...q)),26),m,x,y,z,p)}
+function hoop(r,wire,m,x,y,z,p=sc){return add(new T.TorusGeometry(r,wire,10,48),m,x,y,z,p)}
+// Radial turned mechanical fastener with cap/fillet rather than a spherical placeholder.
+function rivet(x,y,z,r=.09,p=sc,axis='z'){
+ const g=new T.Group();g.position.set(x,y,z);p.add(g);
+ const head=lathe([[0,0],[r*.83,.007],[r,.045],[r*.92,.11],[r*.52,.15],[0,.17]],gold,0,0,0,g);
+ if(axis==='z')head.rotation.x=-Math.PI/2;
+ if(axis==='x')head.rotation.z=Math.PI/2;
+ return g;
+}
+function bevelRail(a,b,r,m=gold,p=sc){
+ const dir=v(b[0]-a[0],b[1]-a[1],b[2]-a[2]),len=dir.length();
+ const obj=add(new T.CylinderGeometry(r*.7,r,len,12),m,(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2,p);
+ obj.quaternion.setFromUnitVectors(v(0,1,0),dir.normalize());return obj;
+}
+function brickTexture(){
+ const c=document.createElement('canvas');c.width=c.height=512;
+ const q=c.getContext('2d');q.fillStyle='#553747';q.fillRect(0,0,512,512);
+ for(let j=0;j<11;j++)for(let i=-1;i<7;i++){
+  const x=i*100+(j%2)*50,y=j*47;
+  q.fillStyle=['#b9757c','#c88b8d','#a96c80','#d2998f'][(i+j*3+16)%4];
+  q.fillRect(x+3,y+3,94,40);
+  q.fillStyle='#edb3a2';q.fillRect(x+8,y+6,84,3);
+  q.fillStyle='#754458';q.fillRect(x+4,y+39,90,3);
+  q.strokeStyle='#52384a';q.lineWidth=2;q.strokeRect(x+3,y+3,94,40);
+  for(let n=0;n<4;n++){let xx=x+18+n*18;
+   q.strokeStyle='#8e5668';q.lineWidth=1;
+   q.beginPath();q.moveTo(xx,y+13);q.lineTo(xx+2,y+27);q.stroke();}
+ }
+ const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;
+ t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(1,1);t.anisotropy=4;return t;
+}
+const brick=new T.MeshToonMaterial({map:brickTexture(),gradientMap:ramp,side:T.DoubleSide,color:0xf9dfd7});
+sc.add(new T.HemisphereLight(0xd5b6cc,0x523c5b,.52));
+const sun=new T.DirectionalLight(0xffe2b2,1.22);sun.position.set(-4,13,9);sc.add(sun);
+const plumRim=new T.DirectionalLight(0x81c8e5,.32);plumRim.position.set(9,6,-24);sc.add(plumRim);
+const dynamicLights=[];
+// Main brick-lined vault has genuine curved surfaces, with four cut-out arches.
+const doors=[{s:1,z:-14,name:'JELLY PUMP GALLERY',short:'JELLY PUMPS',tint:0xf17898},{s:-1,z:-40,name:'FONDANT RESERVOIR',short:'FONDANT WORKS',tint:0x8ad9c0},{s:1,z:-68,name:'LICORICE ENGINE HOUSE',short:'ENGINE HOUSE',tint:0xefbb7c},{s:-1,z:-88,name:'SUGAR CRYSTAL FILTERS',short:'CRYSTAL FILTERS',tint:0xbaabe9}];
+const cross=[[-8.4,-1.9],[-8.4,3.1]];for(let i=0;i<=48;i++){let a=Math.PI-i*Math.PI/48;cross.push([8.4*Math.cos(a),3.1+6.7*Math.sin(a)])}cross.push([8.4,-1.9]);
+const vv=[],uu=[],ix=[],N=cross.length;
+const cuts=[...Array.from({length:97},(_,k)=>27-1.28*k),...doors.flatMap(d=>[d.z-2.3,d.z+2.3])].sort((a,b)=>b-a);
+for(let k=0;k<cuts.length;k++){let z=cuts[k];for(let j=0;j<N;j++){vv.push(cross[j][0],cross[j][1],z);uu.push(j/N*7,(27-z)/122.88*14)}}
+for(let k=0;k<cuts.length-1;k++)for(let j=0;j<N-1;j++){let z=(cuts[k]+cuts[k+1])/2,edge=j===0?-1:j===N-2?1:0;if(edge&&doors.some(d=>d.s===edge&&Math.abs(z-d.z)<2.3))continue;let a=k*N+j,b=a+N;ix.push(a,b,a+1,b,b+1,a+1)}
+const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(vv,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uu,2));geo.setIndex(ix);geo.computeVertexNormals();add(geo,brick);
+// End masonry closes the previously exposed tunnel ends. An inset drain screen
+// reads as part of the wall, not an open void.
+for(const zz of [26.98,-95.86]){
+ const profile=new T.Shape();profile.moveTo(cross[0][0],cross[0][1]);
+ for(const [x,y] of cross.slice(1))profile.lineTo(x,y);profile.closePath();
+ const end=add(new T.ShapeGeometry(profile),brick,0,0,zz);
+ const inward=zz>0?-1:1;
+ const surround=new T.Group();surround.position.set(0,2.28,zz+inward*.11);
+ surround.rotation.y=zz>0?Math.PI:0;sc.add(surround);
+ const arch=new T.Shape();arch.moveTo(-2.48,-2.22);arch.lineTo(-2.48,.42);
+ arch.absarc(0,.42,2.48,Math.PI,0,true);arch.lineTo(2.48,-2.22);arch.closePath();
+ const recess=add(new T.ExtrudeGeometry(arch,{depth:.12,bevelEnabled:true,bevelThickness:.08,bevelSize:.08,bevelSegments:3}),cocoa,0,0,0,surround);
+ const aperture=new T.Shape();aperture.moveTo(-2.15,-2.13);aperture.lineTo(-2.15,.42);aperture.absarc(0,.42,2.15,Math.PI,0,true);aperture.lineTo(2.15,-2.13);aperture.closePath();
+ add(new T.ShapeGeometry(aperture),dark,0,0,.23,surround);
+ for(let x=-1.8;x<=1.81;x+=.6){const top=.42+Math.sqrt(2.15**2-x*x);bevelRail([x,-2.10,.27],[x,top-.09,.27],.09,gold,surround)}
+ for(const y of [-1.65,-.75,.15]){const rib=panel(4.18,.14,.1,licorice,surround);rib.position.set(0,y,.29)}
+ const crown=hoop(.63,.105,gold,0,6.35,zz+inward*.22);
+ const jewel=lathe([[0,0],[.43,.03],[.54,.18],[.43,.39],[0,.52]],rose,0,6.35,zz+inward*.24);jewel.rotation.x=inward*Math.PI/2;
+}
+const peppermint=mat(0xffffff,.4,{vertexColors:true});
+function candyArch(points,r,stripes=20){let c=new T.CatmullRomCurve3(points.map(q=>v(...q))),g=new T.TubeGeometry(c,116,r,10),uv=g.getAttribute('uv'),cols=[],a=new T.Color('#f5d0b0'),b=new T.Color('#ae4357');for(let i=0;i<uv.count;i++){let col=Math.sin(uv.getX(i)*stripes*6.283+uv.getY(i)*7)>-.1?a:b;cols.push(col.r,col.g,col.b)}g.setAttribute('color',new T.Float32BufferAttribute(cols,3));return add(g,peppermint)}
+for(let z=23;z>-94;z-=11){const pts=[[-8.1,.35,z],[-8.1,3.1,z]];for(let j=0;j<=35;j++){let a=Math.PI-j*Math.PI/35;pts.push([8.1*Math.cos(a),3.1+6.43*Math.sin(a),z])}pts.push([8.1,.35,z]);candyArch(pts,.22);const jewel=add(new T.OctahedronGeometry(.33,1),amber,0,9.58,z);jewel.scale.set(1,.68,.8);rivet(-.52,9.63,z,.09,sc,'x');rivet(.52,9.63,z,.09,sc,'x')}
+// Single instanced paving mesh: hundreds of separately bevelled biscuit flags.
+const stoneG=new T.ExtrudeGeometry(rounded(1.08,2.22,.14),{depth:.115,bevelEnabled:true,bevelSize:.05,bevelThickness:.045,bevelSegments:2});stoneG.rotateX(-Math.PI/2);
+const tiles=new T.InstancedMesh(stoneG,cream,390),tr=new T.Object3D();let ti=0;
+for(let side of [-1,1]){let x=side*5.94;add(new T.BoxGeometry(4.9,.6,124),cocoa,x,-.4,-34.5);for(let z=-94;z<27;z+=2.48)for(let u=-1;u<=1;u++){tr.position.set(x+u*1.24,-.035,z);tr.scale.set(.975,1,.98);tr.rotation.set(0,(random()-.5)*.018,0);tr.updateMatrix();tiles.setMatrixAt(ti,tr.matrix);tiles.setColorAt(ti,new T.Color([0xe9c59f,0xc69a81,0xe1b698,0xd7aa8b][Math.floor(random()*4)]));ti++}}tiles.count=ti;tiles.instanceMatrix.needsUpdate=true;sc.add(tiles);
+const canal=add(new T.BoxGeometry(6.55,.5,124),dark,0,-2.1,-34.5);for(let x of [-3.48,3.48]){add(new T.BoxGeometry(.48,1.86,123),cocoa,x,-.75,-34.5);add(new T.BoxGeometry(.29,.14,123),cream,x,.23,-34.5);add(new T.BoxGeometry(.18,.1,123),gold,x,.33,-34.5)}
+const waterG=new T.PlaneGeometry(6.42,122,16,140);waterG.rotateX(-Math.PI/2);waterG.translate(0,-.72,-34.5);const waterBase=waterG.attributes.position.array.slice();const water=add(waterG,mat(0xf49a46,.16,{side:T.DoubleSide}));
+// Real bridge openings in the continuous rail and continuous floor across the syrup.
+const bridges=[11,-29,-60];for(const z of bridges){let b=panel(8.85,3.18,.13,cream);b.rotation.x=-Math.PI/2;b.position.set(0,-.05,z);for(let s of [-1,1]){tube([[-3.8,.48,z+s*1.5],[-1.9,.87,z+s*1.5],[0,.94,z+s*1.5],[1.9,.87,z+s*1.5],[3.8,.48,z+s*1.5]],.095,gold)}}
+for(const x of [-3.82,3.82]){
+ for(let y of [1.04,1.52]){
+  let start=27;
+  for(let z of bridges){
+   tube([[x,y,start],[x,y,z+1.78]],.075,licorice,sc,28);
+   const cap=hoop(.115,.038,gold,x,y,z+1.78);cap.rotation.z=0;
+   start=z-1.78;
+  }
+  tube([[x,y,start],[x,y,-95]],.075,licorice,sc,30);
+ }
+ for(let z=24;z>-93;z-=4.5){
+  if(bridges.some(b=>Math.abs(z-b)<2.1))continue;
+  lathe([[.22,0],[.25,.06],[.21,.2],[.115,.32],[.115,1.26],[.19,1.32],[.14,1.4],[0,1.49]],licorice,x,.25,z);
+  lathe([[.125,0],[.16,.055],[.10,.16],[0,.21]],gold,x,1.68,z);
+  for(let y of [1.04,1.52]){let ring=hoop(.145,.035,gold,x,y,z);ring.rotation.x=Math.PI/2}
+ }
+}
+for(let s of [-1,1]){let x=s*7.77;tube([[x,4.62,27],[x,4.62,-95]],.27,s===1?mint:licorice,sc,95);for(let z=19;z>-94;z-=10){let h=hoop(.33,.06,gold,x,4.62,z);h.rotation.z=0; const mount=panel(.24,.55,.15,cocoa);mount.position.set(s*8.08,4.62,z);bevelRail([x,4.36,z],[s*8.15,4.4,z],.085,gold)}for(let y of [.42,2.8]){let from=27;for(let d of doors.filter(d=>d.s===s).sort((a,b)=>b.z-a.z)){tube([[s*8.23,y,from],[s*8.23,y,d.z+2.6]],.083,cream,sc,24);from=d.z-2.6}tube([[s*8.23,y,from],[s*8.23,y,-95]],.083,cream,sc,24)}}
+// Glass candy lanterns: cage ribs and limited pooled lights.
+const lamps=[];
+function lantern(x,z,kind){
+ const group=new T.Group();group.position.set(x,6.25,z);sc.add(group);
+ const globeProfile=[[0,-.70],[.15,-.65],[.38,-.46],[.50,-.11],[.47,.25],[.28,.49],[0,.58]];
+ lathe(globeProfile,kind?amber:pinkGlass,0,0,0,group);
+ for(let i=0;i<10;i++){
+  let a=i*Math.PI/5,pts=[];
+  for(const [r,y] of globeProfile){const clearance=r+.044;pts.push([clearance*Math.cos(a),y,clearance*Math.sin(a)])}
+  tube(pts,.032,gold,group,18);
+ }
+ for(let y of [-.56,.46]){let h=hoop(y<0?.31:.35,.045,gold,0,y,0,group);h.rotation.x=Math.PI/2}
+ const ceilingY=3.1+6.7*Math.sqrt(1-(x/8.4)**2);
+ const stemHeight=ceilingY-6.25;
+ tube([[0,.54,0],[0,stemHeight-.13,0]],.058,licorice,group,18);
+ lathe([[0,0],[.23,.02],[.27,.07],[.15,.14],[0,.18]],gold,0,stemHeight-.11,0,group);
+ const locket=add(new T.DodecahedronGeometry(.16,0),rose,0,-.77,0,group);locket.scale.y=.45;
+ lamps.push({x,z,color:kind?0xffb776:0xff839c});
+}
+for(let z=16;z>-93;z-=15){lantern(-6.5,z,0);lantern(6.5,z-7.3,1)}for(let i=0;i<4;i++){let l=new T.PointLight(0xffab80,0,13,1.6);sc.add(l);dynamicLights.push(l)}
+// Side vaults have genuine open portals and individually modelled machinery.
+const zones=[{x0:4.26,x1:7.65,z0:-94,z1:25.7},{x0:-7.65,x1:-4.26,z0:-94,z1:25.7}];for(let z of bridges)zones.push({x0:-4.46,x1:4.46,z0:z-1.36,z1:z+1.36});
+const obstacles=[],anim=[],collectibles=[];
+function signMat(name){let c=document.createElement('canvas');c.width=640;c.height=220;let ctx=c.getContext('2d');ctx.fillStyle='#3d2930';ctx.fillRect(0,0,640,220);ctx.strokeStyle='#d3a66d';ctx.lineWidth=9;ctx.strokeRect(16,16,608,188);ctx.textAlign='center';ctx.fillStyle='#f0d5a8';ctx.font='bold 47px Georgia';ctx.fillText(name,320,105);ctx.fillStyle='#c4a089';ctx.font='22px Georgia';ctx.fillText('SUGARWORKS  ·  DISTRICT VII',320,154);let tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;return new T.MeshBasicMaterial({map:tex,side:T.DoubleSide})}
+for(let d of doors){let s=d.s,z=d.z;zones.push({x0:s>0?7.3:-10.7,x1:s>0?10.7:-7.3,z0:z-2.28,z1:z+2.28},{x0:s>0?9.65:-20.3,x1:s>0?20.3:-9.65,z0:z-6.18,z1:z+6.18});add(new T.BoxGeometry(12.8,.58,13.7),cocoa,s*14.4,-.37,z);const floor=new T.InstancedMesh(stoneG,cream,120);let n=0;for(let x=9.8;x<=19.7;x+=1.17)for(let zz=z-5.6;zz<=z+5.6;zz+=2.3){tr.position.set(s*x,-.032,zz);tr.scale.set(.98,.97,.99);tr.rotation.set(0,0,0);tr.updateMatrix();floor.setMatrixAt(n,tr.matrix);floor.setColorAt(n,new T.Color([0xe2c3a1,0xc79e90,0xe5c1ad][Math.floor(random()*3)]));n++}floor.count=n;sc.add(floor);
+const pp=[],uv=[],idx=[];for(let j=0;j<=34;j++){let a=Math.PI*j/34;for(let k=0;k<=13;k++){pp.push(s*(8.15+k*.97),3+4.57*Math.sin(a),z-6.85*Math.cos(a));uv.push(j/34*3,k/13*3)}}for(let j=0;j<34;j++)for(let k=0;k<13;k++){let i=j*14+k;idx.push(i,i+1,i+14,i+1,i+15,i+14)}let roof=new T.BufferGeometry();roof.setAttribute('position',new T.Float32BufferAttribute(pp,3));roof.setAttribute('uv',new T.Float32BufferAttribute(uv,2));roof.setIndex(idx);roof.computeVertexNormals();add(roof,brick);
+for(let dz of [-6.75,6.75]){add(new T.BoxGeometry(12.7,3.5,.48),biscuit,s*14.4,1.3,z+dz);tube([[s*8.3,3.4,z+dz],[s*20.2,3.4,z+dz]],.13,d.s>0?licorice:mint)}
+for(let dz of [-4.58,4.58])add(new T.BoxGeometry(.47,3.32,4.43),biscuit,s*8.25,1.36,z+dz);
+add(new T.BoxGeometry(.5,.4,4.65),cocoa,s*8.22,3.02,z);
+let arch=[];for(let j=0;j<=26;j++){let a=j*Math.PI/26;arch.push([s*8.05,1.95+1.03*Math.sin(a),z-2.3*Math.cos(a)])}tube(arch,.18,cream);for(let dz of [-2.3,2.3])tube([[s*8.05,.1,z+dz],[s*8.05,1.95,z+dz]],.15,gold);
+let signGroup=new T.Group();signGroup.position.set(s*8.03,4.07,z);signGroup.rotation.y=-s*Math.PI/2;sc.add(signGroup);
+ let signFrame=panel(3.19,1.13,.15,cocoa,signGroup);signFrame.position.z=-.07;
+ let label=add(new T.PlaneGeometry(3,.99),signMat(d.short),0,0,.17,signGroup);
+ for(const sx of [-1.46,1.46])for(const sy of [-.46,.46])rivet(sx,sy,.24,.06,signGroup);
+ // The sign is attached by short forged brackets into the surrounding arch.
+ for(const xx of [-1.22,1.22])bevelRail([xx,.54,-.15],[xx,.87,-.28],.055,gold,signGroup);
+for(let x of [10.3,14.6,18.8]){let p=[];for(let j=0;j<=26;j++){let a=Math.PI*j/26;p.push([s*x,3+4.5*Math.sin(a),z-6.66*Math.cos(a)])}candyArch(p,.15,12)}
+let far=new T.Shape();far.moveTo(-6.85,-.2);far.lineTo(-6.85,3);for(let j=0;j<=36;j++){let a=j*Math.PI/36;far.lineTo(-6.85*Math.cos(a),3+4.57*Math.sin(a))}far.lineTo(6.85,-.2);far.closePath();let end=add(new T.ShapeGeometry(far),brick,s*20.65,0,z);end.rotation.y=Math.PI/2;
+let chandelier=lathe([[0,-.5],[.4,-.45],[.54,0],[.36,.4],[0,.56]],d.s===1?amber:pinkGlass,s*15.7,6,z);tube([[s*15.7,7,z],[s*15.7,6.4,z]],.08,gold);let roomlight=new T.PointLight(d.tint,11,14,1.8);roomlight.position.set(s*15.7,5.8,z);sc.add(roomlight);anim.push({type:'light',o:roomlight,seed:random()*8});
+}
+// Wall reliefs sit directly on side-room partitions, not floating in open air.
+// Each chamber gets an enamel frieze, scalloped biscuits and mounted candied studs.
+for(const d of doors){
+ const s=d.s,z=d.z;
+ for(const offset of [-6.47,6.47]){
+  const zz=z+offset;
+  tube([[s*8.40,2.91,zz],[s*20.15,2.91,zz]],.14,cream);
+  tube([[s*8.40,.36,zz],[s*20.15,.36,zz]],.085,gold);
+  for(let k=0;k<6;k++){
+   const x=s*(9.40+k*1.9);
+   const sugar=lathe([[0,0],[.21,.05],[.27,.14],[.21,.30],[0,.36]],rose,x,1.73,zz+(offset>0?-.14:.14));
+   sugar.rotation.x=offset>0?-Math.PI/2:Math.PI/2;
+  }
+ }
+ // The end-wall rosette is mounted at the exact far cap x coordinate.
+ const rx=s*20.47;
+ const shell=hoop(.75,.11,gold,rx,5.15,z);shell.rotation.y=Math.PI/2;
+ for(let k=0;k<8;k++){
+  let a=k*Math.PI/4;
+  const bx=rx-(s*.15),cy=5.15+Math.cos(a)*.53,cz=z+Math.sin(a)*.53;
+  const stud=add(new T.OctahedronGeometry(.16,0),d.s>0?amber:pinkGlass,bx,cy,cz);
+ }
+}
+// Small coffered accents hide the otherwise blank canal retaining-wall boxes.
+for(const s of [-1,1])for(let zz=-92;zz<27;zz+=3.7){
+ const side=s*3.21;
+ const rim=panel(2.9,.78,.085,cocoa);
+ rim.position.set(side,-.65,zz);rim.rotation.y=-s*Math.PI/2;
+ const inner=panel(2.60,.50,.08,s===1?rose:gold);
+ inner.position.set(side-s*.09,-.65,zz);inner.rotation.y=-s*Math.PI/2;
+}
+// Jelly-pump gallery: turned machine feet, seamless vessels, gasketed crowns,
+// real piston yokes, dial faces, and continuous supply / discharge plumbing.
+const jellyPumps=[];
+function jellyGauge(x,y,z){
+ const g=new T.Group();g.position.set(x,y,z);sc.add(g);
+ const casing=lathe([[0,0],[.30,.03],[.35,.09],[.35,.18],[.31,.23],[0,.25]],gold,0,0,0,g);
+ casing.rotation.x=-Math.PI/2;
+ const face=add(new T.CircleGeometry(.265,36),cream,0,0,.254,g);
+ for(let a=0;a<=10;a++){
+  let th=(-Math.PI*.73)+(a/10)*Math.PI*1.46;
+  bevelRail([Math.sin(th)*.205,Math.cos(th)*.205,.261],
+    [Math.sin(th)*.235,Math.cos(th)*.235,.261],.008,licorice,g);
+ }
+ bevelRail([0,0,.27],[.13,.14,.27],.018,rose,g);
+ return g;
+}
+for(let z of [-17.1,-11.1]){
+ const x=15.15,g=new T.Group();g.position.set(x,0,z);sc.add(g);
+ lathe([[0,.0],[.77,.0],[1.15,.08],[1.32,.18],[1.36,.26],[1.27,.36],[1.18,.48],[1.18,.65],[.9,.76],[0,.76]],cocoa,0,.03,0,g);
+ for(let k=0;k<8;k++){
+  let a=k*Math.PI/4;
+  rivet(Math.sin(a)*1.21,.42,Math.cos(a)*1.21,.08,g,'y');
+ }
+ const glass=lathe([[0,.0],[.8,.06],[.95,.22],[1.02,.42],[1.04,1.18],[.90,1.55],[.74,1.74],[0,1.82]],pinkGlass,0,.82,0,g);
+ const jam=lathe([[0,.0],[.78,.04],[.91,.22],[.94,.84],[.8,1.14],[.67,1.26],[0,1.29]],
+  z<-14?rose:mint,0,.92,0,g);
+ for(const yy of [1.0,2.43]){let r=hoop(yy<2?1.05:.79,.083,gold,0,yy,0,g);r.rotation.x=Math.PI/2}
+ const top=lathe([[0,0],[.60,.02],[.81,.1],[.86,.21],[.58,.33],[.37,.39],[0,.41]],gold,0,2.64,0,g);
+ for(let k=0;k<6;k++){let a=k*Math.PI/3;rivet(.73*Math.sin(a),2.73,.73*Math.cos(a),.068,g,'y')}
+ bevelRail([0,2.99,0],[0,4.04,0],.13,licorice,g);
+ const guide=add(new T.CylinderGeometry(.36,.36,.12,20),gold,0,3.99,0,g);
+ const movingPiston=new T.Group();g.add(movingPiston);
+ bevelRail([0,4.06,0],[0,4.53,0],.14,gold,movingPiston);
+ let p=panel(.86,.27,.22,cocoa,movingPiston);p.position.set(0,4.6,-.12);
+ const support=panel(.18,1.04,.18,gold,g);support.position.set(-.54,4.76,-.10);
+ const other=panel(.18,1.04,.18,gold,g);other.position.set(.54,4.76,-.10);
+ jellyGauge(x+.82,3.35,z+.64);
+ tube([[x+.65,3.35,z+.57],[x+.87,3.35,z+.64]],.09,licorice);
+ tube([[x,5.20,z],[x,5.73,z],[17.9,5.73,z]],.16,licorice);
+ const anchor=lathe([[0,0],[.16,.03],[.24,.10],[.22,.18],[0,.2]],gold,17.9,5.66,z);
+ jellyPumps.push({p:movingPiston,phase:z});
+ obstacles.push({x,z,r:1.50});
+}
+tube([[17.9,5.73,-19],[17.9,5.73,-9]],.22,licorice);
+for(let z of [-18.6,-14,-9.4]){
+ const roofY=3+4.57*Math.sqrt(1-((z+14)/6.85)**2);
+ tube([[17.9,5.73,z],[17.9,roofY-.12,z]],.058,gold);
+}
+// Fondant reservoir: sculpted bowl, split enamel rim, attached spout, glass sight tube.
+const bx=-15.3,bz=-40;
+const basin=lathe([[0,0],[2.42,.03],[2.92,.09],[3.20,.22],[3.42,.38],[3.5,.57],[3.44,.80],[3.35,.98],[3.15,1.04]],cocoa,bx,.02,bz);
+basin.scale.z=.77;
+for(const yy of [.18,.91]){
+ const lip=hoop(3.32,.12,yy>.4?cream:gold,bx,yy,bz);
+ lip.rotation.x=Math.PI/2;lip.scale.y=.77;
+}
+const fondantPool=add(new T.CircleGeometry(3.12,60),fondant,bx,.93,bz);
+fondantPool.rotation.x=-Math.PI/2;fondantPool.scale.y=.77;
+for(let j=0;j<16;j++){
+ let a=j*Math.PI/8;
+ // A scalloped rim lug has a defined support in the basin wall.
+ const x=bx+3.32*Math.sin(a),z=bz+3.32*.77*Math.cos(a);
+ rivet(x,.72,z,.08,sc,'y');
+}
+tube([[-18.6,5.38,bz],[-18.3,5.23,bz],[-16.2,4.7,bz],[-15.3,3.25,bz]],.23,mint);
+lathe([[0,0],[.16,0],[.28,.13],[.34,.3],[.24,.44],[0,.47]],gold,bx,2.87,bz);
+const pour=add(new T.CylinderGeometry(.10,.15,2.02,14),pinkGlass,bx,1.99,bz);
+for(let i=0;i<5;i++){
+ const zz=-45.5+i*2.6;
+ lathe([[0,0],[.34,.05],[.43,.19],[.49,.51],[.42,.75],[.25,.90],[0,1]],i%2?rose:mint,-19,.11,zz);
+ let ring=hoop(.39,.065,gold,-19,1.04,zz);ring.rotation.x=Math.PI/2;
+}
+const sight=lathe([[0,0],[.25,.07],[.30,.18],[.30,1.47],[.25,1.6],[0,1.65]],pinkGlass,-11.68,.98,-40);
+for(const y of [1.13,2.53]){let r=hoop(.30,.075,gold,-11.68,y,-40);r.rotation.x=Math.PI/2}
+tube([[-12.45,.52,-40],[-11.68,.52,-40],[-11.68,1.12,-40]],.10,gold);
+obstacles.push({x:bx,z:bz,r:3.72});
+// Licorice engine: three intersecting geared wheels with linked angular ratios and
+// aligned wall-side shafts. Spoke cutouts are part of the extruded gear outline.
+function gearGeo(r,teeth){
+ const tooth=new T.Shape();
+ for(let k=0;k<teeth;k++)for(let j=0;j<6;j++){
+  const th=(k+(j/6))*2*Math.PI/teeth;
+  const rr=r*[.96,.99,1.10,1.10,.99,.96][j];
+  const x=rr*Math.cos(th),y=rr*Math.sin(th);
+  if(k===0&&j===0)tooth.moveTo(x,y);else tooth.lineTo(x,y);
+ }
+ tooth.closePath();
+ const hole=new T.Path();for(let j=0;j<=48;j++){
+  let a=j*2*Math.PI/48,x=.27*Math.cos(-a),y=.27*Math.sin(-a);
+  if(!j)hole.moveTo(x,y);else hole.lineTo(x,y);
+ }tooth.holes.push(hole);
+ for(let k=0;k<6;k++){
+  const a=k*Math.PI/3,p=new T.Path();
+  for(let j=0;j<=12;j++){
+   const th=a+j/12*.48,rad=r*.49;
+   const xx=Math.cos(th)*rad,yy=Math.sin(th)*rad;
+   if(!j)p.moveTo(xx,yy);else p.lineTo(xx,yy);
+  }
+  p.lineTo(Math.cos(a+.48)*r*.75,Math.sin(a+.48)*r*.75);
+  p.lineTo(Math.cos(a)*r*.75,Math.sin(a)*r*.75);
+  p.closePath();tooth.holes.push(p);
+ }
+ return new T.ExtrudeGeometry(tooth,{depth:.23,bevelEnabled:true,bevelSize:.034,bevelThickness:.034,bevelSegments:2,curveSegments:6});
+}
+const driveGears=[];
+for(let [z,y,r,n,spin] of [[-71.5,4.0,1.36,16,1],[-69.08,4.9,1.05,13,-1],[-66.58,4.0,1.47,18,1]]){
+ const pivot=new T.Group();pivot.position.set(20.04,y,z);pivot.rotation.y=Math.PI/2;sc.add(pivot);
+ const rotor=new T.Group();pivot.add(rotor);
+ const body=add(gearGeo(r,n),gold,0,0,0,rotor);edgeInk(body,goldInk,27);
+ const inner=hoop(r*.40,.053,licorice,0,0,.27,rotor);
+ const boss=lathe([[0,0],[.21,.03],[.34,.1],[.34,.23],[.24,.30],[0,.33]],licorice,0,0,.24,rotor);boss.rotation.x=-Math.PI/2;
+ rivet(0,0,.57,.095,rotor);
+ const axle=add(new T.CylinderGeometry(.19,.19,.5,16),licorice,20.37,y,z);axle.rotation.z=Math.PI/2;
+ const wall=hoop(.39,.09,cocoa,20.63,y,z);wall.rotation.y=Math.PI/2;
+ for(let j=0;j<6;j++){
+  const a=j*Math.PI/3;
+  rivet(20.55,y+Math.cos(a)*.40,z+Math.sin(a)*.40,.048,sc,'x');
+ }
+ driveGears.push({rotor,teeth:n,spin});
+}
+const conveyor=panel(4.85,1.74,.3,licorice);conveyor.rotation.x=-Math.PI/2;conveyor.position.set(15.25,1.09,-68);
+for(const zz of [-68.89,-67.11]){
+ const side=panel(5.05,.36,.18,gold);side.position.set(15.25,1.18,zz);
+ for(let x=13.25;x<17.35;x+=.8)rivet(x,1.18,zz+.21,.065,sc,'z');
+}
+for(let i=0;i<9;i++){
+ let x=13.15+i*.53;
+ let roller=add(new T.CylinderGeometry(.093,.093,1.65,14),gold,x,1.22,-68);
+ roller.rotation.x=Math.PI/2;
+ for(let zz of [-68.78,-67.22]){let c=hoop(.116,.035,cocoa,x,1.22,zz);c.rotation.x=Math.PI/2}
+}
+const movingCandies=[];
+for(let i=0;i<6;i++){
+ const candy=new T.Group();candy.position.set(13.5+i*.68,1.36,-68);sc.add(candy);
+ lathe([[0,0],[.15,.025],[.27,.09],[.33,.23],[.28,.39],[.14,.50],[0,.54]],i%2?mint:rose,0,0,0,candy);
+ const spiral=[];for(let k=0;k<=28;k++){
+  const h=.06+k/28*.41,a=h*19+i*1.3,r=.245*Math.sin(Math.PI*(h/.54))**.2;
+  spiral.push([r*Math.cos(a),h,r*Math.sin(a)]);
+ }
+ tube(spiral,.016,cream,candy,32);movingCandies.push({o:candy,i});
+}
+// A continuous geared torque shaft runs from the end-wall drive into a guarded roller bearing.
+tube([[19.74,3.93,-66.58],[19.10,3.93,-66.58],[18.29,2.58,-67.11],[17.6,1.3,-67.11]],.105,licorice);
+for(const [x,y,z] of [[19.1,3.93,-66.58],[18.29,2.58,-67.11]]){
+ const support=lathe([[0,0],[.18,.02],[.24,.09],[.17,.17],[0,.2]],gold,x,y,z);
+}
+for(const x of [13.5,17.3])for(const z of [-68.65,-67.35]){
+ const foot=lathe([[0,0],[.25,.02],[.28,.09],[.19,.16],[.14,.6],[0,.68]],gold,x,.03,z);
+}
+obstacles.push({x:15.25,z:-68,r:2.6});
+// Crystal filtration: continuous faceted gem prisms (one closed mesh per crystal)
+// seated in sculpted basins with moulded enamel edging.
+function crystalGeometry(height,r,width=6){
+ const verts=[],idx=[];
+ const rings=[
+  [0,.75], [.09,1], [height*.54,1.04], [height*.78,.92], [height,0]
+ ];
+ for(const [y,scaling] of rings)for(let i=0;i<width;i++){
+  const a=2*Math.PI*i/width,radius=r*scaling;
+  verts.push(radius*Math.cos(a),y,radius*Math.sin(a));
+ }
+ for(let j=0;j<rings.length-1;j++)for(let i=0;i<width;i++){
+  const a=j*width+i,b=j*width+(i+1)%width,c=(j+1)*width+i,d=(j+1)*width+(i+1)%width;
+  idx.push(a,b,c,b,d,c);
+ }
+ for(let i=1;i<width-1;i++)idx.push(0,i+1,i);
+ const g=new T.BufferGeometry();
+ g.setAttribute('position',new T.Float32BufferAttribute(verts,3));g.setIndex(idx);g.computeVertexNormals();return g;
+}
+for(let x of [-13.6,-16.5,-19.3]){
+ const tray=panel(2.16,3.52,.20,cocoa);tray.rotation.x=-Math.PI/2;tray.position.set(x,.08,-88);
+ const enamel=panel(1.94,3.29,.08,licorice);enamel.rotation.x=-Math.PI/2;enamel.position.set(x,.21,-88);
+ for(let j=0;j<11;j++){
+  let xx=x+(random()-.5)*1.37,zz=-88+(random()-.5)*2.38,h=.42+random()*1.85;
+  let crystal=add(crystalGeometry(h,.12+random()*.15),j%3?pinkGlass:mint,xx,.29,zz);
+  crystal.rotation.y=random()*Math.PI;
+  crystal.rotation.z=(random()-.5)*.19;
+  edgeInk(crystal,ink,23);
+ }
+ obstacles.push({x,z:-88,r:1.58});
+}
+tube([[-19.5,5.1,-93],[-19.5,5.1,-83],[-12,5.1,-83]],.20,licorice);
+for(let z of [-92,-88,-84]){
+ const g=lathe([[0,0],[.25,.07],[.44,.23],[.5,.43],[.33,.61],[0,.72]],amber,-19.3,3.6,z);
+ const upper=lathe([[0,0],[.23,.05],[.28,.11],[.23,.21],[0,.24]],gold,-19.3,4.28,z);
+}
+// Waffle sluice: the gate actually slides along its rails, with lift cables
+// connecting the leaf to the twin crowned winch drums above.
+const gate=new T.Group();gate.position.z=-24.8;sc.add(gate);
+const gateLeaf=new T.Group();gate.add(gateLeaf);
+for(let x of [-2.82,2.82]){
+ let p=panel(.46,4.35,.30,cocoa,gateLeaf);p.position.set(x,.69,0);
+ for(let y=-1.2;y<2.6;y+=.5)rivet(x,y,.40,.065,gateLeaf);
+}
+for(let y of [-1.29,2.68]){let p=panel(5.86,.42,.30,cocoa,gateLeaf);p.position.y=y}
+for(let x=-2.25;x<2.4;x+=.70){let p=panel(.27,3.73,.23,cream,gateLeaf);p.position.set(x,.67,.17)}
+for(let y=-.72;y<2.4;y+=.69){let p=panel(5.63,.25,.22,cream,gateLeaf);p.position.set(0,y,.26)}
+const waffleDiamond=mat(0xf4ad79);
+for(let y=-.45;y<2.1;y+=.69)for(let x=-1.88;x<2.1;x+=.70){
+ let p=panel(.43,.43,.065,waffleDiamond,gateLeaf);p.position.set(x,y,.47);
+ p.rotation.z=Math.PI/4;
+}
+const liftCables=[];
+for(let x of [-3.19,3.19]){
+ bevelRail([x*.885,2.90,.03],[x,2.90,.12],.072,gold,gateLeaf);
+ const railP=panel(.56,6.60,.43,gold);railP.position.set(x,2.17,-25.12);
+ for(let y=-.98;y<=5.2;y+=.47){
+  const tooth=panel(.14,.17,.15,cocoa);tooth.position.set(x,y,-24.64);
+ }
+ const pulley=hoop(.4,.11,gold,x,5.43,-24.71);
+ const hub=add(new T.CylinderGeometry(.18,.18,.39,18),cocoa,x,5.43,-24.70);hub.rotation.x=Math.PI/2;
+ const cable=add(new T.CylinderGeometry(.045,.045,1,10),licorice,x,4.17,-24.72);
+ liftCables.push(cable);
+}
+const beam=panel(7.45,.58,.70,cocoa);beam.position.set(0,5.67,-25.13);
+for(let x of [-3.3,3.3])rivet(x,5.72,-24.35,.16,sc,'z');
+const station=new T.Group();station.position.set(-7.94,1.9,-16.2);station.rotation.y=Math.PI/2;sc.add(station);
+// Wall-mounted housing removes the former obstruction across the promenade.
+obstacles.push({x:-7.99,z:-16.2,r:.63});
+const back=panel(2.96,3.27,.34,cocoa,station);back.position.z=-.23;
+const face=panel(2.61,2.90,.14,gold,station);face.position.z=.02;
+for(const x of [-1.23,1.23])for(const y of [-1.36,1.36])rivet(x,y,.25,.10,station);
+const wheel=new T.Group();wheel.position.z=.45;station.add(wheel);
+hoop(1.08,.16,gold,0,0,0,wheel);
+hoop(.83,.045,cream,0,0,.02,wheel);
+for(let i=0;i<8;i++){
+ let a=i*Math.PI/4;
+ bevelRail([0,0,.03],[Math.sin(a)*1.0,Math.cos(a)*1.0,.03],.077,gold,wheel);
+ const grip=lathe([[0,0],[.13,.03],[.18,.14],[.13,.32],[0,.39]],cream,
+  Math.sin(a)*1.08,Math.cos(a)*1.08,.06,wheel);
+ grip.rotation.z=-a;
+}
+const hub=lathe([[0,0],[.22,.04],[.34,.13],[.33,.24],[.21,.29],[0,.32]],licorice,0,0,.14,wheel);
+hub.rotation.x=Math.PI/2;
+const cap=add(new T.OctahedronGeometry(.17,1),rose,0,0,.45,wheel);
+// Supported transmission: two bearing blocks and a pipe ending inside the gate.
+tube([[-7.87,.34,-16.2],[-7.87,.34,-24.8],[-3.34,.34,-24.8],[-3.34,1.20,-24.80]],.13,gold);
+for(let z of [-19.3,-21.2,-23.4]){lathe([[0,0],[.21,.03],[.29,.13],[.23,.23],[0,.29]],cocoa,-7.87,.10,z)}
+// Decorative candy stalactites are anchored exactly to the roof profile.
+for(let z=19;z>-90;z-=6.2)for(let i=0;i<2;i++){
+ const x=(random()-.5)*11.0;
+ const roof=3.1+6.7*Math.sqrt(1-(x/8.4)**2);
+ const height=.25+random()*.76;
+ const drop=add(crystalGeometry(height,.08+random()*.07),i%2?cream:rose,x,roof-.025,z+(random()-.5)*2);
+ drop.rotation.z=Math.PI;
+}
+// Collectibles are truly pickable in the rooms, with bounding handles and rotating facets.
+function token(x,z,name){const g=new T.Group();g.position.set(x,1.15,z);sc.add(g);const m=add(new T.IcosahedronGeometry(.35,1),name==='CRYSTAL'?pinkGlass:amber,0,0,0,g);let h=hoop(.44,.05,gold,0,0,0,g);h.rotation.x=.3;collectibles.push({g,x,z,name,taken:false})}
+token(11.5,-15,'JELLY');token(-10.9,-44,'FONDANT');token(11.8,-64,'LICORICE');token(-10.8,-90,'CRYSTAL');
+// Small dust motes are batched as a single point cloud.
+const pcount=290,pdata=new Float32Array(pcount*3);for(let i=0;i<pcount;i++){pdata[i*3]=(random()-.5)*15;pdata[i*3+1]=1+random()*8;pdata[i*3+2]=-93+random()*118}let pg=new T.BufferGeometry();pg.setAttribute('position',new T.BufferAttribute(pdata,3));sc.add(new T.Points(pg,new T.PointsMaterial({color:0xffddbe,size:.043,transparent:true,opacity:.57,depthWrite:false})));
+// Audited movement: camera-correct basis, fixed-radius body clearance, and path-based footsteps.
+const PLAYER_RADIUS=.28, EYE_HEIGHT=1.72, WALK_SPEED=1.55, RUN_SPEED=4.10;
+let px=5.6,pz=20,yaw=-.15,pitch=-.04,aimYaw=yaw,aimPitch=pitch,vx=0,vz=0,cameraY=EYE_HEIGHT,stride=0,lean=0,energy=0,gateOpen=false,gateHeight=0,view=0,flashTimer=0,items=0,active=null;
+let blockedX=false,blockedZ=false,motionSpeed=0,stepIndex=0,focused=false;
+const spots=[[5.6,20,-.15,'STRAWBERRY TRUNK'],[-5.45,-16.2,Math.PI/2,'SLUICE CONTROL'],[11.8,-14,-1.5,'JELLY PUMP GALLERY'],[-10.7,-40,1.5,'FONDANT RESERVOIR'],[11.7,-68,-1.5,'LICORICE ENGINE HOUSE'],[-10.7,-85,1.5,'SUGAR CRYSTAL FILTERS'],[5.1,-79,-.15,'LOWER CONDUIT']];
+const inputs={};const config={map:'auto',rx:2,ry:3,dead:.16,bob:matchMedia('(prefers-reduced-motion: reduce)').matches?0:.7,invert:false};let gpName='',prevA=false,prevY=false,joyX=0,joyY=0,gamepadCenters=[];
+const SAVE='euclidi.candy-underworks.v1';
+function save(){try{localStorage.setItem(SAVE,JSON.stringify({samples:collectibles.map(c=>c.taken),gateOpen,config}))}catch(e){}}
+function readout(){ $('cv4-meta').textContent='SAMPLES '+items+' / 4 · '+(gateOpen?'SLUICE OPEN':'SLUICE CLOSED') }
+function restore(){try{const d=JSON.parse(localStorage.getItem(SAVE)||'null');if(!d)return;
+ if(Array.isArray(d.samples))collectibles.forEach((c,i)=>{c.taken=d.samples[i]===true;c.g.visible=!c.taken});
+ items=collectibles.filter(c=>c.taken).length;gateOpen=d.gateOpen===true;
+ if(d.config){const a=d.config;if(['auto','standard','direct','custom'].includes(a.map))config.map=a.map;for(const k of ['rx','ry'])if(Number.isInteger(a[k])&&a[k]>=2&&a[k]<=5)config[k]=a[k];if(Number.isFinite(a.dead))config.dead=Math.max(.05,Math.min(.35,a.dead));if(Number.isFinite(a.bob))config.bob=Math.max(0,Math.min(1,a.bob));config.invert=a.invert===true}
+ }catch(e){} }
+restore();readout();gateHeight=gateOpen?2.22:0;
+$('cv4-act').innerHTML=(gateOpen?'LOWER':'RAISE')+' SLUICE <i>F</i>';
+for(const [id,value] of [['cv4-map',config.map],['cv4-rx',config.rx],['cv4-ry',config.ry],['cv4-dead',config.dead],['cv4-bob',config.bob*100]])$(id).value=value;
+$('cv4-invert').checked=config.invert;
+$('cv4-menu').addEventListener('change',save);
+$('cv4-reset').onclick=()=>{if(!confirm('Reset collected samples and sluice position?'))return;collectibles.forEach(c=>{c.taken=false;c.g.visible=true});items=0;gateOpen=false;gateHeight=0;readout();$('cv4-act').innerHTML='RAISE SLUICE <i>F</i>';save();goView(0);$('cv4-menu').hidden=true;root.focus({preventScroll:true})};
+function goView(i){view=(i+spots.length)%spots.length;let s=spots[view];px=s[0];pz=s[1];yaw=aimYaw=s[2];pitch=aimPitch=0;vx=vz=energy=0;cameraY=EYE_HEIGHT;stride=0;stepIndex=0;$('cv4-idx').textContent=String(view+1).padStart(2,'0');$('cv4-room').textContent=s[3]}
+function flash(text){$('cv4-flash').textContent=text;$('cv4-flash').style.opacity=1;flashTimer=2.1}
+function sluice(){gateOpen=!gateOpen;$('cv4-act').innerHTML=(gateOpen?'LOWER':'RAISE')+' SLUICE <i>F</i>';readout();save();beep(190)}
+function interact(){if(!$('cv4-menu').hidden)return;if(active==='WHEEL'){sluice();return}if(active&&active.startsWith('TOKEN')){let c=collectibles[+active.slice(5)];if(c&&!c.taken){c.taken=true;c.g.visible=false;items++;flash('+1 '+c.name+' SAMPLE');readout();save();if(items===4)flash('ALL FOUR SAMPLES RECOVERED');beep(550)}}}
+$('cv4-interact').onclick=()=>{interact();root.focus({preventScroll:true})};$('cv4-act').onclick=sluice;$('cv4-view').onclick=()=>goView(view+1);$('cv4-settings').onclick=()=>{releaseInput();$('cv4-menu').hidden=false};$('cv4-close').onclick=()=>{$('cv4-menu').hidden=true;root.focus({preventScroll:true})};
+$('cv4-map').onchange=e=>config.map=e.target.value;$('cv4-calibrate').onclick=()=>{try{const p=Array.from(navigator.getGamepads?.()||[]).find(q=>q&&q.connected);if(!p){$('cv4-controller').textContent='NO GAMEPAD IS CONNECTED';return}gamepadCenters=Array.from(p.axes);$('cv4-controller').textContent='RESTING AXES CALIBRATED — RELEASE STICKS BEFORE RECENTERING'}catch(e){$('cv4-controller').textContent='GAMEPAD CALIBRATION NOT AVAILABLE'}};$('cv4-debug').onchange=e=>$('cv4-telemetry').hidden=!e.target.checked;for(let [id,key] of [['cv4-rx','rx'],['cv4-ry','ry']]){$(id).onchange=e=>{config[key]=+e.target.value;config.map='custom';$('cv4-map').value='custom'}}$('cv4-dead').oninput=e=>config.dead=+e.target.value;$('cv4-bob').oninput=e=>config.bob=+e.target.value/100;$('cv4-invert').onchange=e=>config.invert=e.target.checked;
+const kd=e=>{let k=e.key.toLowerCase();if(k==='escape'&&!$('cv4-menu').hidden){$('cv4-close').click();return}if(!root.isConnected||!$('cv4-menu').hidden||!root.contains(document.activeElement)||e.target.closest?.('button,input,select,textarea'))return;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(!inputs[k]){if(k==='f')sluice();if(k==='v')goView(view+1);if(k==='e')interact()}inputs[k]=true},ku=e=>inputs[e.key.toLowerCase()]=false;
+const releaseInput=()=>{for(const k in inputs)inputs[k]=false;joyX=joyY=0;vx=vz=0};window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);window.addEventListener('blur',releaseInput);
+$('cv4-view').addEventListener('click',()=>root.focus({preventScroll:true}));$('cv4-act').addEventListener('click',()=>root.focus({preventScroll:true}));
+let down=false,sx=0,sy=0,cx=0,cy=0;
+renderer.domElement.onpointerdown=e=>{root.focus({preventScroll:true});down=true;sx=cx=e.clientX;sy=cy=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)};
+renderer.domElement.onpointermove=e=>{if(!down)return;aimYaw-=(e.clientX-cx)*.0032;aimPitch=T.MathUtils.clamp(aimPitch-(e.clientY-cy)*.0027,-1.16,1.05);cx=e.clientX;cy=e.clientY};
+renderer.domElement.onpointerup=e=>{if(Math.hypot(e.clientX-sx,e.clientY-sy)<11)interact();down=false};renderer.domElement.onpointercancel=()=>down=false;
+const joystick=$('cv4-joy');let jptr=null;const moveJoy=e=>{let r=joystick.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2),len=Math.hypot(x,y);if(len>37){x=x/len*37;y=y/len*37}joyX=x/37;joyY=y/37;$('cv4-joyinner').style.transform=`translate(${x}px,${y}px)`};joystick.onpointerdown=e=>{jptr=e.pointerId;joystick.setPointerCapture(jptr);moveJoy(e)};joystick.onpointermove=e=>{if(jptr===e.pointerId)moveJoy(e)};joystick.onpointerup=joystick.onpointercancel=()=>{jptr=null;joyX=joyY=0;$('cv4-joyinner').style.transform='translate(0px,0px)'};
+let audio=null,noise=null,hum=null,sound=false;
+function beep(freq){if(!audio||!sound)return;const osc=audio.createOscillator(),g=audio.createGain();osc.type='sine';osc.frequency.setValueAtTime(freq,audio.currentTime);osc.frequency.exponentialRampToValueAtTime(freq*.5,audio.currentTime+.24);g.gain.value=.03;g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+.33);osc.connect(g);g.connect(audio.destination);osc.start();osc.stop(audio.currentTime+.33)}
+function footstep(running){
+ if(!audio||!sound||!noise?.buffer)return;
+ const src=audio.createBufferSource(),lp=audio.createBiquadFilter(),gain=audio.createGain();
+ src.buffer=noise.buffer;lp.type='lowpass';lp.frequency.value=running?330:245;
+ const now=audio.currentTime;gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(running?.019:.013,now+.008);gain.gain.exponentialRampToValueAtTime(.0001,now+.105);
+ src.connect(lp);lp.connect(gain);gain.connect(audio.destination);src.start(now);src.stop(now+.12);
+}
+$('cv4-sound').onclick=async()=>{try{if(!audio){audio=new(window.AudioContext||window.webkitAudioContext)();let buffer=audio.createBuffer(1,audio.sampleRate*2,audio.sampleRate);let dst=buffer.getChannelData(0);for(let i=0;i<dst.length;i++)dst[i]=Math.random()*2-1;noise=audio.createBufferSource();noise.buffer=buffer;noise.loop=true;let filt=audio.createBiquadFilter();filt.type='lowpass';filt.frequency.value=350;let g=audio.createGain();g.gain.value=.045;noise.connect(filt);filt.connect(g);g.connect(audio.destination);noise.start();hum=g}await audio.resume();sound=!sound;hum.gain.setTargetAtTime(sound?.045:0,audio.currentTime,.2);$('cv4-sound').textContent=sound?'SOUND ON':'SOUND OFF'}catch(e){$('cv4-sound').textContent='NO AUDIO'}};
+const dz=(x,y)=>{let l=Math.hypot(x,y);if(l<config.dead)return [0,0];let v=Math.min(1,(l-config.dead)/(1-config.dead))/Math.max(.0001,l);return [x*v,y*v]};
+function pad(dt){
+ let f=0,s=0,run=false,p=null;
+ try{p=Array.from(navigator.getGamepads?.()||[]).find(q=>q&&q.connected)}catch(e){}
+ if(!p){if(gpName)$('cv4-padstate').textContent='KEYBOARD / TOUCH';gpName='';gamepadCenters=[];prevA=prevY=false;return {f,s,run}}
+ if(p.id!==gpName){
+  gpName=p.id;
+  gamepadCenters=[]; // Explicit calibration only: connecting while a stick is held must not redefine its center.
+  $('cv4-controller').textContent='DETECTED: '+p.id+' · '+(p.mapping||'raw axes')+' · Recapture resting values with CENTER if drift occurs';
+  $('cv4-padstate').textContent=p.mapping==='standard'?'GAMEPAD · STANDARD':'GAMEPAD · DIRECT / RAW';
+ }
+ const axis=i=>T.MathUtils.clamp((p.axes[i]??0)-(gamepadCenters[i]??0),-1,1);
+ const a=dz(axis(0),axis(1));let x=2,y=3;
+ if(config.map==='custom'){x=config.rx;y=config.ry}
+ else if(config.map==='direct'){x=2;y=p.axes.length>5?5:3}
+ else if(config.map==='auto'&&p.mapping!=='standard'&&p.axes.length>=6){x=2;y=5}
+ const b=dz(axis(x),axis(y));s=a[0];f=-a[1];
+ const pressed=i=>!!p.buttons[i]?.pressed;
+ const dpadX=(pressed(15)?1:0)-(pressed(14)?1:0),dpadY=(pressed(12)?1:0)-(pressed(13)?1:0);
+ if(Math.hypot(s,f)<.2){s=dpadX;f=dpadY}
+ if($('cv4-menu').hidden){
+  aimYaw-=b[0]*dt*2.45;
+  aimPitch=T.MathUtils.clamp(aimPitch-b[1]*dt*1.98*(config.invert?-1:1),-1.16,1.05);
+  if(pressed(0)&&!prevA)interact();if(pressed(3)&&!prevY)goView(view+1)
+ }
+ prevA=pressed(0);prevY=pressed(3);run=pressed(1)||pressed(4)||pressed(5);
+ return {f,s,run};
+}
+// A circular player footprint must fit in the UNION of the walkable surfaces.
+// Testing the union (not individual inset rectangles) keeps bridge and doorway joins open.
+const footprint=Array.from({length:16},(_,i)=>[Math.cos(i*Math.PI/8)*PLAYER_RADIUS,Math.sin(i*Math.PI/8)*PLAYER_RADIUS]);
+function inside(x,z){return zones.some(q=>x>=q.x0-1e-5&&x<=q.x1+1e-5&&z>=q.z0-1e-5&&z<=q.z1+1e-5)}
+function solidFree(x,z){
+ if(!inside(x,z))return false;
+ for(const [dx,dz] of footprint)if(!inside(x+dx,z+dz))return false;
+ for(const c of obstacles){const r=c.r+PLAYER_RADIUS;if((x-c.x)**2+(z-c.z)**2<r*r)return false}
+ return true;
+}
+function stepMove(dx,dz){
+ blockedX=blockedZ=false;
+ const startX=px,startZ=pz;
+ const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.075));
+ for(let i=0;i<steps;i++){
+  const sx=dx/steps,sz=dz/steps;
+  if(solidFree(px+sx,pz+sz)){px+=sx;pz+=sz;continue}
+  // Try both single-axis displacements so the body slides instead of snagging.
+  const xFirst=Math.abs(sx)>=Math.abs(sz);
+  if(xFirst){
+   if(solidFree(px+sx,pz))px+=sx;else blockedX=true;
+   if(solidFree(px,pz+sz))pz+=sz;else blockedZ=true;
+  }else{
+   if(solidFree(px,pz+sz))pz+=sz;else blockedZ=true;
+   if(solidFree(px+sx,pz))px+=sx;else blockedX=true;
+  }
+ }
+ if(blockedX)vx=0;if(blockedZ)vz=0;
+ return Math.hypot(px-startX,pz-startZ);
+}
+function resize(){let w=holder.clientWidth,h=holder.clientHeight;if(!w||!h)return;cam.aspect=w/h;cam.updateProjectionMatrix();renderer.setSize(w,h,false)}const obs=new ResizeObserver(resize);obs.observe(holder);resize();load.hidden=true;
+const clock=new T.Clock();let frameCount=0;
+function frame(){if(!root.isConnected){obs.disconnect();renderer.dispose();window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku);window.removeEventListener('blur',releaseInput);if(audio)audio.close();return}requestAnimationFrame(frame);let dt=Math.min(.048,clock.getDelta()),t=clock.elapsedTime;
+let W=waterG.attributes.position.array;for(let i=0;i<W.length;i+=3){let x=waterBase[i],z=waterBase[i+2];W[i+1]=waterBase[i+1]+.055*Math.sin(z*.94+t*1.65+x*.4)+.02*Math.sin(z*2.3-t*1.3+x*1.6)}waterG.attributes.position.needsUpdate=true;if(frameCount++%3===0)waterG.computeVertexNormals();
+for(let a of anim){if(a.type==='light')a.o.intensity=10.5+.65*Math.sin(t*1.9+a.seed)}
+// Coupled machinery moves relative to the same crank state. No levitating cables.
+gateHeight=T.MathUtils.damp(gateHeight,gateOpen?2.22:0,1.5,dt);
+gateLeaf.position.y=gateHeight;
+wheel.rotation.z=T.MathUtils.damp(wheel.rotation.z,gateOpen?Math.PI*3.2:0,2.0,dt);
+for(const rope of liftCables){
+ const foot=2.91+gateHeight,top=5.29;
+ rope.scale.y=Math.max(.12,top-foot);rope.position.y=(top+foot)/2;
+}
+for(const pump of jellyPumps){pump.p.position.y=.17*Math.sin(t*1.8+pump.phase)}
+for(const gear of driveGears){gear.rotor.rotation.z=t*gear.spin*(16/gear.teeth)*.37}
+for(const candy of movingCandies){candy.o.position.x=13.25+((candy.i*.68+t*.32)%4.0)}
+pour.scale.y=1+.025*Math.sin(t*2.1);
+const game=pad(dt);
+let f=(inputs.w||inputs.arrowup?1:0)-(inputs.s||inputs.arrowdown?1:0)-joyY+game.f;
+let s=(inputs.d||inputs.arrowright?1:0)-(inputs.a||inputs.arrowleft?1:0)+joyX+game.s;
+if(!$('cv4-menu').hidden)f=s=0;
+let len=Math.hypot(f,s);if(len>1){f/=len;s/=len}
+yaw=T.MathUtils.damp(yaw,aimYaw,12,dt);pitch=T.MathUtils.damp(pitch,aimPitch,12,dt);
+const running=Boolean(inputs.shift||game.run),speed=running?RUN_SPEED:WALK_SPEED;
+// Three.js yaw rotates local camera forward (0,0,-1) to (-sin(yaw),0,-cos(yaw)).
+const desiredX=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*speed;
+const desiredZ=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*speed;
+vx=T.MathUtils.damp(vx,desiredX,len>.05?8.2:13,dt);
+vz=T.MathUtils.damp(vz,desiredZ,len>.05?8.2:13,dt);
+const distance=stepMove(vx*dt,vz*dt);
+// Step timing follows real displacement. Running in place against a wall makes no footsteps.
+const measuredSpeed=Math.min(RUN_SPEED+1,distance/Math.max(dt,.001));
+motionSpeed=T.MathUtils.damp(motionSpeed,measuredSpeed,8,dt);
+energy=T.MathUtils.damp(energy,T.MathUtils.clamp(motionSpeed/WALK_SPEED,0,1),9,dt);
+stride+=distance*(2*Math.PI/(running?2.65:1.44));
+if(Math.floor(stride/Math.PI)>stepIndex){stepIndex=Math.floor(stride/Math.PI);if(measuredSpeed>.35)footstep(running)}
+const a=energy*config.bob;
+const bobY=(.035*Math.cos(stride*2)+.010*Math.sin(stride))*a;
+const crossSway=.015*Math.sin(stride)*a;
+cameraY=T.MathUtils.damp(cameraY,EYE_HEIGHT+bobY,14,dt);
+lean=T.MathUtils.damp(lean,-s*.012+Math.sin(stride)*.006*a,10,dt);
+// Camera-only head motion never affects the collision capsule.
+cam.position.set(px+Math.cos(yaw)*crossSway,cameraY,pz-Math.sin(yaw)*crossSway);
+cam.rotation.order='YXZ';cam.rotation.set(pitch+.003*Math.cos(stride)*a,yaw,lean);
+if(!$('cv4-telemetry').hidden){
+ $('cv4-telemetry').textContent='MOTION  '+motionSpeed.toFixed(2)+' m/s  /  '+(motionSpeed*3.28084).toFixed(1)+' ft/s\nBODY    radius '+PLAYER_RADIUS.toFixed(2)+' m\nCONTACT '+(blockedX?'X ':'')+(blockedZ?'Z':'')+(!blockedX&&!blockedZ?'CLEAR':'')+'\nSTRIDE  '+(stride/Math.PI).toFixed(1)+' steps\nPAD     '+(gpName?'CONNECTED':'NONE');
+}
+// Contextual inspection must be nearby and in front of the player.
+active=null;let nearest=2.45,focus=cam.getWorldDirection(new T.Vector3());const choose=(key,x,z)=>{let dx=x-px,dz=z-pz,dist=Math.hypot(dx,dz);if(dist>=nearest)return;let norm=new T.Vector3(dx,0,dz).normalize();if(focus.dot(norm)<.36&&dist>.65)return;nearest=dist;active=key};choose('WHEEL',-7.38,-16.2);collectibles.forEach((c,i)=>{if(!c.taken)choose('TOKEN'+i,c.x,c.z)});$('cv4-prompt').textContent=active?active==='WHEEL'?'E / A — TURN THE SLUICE VALVE':'E / A — COLLECT SAMPLE':'';$('cv4-interact').disabled=!active;
+for(let c of collectibles)if(!c.taken){c.g.rotation.y+=dt*.55;c.g.position.y=1.13+.08*Math.sin(t*2+c.x)}
+if(flashTimer>0){flashTimer-=dt;$('cv4-flash').style.opacity=Math.min(1,flashTimer*2)}
+// Reuse only four lights for the nearest illuminated fixtures.
+let nearestL=lamps.slice().sort((a,b)=>(a.x-px)**2+(a.z-pz)**2-( (b.x-px)**2+(b.z-pz)**2));for(let i=0;i<dynamicLights.length;i++){let l=dynamicLights[i],loc=nearestL[i];l.position.set(loc.x,6.08,loc.z);l.color.setHex(loc.color);l.intensity=5.5*(.98+.02*Math.sin(t*2+i))}
+let room=doors.find(d=>Math.sign(px)===d.s&&Math.abs(px)>9.2&&Math.abs(pz-d.z)<6.1);$('cv4-room').textContent=room?room.name:'STRAWBERRY TRUNK';renderer.render(sc,cam)}
+try{frame();root.focus({preventScroll:true})}catch(e){load.hidden=false;load.textContent='RENDER INITIALIZATION FAILED — RELOAD TO RETRY';console.error(e)}
+})();
+</script>
+</body></html>
