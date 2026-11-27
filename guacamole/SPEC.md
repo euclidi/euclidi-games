@@ -1,6 +1,6 @@
-# Guacamole — proposed development specification R3.0
+# Guacamole — approved development specification R3.0
 
-Status: proposed, awaiting scope/architecture approval. No production runtime or catalog entry yet.
+Status: approved 2026-11-27. Visual direction: Retro CGI; adaptive 1280px resolution; adjustable orthographic camera. Implementation and verification status are tracked in STATUS.md. The original acceptance requirements remain in force.
 
 ## Scope
 Preserve every V2 operation: chopping onion, tomato, jalapeno and cilantro; opening and scooping avocado; mashing to preferred consistency; adding and folding vegetables; squeezing lime, seasoning with salt; serving with tortilla chips. Replace disconnected mandatory stages with one persistent countertop. Guided recipe and free cooking use the same simulation. Optional scoring based on actual food state; no mandatory timer. Ingredient quantities, preparation order and resulting texture are player-controlled. No restaurant economy or unrelated cooking recipes in this revision.
