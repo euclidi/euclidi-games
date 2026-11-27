@@ -6,7 +6,7 @@
 <div class="rkit" id="rkit" hidden><div class="rkithead">FIELD KIT <span id="rcount">0 / 6</span></div><div id="rslots" class="rslots"></div></div>
 <div class="ractions" id="ractions" hidden><button id="ruse">USE</button><button id="rlook">INSPECT</button><button id="rgrab">GRAB</button><button id="rbag">BAG</button></div>
 <div id="rjoystick"><div></div></div>
-<div id="rsettings" hidden><div class="settingtop">CONTROLS / SYSTEM · v15 <button id="rclose">✕</button></div><div class="settingsect">INPUT</div><div id="rbindings"></div><div class="settingsect">CONTROLLER</div><label>PROFILE <select id="rpad"><option value="auto">AUTO</option><option value="standard">STANDARD</option><option value="d23">DIRECTINPUT AXES 2/3</option><option value="d34">DIRECTINPUT AXES 3/4</option></select></label><label>LOOK <input id="rsens" type="range" min=".4" max="2.5" step=".1" value="1.2"></label><label>INVERT Y <input id="rinvert" type="checkbox"></label><label>INVERT X <input id="rinvertx" type="checkbox"></label><label>MOUSE LOOK <input id="rmousesens" type="range" min=".5" max="2" value="1" step=".1"></label><div id="rcontroller">GAMEPAD NOT DETECTED</div><div class="settingsect">ENVIRONMENT</div><label>TIME <input type="range" id="rtime" min="0" max="24" value="1.8" step=".1"></label><label>TIME FLOW <input type="checkbox" id="rflow"></label><label>TIMESCALE <select id="rtimescale"><option value="1">×1</option><option value="60">×60</option><option value="600" selected>×600</option><option value="3600">×3600</option></select></label><label>QUALITY <select id="rquality"><option value="auto" selected>AUTO / ADAPTIVE</option><option value=".65">LOW</option><option value="1">BALANCED</option><option value="1.2">HIGH</option></select></label><label>FRAME LIMIT <select id="rfpslimit"><option value="60" selected>UP TO 60 FPS</option><option value="45">UP TO 45 FPS</option><option value="30">UP TO 30 FPS</option></select></label><label>HUD <input type="checkbox" id="rhud" checked></label><div class="explain">RESET resets orbit / walking direction. ENTER ROOM places you at a checked access point. Movement uses swept collision. Shadow quality and render scale adapt automatically.<hr>STICKS: MOVE / LOOK · FACE A: USE · B: INSPECT · X: GRAB · Y: BAG · START: MODE</div></div>
+<div id="rsettings" hidden><div class="settingtop">CONTROLS / SYSTEM · v16 <button id="rclose">✕</button></div><div class="settingsect">INPUT</div><div id="rbindings"></div><div class="settingsect">CONTROLLER</div><label>PROFILE <select id="rpad"><option value="auto">AUTO</option><option value="standard">STANDARD</option><option value="d23">DIRECTINPUT AXES 2/3</option><option value="d34">DIRECTINPUT AXES 3/4</option></select></label><label>LOOK <input id="rsens" type="range" min=".4" max="2.5" step=".1" value="1.2"></label><label>INVERT Y <input id="rinvert" type="checkbox"></label><label>INVERT X <input id="rinvertx" type="checkbox"></label><label>MOUSE LOOK <input id="rmousesens" type="range" min=".5" max="2" value="1" step=".1"></label><div id="rcontroller">GAMEPAD NOT DETECTED</div><div class="settingsect">ENVIRONMENT</div><label>TIME <input type="range" id="rtime" min="0" max="24" value="1.8" step=".1"></label><label>TIME FLOW <input type="checkbox" id="rflow"></label><label>TIMESCALE <select id="rtimescale"><option value="1">×1</option><option value="60">×60</option><option value="600" selected>×600</option><option value="3600">×3600</option></select></label><label>QUALITY <select id="rquality"><option value="auto" selected>AUTO / ADAPTIVE</option><option value=".65">LOW</option><option value="1">BALANCED</option><option value="1.2">HIGH</option></select></label><label>FRAME LIMIT <select id="rfpslimit"><option value="60" selected>UP TO 60 FPS</option><option value="45">UP TO 45 FPS</option><option value="30">UP TO 30 FPS</option></select></label><label>HUD <input type="checkbox" id="rhud" checked></label><label>SCANNED MATERIALS <input type="checkbox" id="rmat" checked></label><label>ENVIRONMENT SOUND <input type="checkbox" id="raudio" checked></label><div class="explain">RESET resets orbit / walking direction. ENTER ROOM places you at a checked access point. Movement uses swept collision. Shadow quality and render scale adapt automatically.<hr>STICKS: MOVE / LOOK · FACE A: USE · B: INSPECT · X: GRAB · Y: BAG · START: MODE</div></div>
 <div id="rplacement" hidden><span id="rplacename">PLACEMENT</span><span id="rplaceangle">YAW 0° · TILT 0°</span><div><button id="rrotateleft">↶ YAW</button><button id="rrotateright">YAW ↷</button><button id="rtilt">TILT</button><button id="rdrop">PLACE</button><button id="rtoss">THROW</button></div></div><div id="rpost" hidden><div class="postTitle">WESTBRIDGE OFFICE SYSTEMS / POST</div><pre id="rposttext"></pre><button id="rpostclose">DISMISS</button></div><div id="rglasscount" hidden>WINDOW DAMAGE <b id="rcracks">0</b></div><div id="rmodal" hidden><div class="inspection"><div id="rmodalhead">INSPECT</div><canvas id="rpreview" width="290" height="185"></canvas><div id="rdesc"></div><div id="rmodalbuttons"></div><button id="rmodalclose">CLOSE</button></div></div>
 <div id="rerror" hidden></div>
 </div>
@@ -136,10 +136,11 @@ function bevel(x,y,z,w,h,d,r,col,mat=2){
 function tube(a,b,r,col,n=10,mat=2){let v=b.map((x,i)=>x-a[i]),len=Math.hypot(...v);if(len<.001)return;let u=v.map(x=>x/len),axis=Math.abs(u[1])<.9?[0,1,0]:[1,0,0],s=norm(cross(u,axis)),t=cross(u,s);for(let i=0;i<n;i++){let aa=i*2*Math.PI/n,bb=(i+1)*2*Math.PI/n;let p=angle=>a.map((x,j)=>x+r*(s[j]*Math.cos(angle)+t[j]*Math.sin(angle)));let q=angle=>b.map((x,j)=>x+r*(s[j]*Math.cos(angle)+t[j]*Math.sin(angle)));quad(p(aa),p(bb),q(bb),q(aa),col,mat)}}
 function sphere(x,y,z,r,col,mat=2,seg=14,rings=8){for(let j=0;j<rings;j++){let v0=j*Math.PI/rings,v1=(j+1)*Math.PI/rings;for(let i=0;i<seg;i++){let a=i*2*Math.PI/seg,b=(i+1)*2*Math.PI/seg;let p=(v,h)=>[x+r*Math.sin(v)*Math.cos(h),y+r*Math.cos(v),z+r*Math.sin(v)*Math.sin(h)];quad(p(v0,a),p(v0,b),p(v1,b),p(v1,a),col,mat)}}}
 function arc(a,b,c,r,col,steps=9){let last=null;for(let i=0;i<=steps;i++){let t=i/steps,p=[a[0]*(1-t)*(1-t)+2*b[0]*t*(1-t)+c[0]*t*t,a[1]*(1-t)*(1-t)+2*b[1]*t*(1-t)+c[1]*t*t,a[2]*(1-t)*(1-t)+2*b[2]*t*(1-t)+c[2]*t*t];if(last)tube(last,p,r,col,6);last=p}}
-function carpet(x,y,z,w,d,shade){box(x,y,z,w,.043,d,shade,0)}
+const carpetZones={19:[],20:[],21:[]};
+function carpet(x,y,z,w,d,shade){carpetZones[floor].push({x,z,w,d});box(x,y,z,w,.043,d,shade,0)}
 function sculptChair(x,Y,z,rot=0,kind='task'){let height=kind==='exec'?1.19:1.02,cush=kind==='exec'?0x4d5148:0x53665a,steel=0x84968b;
 // Upholstered curved pan has curved leading lip, inset seat, and stitched edge.
-bevel(x,Y+.62,z,.9,.14,.82,.14,cush,1);bevel(x,Y+.711,z-.025,.77,.035,.68,.10,0x697768,1);
+bevel(x,Y+.62,z,.9,.14,.82,.14,cush,10);bevel(x,Y+.711,z-.025,.77,.035,.68,.10,0x697768,10);
 for(let i=0;i<5;i++){let t=i/4,zz=z+.35+t*.1,yy=Y+.72+t*height*.75,ww=.78+Math.sin(t*Math.PI)*.06,shade=t<.5?0x4d675c:0x52695e;bevel(x,yy,zz,ww,.12,.17,.07,shade,1)}
 tube([x,Y+.23,z],[x,Y+.58,z],.062,steel,9);
 for(let i=0;i<5;i++){let a=i*Math.PI*2/5;let p=[x+Math.cos(a)*.46,Y+.115,z+Math.sin(a)*.46];tube([x,Y+.16,z],p,.045,steel,8);tube([p[0],Y+.12,p[2]],[p[0],Y+.066,p[2]],.025,0x394941,7);sphere(p[0],Y+.065,p[2],.084,0x263631,2,8,5)}
@@ -419,7 +420,7 @@ void main(){vec3 x=p;if(m>6.8&&m<7.2){x.x+=sin(time*.74+p.x*1.7+p.z*.4)*.04;}if(
 P=x;N=n;C=c;M=m;SH=lightVP*vec4(x,1.);gl_Position=vp*vec4(x,1.);}`;
 const FS=`precision highp float;
 varying vec3 N,C,P;varying float M;varying vec4 SH;
-uniform sampler2D shadowTex;uniform vec3 eye,light,lightColor;
+uniform sampler2D shadowTex,fabricMap,plasterMap,oakMap;uniform vec3 mapReady;uniform vec3 eye,light,lightColor;
 uniform float day,time,lightPower,ambient,shadowEnabled,shadowPixel,lampOn,lightFlicker,wallFade,shadowQuality;uniform vec4 fixtures[3];
 float hash(vec3 x){return fract(sin(dot(x,vec3(12.98,78.23,39.47)))*43758.5);}
 float unpackD(vec4 v){return dot(v,vec4(1.,1./255.,1./65025.,1./16581375.));}
@@ -428,6 +429,14 @@ if(q.x<0.005||q.x>0.995||q.y<0.005||q.y>0.995||q.z<0.005||q.z>0.995)return 1.;
 if(shadowQuality<.5)return mix(.51,1.,step(q.z-.00335,unpackD(texture2D(shadowTex,q.xy))));
 float v=0.;for(int i=0;i<4;i++){vec2 offset=vec2(mod(float(i),2.)-.5,floor(float(i)/2.)-.5)*shadowPixel*2.;
 v+=step(q.z-.00335,unpackD(texture2D(shadowTex,q.xy+offset)));}return mix(.47,1.,v*.25);}
+vec2 surfaceUV(vec3 p,vec3 n,float size){vec3 a=abs(n);return (a.y>=a.x&&a.y>=a.z?p.xz:(a.x>=a.z?p.zy:p.xy))/size;}
+vec3 surfaceColor(vec3 n){
+ vec3 t=vec3(1.);float amount=0.;
+ if((M<.5||M>9.5)&&mapReady.x>.5){t=texture2D(fabricMap,surfaceUV(P,n,.34)).rgb;amount=.55;}
+ else if(M>.5&&M<1.5&&mapReady.y>.5){t=texture2D(plasterMap,surfaceUV(P,n,2.)).rgb;amount=.64;}
+ else if(M>2.5&&M<3.5&&mapReady.z>.5){t=texture2D(oakMap,surfaceUV(P,n,1.8)).rgb;amount=.67;}
+ return C*mix(vec3(1.),clamp(t*1.65,vec3(.45),vec3(1.55)),amount);
+}
 void main(){
 vec3 n=normalize(N);vec3 view=normalize(eye-P);vec3 l=normalize(light);
 float diffuse=max(dot(n,l),0.);if(M>6.8&&M<7.2)diffuse=max(diffuse,abs(dot(n,l))*.64);float grain=hash(floor(P*vec3(51.,36.,54.)))-.5;
@@ -435,7 +444,7 @@ float carpet=(sin(P.x*52.)*sin(P.z*42.)*.025)+(step(.983,fract(P.x*.51))+step(.9
 float concrete=grain*.033+sin(P.y*3.7+P.x*.2)*.013;
 float metal=grain*.017+sin(P.x*67.)*.009;
 float wood=sin(P.z*30.+sin(P.x*5.))*.035+grain*.010;
-float tex=M<.5?carpet:(M<1.5?concrete:(M<2.5?metal:(M<3.5?grain*.016:wood)));
+float tex=M<.5?carpet*(1.-mapReady.x*.8):(M<1.5?concrete*(1.-mapReady.y*.8):(M<2.5?metal:(M<3.5?wood*(1.-mapReady.z*.8):grain*.016)));
 float sh=shadow();vec3 env=vec3(ambient*.86,ambient*.99,ambient*1.18);
 float local=0.;if(lampOn>.5){float d=length((P-vec3(-11.1,1.45,7.48))*vec3(1.,1.2,1.));local=2.25/(1.+d*d*1.9);}
 float flicker=1.-lightFlicker*(.12+.4*pow(max(sin(time*4.1),0.),22.));
@@ -443,7 +452,7 @@ float localFixtures=0.;for(int fi=0;fi<3;fi++){
  vec3 dif=P-fixtures[fi].xyz;float dist2=dot(dif,dif);localFixtures+=max(0.,fixtures[fi].w)*1.35/(1.+dist2*1.5);
 }
 float fixtureGrain=(max(0.,sin(P.x*.35+4.))*max(0.,sin(P.z*.21+2.)))*.022*flicker;
-vec3 lit=C*(env+lightColor*diffuse*lightPower*sh+vec3(.65,.56,.35)*local+vec3(.45,.62,.54)*localFixtures+vec3(.12,.20,.16)*fixtureGrain);
+vec3 lit=surfaceColor(n)*(env+lightColor*diffuse*lightPower*sh+vec3(.65,.56,.35)*local+vec3(.45,.62,.54)*localFixtures+vec3(.12,.20,.16)*fixtureGrain);
 lit+=vec3(tex);lit=lit/(vec3(1.)+lit*.26);
 float sp=pow(max(0.,dot(reflect(-l,n),view)),24.);if(M>1.5&&M<3.)lit+=vec3(.26,.34,.33)*sp*lightPower*.32;
 if(M>4.5&&M<5.5)lit+=C*.23;
@@ -461,6 +470,27 @@ let pg,depthPg;try{pg=gl.createProgram();gl.attachShader(pg,shader(gl.VERTEX_SHA
  if(!gl.getProgramParameter(depthPg,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(depthPg));
  }catch(e){$('rerror').hidden=false;$('rerror').textContent='SHADER ERROR: '+e.message;return}
 const attrib=[['p',3,0],['n',3,12],['c',3,24],['m',1,36]],A=attrib.map(([n])=>gl.getAttribLocation(pg,n)),U={vp:gl.getUniformLocation(pg,'vp'),eye:gl.getUniformLocation(pg,'eye'),light:gl.getUniformLocation(pg,'light'),day:gl.getUniformLocation(pg,'day'),time:gl.getUniformLocation(pg,'time'),lightVP:gl.getUniformLocation(pg,'lightVP'),lightColor:gl.getUniformLocation(pg,'lightColor'),lightPower:gl.getUniformLocation(pg,'lightPower'),ambient:gl.getUniformLocation(pg,'ambient'),shadowEnabled:gl.getUniformLocation(pg,'shadowEnabled'),shadowPixel:gl.getUniformLocation(pg,'shadowPixel'),shadowQuality:gl.getUniformLocation(pg,'shadowQuality'),shadowTex:gl.getUniformLocation(pg,'shadowTex'),lampOn:gl.getUniformLocation(pg,'lampOn'),lightFlicker:gl.getUniformLocation(pg,'lightFlicker'),wallFade:gl.getUniformLocation(pg,'wallFade'),fixtures:gl.getUniformLocation(pg,'fixtures[0]')};
+// Same-origin CC0 assets; each map starts neutral, so a failed image cannot blank the scene.
+const surfaceMaps=['fabric','plaster','oak'].map((name,index)=>{
+ const texture=gl.createTexture(),entry={name,texture,ready:false};
+ gl.activeTexture(gl.TEXTURE0+index+1);gl.bindTexture(gl.TEXTURE_2D,texture);
+ gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([155,155,155,255]));
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+ if(typeof Image!=='undefined'){
+  const img=new Image();img.onload=()=>{try{
+   const size=matchMedia('(pointer:coarse)').matches?512:1024,canvas=document.createElement('canvas');canvas.width=canvas.height=size;
+   const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,size,size);
+   gl.activeTexture(gl.TEXTURE0+index+1);gl.bindTexture(gl.TEXTURE_2D,texture);
+   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,canvas);
+   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.REPEAT);
+   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.generateMipmap(gl.TEXTURE_2D);entry.ready=gl.getError()===gl.NO_ERROR;
+  }catch(e){entry.ready=false;}finally{gl.activeTexture(gl.TEXTURE0);}};
+  img.onerror=()=>{entry.ready=false;};img.src='./assets/materials/'+name+'.jpg';
+ }
+ return entry;
+});gl.activeTexture(gl.TEXTURE0);
+const mapLoc=['fabricMap','plasterMap','oakMap'].map(n=>gl.getUniformLocation(pg,n)),mapReadyLoc=gl.getUniformLocation(pg,'mapReady');
+function bindSurfaceMaps(){const enabled=$('rmat').checked;surfaceMaps.forEach((m,i)=>{gl.activeTexture(gl.TEXTURE0+i+1);gl.bindTexture(gl.TEXTURE_2D,m.texture);gl.uniform1i(mapLoc[i],i+1);});gl.uniform3f(mapReadyLoc,...surfaceMaps.map(m=>enabled&&m.ready?1:0));gl.activeTexture(gl.TEXTURE0);}
 function upload(arr,usage=gl.STATIC_DRAW){let b=gl.createBuffer(),f=new Float32Array(arr);gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,f,usage);return {b,count:f.length/10}}
 const gpu={shell:upload(meshes.shell),floors:{19:upload(meshes.floors[19]),20:upload(meshes.floors[20]),21:upload(meshes.floors[21])},wallGeom:{19:upload(meshes.wallGeom[19]),20:upload(meshes.wallGeom[20]),21:upload(meshes.wallGeom[21])},glass:{19:upload(meshes.glass[19]),20:upload(meshes.glass[20]),21:upload(meshes.glass[21])},ceilings:{19:upload(meshes.ceilings[19]),20:upload(meshes.ceilings[20]),21:upload(meshes.ceilings[21])},stairs:{19:upload(meshes.stairs[19]),20:upload(meshes.stairs[20]),21:upload(meshes.stairs[21])},stairUpper:{19:upload(meshes.stairUpper[19]),20:upload(meshes.stairUpper[20]),21:upload(meshes.stairUpper[21])},effects:{19:upload(meshes.effects[19]),20:upload(meshes.effects[20]),21:upload(meshes.effects[21])}};let dynB=gl.createBuffer(),dynCount=0,mirrorB=gl.createBuffer(),mirrorCount=0;
 const bufferCapacity=new Map();
@@ -724,7 +754,25 @@ $('rhud').onchange=e=>root.classList.toggle('hudminimal',!e.target.checked);
 $('rquality').onchange=()=>{adaptiveScale=1;shadowDirty=true;};
 function toast(s){$('rgain').textContent=s;$('rgain').style.opacity=1;toastTill=elapsed+2.1}
 function locTarget(){let dx=Math.sin(yaw)*Math.cos(pitch),dy=Math.sin(pitch),dz=-Math.cos(yaw)*Math.cos(pitch),best=null,score=-99;for(let a of items){if(a.fl!==floor||a.taken)continue;let p=[a.x-walk[0],a.y-walk[1],a.z-walk[2]],l=Math.hypot(...p);if(l>3||l<.001)continue;let cosine=(dx*p[0]+dy*p[1]+dz*p[2])/l;if(cosine>.67){let s=cosine-l*.085;if(s>score){best=a;score=s}}}return best}
-function use(){if(opening){closeModal();return}if(sit){sit=null;toast('STANDING');return}if(held){place();return}let o=locTarget();if(!o){toast('NOTHING IN REACH');return}if(o.kind==='money'){cash+=o.value;o.taken=true;$('rmoney').textContent='$'+cash.toFixed(2);toast('+$'+o.value.toFixed(2));return}if(o.kind==='chair'){sit=sit?null:o;if(sit){walk[0]=o.x;walk[2]=o.z+.12;velocity=[0,0]}toast(sit?'SITTING · USE TO STAND':'STANDING');return}if(o.kind==='door'){let side=walk[2]<o.z?1:-1;o.goal=Math.abs(o.goal)>.10?0:side*.19;o.vel+=o.goal?side*.08:-Math.sign(o.angle||1)*.05;shadowDirty=true;toast(o.goal?'DOOR UNLATCHED · PUSH THE LEAF':'DOOR SHUT');return}if(o.kind==='light'||o.kind==='fixture'){if(o.broken||o.condition==='broken'){toast('BALLAST / SWITCH FAILED');return}o.on=!o.on;shadowDirty=true;toast(o.on?'LIGHT ON':'LIGHT OFF');return}if(o.kind==='stairs'){
+// Kenney CC0 sample bank. Decode only after a trusted browser gesture.
+const soundBank={carpet:['footstep_carpet_000','footstep_carpet_001'],concrete:['footstep_concrete_000','footstep_concrete_001'],glass:['impactglass_heavy_000'],metal:['impactmetal_medium_000'],wood:['impactwood_medium_000'],generic:['impactgeneric_light_000'],open:['dooropen_1'],close:['doorclose_1']};
+const audioState={ctx:null,master:null,buffers:new Map(),started:false,counts:{}};
+function armAudio(){if(!$('raudio').checked)return;const AudioEngine=window.AudioContext||window.webkitAudioContext;if(!AudioEngine)return;
+ try{if(!audioState.ctx){audioState.ctx=new AudioEngine();audioState.master=audioState.ctx.createGain();audioState.master.gain.value=.65;audioState.master.connect(audioState.ctx.destination);}
+ if(audioState.ctx.state==='suspended')audioState.ctx.resume().catch(()=>{});
+ if(audioState.started)return;audioState.started=true;
+ for(const file of Object.values(soundBank).flat()){fetch('./assets/audio/'+file+'.ogg').then(r=>{if(!r.ok)throw Error('sample unavailable');return r.arrayBuffer();}).then(b=>audioState.ctx.decodeAudioData(b)).then(b=>audioState.buffers.set(file,b)).catch(()=>{});}
+ }catch(e){}}
+root.addEventListener('pointerdown',armAudio);window.addEventListener('keydown',armAudio);
+$('raudio').addEventListener('change',()=>{if(audioState.master)audioState.master.gain.value=$('raudio').checked?.65:0;if($('raudio').checked)armAudio();});
+function sceneSound(kind,gain=.45,x=null,z=null){const ac=audioState.ctx;if(!ac||ac.state!=='running'||!$('raudio').checked||sceneMode!=='walk')return;
+ const files=soundBank[kind];if(!files)return;const i=audioState.counts[kind]||0;audioState.counts[kind]=i+1;const buffer=audioState.buffers.get(files[i%files.length]);if(!buffer)return;
+ try{let volume=gain,pan=0;if(x!==null&&z!==null){const dx=x-walk[0],dz=z-walk[2],d=Math.hypot(dx,dz);volume*=1/(1+d*.27+d*d*.025);pan=clamp((dx*Math.cos(yaw)+dz*Math.sin(yaw))/Math.max(2,d),-1,1);}
+ const src=ac.createBufferSource(),amp=ac.createGain();src.buffer=buffer;src.playbackRate.value=.95+Math.random()*.10;amp.gain.value=clamp(volume,0,.85);src.connect(amp);
+ if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=pan;amp.connect(p);p.connect(audioState.master);src.onended=()=>{src.disconnect();amp.disconnect();p.disconnect();};}else{amp.connect(audioState.master);src.onended=()=>{src.disconnect();amp.disconnect();};}src.start();}catch(e){}
+}
+function footstepSound(){if(sceneMode!=='walk'||opening||sit)return;const soft=!stairMove&&carpetZones[floor].some(c=>Math.abs(walk[0]-c.x)<c.w/2&&Math.abs(walk[2]-c.z)<c.d/2);sceneSound(soft?'carpet':'concrete',Math.hypot(...velocity)>3?.52:.34);}
+function use(){if(opening){closeModal();return}if(sit){sit=null;toast('STANDING');return}if(held){place();return}let o=locTarget();if(!o){toast('NOTHING IN REACH');return}if(o.kind==='money'){cash+=o.value;o.taken=true;$('rmoney').textContent='$'+cash.toFixed(2);toast('+$'+o.value.toFixed(2));return}if(o.kind==='chair'){sit=sit?null:o;if(sit){walk[0]=o.x;walk[2]=o.z+.12;velocity=[0,0]}toast(sit?'SITTING · USE TO STAND':'STANDING');return}if(o.kind==='door'){let side=walk[2]<o.z?1:-1;o.goal=Math.abs(o.goal)>.10?0:side*.19;o.vel+=o.goal?side*.08:-Math.sign(o.angle||1)*.05;shadowDirty=true;sceneSound(o.goal?'open':'close',.45,o.x,o.z);toast(o.goal?'DOOR UNLATCHED · PUSH THE LEAF':'DOOR SHUT');return}if(o.kind==='light'||o.kind==='fixture'){if(o.broken||o.condition==='broken'){toast('BALLAST / SWITCH FAILED');return}o.on=!o.on;shadowDirty=true;toast(o.on?'LIGHT ON':'LIGHT OFF');return}if(o.kind==='stairs'){
  let dir=(keys.shift||keys[keymap.sprint])?-1:1;
  if(floor+dir<19||floor+dir>21)dir=-dir;
  if(floor+dir<19||floor+dir>21){toast('END OF ACCESSIBLE STAIRS');return;}
@@ -923,6 +971,7 @@ for(let o of items){if(!o.moving||o.fl!==floor)continue;
  let impact=-o.vy;
  // Falling from the desk onto the floor is permitted after leaving its support area.
  if(oldY>contactY-.25&&impact>2)shadowDirty=true;
+ if(impact>1.25&&elapsed-(o.lastSound??-100)>.18){o.lastSound=elapsed;sceneSound(o.kind==='tool'||o.kind==='panel'||o.kind==='ram'?'metal':sf.type==='desk'?'wood':'generic',clamp(impact*.095,.15,.7),o.x,o.z);}
  o.y=contactY;o.vy=impact>.55?impact*.16:0;
  let f=sf.type==='keyboard'?.985:sf.type==='desk'?.89:.77;
  o.vx*=Math.pow(f,dt*60);o.vz*=Math.pow(f,dt*60);
@@ -935,7 +984,7 @@ for(let o of items){if(!o.moving||o.fl!==floor)continue;
  let hitEnergy=.5*(o.mass||.25)*speed*speed*incidence*incidence;
  o.z=-12.88+itemBounds(o).z;
  if(hitEnergy>.95){
- shattered++;$('rglasscount').hidden=false;$('rcracks').textContent=shattered;
+ sceneSound('glass',clamp(hitEnergy*.18,.3,.85),o.x,o.z);shattered++;$('rglasscount').hidden=false;$('rcracks').textContent=shattered;
  if(glassDamage.length<32)glassDamage.push({fl:o.fl,x:o.x,y:clamp(o.y,(o.fl-20)*3.65+.45,(o.fl-20)*3.65+3.2),radius:clamp(hitEnergy*.17,.16,.65),angle:rr(0,6.3)});
  for(let i=0;i<11;i++)glassParticles.push({fl:o.fl,x:o.x+rr(-.24,.24),y:o.y+rr(-.22,.22),z:-12.93,vx:rr(-1.1,1.1),vy:rr(0,2),vz:rr(.1,1),time:2});
  o.vz=Math.abs(o.vz)*.13;toast('WINDOW GLASS FRACTURED · '+hitEnergy.toFixed(1)+' J');shadowDirty=true;
@@ -1033,7 +1082,7 @@ gl.uniform1f(U.lightFlicker,.32);
 let lamp=items.find(o=>o.kind==='light'&&o.fl===floor&&o.on);
 gl.uniform1f(U.lampOn,lamp?1:0);gl.uniform1f(U.wallFade,1);
 gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,shadowTex);
-gl.uniform1i(U.shadowTex,0);
+gl.uniform1i(U.shadowTex,0);bindSurfaceMaps();
 draw(gpu.shell);draw(gpu.floors[floor]);if(sceneMode==='walk')draw(gpu.wallGeom[floor]);
  // As player travels across a level boundary, expose the destination level and railings too.
  if(stairMove&&sceneMode==='walk'&&stairMove.to!==floor)draw(gpu.floors[stairMove.to]);
@@ -1067,7 +1116,7 @@ function update(t){requestAnimationFrame(update);
  let dt=last?clamp((t-last)/1000,0,.12):.016;last=t;elapsed+=dt;
  if($('rflow').checked){clock=(clock+dt*Number($('rtimescale').value)/3600)%24;shadowDirty=true;$('rtime').value=$('rtimeline').value=clock;}
  pollPad(dt);let previousStep=Math.floor(bob/Math.PI);physics(dt);
- if(Math.floor(bob/Math.PI)!==previousStep)stepImpact=1;
+ if(Math.floor(bob/Math.PI)!==previousStep){stepImpact=1;footstepSound();}
  stepImpact*=Math.exp(-dt*13);let stride=stairMove?.8:clamp(Math.hypot(...velocity)/2.15,0,1);
  cameraRoll+=(Math.sin(bob)*.009*stride+lean*.35-cameraRoll)*(1-Math.exp(-dt*10));
  let follow=1-Math.exp(-dt*(stairMove?9:13));cameraY+=(walk[1]-(sit?.48:0)-cameraY)*follow;
@@ -1092,7 +1141,7 @@ function update(t){requestAnimationFrame(update);
  }
 }
 // Stable, read-only diagnostics for regression tests. No DOM or remote dependencies.
- window.__FLOOR20_DIAGNOSTICS__=()=>({version:'15.0',floor,sceneMode,
+ window.__FLOOR20_DIAGNOSTICS__=()=>({version:'16.0',materialMaps:surfaceMaps.map(m=>({name:m.name,ready:m.ready})),audioSamplesReady:audioState.buffers.size,floor,sceneMode,
   doorCount:doors.length,wallCount:Object.values(walls).reduce((a,v)=>a+v.length,0),
   portableItems:items.filter(q=>['cube','tool','jar','panel','ram'].includes(q.kind)).length,
   solidCount:Object.values(solidProps).reduce((a,v)=>a+v.length,0),
@@ -1101,7 +1150,7 @@ function update(t){requestAnimationFrame(update);
  // Handle graphics context loss without leaving a misleading spinner.
 cv.addEventListener('webglcontextlost',e=>{e.preventDefault();$('rerror').hidden=false;$('rerror').textContent='GPU CONTEXT LOST. Reopen this scene to restore graphics.'});
 // Preserve control settings without changing simulation state.
-const settingsIds=['rquality','rfpslimit','rmousesens','rpad','rsens','rinvertx','rinvert','rhud'];
+const settingsIds=['rquality','rfpslimit','rmousesens','rpad','rsens','rinvertx','rinvert','rhud','rmat','raudio'];
 try{let saved=JSON.parse(localStorage.getItem('floor20.settings.v14')||'{}');for(let id of settingsIds){let el=$(id);if(el&&Object.hasOwn(saved,id)){if(el.type==='checkbox')el.checked=!!saved[id];else if(el.tagName!=='SELECT'||Array.from(el.options).some(o=>o.value===saved[id]))el.value=saved[id];}}}catch(e){}
 root.classList.toggle('hudminimal',!$('rhud').checked);
 for(let id of settingsIds){let el=$(id);if(el)el.addEventListener('change',()=>{try{localStorage.setItem('floor20.settings.v14',JSON.stringify(Object.fromEntries(settingsIds.map(k=>[k,$(k).type==='checkbox'?$(k).checked:$(k).value]))));}catch(e){}});}

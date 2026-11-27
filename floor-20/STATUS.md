@@ -1,3 +1,18 @@
+# v16 — asset-first development preview (2026-11-27)
+
+## Implemented
+- Self-hosted three CC0 diffuse material textures: weathered plaster, oak veneer, woven fabric; material-specific world-space projection, repeat/mipmap filtering and separate upholstery material. Preserve authored color palette; optional material toggle and neutral fallback on decode/upload failure.
+- Ten CC0 Ogg samples from Kenney: carpet/concrete footsteps (two variations each), wood/metal/generic impact, glass fracture and door opening/closing. Gesture-armed Web Audio sample bank with distance attenuation, stereo pan, impact cooldown and footfall synchronization. Optional audio toggle.
+- Retained complete v15 scene, floors, input, interaction and physics systems. Asset manifest records licenses and source hashes.
+
+## Verified
+- All 13 binary source blob hashes matched at destination. Local v16 source passed Node syntax check and mocked DOM/WebGL initialization, Viewer/Walk rendering code, swept prop-wall contact, mass impulse, specimen retention and camera roll regression tests. Mesh counts remained 62,458 floor-20 triangles, 21 doors, 72 wall sections and 9 portable items. Source transfer FNV-1a 3365529206; 118768 UTF-16 code units.
+
+## Limitations
+- Actual browser shader compilation, texture upload/visual quality, audio playback and human/device playtest not verified. This is not a release-quality build. Diffuse-only shading; textile approximates carpet; not all props textured. No imported 3D models, Rapier integration, comprehensive world saves or ambient audio in this pass. Keep previous baseline intact and test all accepted scope.
+
+---
+
 # v15 — catalog development preview (2026-11-27)
 
 ## Baseline
