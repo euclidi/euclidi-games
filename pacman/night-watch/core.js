@@ -35,7 +35,7 @@ export function createRun(emit=()=>{},difficulty='normal'){
    if(best){hit=true;best.hp-=g.damage;best.pain=.15;best.state='alert';best.wind=0;if(best.hp<=0){best.hp=0;best.state='down';best.death=0;s.kills++;s.score+=100;emit('enemy-down')} }
   }if(hit)emit('hit')
  }
- function move(o,dx,dy,r){if(fits(o.x+dx,o.y,r))o.x+=dx;if(fits(o.x,o.y+dy,r))o.y+=dy}
+ function move(o,dx,dy,r){const free=(x,y)=>fits(x,y,r)&&(o===p?!enemies.some(e=>e.hp>0&&Math.hypot(e.x-x,e.y-y)<.43):Math.hypot(p.x-x,p.y-y)>=.43);if(free(o.x+dx,o.y))o.x+=dx;if(free(o.x,o.y+dy))o.y+=dy}
  function step(dt,input={}){
   if(s.phase!=='play')return;dt=clamp(dt,0,.05);s.time+=dt;s.noticeTime=Math.max(0,s.noticeTime-dt);p.cool=Math.max(0,p.cool-dt);p.flash=Math.max(0,p.flash-dt);p.hit=Math.max(0,p.hit-dt);if(p.reload>0){p.reload-=dt;if(p.reload<=0){let g=GUNS[p.gun],n=Math.min(g.capacity-p.mag[p.gun],p.reserve[g.ammo]);p.mag[p.gun]+=n;p.reserve[g.ammo]-=n;p.reload=0;emit('loaded')}}
   p.a+=input.look||0;p.a+=(input.turn||0)*dt*2.25;let forward=clamp(input.forward||0,-1,1),strafe=clamp(input.strafe||0,-1,1),len=Math.max(1,Math.hypot(forward,strafe)),speed=input.run?3.7:2.8,dx=(Math.cos(p.a)*forward-Math.sin(p.a)*strafe)*speed*dt/len,dy=(Math.sin(p.a)*forward+Math.cos(p.a)*strafe)*speed*dt/len,oldX=p.x,oldY=p.y;move(p,dx,dy,.24);p.bob+=Math.hypot(p.x-oldX,p.y-oldY)*8;

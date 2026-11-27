@@ -103,3 +103,5 @@ Compare maze geometry, glyphs, sprites and ghost skirt/death frames against auth
 ## Night Watch — v1.7.0
 
 Separate local Wolfenstein-style raycast shooter at [night-watch/](night-watch/). One compact connected 19×15 compound, broad rooms, cover and looped corridors. Eight hooded sentries with patrol/alert-style idle and pursuit, readable attack windup, three fictional arcade weapons, reload, ammo, health, armor, keycard and extraction. Keyboard/mouse, touch and standard gamepad, pause, minimap, difficulty selector, original hand-rasterized pixel clusters. No changes to original maze simulation. Core checks and 3,600 simulation ticks passed in JS evaluation. Browser/device playtest, audio and final asset polish remain unverified. No claim of Doom engine or original licensed assets.
+
+Night Watch follow-up: 90 mock-rendered runtime frames, 16,598 sprite draws, fire/pause/resume tested. Difficulty selection now applies at first start; living actors block player movement; short-landscape layout reserves side controls only on touch devices. The environment cannot provide an actual browser/audio/device playtest.
