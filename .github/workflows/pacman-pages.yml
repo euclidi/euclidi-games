@@ -19,9 +19,8 @@ jobs:
           node-version: '22'
       - name: Test game logic
         run: |
-          node --test pacman/test.mjs night-watch/test.mjs dummy-lab/tests.mjs
+          node --test pacman/test.mjs night-watch/test.mjs dummy-lab/tests.mjs tests/dummy-current-math.mjs
           node dojo/tests.cjs
-          diff dummy-lab/math.js dummy-lab-w18/math.js
       - name: Validate catalog entry paths
         run: |
           python3 - <<'PY'

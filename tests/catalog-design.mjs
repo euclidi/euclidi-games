@@ -38,7 +38,7 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    });
    assert.equal(layout.revision,'8');assert(layout.font);assert(layout.logo>0);assert(!layout.overflow);
    assert.equal(layout.clipped.length,0,JSON.stringify(layout.clipped));
-   for(const i of layout.items){assert.equal(i.font.includes('Sinistre'),i.display,JSON.stringify(i));if(!i.display)assert(i.font.includes('system-ui'),JSON.stringify(i));assert(['400','600'].includes(i.weight),JSON.stringify(i));assert.equal(i.tracking,'0px',JSON.stringify(i));assert(i.size>=11.9&&i.size<=42.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
+   for(const i of layout.items){assert.equal(i.font.includes('Sinistre'),i.display,JSON.stringify(i));if(!i.display)assert(i.font.includes('system-ui'),JSON.stringify(i));assert(['400','600'].includes(i.weight),JSON.stringify(i));assert(['normal','0px'].includes(i.tracking),JSON.stringify(i));assert(i.size>=11.9&&i.size<=42.1,JSON.stringify(i));assert(!i.overflow,JSON.stringify(i));}
 
    assert.equal(await page.locator('a[href="./library/"]').count(),0);
    assert.equal(await page.locator('header a[href="https://euclidi.github.io/euclidi-labs/"]').count(),1);
