@@ -419,7 +419,7 @@ export function after(w,dt,api){
  if(r?.phase==="waiting"&&r.line===b.line&&r.from===b.atStop&&c.id!==w.possessed){
  r.phase="riding";r.bus=b.id;r.queue=null;b.passengers.push(c.id);c.route=[];w.transit.boardings++;api.note(w,c,"Boarded bus "+lines[b.line].name);}}
  }
- metroStep(w,dt,api);
+ metroStep(w,dt,api);updateTrainMeshes(w);
  moveCrowd(w,dt,api);
 }
 export function networkMap(w){
@@ -786,8 +786,105 @@ export function build(b,parent,{group,box,cyl,merge,sign,materials,colliders,reg
  inside.visible=false;merge(base);merge(inside);const labels=shell.children.filter(o=>o.material?.isMeshBasicMaterial);for(const o of labels)shell.remove(o);merge(shell);for(const o of labels)shell.add(o);
  registry.push({b,r:shell,interior:inside});
 }
+// The existing LOWER view becomes a rail cutaway, not the legacy decorative grid.
+let undergroundBuilt=false;const trainMeshes=new Map();
+function buildUnderground(){
+ if(undergroundBuilt||!lowerRoot||!streetKit)return;
+ undergroundBuilt=true;const {group,box,cyl,merge,mat}=streetKit;
+ for(const child of [...lowerRoot.children]){lowerRoot.remove(child);child.traverse?.(o=>{if(o.isMesh)o.geometry.dispose()});}
+ const shell=group();lowerRoot.add(shell);
+ const concrete=mat(0x777d76),tile=mat(0x969b8c),bed=mat(0x313936),rail=mat(0x9baba7),sleeper=mat(0x514942),yellow=mat(0xc8a052),dark=mat(0x242b29),light=mat(0xd6dfcf);
+ box(shell,438,.25,438,0,-5.4,0,dark);
+ for(let li=0;li<2;li++){
+  const horizontal=li===1,y=li===0?.12:-3.0;
+  const put=(along,cross,h,w,hh,l,m)=>box(shell,horizontal?l:w,hh,horizontal?w:l,horizontal?along:cross,y+h,horizontal?cross:along,m);
+  put(0,0,-.17,9,.34,310,bed);
+  for(const lane of [-1,1]){
+   for(const r of [-.66,.66])put(0,lane*1.55+r,.13,.085,.10,310,rail);
+   for(let p=-154;p<=154;p+=1.65)put(p,lane*1.55,.01,2.05,.13,.24,sleeper);
+   put(0,lane*4.6,.42,.28,1.25,310,concrete);
+  }
+  for(const p of metroLines[li].stops){
+   const along=horizontal?p.nx:p.nz;
+   for(const side of [-1,1]){
+    put(along,side*5.5,.55,3.0,.65,23,tile);
+    put(along,side*4.07,.9,.25,.045,23,yellow);
+    for(let j=-9;j<=9;j+=6){put(along+j,side*6.2,1.65,.21,2.3,.21,concrete);put(along+j,side*5.4,2.85,2.1,.12,.25,light);}
+    for(let j of [-6,6]){put(along+j,side*6.15,1.02,.48,.16,2.7,sleeper);put(along+j,side*6.36,1.37,.12,.6,2.7,concrete);}
+   }
+   // Stairs to the surface, shown as an open station concourse connection.
+   put(along,8.4,.23,3,.4,6,tile);
+   for(let i=0;i<10;i++)put(along-2.5+i*.5,8.5,.45+i*.15,2.6,.18,.52,tile);
+  }
+ }
+ merge(shell);
+ for(let i=0;i<4;i++){
+  const g=group(),paint=mat(i<2?0x82b9af:0xcc9b64),body=mat(0xa6aaa0),glass=mat(0x344f52);
+  for(const z of [-5.4,5.4]){
+   box(g,2.45,1.85,10.3,0,1.24,z,body);box(g,2.47,.32,10.35,0,.72,z,paint);box(g,2.35,.16,10.15,0,2.23,z,paint);
+   for(const side of [-1,1])for(let j=-4;j<=4;j+=2)box(g,.07,.68,1.32,side*1.23,1.65,z+j,glass);
+   box(g,2.1,.69,.09,0,1.62,z+5.17,glass);box(g,2.1,.69,.09,0,1.62,z-5.17,glass);
+   for(const side of [-1,1]){box(g,.36,.17,.09,side*.78,.74,z+5.23,light);box(g,.36,.17,.09,side*.78,.74,z-5.23,light);}
+  }
+  box(g,1.7,1.25,.55,0,1.1,0,dark);merge(g);lowerRoot.add(g);trainMeshes.set(i,g);
+ }
+}
+function updateTrainMeshes(w){
+ if(!undergroundBuilt)return;
+ for(const t of w.metro.trains){const m=trainMeshes.get(t.id);if(!m)continue;const l=metroLines[t.line],a=l.stops[t.at],b=l.stops[t.at+t.dir]||a,r=t.remaining>0?clamp(1-t.remaining/2.65,0,1):0;
+  const x=a.nx+(b.nx-a.nx)*r,z=a.nz+(b.nz-a.nz)*r;
+  m.position.set(x+(t.line===0?t.dir*1.55:0),t.line===0?.2:-2.92,z+(t.line===1?-t.dir*1.55:0));m.rotation.y=t.line===0?(t.dir===1?0:Math.PI):(t.dir===1?Math.PI/2:-Math.PI/2);
+ }
+}
+// Reuse the existing Three.js instancing pipeline, adding identity-stable proportions,
+// clothing and accessories. Pose from real movement rather than the presence of a route.
+let peopleRenderer=null;
+function appearance(id){
+ const rand=n=>{let v=Math.imul(id+1,0x9e3779b1)^Math.imul(n+11,0x85ebca6b);v^=v>>>16;v=Math.imul(v,0x7feb352d);v^=v>>>15;return (v>>>0)/4294967296;};
+ const pick=(a,n)=>a[Math.floor(rand(n)*a.length)];
+ return {height:.83+rand(1)*.32,width:.78+rand(2)*.34,skin:pick([0xe3bc98,0xc79572,0xa76d4c,0x704732,0x4d3128,0xf0cfb0],3),hair:pick([0x2d2421,0x4e3528,0x776347,0xb2a183,0x9a6946,0x302e2d],4),shirt:pick([0x82776b,0x3d6571,0x6d504c,0x7b835a,0xa29b83,0x484d65,0x343b36,0xc1b193,0x6d6b80,0x8f693d,0x567567,0x9a5554],5),pants:pick([0x393d3b,0x565949,0x424d5e,0x756553,0x272c32,0x81786a],6),shoes:pick([0x292725,0x544335,0x7c7565,0x3f4648],7),style:Math.floor(rand(8)*6),bag:rand(9)<.32,phase:rand(10)*Math.PI*2};
+}
+const profiles=Array.from({length:1000},(_,i)=>appearance(i));
+function renderPeople(parent,kit){
+ if(!currentWorld||!parent?.children)return;
+ if(!peopleRenderer){
+  const base=parent.children.filter(o=>o.isInstancedMesh).slice(0,8);
+  if(base.length!==8)return;
+  const {group,box,cyl,mat}=kit,tmp=group();
+  const accessories=[
+   cyl(tmp,.19,.21,.13,0,0,0,mat(0xffffff),8),
+   box(tmp,.43,.08,.31,0,0,0,mat(0xffffff)),
+   box(tmp,.24,.34,.13,0,0,0,mat(0xffffff)),
+   box(tmp,.07,.12,.07,0,0,0,mat(0xffffff)),
+   box(tmp,.14,.18,.14,0,0,0,mat(0xffffff)),
+   box(tmp,.38,.16,.12,0,0,0,mat(0xffffff))
+  ].map(o=>{const m=new base[0].constructor(o.geometry,o.material,base[0].instanceMatrix.count);m.count=0;m.frustumCulled=false;parent.add(m);return m;});
+  for(const i of [1,2,3,6,7]){base[i].material=base[i].material.clone();base[i].material.color.setHex(0xffffff);}
+  peopleRenderer={base,accessories,mat:base[0].matrix.clone(),pos:base[0].position.clone(),rot:base[0].rotation.clone(),quat:base[0].quaternion.clone(),scale:base[0].scale.clone(),color:base[0].material.color.clone()};
+ }
+ const {base,accessories,mat:M,pos,rot,quat,scale,color}=peopleRenderer,w=currentWorld;
+ const bins=new Map();for(const c of w.citizens){if(!walking(c)&&c.id!==w.possessed)continue;const key=Math.round(c.x*100)+","+Math.round(c.z*100);bins.set(key,c);}
+ const put=(mesh,i,x,y,z,heading,rx,sx,sy,sz,hex)=>{pos.set(x,y,z);rot.set(rx,heading,0,"YXZ");quat.setFromEuler(rot);scale.set(sx,sy,sz);M.compose(pos,quat,scale);mesh.setMatrixAt(i,M);color.setHex(hex);mesh.setColorAt(i,color);};
+ const n=base[0].count,now=typeof performance!=="undefined"?performance.now()/1000:0;
+ for(let i=0;i<n;i++){
+  base[0].getMatrixAt(i,M);const x=M.elements[12],z=M.elements[14],c=bins.get(Math.round(x*100)+","+Math.round(z*100));if(!c){for(const a of accessories)put(a,i,x,-20,z,0,0,.001,.001,.001,0);continue;}
+  const a=profiles[c.id]||appearance(c.id),h=a.height,wide=a.width,heading=c.heading||0,move=c.walkingNow||c.id===w.possessed&&c.route?.length,cycle=move?Math.sin(now*7.8+a.phase):0,step=cycle*.38,bob=move?Math.abs(cycle)*.025:0;
+  const part=(mesh,side,y,front,rx,sx,sy,sz,col)=>put(mesh,i,x+Math.cos(heading)*side+Math.sin(heading)*front,y*h+bob,z-Math.sin(heading)*side+Math.cos(heading)*front,heading,rx,sx,sy,sz,col);
+  part(base[0],0,1.08,0,0,wide,h,a.style===1?1.15:.96,a.shirt);
+  part(base[1],0,1.59,0,0,.95,h,.96,a.skin);
+  for(const sign of [-1,1]){const j=sign<0?0:1,arm=sign*step;part(base[2+j],sign*.14*wide,.48,arm*.26,arm,wide,h,1,a.pants);part(base[4+j],sign*.30*wide,1.02,-arm*.20,-arm,.88,h,.9,a.shirt);part(base[6+j],sign*.14*wide,.12,arm*.42+.04,0,.9,h,.97,a.shoes);}
+  part(accessories[0],0,1.76,0,0,a.style===3?1.13:.91,a.style===4?1.8:.8,1,a.hair);
+  part(accessories[1],0,1.78,a.style===2?.06:0,0,a.style===2?1:0.001,a.style===2?1:.001,a.style===2?1:.001,a.shirt);
+  part(accessories[2],0,1.1,-.29,0,a.bag?1:.001,a.bag?1:.001,a.bag?1:.001,a.style===4?0x6d543d:0x444e46);
+  part(accessories[3],0,1.59,.19,0,.85,.85,.75,a.skin);
+  part(accessories[4],a.style===5?.34:0,a.style===5?.8:-4,.06,0,a.style===5?1:.001,a.style===5?1:.001,a.style===5?1:.001,0x604c39);
+  part(accessories[5],0,1.49,-.12,0,a.style===4?1:.001,a.style===4?1:.001,a.style===4?1:.001,a.hair);
+ }
+ for(const m of [...base,...accessories]){m.count=n;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
+}
 const busMeshes=new Map();
 export function drawBuses(cars,position,parent,{group,box,cyl,mat}){
+ buildUnderground();if(currentWorld)updateTrainMeshes(currentWorld);renderPeople(parent,{group,box,cyl,mat});
  for(const b of cars){if(!b.bus)continue;let m=busMeshes.get(b.id);if(!m){m=group();const paint=mat(lines[b.line].color),body=mat(0x9b9c87),window=mat(0x344d51),rubber=mat(0x222722),lights=mat(0xe8dec1),tail=mat(0xa74b40);
  box(m,2.35,1.75,8.1,0,1.48,0,body);box(m,2.42,.4,8.2,0,.78,0,paint);box(m,2.3,.18,8.1,0,2.43,0,paint);if(b.line>=4){box(m,1.8,.3,4,0,2.68,-.5,window);box(m,2.03,.33,.09,0,2.33,4.14,paint);}
  box(m,2.05,.75,.08,0,1.94,4.08,window);box(m,2.05,.7,.08,0,1.94,-4.08,window);
