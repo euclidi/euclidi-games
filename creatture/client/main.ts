@@ -4,6 +4,7 @@ import {MarchingCubes} from 'three/addons/objects/MarchingCubes.js';
 import init,{Engine} from '../engine/pkg/creatture_core.js';
 import './style.css';
 import {HabitatAudio} from './audio';
+import {groundMaterial,makeTerrain,skinTexture} from './terrain';
 const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 const names=['Membrane','Nutrients','Water','Light','Minerals','Muscle','Nerves','Microbes','Spores','Heat','Catalyst','Resonance'];
 const marks=['◉','❋','≈','✳','◇','≋','⋔','∴','⁕','♨','⊕','◌'];
@@ -19,20 +20,20 @@ const stage=el('viewport');
 const assetBase=import.meta.env.BASE_URL+'rendered/';
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x242e28);scene.fog=new THREE.FogExp2(0x242e28,.035);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.14;stage.append(renderer.domElement);
-const camera=new THREE.PerspectiveCamera(37,1,.1,60);camera.position.set(4.5,3.3,7.5);
-const orbit=new OrbitControls(camera,renderer.domElement);orbit.target.set(0,0.85,0);orbit.enableDamping=true;orbit.enabled=false;orbit.minDistance=2.5;orbit.maxDistance=13;orbit.maxPolarAngle=Math.PI*.49;orbit.update();
-scene.add(new THREE.HemisphereLight(0xe1e9cf,0x302219,2.0));
-const key=new THREE.DirectionalLight(0xffe3b1,3.2);key.position.set(-3,6,4);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-5;key.shadow.camera.right=5;key.shadow.camera.top=5;key.shadow.camera.bottom=-5;key.shadow.bias=-.0005;scene.add(key);
-const rim=new THREE.DirectionalLight(0xa5c7d9,1.9);rim.position.set(3,2,-4);scene.add(rim);
-const floor=new THREE.Mesh(new THREE.CylinderGeometry(3.3,3.45,.23,96),new THREE.MeshStandardMaterial({color:grounds[0],roughness:.82}));floor.position.y=-.13;floor.receiveShadow=true;scene.add(floor);
+const camera=new THREE.PerspectiveCamera(35,1,.1,60);camera.position.set(2.2,1.65,4.35);
+const orbit=new OrbitControls(camera,renderer.domElement);orbit.target.set(0,.64,0);orbit.enableDamping=true;orbit.enabled=false;orbit.minDistance=2.5;orbit.maxDistance=13;orbit.maxPolarAngle=Math.PI*.49;orbit.update();
+const fill=new THREE.HemisphereLight(0xf0efe5,0x615347,1.4);scene.add(fill);
+const key=new THREE.DirectionalLight(0xffebcf,2.9);key.position.set(-3,6,4);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-5;key.shadow.camera.right=5;key.shadow.camera.top=5;key.shadow.camera.bottom=-5;key.shadow.bias=-.0005;scene.add(key);
+const rim=new THREE.DirectionalLight(0xc4d9ee,2.1);rim.position.set(3,2,-4);scene.add(rim);
+const floor=new THREE.Mesh(new THREE.CylinderGeometry(3.3,3.45,.23,96),groundMaterial(0));floor.position.y=-.13;floor.receiveShadow=true;scene.add(floor);
 const base=new THREE.Mesh(new THREE.CylinderGeometry(3.48,3.62,.42,96),new THREE.MeshStandardMaterial({color:0x242a27,metalness:.45,roughness:.48}));base.position.y=-.43;base.receiveShadow=true;scene.add(base);
 const habitat=new THREE.Group();scene.add(habitat);
 const panoramaLoader=new THREE.TextureLoader();const panoramas=new Map<number,THREE.Texture>();let requestedPanorama=-1;
 function applyPanorama(id:number){requestedPanorama=id;const cached=panoramas.get(id);if(cached){scene.background=cached;return;}panoramaLoader.load(assetBase+'habitat-'+id+'.png',tex=>{tex.mapping=THREE.EquirectangularReflectionMapping;tex.colorSpace=THREE.SRGBColorSpace;panoramas.set(id,tex);if(requestedPanorama===id)scene.background=tex;},undefined,()=>{});}
 const body=new THREE.Group();scene.add(body);
 const colonies=new THREE.Group();scene.add(colonies);const companionMeshes=new Map<number,THREE.Mesh>();const companionGeometry=new THREE.SphereGeometry(1,40,28);
-const skin=new THREE.MeshPhysicalMaterial({color:colors[0],roughness:.43,clearcoat:.19,clearcoatRoughness:.3,transparent:true,opacity:1});
-const surface=new MarchingCubes(40,skin,false,false,24000);surface.isolation=72;surface.scale.setScalar(1.8);surface.castShadow=true;surface.receiveShadow=true;body.add(surface);
+const skin=new THREE.MeshPhysicalMaterial({color:colors[0],roughness:.44,clearcoat:.22,clearcoatRoughness:.34,transparent:true,opacity:1,bumpMap:skinTexture(),bumpScale:.025});
+const surface=new MarchingCubes(40,skin,true,false,24000);surface.isolation=72;surface.scale.setScalar(1.8);surface.castShadow=true;surface.receiveShadow=true;body.add(surface);
 const eyes=new THREE.Group();body.add(eyes);
 const iris=new THREE.MeshPhysicalMaterial({color:0xc7b77a,roughness:.28,clearcoat:.8});
 const pupil=new THREE.MeshStandardMaterial({color:0x111811,roughness:.15});
@@ -47,17 +48,18 @@ const pipes=edges.map(()=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(.01
 const organMeshes=names.map((_,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.09,18,12),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(i/12,.52,.56),roughness:.48}));internal.add(m);return m;});
 let finale=0;let lastOutcome='';let lastAction=-1,lastVoice=0;let tissueFrame=0;let pose=new Array(12).fill(0);let previousWorld=-1;
 function makeHabitat(id:number){
- while(habitat.children.length){const o=habitat.children[0] as THREE.Mesh;habitat.remove(o);o.geometry?.dispose();(o.material as THREE.Material)?.dispose();}
- floor.material.color.set(grounds[id]);const back=new THREE.Color(grounds[id]).multiplyScalar(.45);scene.background=back;scene.fog=new THREE.FogExp2(back,.045);skin.color.set(colors[id]);applyPanorama(id);
- for(let i=0;i<30;i++){
-  const angle=i*2.39996;const r=1.8+(i%7)*.19;const h=.12+(i%5)*.1;
-  let geom:THREE.BufferGeometry;
-  if(id===3)geom=new THREE.ConeGeometry(.16,h*2.3,5);
-  else if(id===4)geom=new THREE.CylinderGeometry(.08,.14,h*2,12);
-  else if(id===2)geom=new THREE.LatheGeometry([new THREE.Vector2(0,0),new THREE.Vector2(.05,0),new THREE.Vector2(.035,h),new THREE.Vector2(.18,h+.02),new THREE.Vector2(.14,h+.1),new THREE.Vector2(0,h+.14)],20);
-  else geom=new THREE.DodecahedronGeometry(.18+h*.23,1);
-  const mesh=new THREE.Mesh(geom,new THREE.MeshStandardMaterial({color:new THREE.Color(colors[id]).multiplyScalar(.32+(i%4)*.13),roughness:id===3?.31:.83,metalness:id===4?.55:0}));mesh.position.set(Math.cos(angle)*r,h*.45,Math.sin(angle)*r);mesh.rotation.y=angle;mesh.castShadow=true;mesh.receiveShadow=true;habitat.add(mesh);
- }
+ const materials=new Set<THREE.Material>();
+ habitat.traverse(o=>{if(o instanceof THREE.Mesh){o.geometry.dispose();const m=o.material;if(Array.isArray(m))m.forEach(x=>materials.add(x));else materials.add(m);}});
+ habitat.clear();materials.forEach(m=>m.dispose());
+ const old=floor.material;old.map?.dispose();old.dispose();floor.material=groundMaterial(id);
+ const back=new THREE.Color(grounds[id]).multiplyScalar(.45);scene.background=back;scene.fog=new THREE.FogExp2(back,.07);skin.color.set(colors[id]);applyPanorama(id);
+ key.color.setHex([0xffebcf,0xa5dfff,0xffd5a5,0xe5edff,0xffe1b7,0xffefd8][id]);rim.color.setHex([0xc4d9ee,0x72afd9,0xc8bd9b,0xc7b4ff,0xc4d9ee,0xd2dfb2][id]);
+ makeTerrain(id,habitat);
+}
+function composedCamera(){
+ const aspect=Math.max(.4,camera.aspect),d=aspect<.85?1.30:aspect<1.25?1.12:1;
+ const center=body.position.clone();center.y=.67;
+ orbit.target.copy(center);camera.position.copy(center).add(new THREE.Vector3(1.65,.95,3.65).multiplyScalar(d));orbit.update();
 }
 function read(){state=JSON.parse(engine.snapshot());if(previousWorld!==state.world_id){previousWorld=state.world_id;makeHabitat(previousWorld);audio.setWorld(previousWorld);}return state}
 function ui(){
@@ -83,7 +85,7 @@ el('reset').onclick=()=>{if(confirm('Begin a new specimen? Preserve the current 
 select('world').onchange=()=>{if(mode==='archive')return;reset(Number(select('world').value));};
 select('mode').onchange=()=>{mode=select('mode').value;el('experiment').hidden=mode!=='free';el('archive').hidden=mode!=='archive';ui();};
 el('inspect').onclick=()=>{inspection=!inspection;internal.visible=inspection;skin.opacity=inspection?.27:1;skin.depthWrite=!inspection;el('panel').hidden=!inspection;el('inspect').setAttribute('aria-pressed',String(inspection));};
-el('camera').onclick=()=>{orbit.enabled=!orbit.enabled;el('camera').textContent=orbit.enabled?'Return to composition':'Inspect camera';if(!orbit.enabled){camera.position.set(4.5,3.3,7.5);orbit.target.set(0,.85,0);orbit.update();}};
+el('camera').onclick=()=>{orbit.enabled=!orbit.enabled;el('camera').textContent=orbit.enabled?'Return to composition':'Inspect camera';if(!orbit.enabled){composedCamera();}};
 el('sound').onclick=async()=>{try{if(audio.ctx){await audio.disable();}else{await audio.enable(state.world_id);tone(0);}el('sound').textContent=audio.ctx?'Sound on':'Sound off';el('sound').setAttribute('aria-pressed',String(!!audio.ctx));}catch(e){el('log').textContent='Audio unavailable: '+String(e);}};
 for(const id of ['music','effects'])el(id).oninput=()=>{audio.setLevels(Number(el<HTMLInputElement>('music').value),Number(el<HTMLInputElement>('effects').value));};
 el('bud').onclick=()=>{if(mode==='free'){const ok=engine.bud(Number(select('relation').value));read();ui();el('log').textContent=ok?'Offspring established.':'Needs developed spores and sufficient reserve.';}};
@@ -104,7 +106,7 @@ el('settings').onclick=()=>{const panel=el('settings-panel');panel.hidden=!panel
 el('quality').onchange=()=>resize();
 el('export').onclick=()=>{if(!state)return;const blob=new Blob([engine.snapshot()],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='creatture-'+state.seed+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 el('verify-replay').onclick=()=>{if(mode!=='puzzle'){el('log').textContent='Replay verification requires puzzle mode.';return;}const result=engine.verify_puzzle_replay();el('log').textContent=result?'Deterministic replay matched.':'Replay does not match current experiment.';};
-function resize(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;const scale=Math.min(1,Number(select('quality').value)/w);renderer.setSize(Math.round(w*scale),Math.round(h*scale),false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;const scale=Math.min(1,Number(select('quality').value)/w);renderer.setSize(Math.round(w*scale),Math.round(h*scale),false);camera.aspect=w/h;camera.updateProjectionMatrix();if(!orbit.enabled)composedCamera();}
 new ResizeObserver(resize).observe(stage);resize();
 function draw(now:number){
  const dt=Math.min(.1,(now-last)/1000);last=now;time+=dt;acc+=dt;
@@ -157,7 +159,7 @@ function draw(now:number){
   for(const o of state.ecology.inhabitants){let m=companionMeshes.get(o.id);if(!m){const mat=new THREE.MeshPhysicalMaterial({color:new THREE.Color(colors[state.world_id]).offsetHSL((o.genome[0]-.5)*.18,0,.03),roughness:.5,clearcoat:.2});m=new THREE.Mesh(companionGeometry,mat);m.castShadow=true;colonies.add(m);companionMeshes.set(o.id,m);m.position.set(o.position[0],.2,o.position[1]);}
    const rad=Math.min(.48,.16+Math.cbrt(o.biomass)*.19);m.position.lerp(new THREE.Vector3(o.position[0],rad*.8,o.position[1]),Math.min(1,dt*6));m.scale.set(rad*(1+.06*Math.sin(t*2+o.id%100)),rad*.8,rad*(1+.09*o.activity));
   }
-  orbit.update();renderer.render(scene,camera);
+  if(!orbit.enabled&&mode==='free'){const target=body.position.clone();target.y=.67;const delta=target.sub(orbit.target).multiplyScalar(Math.min(1,dt*2.8));orbit.target.add(delta);camera.position.add(delta);}orbit.update();renderer.render(scene,camera);
  }requestAnimationFrame(draw);
 }
 async function start(){await init();reset(0);try{await openDB();}catch{el('log').textContent='Archive storage unavailable.';}requestAnimationFrame(draw);}
