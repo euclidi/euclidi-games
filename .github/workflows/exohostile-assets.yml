@@ -1,0 +1,32 @@
+name: EXOHOSTILE asset vendor
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/exohostile-assets.yml'
+      - 'exohostile/vendor_assets.py'
+permissions:
+  contents: write
+concurrency:
+  group: exohostile-assets
+  cancel-in-progress: false
+jobs:
+  vendor:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download and verify CC0 source assets
+        run: python exohostile/vendor_assets.py
+      - name: Publish verified assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add exohostile/assets
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Vendor verified EXOHOSTILE CC0 artwork"
+          git pull --rebase origin main
+          git push origin HEAD:main
