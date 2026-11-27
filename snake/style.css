@@ -168,3 +168,43 @@ html[data-layout=mobile] .devicefoot{font-size:8px}
 @media(orientation:landscape) and (max-height:570px){html[data-layout=mobile] .device{padding:9px 15px 8px}html[data-layout=mobile] .buttons button{min-height:34px}html[data-layout=mobile] .bezel{max-width:calc((100dvh - 140px) * 1.5 + 18px)}}
 @media(max-height:430px){#settingsDialog{max-height:calc(100dvh - 12px)}.settings-form{max-height:calc(100dvh - 14px)}.dialoghead{padding:6px 12px}.dialoghead h2{font-size:17px}.dialoghead button{min-height:29px;min-width:29px}.setup-id{font-size:8px}.settings-tabs button{min-height:32px;padding:6px 3px}.dialogfoot{padding:6px 12px}.settings-note{padding:4px 12px}#options{padding:0 12px}.setting-row{min-height:38px}}
 @media(prefers-reduced-motion:reduce){.device{transform:none!important}}
+
+/* 0.1.5 stationary screen-first chassis */
+html,body{width:100%;height:100%;overflow:hidden}body{margin:0}
+main,html[data-layout=mobile] main{width:100%;max-width:none;height:100dvh;min-height:0;margin:0;padding:max(4px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left));display:grid;grid-template-rows:20px minmax(0,1fr);gap:3px;overflow:hidden}
+header,html[data-layout=mobile] header{margin:0;padding:0 4px;min-height:0;height:20px;align-items:center;font-size:10px}
+.console,html[data-layout=mobile] .console{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:0;min-height:0;min-width:0;perspective:none}
+aside,html[data-layout=mobile] aside{display:none}
+.device,html[data-layout=mobile] .device{width:100%;max-width:none;min-height:0;min-width:0;transform:none!important;display:grid;grid-template-columns:minmax(0,1fr) clamp(112px,16vw,210px);grid-template-rows:22px minmax(0,1fr) 14px;gap:4px 7px;padding:7px 9px;align-items:stretch;justify-content:stretch}
+.device::before,html[data-layout=mobile] .device::before{transform:none!important}.case-back{transform:translate(0,4px)}
+.brand,html[data-layout=mobile] .brand{grid-column:1/-1;grid-row:1;margin:0;min-height:0;align-items:center}
+.wordmark strong,html[data-layout=mobile] .wordmark strong{font-size:19px}
+.bezel,html[data-layout=mobile] .bezel{grid-column:1;grid-row:2;position:relative;display:grid;grid-template-rows:10px minmax(0,1fr);width:100%;height:100%;max-width:none;min-height:0;min-width:0;align-self:stretch;justify-self:stretch;padding:4px 5px;gap:2px}
+.bezel-label,html[data-layout=mobile] .bezel-label{margin:0;align-items:center;font-size:8px}
+.lcd-unit{display:grid;position:relative;grid-template-rows:19px minmax(0,1fr) 19px;background:var(--paper);min-height:0;min-width:0;overflow:hidden;color:var(--ink)}
+.hud,html[data-layout=mobile] .hud{font-size:clamp(9px,1.5vw,12px);min-height:0;padding:3px 5px;line-height:1.1;align-items:center}
+.lcd-stage{min-width:0;min-height:0;display:grid;place-items:center;overflow:hidden;background:var(--paper);container-type:size}
+.lcd-plane{width:min(100%,150cqh);height:auto;aspect-ratio:3/2;position:relative;max-width:100%;max-height:100%}
+#screen{width:100%;height:100%;aspect-ratio:3/2;display:block;image-rendering:pixelated}
+.overlay,html[data-layout=mobile] .overlay{inset:0;padding:5px;overflow:auto;background:var(--paper);z-index:2}
+.overlay[hidden],.lcd-settings[hidden]{display:none!important}
+.lower,html[data-layout=mobile] .lower{grid-column:2;grid-row:2;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;gap:5px;min-width:0;min-height:0;margin:0;padding:2px}
+.controlbay,.buttonbay{gap:4px}.dpad,html[data-layout=mobile] .dpad{width:clamp(92px,13vw,140px);height:clamp(92px,13vw,140px)}
+.buttons,html[data-layout=mobile] .buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;width:100%;max-width:174px}
+.buttons button,html[data-layout=mobile] .buttons button{min-width:0;min-height:34px;padding:4px 6px;font-size:10px}
+.buttons button:last-child,html[data-layout=mobile] .buttons button:last-child{grid-column:auto}
+.speaker{margin:0}.speaker i{height:12px}
+.devicefoot,html[data-layout=mobile] .devicefoot{grid-column:1/-1;grid-row:3;padding:2px 0 0;margin:0 2px;min-height:0;font-size:8px}
+@media(orientation:portrait){.device,html[data-layout=mobile] .device{grid-template-columns:minmax(0,1fr);grid-template-rows:22px minmax(0,1fr) auto 14px;gap:4px;padding:6px 7px}.bezel,html[data-layout=mobile] .bezel{grid-column:1;grid-row:2}.lower,html[data-layout=mobile] .lower{grid-column:1;grid-row:3;flex-direction:row;justify-content:space-around;align-items:center;padding:3px}.dpad,html[data-layout=mobile] .dpad{width:clamp(94px,31vw,138px);height:clamp(94px,31vw,138px)}.buttons,html[data-layout=mobile] .buttons{max-width:174px;min-width:122px}.buttons button,html[data-layout=mobile] .buttons button{min-height:38px}.devicefoot,html[data-layout=mobile] .devicefoot{grid-row:4}}
+@media(orientation:landscape) and (max-height:420px){.device,html[data-layout=mobile] .device{grid-template-columns:minmax(0,1fr) clamp(100px,14vw,145px);grid-template-rows:18px minmax(0,1fr) 11px;padding:4px 6px;gap:2px 5px}.wordmark strong,html[data-layout=mobile] .wordmark strong{font-size:17px}.bezel,html[data-layout=mobile] .bezel{grid-template-rows:8px minmax(0,1fr);padding:3px;gap:2px}.lcd-unit{grid-template-rows:16px minmax(0,1fr) 16px}.hud,html[data-layout=mobile] .hud{font-size:10px;padding:2px 4px}.dpad,html[data-layout=mobile] .dpad{width:94px;height:94px}.control-label,.speaker{display:none}.buttons button,html[data-layout=mobile] .buttons button{min-height:29px;font-size:9px;padding:3px}.devicefoot,html[data-layout=mobile] .devicefoot{padding:0;font-size:7px}.menu h1,html[data-layout=mobile] .menu h1{font-size:31px}}
+.lcd-settings{position:absolute;inset:0;z-index:3;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:4px;background:var(--paper);color:var(--ink);padding:6px;font-family:ui-monospace,Consolas,monospace;font-size:clamp(10px,1.6vw,14px);overflow:hidden;color-scheme:light}
+.lcd-settings button{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--ink);border-radius:0;padding:3px 6px;min-height:26px;white-space:nowrap}
+.lcd-settings button:hover,.lcd-settings button:focus-visible{background:var(--ink);color:var(--paper);outline:1px solid var(--ink);outline-offset:1px}
+.lcd-settings button:disabled{opacity:.35;cursor:default}.lcd-settings-top,.lcd-settings-foot{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0}.lcd-settings-top h2{font-size:1.08em;letter-spacing:.08em;margin:0}
+.lcd-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;border-bottom:1px solid var(--ink);padding-bottom:3px}.lcd-tabs button{min-width:0;padding:2px 1px;font-size:.91em;border-color:transparent}.lcd-tabs button[aria-selected=true]{background:var(--ink);color:var(--paper)}
+#lcdSettings #options{padding:0;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:2px;overscroll-behavior:contain}
+.lcd-setting-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(116px,48%);min-height:30px;align-items:center;gap:4px;border-bottom:1px solid color-mix(in srgb,var(--ink) 35%,var(--paper));padding:2px 0}.lcd-setting-row:last-child{border:0}.lcd-setting-row>span{font-size:.94em}
+.lcd-cycle{display:grid;grid-template-columns:26px minmax(0,1fr) 26px;align-items:center;text-align:center;gap:2px}.lcd-cycle output{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.9em}.lcd-cycle button{padding:1px;min-height:26px}
+.lcd-color{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}.lcd-color label{display:grid;font-size:8px;text-align:center;gap:1px}.lcd-color input{width:100%;min-width:0;accent-color:var(--ink);margin:0}
+#settingsNote{margin:0;font-size:.76em;line-height:1.2;min-height:0}.lcd-settings-foot{border-top:1px solid var(--ink);padding-top:3px}.lcd-settings-foot button:first-child{margin-right:auto}
+@media(max-height:420px) and (orientation:landscape){.lcd-settings{gap:2px;padding:4px;font-size:11px}.lcd-settings button{min-height:22px;padding:2px 4px}.lcd-setting-row{min-height:25px;padding:1px 0}.lcd-tabs{padding-bottom:2px}.lcd-cycle button{min-height:22px}#settingsNote{font-size:9px}}

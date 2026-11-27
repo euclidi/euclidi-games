@@ -1,3 +1,7 @@
+# Status — 0.1.5 stationary full-screen LCD
+
+Removed device orientation listeners, tilt controls and perspective transforms; layout reacts to viewport only. Screen-first grid uses available stage dimensions and a 3:2 fit, with side controls in landscape and lower controls in portrait. Desktop field notes hidden to reclaim space. Settings live inside the LCD, use its foreground/background palette, category tabs, paginated controls, inline value changes and RGB sliders rather than native dialogs. SETUP pauses/resumes active gameplay; menu and Escape close setup. Pure fit checks and static wiring checks passed. Browser tests updated; actual viewport visual quality, interactions and Pages remain unverified.
+
 # Status — 0.1.4 tilt correction
 
 User reported excessive motion in 0.1.3. Reduced orientation response gain from 0.72 to 0.30; capped total angular displacement to 7 degrees, including diagonal motion; added a 1.25-degree radial dead zone, time-based exponential smoothing (130 ms), and limited automatic scale change to 3.5%. Existing saved strength preferences remain compatible, but are subject to the new hard cap. Full-device rotation, touch mapping and settings preserved. Numeric tests passed; device sensor behavior and live deployment remain unverified.

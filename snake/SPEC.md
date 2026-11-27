@@ -15,3 +15,7 @@ Sharper indexed LCD sampling with minimal default persistence; convincing molded
 ## Hardware/UI amendment (2026-11-27)
 
 Compact categorized settings with live display/audio controls and next-game configuration, in-game setup, adjustable stronger full-device motion with orientation calibration and perspective-correct input. Industrial handheld materials and original bitmap microtexture; preserve indexed LCD rendering and mobile fit.
+
+## Stationary LCD amendment
+
+User requested complete removal of tilt, maximum aspect-preserving playfield, and in-LCD settings. Supersedes earlier motion requirements. No sensor listeners, no separate modal or native dropdown/color popup; responsive stage fit at 3:2.
