@@ -6,19 +6,27 @@ on:
       - 'exohostile/tools/**'
       - 'exohostile/index.html'
       - '.github/workflows/exohostile-assets.yml'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'exohostile/**'
+      - '.github/workflows/exohostile-assets.yml'
   workflow_dispatch:
 permissions:
   contents: write
 concurrency:
-  group: exohostile-assets-${{ github.ref }}
+  group: exohostile-assets-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
   prepare:
-    if: github.ref == 'refs/heads/exohostile-visual-overhaul'
+    if: github.ref == 'refs/heads/exohostile-visual-overhaul' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'exohostile-visual-overhaul')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -37,7 +45,9 @@ jobs:
         if: always()
         with:
           name: exohostile-smoke
-          path: exohostile-smoke.png
+          path: |
+            exohostile-smoke.png
+            exohostile/assets/manifest.json
           if-no-files-found: ignore
       - name: Commit validated local assets to development branch
         run: |
