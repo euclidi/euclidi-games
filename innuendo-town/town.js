@@ -1,4 +1,5 @@
 import {urbanAtlas} from './assets/urban-atlas.js';
+import {FACADES,INTERIORS,MOOD_TINT,destinationFor} from './world-art.js';
 import {SHOPS,RESIDENTS,INCIDENTS,isOpen,moneyFor,pathfind} from './content.js';
 const $=id=>document.getElementById(id),T=16,KEY='euclidi.innuendo.v3',defaultState={version:3,cash:40,rep:0,calm:100,minute:540,day:0,x:264,y:232,look:0,style:'Witty',owned:[],home:false,relations:{},lastTalk:{},news:['Welcome to town. Find a job or meet your neighbors.'],shifts:0};
 let S={...defaultState};try{let s=JSON.parse(localStorage.getItem(KEY));if(s?.version===3&&Number.isFinite(s.cash)&&Array.isArray(s.owned))S={...defaultState,...s}}catch{}
@@ -52,7 +53,7 @@ async function boot(){try{if(!window.Phaser){try{await loadScript('./vendor/phas
 function launch(){class Town extends Phaser.Scene{
 constructor(){super('Town')}
 preload(){if(!this.textures.exists('urban'))this.load.spritesheet('urban',urbanAtlas,{frameWidth:16,frameHeight:16});this.load.on('loaderror',()=>{$('boot').textContent='Local urban atlas failed to decode.'})}
-create(){world=this;this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blocked=new Set();this.walls=this.physics.add.staticGroup();this.props=this.physics.add.group();this.people=[];this.route=[];this.arrive=null;this.cargo=[];this.carry=null;this.goal=null;this.vehicles=[];this.owner=null;this.marker=null;this.bay=null;this.bayMark=null;this.bayLabel=null;
+create(){world=this;this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blocked=new Set();this.walls=this.physics.add.staticGroup();this.props=this.physics.add.group();this.people=[];this.route=[];this.arrive=null;this.cargo=[];this.carry=null;this.goal=null;this.vehicles=[];this.owner=null;this.marker=null;this.lastLabel=null;this.lastLabelId=null;this.bay=null;this.bayMark=null;this.bayLabel=null;
 this.physics.world.setBounds(0,0,this.cols*T,this.rows*T);if(room===-1)this.buildTown();else this.buildRoom();
 let x=room===-1?clamp(S.x,10,this.cols*T-10):216,y=room===-1?clamp(S.y,10,this.rows*T-10):272;
 if(this.blocked.has(Math.floor(y/T)*this.cols+Math.floor(x/T))){x=264;y=232}
@@ -72,26 +73,27 @@ let walk=(y>=11&&y<=14)||(y>=20&&y<=22)||(y>=32&&y<=34)||y>=40||[16,20,34,38,52,
 if(road){this.tile(x,y,1,16);if((y===17||y===37)&&x%3===0)this.rect(x*T+2,y*T+7,10,1,0xd7c69c,1);if([18,36,54].includes(x)&&y%3===0)this.rect(x*T+7,y*T+2,1,10,0xd7c69c,1)}
 else if(walk)this.tile(x,y,9,1);else this.tile(x,y,1,1)}
 for(let b of SHOPS){for(let yy=0;yy<b.h-2;yy++)for(let xx=0;xx<b.w;xx++){
-let c=16+(xx===0?0:xx===b.w-1?2:1),r=(b.id%3===0?3:0)+(yy===0?0:yy===b.h-3?2:1);
+let f=FACADES[b.id],c=f.roof[0]+(xx===0?0:xx===b.w-1?2:1),r=f.roof[1]+(yy===0?0:yy===b.h-3?2:1);
 this.tile(b.x+xx,b.y+yy,c,r,4)}
-for(let xx=0;xx<b.w;xx++){let c=xx===Math.floor(b.w/2)?12:xx%3===0?13:9;this.tile(b.x+xx,b.y+b.h-2,c,4,5);this.tile(b.x+xx,b.y+b.h-1,c,5,5)}
+let f=FACADES[b.id];for(let xx=0;xx<b.w;xx++){let c=xx===Math.floor(b.w/2)?12:xx%3===0?13:f.wall[0];this.tile(b.x+xx,b.y+b.h-2,c,4,5);this.tile(b.x+xx,b.y+b.h-1,c,5,5)}
+this.rect(b.x*T,(b.y+b.h-2)*T,b.w*T,5,f.accent,6);for(let a=0;a<b.w*T;a+=12)this.rect(b.x*T+a,(b.y+b.h-2)*T+5,6,3,f.awning,6);this.label((b.x+b.w/2)*T,(b.y+b.h-3)*T-3,f.text,12);
 this.solid(b.x,b.y,b.w,b.h);this.label((b.x+b.w/2)*T,(b.y+b.h-2)*T,b.sign,10);
 let p=door(b);this.add.circle(p.x,p.y+4,2,0xc4d99d).setDepth(10);
 for(let xx of [b.x,b.x+b.w-1]){this.tile(xx,b.y+b.h,16,8,10);this.tile(xx,b.y+b.h+1,16,9,10)}
 }
 for(let x of [1,15,33,51,70])for(let y of [2,12,23,33,40]){this.tile(x,y,18,8,5);this.tile(x,y+1,18,9,6)}
 for(let i=0;i<6;i++){let x=5+i*11,y=i%2?38:16;let v=this.add.container(x*T,y*T).setDepth(8);v.add(this.add.image(0,0,'urban',F(15+i%4,15)));v.add(this.add.image(0,16,'urban',F(15+i%4,16)));this.vehicles.push({v,lane:y*T,speed:28+i*3,dir:i%2?-1:1})}
-for(let n of RESIDENTS){let b=SHOPS[n.id%8],p=door(b),sp=this.person(p.x+(n.id<8?-26:26),p.y+18,n.look);this.people.push({n,sprite:sp,path:[],next:1+n.id*.2,destination:n.id%8})}
+for(let n of RESIDENTS){let b=SHOPS[n.id%8],p=door(b),sp=this.person(p.x+(n.id<8?-26:26),p.y+18,n.look);sp.setTint(MOOD_TINT[n.id%MOOD_TINT.length]);this.people.push({n,sprite:sp,path:[],next:1+n.id*.2,destination:n.id%8})}
 for(let b of SHOPS.filter(b=>b.id%2===0)){let p=door(b);this.prop(p.x-39,p.y+13,F(4,10))}
 }
 buildRoom(){let b=SHOPS[room];for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++){this.tile(x,y,b?.kind==='wash'?9:1,b?.kind==='wash'?1:4);if(x===0||x===this.cols-1||y===0||y===this.rows-1)this.tile(x,y,1,3,1)}
 this.solid(0,0,26,2);this.solid(0,2,1,16);this.solid(25,2,1,16);this.solid(0,18,26,1);this.label(208,26,b?b.sign:'PRIVATE RESIDENCE',50);
-let layout=room===1?[[3,4,7,12,2],[19,4,7,12,2],[3,8,9,13,2],[19,8,9,13,2]]:room===2?[[3,3,4,12,3],[18,3,4,12,3],[3,7,4,12,3],[18,7,4,12,3]]:room===5?[[3,4,15,15,1],[19,4,16,15,1],[3,8,9,13,2]]:room===8?[[3,4,7,12,2],[19,4,9,13,2],[4,9,4,12,3]]:[[3,4,9,13,2],[19,4,9,13,2],[3,9,7,12,2],[19,9,7,12,2]];
-for(let [x,y,c,r,w] of layout){for(let j=0;j<w;j++)this.tile(x+j,y,c+j,r,4);this.solid(x,y,w,1)}
+let layout=INTERIORS[room]||INTERIORS[8];for(let [x,y,c,r,w,h] of layout){for(let j=0;j<w;j++)for(let k=0;k<h;k++)this.tile(x+j,y+k,c+j,r+k,4);this.solid(x,y,w,h)}
+if(b){this.rect(32,38,352,4,FACADES[b.id].accent,8);this.label(208,47,b.task.toUpperCase(),20);}
 if(b){for(let x=10;x<16;x++)this.tile(x,4,9+x%2,13,5);this.solid(10,4,6,1);let n=RESIDENTS[b.id];this.owner=this.person(216,112,n.look);this.people.push({n,sprite:this.owner,path:[]});this.label(216,97,n.name,20)}
 this.label(216,287,'EXIT',20)}
-person(x,y,look){let p=this.physics.add.sprite(x,y,'urban',F(24,look*3));p.body.setSize(8,8).setOffset(4,8);p.setCollideWorldBounds(true);p.dir=24;p.phase=0;p.look=look;return p}
-animate(p,dt,look=p.look){let v=p.body.velocity;if(Math.abs(v.x)+Math.abs(v.y)>1){p.dir=Math.abs(v.x)>Math.abs(v.y)?v.x<0?23:26:v.y<0?25:24;p.phase+=dt*.009}else p.phase=0;p.setFrame(F(p.dir,look*3+[0,1,0,2][Math.floor(p.phase)%4]));p.setDepth(100+Math.floor(p.y))}
+person(x,y,look){let p=this.physics.add.sprite(x,y,'urban',F(23,look*3));p.body.setSize(8,8).setOffset(4,8);p.setCollideWorldBounds(true);p.dir=23;p.phase=0;p.look=look;return p}
+animate(p,dt,look=p.look){let v=p.body.velocity;if(Math.abs(v.x)+Math.abs(v.y)>1){p.dir=Math.abs(v.x)>Math.abs(v.y)?v.x<0?24:26:v.y<0?25:23;p.phase+=dt*.009}else p.phase=0;p.setFrame(F(p.dir,look*3+[0,1,0,2][Math.floor(p.phase)%4]));p.setDepth(100+Math.floor(p.y))}
 prop(x,y,frame){let p=this.props.create(x,y,'urban',frame);p.body.setSize(12,12).setOffset(2,4);p.setDrag(140).setMaxVelocity(90).setBounce(.15).setCollideWorldBounds(true);return p}
 findPath(p,x,y){let a={x:clamp(Math.floor(p.x/T),0,this.cols-1),y:clamp(Math.floor(p.y/T),0,this.rows-1)},e={x:clamp(Math.floor(x/T),0,this.cols-1),y:clamp(Math.floor(y/T),0,this.rows-1)};if(this.blocked.has(e.y*this.cols+e.x)){let best=Infinity,found=null;for(let yy=Math.max(0,e.y-4);yy<Math.min(this.rows,e.y+5);yy++)for(let xx=Math.max(0,e.x-4);xx<Math.min(this.cols,e.x+5);xx++){let z=Math.hypot(xx-e.x,yy-e.y);if(z<best&&!this.blocked.has(yy*this.cols+xx)){best=z;found={x:xx,y:yy}}}if(!found)return [];e=found}
 let route=pathfind(this.cols,this.rows,this.blocked,a,e).map(q=>({x:(q.x+.5)*T,y:(q.y+.5)*T}));if(!route.length&&a.x===e.x&&a.y===e.y)route.push({x:(e.x+.5)*T,y:(e.y+.5)*T});return route}
@@ -110,7 +112,7 @@ update(t,dt){dt=Math.min(dt,50);let sec=dt/1000,p=this.player;if(!p)return;
 let dx=(held.right?1:0)-(held.left?1:0),dy=(held.down?1:0)-(held.up?1:0),speed=run||held.shift?98:65;
 if(dialogue)p.setVelocity(0);else if(dx||dy){this.stop();let a=Math.hypot(dx,dy);p.setVelocity(dx/a*speed,dy/a*speed)}else if(this.route.length){this.follow(p,this.route,speed);if(!this.route.length){let cb=this.arrive;this.stop();if(cb){cb();return}}}else p.setVelocity(0);
 this.animate(p,dt,S.look);
-if(room===-1){S.x=p.x;S.y=p.y;for(let q of this.people){let visible=q.n.work===undefined||!isOpen(SHOPS[q.n.work],S.minute);q.sprite.setVisible(visible);q.sprite.body.enable=visible;if(!visible)continue;if(d(q.sprite,p)<20){q.sprite.setVelocity(0);continue}q.next-=sec;if(!q.path.length&&q.next<=0){q.destination=(q.destination+1+Math.floor(S.minute/180)%2)%8;let dest=door(SHOPS[q.destination]);q.path=this.findPath(q.sprite,dest.x+(q.n.id%3-1)*16,dest.y+24);q.next=2+q.n.id%4}this.follow(q.sprite,q.path,25+q.n.id%4*4);this.animate(q.sprite,dt)}
+if(room===-1){S.x=p.x;S.y=p.y;for(let q of this.people){let visible=q.n.work===undefined||!isOpen(SHOPS[q.n.work],S.minute);q.sprite.setVisible(visible);q.sprite.body.enable=visible;if(!visible)continue;if(d(q.sprite,p)<20){q.sprite.setVelocity(0);continue}q.next-=sec;if(!q.path.length&&q.next<=0){q.destination=destinationFor(q.n,S.minute,S.day,q.destination);let dest=door(SHOPS[q.destination]);q.path=this.findPath(q.sprite,dest.x+(q.n.id%3-1)*16,dest.y+24);q.next=2+q.n.id%4}this.follow(q.sprite,q.path,25+q.n.id%4*4);this.animate(q.sprite,dt);if(q.sprite.visible&&d(q.sprite,p)<42&&q.n.id!==this.lastLabelId){this.lastLabelId=q.n.id;this.lastLabel?.destroy();this.lastLabel=this.label(q.sprite.x,q.sprite.y-16,q.n.name,9000)}}
 for(let v of this.vehicles){v.v.x+=v.speed*sec*v.dir;if(v.v.x>this.cols*T+32)v.v.x=-32;if(v.v.x< -32)v.v.x=this.cols*T+32}}
 for(let obj of this.props.getChildren())if(obj.active)obj.setDepth(100+Math.floor(obj.y));
 if(this.carry){this.carry.setPosition(p.x,p.y-7);this.carry.setDepth(p.depth+1)}
@@ -119,6 +121,7 @@ if(job?.b.kind==='timing'&&$('needle'))$('needle').style.left=((1-Math.cos((perf
 timeAcc+=sec;saveTimer+=sec;nextIncident-=sec;if(timeAcc>=1){timeAcc-=1;S.minute++;if(S.minute>=1440){S.minute=0;S.day++}if(!job)S.calm=Math.min(100,S.calm+.15);hud()}
 if(nextIncident<=0){nextIncident=48;let e=INCIDENTS[(Math.floor(Math.random()*INCIDENTS.length))];log(e[1]);toast(e[0]+' — see local news')}
 if(saveTimer>=7){saveTimer=0;save()}
+if(this.lastLabel){let q=this.people.find(q=>q.n.id===this.lastLabelId);if(!q||!q.sprite.visible||d(q.sprite,p)>48){this.lastLabel.destroy();this.lastLabel=null;this.lastLabelId=null}else this.lastLabel.setPosition(q.sprite.x,q.sprite.y-16)}
 this.tint.setAlpha(room===-1?(S.minute<360||S.minute>=1200?.32:S.minute>=1080?.14:0):0);
 let n=this.nearest();$('prompt').textContent=job?.b.kind==='cargo'?'DELIVERY '+job.score+'/3':n?.kind==='door'?'ACT · '+n.b.name:n?.kind==='npc'?'ACT · '+n.n.name:n?.kind==='owner'?'ACT · Business menu':n?.kind==='exit'?'ACT · Exit':n?.kind==='rest'?'ACT · Rest':'Tap a destination';
 }}
