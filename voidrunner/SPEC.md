@@ -19,3 +19,6 @@ Current cumulative code: self-contained WebGL ray/sphere renderer with CPU Canva
 - Pixel-consistent terrain/planet detail, properly aligned real 3D or equivalent authored assets, no clipping, readable HUD, desktop/mobile landscape/portrait; keyboard, mouse, touch and remappable DirectInput tested on real hardware.
 - Save/reload character and world, pause/input cancellation, recover from failed assets/context loss.
 - No startup errors, measurable representative frame rate, repeatable browser smoke, inspect actual captures, document missing/partial/unverified features. Publish only an accurately labeled development build until all acceptance criteria are satisfied.
+
+### Asset-first candidate (implementation detail, not a replacement of scope)
+Real, licensed same-origin texture atlas files for Earth, Moon, Mars, Jupiter and cloud opacity, with source provenance in ASSETS.md. Transitional local-body survey selector supports testing each body but is explicitly not continuous flight. Preserve Earth mechanics and local state on return. Physical body constants are approximate; shader and CPU must obey solid/ocean/atmosphere capability guards. Major rendering or physics architecture replacement remains subject to review.

@@ -7,3 +7,7 @@ Updated 2026-11-27. Complete-first continuation; no stage-only restriction. Inte
 - P1 — expand physical power consequences: world-anchored scorch/destruction, ice thickness/contact/melt, localized weather, object impulses, robust optional vehicle handling; durable save schema for multiple worlds and persistent effects.
 - P2 — exploration landmarks, environmental audio, accessibility, discovery/navigation, settings and player feedback consistent with subtle pixel style.
 - Release: exact source tracked, test and visual review; verify Pages separately from commit, versioned catalog entry and genuine capture; document all failures. Do not call a partial Earth baseline complete.
+
+## Candidate update
+- Byte-verified planetary and cloud maps imported on asset-first branch; verify actual runtime, orientations and capture, then merge only after regression checks. Survey destinations are a transitional testing mechanism, not the final multi-world system.
+- Next use a CC0 rigged character and compatible animation clips; evaluate scale, pose, skinning and frame budget before replacing the screen-space human. Continuous orbital navigation and local terrain elevation remain P0/P1.

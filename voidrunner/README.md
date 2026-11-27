@@ -12,3 +12,6 @@ From the repository root, run `python3 -m http.server 8765`, then open http://lo
 
 ## Limitations
 Development build, not release certified: simplified surface, screen-space humanoid, fixed Earth radius, approximate atmospheric and ocean simulation, incomplete LOD, limited world persistence, real GPU and physical controllers not verified. Multi-world traversal is missing; see specification and status.
+
+## Asset-first branch candidate
+The development branch tests actual locally stored Earth, Moon, Mars, Jupiter and cloud textures. Profile > Survey destination loads a different body-local frame; it is not seamless interplanetary travel. Saves are separate by selected world. Earth controls remain intact, and non-Earth controls are guarded. See [asset provenance](ASSETS.md). Run `node voidrunner/smoke-asset.mjs` against a local HTTP server for candidate coverage. Main catalog release remains v0.24.0 until verification.
