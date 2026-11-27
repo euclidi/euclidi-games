@@ -22,6 +22,24 @@ export function buildBodyCollider(positions,indices,normals){
  function query(p){const q=nearest(p),d=Math.sqrt(q.d2);return {...q,distance:d<1e-9?0:inside(p)?-d:d};}
  function project(p,clearance=.003){if(!Number.isFinite(clearance)||clearance<0)throw Error("Invalid clearance");let x=p.slice(),moved=false,q;for(let i=0;i<4;i++){q=query(x);if(q.distance>=clearance-1e-7)break;const n=q.distance>1e-8?unit(sub(x,q.point)):q.distance< -1e-8?unit(sub(q.point,x)):q.faceNormal;
  x=add(q.point,mul(n,clearance+1e-6));moved=true;}
- const result=query(x);return{point:x,moved,distance:result.distance,converged:result.distance>=clearance-1e-7};}
+ let result=query(x);
+ // Narrow gaps (for example between nearby surfaces) can defeat local
+ // projection. Search deterministic directions at increasing distances,
+ // preferring the smallest displacement that actually clears the body.
+ if(result.distance<clearance-1e-7){
+  const directions=[result.faceNormal,result.normal];
+  for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++)for(let c=-1;c<=1;c++)if(a||b||c)directions.push(unit([a,b,c]));
+  let best=null,bestD=Infinity;
+  for(const radius of [clearance*1.1,clearance*2,clearance*3,clearance*5,clearance*8]){
+   for(const d of directions){
+    const candidate=add(result.point,mul(d,radius+1e-6)),delta=sub(candidate,p),dist2=dot(delta,delta);
+    if(dist2>=bestD)continue;const test=query(candidate);
+    if(test.distance>=clearance-1e-7){best=candidate;bestD=dist2;}
+   }
+   if(best)break;
+  }
+  if(best){x=best;result=query(x);moved=true;}
+ }
+ return{point:x,moved,distance:result.distance,converged:result.distance>=clearance-1e-7};}
  return {nearest,inside,query,project,volume,triangles:tris.length};
 }
