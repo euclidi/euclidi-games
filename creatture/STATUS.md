@@ -15,3 +15,6 @@ The first commit's native Rust test step passed on GitHub Actions run 4598092171
 
 ## CI correction
 Run 45980921711 passed native Rust tests and the WASM/Vite production build (712.07 kB WASM, 529.81 kB JS before gzip). Chromium installation failed before tests: Playwright 1.51.1 does not support the Ubuntu 26.04 runner. Pin runner to Ubuntu 24.04; actual browser tests remain pending. Subsequent network changes need their own validation.
+
+## 0.1.2 — XPBD appendage integration
+Added stateful six-node bilateral chains with compliant axial and two-hop bend constraints, active contraction, approximate ground friction and anchor reaction transferred into the Rapier rigid body. Free cultivation uses solved node positions for continuous surface growth; swim force remains a simplified drag/thrust approximation. Added a local tetrahedron volume constraint benchmark and live strain/contact/volume readouts. This is not a complete Cosserat rod (no material frame/twist), articulated musculoskeletal network or volumetric tissue mesh; the tetrahedron is a local test cell, not the complete organism. Native tests for distance, volume and stable appendage contact added, unverified until CI. Version 3 snapshots replace experimental version 2.

@@ -1,6 +1,8 @@
 use serde::{Serialize,Deserialize};
 use wasm_bindgen::prelude::*;
 use rapier3d::prelude::*;
+mod mechanics;
+use mechanics::Mechanics;
 mod biology;
 use biology::Network;
 const N:usize=12;
@@ -16,7 +18,7 @@ fn world(id:usize)->World {
 }
 #[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]
 struct Specimen {
- version:u32, network:Network, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, position:[f64;3], velocity:[f64;3]
+ version:u32, network:Network, mechanics:Mechanics, world_id:usize, environment:World, seed:u32, genome:[f64;8], organs:[f64;N], used:[bool;N], history:Vec<usize>, available:[f64;N], tissue:Vec<f64>, nutrient:f64, reserve:f64, biomass:f64,waste:f64, input_mass:f64, hydration:f64, stress:f64, learned:f64, neural:f64, generation:u32, parents:Vec<u32>, turn:u32, tick:u64, outcome:String, position:[f64;3], velocity:[f64;3]
 }
 fn rng(s:&mut u32)->f64{*s=s.wrapping_mul(1664525).wrapping_add(1013904223);*s as f64/4294967296.}
 fn bounded(x:f64)->f64{x.clamp(0.,1.)}
@@ -24,10 +26,10 @@ impl Specimen {
  fn new(id:usize,mut seed:u32)->Self{
   let original=seed; let mut genome=[0.;8];for x in &mut genome{*x=0.25+rng(&mut seed)*0.5;}
   let env=world(id);
-  Self{version:2,network:Network::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),position:[0.,0.7,0.],velocity:[0.;3]}
+  Self{version:3,network:Network::new(),mechanics:Mechanics::new(),world_id:id.min(5),environment:env,seed:original,genome,organs:[0.;N],used:[false;N],history:vec![],available:[0.;N],tissue:vec![0.;TISSUE],nutrient:2.,reserve:0.4,biomass:1.,waste:0.,input_mass:3.4,hydration:0.5,stress:0.,learned:0.,neural:0.,generation:0,parents:vec![],turn:0,tick:0,outcome:String::new(),position:[0.,0.7,0.],velocity:[0.;3]}
  }
  fn valid(&self)->bool {
-  self.version==2 && self.network.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
+  self.version==3 && self.network.valid() && self.mechanics.valid() && self.world_id<6 && self.tissue.len()==TISSUE && self.history.iter().all(|x|*x<N) &&
   self.genome.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=1.) &&
   self.organs.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=MAX) &&
   self.available.iter().all(|v|v.is_finite()&&*v>=0.&&*v<=8.) &&
@@ -118,8 +120,10 @@ impl ContactWorld{
   let b=&mut self.bodies[self.body];
   let p=*b.translation();let v=*b.linvel();
   let water=s.environment.water as f32;let motor=(s.organs[5]*s.network.integrity[5]*s.reserve.min(1.)*(1.-s.stress)) as f32;
+  let reaction=s.mechanics.step([p.x as f64,p.y as f64,p.z as f64],s.organs[5]*s.network.integrity[5],s.reserve.min(1.),s.environment.water,s.neural);
   let phase=(s.tick as f32)*0.19;
-  let steer=vector![phase.sin()*motor-p.x*0.12-v.x*0.25,(water*9.0-1.)*b.mass(),phase.cos()*motor-p.z*0.12-v.z*0.25];
+  let swim=water*water*s.organs[2].min(1.) as f32*0.45*motor;
+  let steer=vector![reaction[0] as f32+phase.sin()*swim-p.x*0.12-v.x*(0.25+water),(water*9.0-1.)*b.mass()+reaction[1] as f32,reaction[2] as f32+phase.cos()*swim-p.z*0.12-v.z*(0.25+water)];
   b.reset_forces(false);b.add_force(steer,true);
   let mut ip=IntegrationParameters::default();ip.dt=1./120.;
   self.pipeline.step(&vector![0.,-9.81,0.],&ip,&mut self.islands,&mut self.broad,&mut self.narrow,&mut self.bodies,&mut self.colliders,&mut self.joints,&mut self.multibody,&mut self.ccd,None,&(),&());
@@ -140,7 +144,7 @@ impl Engine{
  pub fn damage(&mut self,site:usize,amount:f64){self.state.network.damage(site,amount);}
  pub fn snapshot(&self)->String{serde_json::to_string(&self.state).unwrap_or_default()}
  pub fn restore(&mut self,json:&str)->bool{if let Ok(s)=serde_json::from_str::<Specimen>(json){if s.valid(){self.physics=ContactWorld::new(s.position,s.velocity);self.state=s;return true;}}false}
- pub fn transfer(&mut self,id:usize)->bool{if id>=6{return false;}let target=world(id);let tolerance=0.28+0.4*self.state.genome[1]+0.08*self.state.organs[0];if (target.temperature-self.state.environment.temperature).abs()>tolerance{return false;}self.state.world_id=id;self.state.environment=world(id);true}
+ pub fn transfer(&mut self,id:usize)->bool{if id>=6{return false;}let target=world(id);let tolerance=0.28+0.4*self.state.genome[1]+0.08*self.state.organs[0];if (target.temperature-self.state.environment.temperature).abs()>tolerance{return false;}self.state.world_id=id;self.state.environment=world(id);self.state.mechanics=Mechanics::new();true}
  pub fn breed(&mut self,other:&str,mut seed:u32)->bool{
   if let Ok(p)=serde_json::from_str::<Specimen>(other){if p.valid()&&self.state.reserve>0.1&&p.generation<1000{
    let original=seed;let mut child=Specimen::new(self.state.world_id,original);
