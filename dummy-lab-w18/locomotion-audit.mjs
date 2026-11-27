@@ -1,0 +1,3 @@
+import assert from 'node:assert/strict';import {predictFoot,swingCurve,swivel} from './locomotion-math.js';
+for(let i=0;i<=1000;i++){const p=swingCurve(i/1000);assert(p.progress>=-1e-9&&p.progress<=1.000001&&p.lift>=0&&p.lift<=1.000001)}
+for(const yaw of [0,Math.PI/2,Math.PI,-Math.PI/2]){const p=predictFoot(0,0,yaw,1,1,0,.25),q=predictFoot(0,0,yaw,-1,1,0,.25);assert(Math.abs(Math.hypot(p[0]-q[0],p[1]-q[1])-.27)<1e-9);assert(Math.abs((p[0]+q[0])/2-.25)<1e-9)}let v=0;for(let i=0;i<120;i++)v=swivel(v,1,1/120);assert(v>2.3&&v<=2.4);for(let i=0;i<240;i++)v=swivel(v,0,1/120);assert(v<.002);console.log('1011 locomotion and swivel checks passed');

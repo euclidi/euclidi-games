@@ -1,4 +1,4 @@
-# Dummy Lab — W1.11 — Development specification
+# Dummy Lab — W1.13 — Development specification
 
 **Revision:** documentation baseline, 2026-11-26. **Lifecycle:** Active — current catalog release.
 
@@ -39,3 +39,7 @@ Preserve original or appropriately licensed assets and record their source, lice
 ## W1.12 display and input requirements
 
 Desktop click-to-lock via the browser Pointer Lock API; relative mouse motion, Escape release, input clearing on blur or release, drag fallback and retained touch/gamepad. Native resolution by default, DPR capped at 2 with 8.3 MP desktop / 2.3 MP mobile pixel budgets; optional 480p. Three independent actual chamber renders on monitor surfaces, camera layer exclusion to avoid feedback recursion, staggered target refresh. Preserve existing behavior and physics.
+
+## W1.13 scope
+
+Adaptive ray-grounded, velocity-predicted foot targets for player and dummy, seated swivel-chair interaction with IK entry/exit, and interactive vending machine with stock, selection, dispensing and collection; keep desktop/mobile/controller inputs. Full active ragdoll and force-driven seating remain targets.

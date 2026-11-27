@@ -1,4 +1,4 @@
-# Dummy Lab — W1.11 — Current status
+# Dummy Lab — W1.13 — Current status
 
 Neutral anatomy and stance revision (2026-11-27). W1.8 URL retained as the established catalog route; previous source is available in Git history. The cover is not changed.
 
@@ -27,3 +27,7 @@ Post-commit review corrected spine parenting, held-item pickup rise continuity, 
 ## W1.12 capture, clarity and live monitors (2026-11-27)
 
 Replaced desktop drag-only look with actual Pointer Lock API, relative mouse deltas, focus/visibility release and touch/drag fallback. Default native framebuffer with antialiasing and adaptive DPR/area budgets; 480p is optional. Three 640×480 render targets use two fixed chamber cameras and one dummy-tracking camera; exclude monitor surfaces from their own feeds and reuse the main shadow maps. Staggered refresh targets approximately 11 Hz per screen desktop and 5.5 Hz mobile at sufficient FPS. No webcam, desktop capture or prerecorded imagery. Existing physics, rig, room props and archived build preserved. Local numerical and syntax checks / browser CI evidence to be reported separately. Actual Firefox desktop mouse lock, user GPU performance and subjective sharpness not yet verified.
+
+## W1.13 grounded gait and observation-room interaction
+
+Adapted ProceduralWalk (Igor Santarek, MIT; source and license in THIRD_PARTY.md) techniques: velocity-predicted, ground-raycast foot targets, displacement-based foot selection, persistent planted feet, spread-dependent hip height. Player now uses the adaptive gait with toe roll and counter-swing, and optional tiptoe. Dummy's existing reduced-order balance, dynamic falls and object handling retained. Three swivel chairs have seated/standing IK transitions and damped yaw from movement input. Vending cabinet rebuilt with recessed racks, glass, labeled cans, display, inventory, animated delivery flap and collectible can. Free dispensing; no currency or drinking simulation. Chair rotation and vending collection are kinematic, not force-driven. 1011 pure numerical checks passed on exact shared functions; browser, mobile, physical controller, actual IK and scene visuals unverified. No cover changes.

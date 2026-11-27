@@ -1,4 +1,4 @@
-# Dummy Lab — W1.12
+# Dummy Lab — W1.13
 
 Observe an autonomous articulated humanoid from a furnished laboratory, inspect its behavior and interact with it from the observation area.
 
@@ -33,3 +33,7 @@ Body remains kinematic; environment uses Rapier but powered balancing, physical 
 ## Physical tests
 
 Open Actions, select a rubber ball, block or cylinder and Spawn; choose pick up item, carry item, throw item or drop item. Nudge tests balance correction; Shove triggers dynamic fall; recover returns to standing. Empty chamber on reset. Normal gait uses a reduced-order model and falls use Rapier bodies. See STATUS for limits.
+
+## Observation room
+
+Walk near a chair or vending machine. F / R3 / on-screen interaction: sit, stand, dispense or collect. Seated A/D or left stick spins the chair; mouse/right stick looks independently. R / L3 cycles vending selection near the machine, otherwise toggles tiptoe. Actions includes tiptoe toggle. Vending stock resets with game reset. [Reference attribution](THIRD_PARTY.md).

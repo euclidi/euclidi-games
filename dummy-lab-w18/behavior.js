@@ -1,5 +1,6 @@
 import * as T from 'three';import {V,Q,UP} from './geometry.js';import {ACTIONS,GLASS,angle,clamp,smooth,nextAction} from './math.js';import {makeRig,legIK,armIK,curl,contact,neutralArm,rolledLeg} from './rig.js?v=1.11.1';
 import {stepProfile,captureOffset,spring} from './dynamics.js?v=1.11';import {createFallRig} from './physical.js?v=1.11.1';
+import {groundProbe,targetFoot} from './gait.js?v=1.13';
 const forward=y=>V(Math.sin(y),0,Math.cos(y)),right=y=>V(Math.cos(y),0,-Math.sin(y)),durations={'wander':5,'jog':3,'backpedal':2.2,'sidestep':2.5,'tiptoe':3,'inspect':3,'stretch':3,'scratch head':3.5,'shrug':2,'wave':3,'inspect hands':3,'hands on hips':3,'dance':5,'crouch':3,'look at player':3,'approach player':4,'retreat':3,'startle':1,'brace':1.5,'duck':1.5,'avoid prop':2,'knock on glass':4,'head tilt':3,'hands on knees':4.5,'jump':2.2,'exercise':8,'wall push-ups':8,'handstand push-ups':10,'pick up item':5,'carry item':4,'throw item':2.6,'drop item':1.6,'recover':2.8,'stumble':1.5};
 const moving=new Set(['wander','jog','backpedal','sidestep','tiptoe','dance','approach player','retreat','avoid prop']);
 export function createDummy(scene,event,lab,R,world){const r=makeRig(scene),center=V(0,0,-1.2),plants=[V(-.15,.075,-1.2),V(.15,.075,-1.2)],goal=V(),history=[];let yaw=0,clock=0,age=0,seed=723,action='wander',phase='walk',step=null,next=0,manual=false,knocks=0,reach=0,cool=0,curiosity=.6,boredom=.3,wariness=.05,playfulness=.6;const fall=createFallRig(R,world,r),velocity=V(),disturbance=V(),lastVel=V();let pending=null,transition=null,fallAge=0,recovery=null,item=null,gripStart=null,gripStage=false,dropStage=false,stability=0,tripCooldown=0,stepRoll=[0,0],footHeading=[0,0],weight=[.5,.5],motionAge=0;
@@ -37,13 +38,13 @@ function walk(dt){
  const face=back?desired+Math.PI:side?yaw:desired,err=angle(yaw,face);
  if(!step){
   if(distance<.19&&(final===null||Math.abs(angle(yaw,final))<.18)&&velocity.length()<.32){stepRoll=[0,0];return true}
-  const i=next;next=1-next;const sy=yaw+clamp(err,-.44,.44),other=plants[1-i],sign=r.legs[i].s,period=jog?.33:tip?.56:.49;
+  const sy=yaw+clamp(err,-.44,.44),period=jog?.33:tip?.56:.49,ground=p=>groundProbe(R,world,p);const planned=forward(desired).multiplyScalar(Math.min(jog?1.42:tip?.47:.80,distance/Math.max(.2,period))*clamp(1-Math.abs(err)*.45,.15,1));const prediction=velocity.clone().lerp(planned,.65);const ideals=r.legs.map(l=>targetFoot(center,sy,l.s,prediction,period*.75,ground));const drift=ideals.map((p,i)=>Math.hypot(p.x-plants[i].x,p.z-plants[i].z));const i=drift[next]>.06||drift[next]>=drift[1-next]-.05?next:1-next;next=1-i;const other=plants[1-i],sign=r.legs[i].s;
   const stride=distance<.19?0:Math.min(jog?.49:tip?.24:.34,distance)*clamp(1-Math.abs(err)*.55,.08,1);
-  const end=other.clone().addScaledVector(right(sy),sign*.27).addScaledVector(forward(desired),stride);
+  const end=ideals[i].clone();if(distance>.19){const advance=forward(desired);const gap=end.clone().sub(other).dot(advance);if(gap<stride*.65)end.addScaledVector(advance,stride*.65-gap)}
   if(side)end.copy(other).addScaledVector(right(sy),sign*.27+(sign===Math.sign(d.dot(right(sy)))?Math.sign(d.dot(right(sy)))*stride:0));
   // Place the foot under the extrapolated COM when a disturbance arrives.
   end.addScaledVector(disturbance,.24);
-  end.x=clamp(end.x,-4.9,4.9);end.z=clamp(end.z,-8.0,2.82);end.y=.075;
+  end.x=clamp(end.x,-4.9,4.9);end.z=clamp(end.z,-8.0,2.82);end.y=ground(end);
   const mid=end.clone().add(other).multiplyScalar(.5);mid.y=0;step={i,from:plants[i].clone(),end,fromC:center.clone(),mid,y0:yaw,y1:sy,t:0,dt:period,oldHeading:footHeading[i],hit:false};
  }
  const s=step;s.t+=dt;const u=clamp(s.t/s.dt,0,1),p=stepProfile(u),stance=1-s.i,sign=r.legs[s.i].s;
@@ -56,7 +57,7 @@ function walk(dt){
  for(const k of ['x','z']){const [x,v]=spring(center[k],velocity[k],reference[k],desiredV[k]+disturbance[k],dt,48,13,9);center[k]=x;velocity[k]=v}
  center.x=clamp(center.x,-4.7,4.7);center.z=clamp(center.z,-7.9,2.65);disturbance.multiplyScalar(Math.exp(-dt*2.7));
  plants[s.i].copy(s.from).lerp(s.end,p.swing);const obstacle=lab.obstacle(plants[s.i]);const lift=(jog?.18:tip?.07:.115)+(obstacle?.radius||0)*.7;
- plants[s.i].y=.075+lift*p.lift;footHeading[s.i]=s.oldHeading+angle(s.oldHeading,s.y1+sign*.07)*p.swing;
+ plants[s.i].y=s.from.y+(s.end.y-s.from.y)*p.swing+lift*p.lift;footHeading[s.i]=s.oldHeading+angle(s.oldHeading,s.y1+sign*.07)*p.swing;
  stepRoll[stance]=tip?.43:.39*smooth((u-.60)/.4);
  stepRoll[s.i]=tip?.34:.37*(1-smooth(u/.25))-.17*smooth((u-.67)/.19)*(1-smooth((u-.86)/.14));
  weight[stance]=p.load;weight[s.i]=1-p.load;
@@ -67,17 +68,17 @@ function walk(dt){
   s.hit=true;disturbance.addScaledVector(forward(yaw),.78);disturbance.addScaledVector(right(yaw),sign*.25);obstacle.body.applyImpulse(forward(yaw).multiplyScalar(.24),true);emit('trip',{kind:obstacle.kind});tripCooldown=.65;
  }
  if(stability>.76&&disturbance.length()>.55&&tripCooldown>0){startFall(velocity.clone().add(disturbance));return false}
- let h=tip?.925:jog?.87:.882;h-=.025*Math.sin(Math.PI*u)**2;
+ let h=tip?.925:jog?.87:.882;const spread=Math.hypot(plants[0].x-plants[1].x,plants[0].z-plants[1].z);h-=clamp((spread-.27)*.13,0,.06)+.015*Math.sin(Math.PI*u)**2;
  for(let i=0;i<2;i++){const hip=center.clone().addScaledVector(right(yaw),r.legs[i].s*.137),f=plants[i],dx=hip.x-f.x,dz=hip.z-f.z;h=Math.min(h,f.y+(stepRoll[i]>0?.085*Math.sin(stepRoll[i]):0)+Math.sqrt(Math.max(.12,.835**2-dx*dx-dz*dz)))}
  pose(h);const acceleration=velocity.clone().sub(lastVel).multiplyScalar(1/Math.max(dt,.001));lastVel.copy(velocity);
  const localA=acceleration.dot(forward(yaw)),localSide=acceleration.dot(right(yaw));
  r.body.rotation.set(clamp(.035+localA*.014,-.10,.17),-sign*.085*Math.sin(Math.PI*u),clamp(-localSide*.018+sign*.035*(2*p.load-1),-.12,.12));
  r.spine.rotation.y=sign*.055*Math.sin(Math.PI*u);r.neck.rotation.y=-r.body.rotation.y*.55;
  for(let i=0;i<2;i++){const a=r.arms[i],stride=(i===s.i?1:-1),swing=stride*(jog?.48:tip?.16:.30)*Math.cos(Math.PI*p.swing);neutralArm(a,clock,swing,jog?1:.4);if(lab.held&&i===1)armIK(r,i,r.body.localToWorld(V(.30,.30,.27)))}
- r.head.rotation.y=.09*Math.sin(clock*.9);if(u>=1){plants[s.i].y=.075;step=null;stepRoll[s.i]=0}
+ r.head.rotation.y=.09*Math.sin(clock*.9);if(u>=1){plants[s.i].copy(s.end);step=null;stepRoll[s.i]=0}
  return false;
 }
-function act(dt,ctx){const t=age,span=durations[action],f=smooth(t/.35)*smooth((span-t)/.35),w=Math.sin(t*3),rep=(1-Math.cos(t*3))/2;const relaxed=relaxedActions.has(action);for(const p of plants)p.y=.075;velocity.multiplyScalar(Math.exp(-dt*8));center.x+=(velocity.x+disturbance.x)*dt;center.z+=(velocity.z+disturbance.z)*dt;disturbance.multiplyScalar(Math.exp(-dt*2.7));pose(relaxed?.895:.83,relaxed);const world=(x,y,z)=>r.body.localToWorld(V(x,y,z));const hand=(i,x,y,z)=>armIK(r,i,world(x,y,z));const both=(y,z,x=.28)=>{for(let i=0;i<2;i++)hand(i,r.arms[i].s*x,y,z);};const flex=(v)=>r.arms.forEach(a=>curl(a,v,.04));
+function act(dt,ctx){const t=age,span=durations[action],f=smooth(t/.35)*smooth((span-t)/.35),w=Math.sin(t*3),rep=(1-Math.cos(t*3))/2;const relaxed=relaxedActions.has(action);for(const p of plants)p.y=groundProbe(R,world,p);velocity.multiplyScalar(Math.exp(-dt*8));center.x+=(velocity.x+disturbance.x)*dt;center.z+=(velocity.z+disturbance.z)*dt;disturbance.multiplyScalar(Math.exp(-dt*2.7));pose(relaxed?.895:.83,relaxed);const world=(x,y,z)=>r.body.localToWorld(V(x,y,z));const hand=(i,x,y,z)=>armIK(r,i,world(x,y,z));const both=(y,z,x=.28)=>{for(let i=0;i<2;i++)hand(i,r.arms[i].s*x,y,z);};const flex=(v)=>r.arms.forEach(a=>curl(a,v,.04));
 switch(action){
 case 'pick up item':{
  if(!item||!lab.has(item)||(lab.held&&!gripStage)){if(lab.held)hand(1,.30,.35,.27);break}

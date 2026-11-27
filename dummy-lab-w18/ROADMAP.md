@@ -1,4 +1,4 @@
-# Dummy Lab — W1.11 — Roadmap
+# Dummy Lab — W1.13 — Roadmap
 
 Updated 2026-11-26. Active — current catalog release.
 
@@ -24,3 +24,5 @@ This is an ordered development backlog, not a declaration that milestones are co
 - [ ] Verify the actual GitHub Pages release and catalog links before labeling a build verified.
 
 [Specification](SPEC.md) · [Current status](STATUS.md)
+
+- [ ] W1.13 browser acceptance: grounded gait, turning/stopping, seat clearance, safe exit, controller/touch interaction, stock and vending visuals.

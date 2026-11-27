@@ -13,3 +13,5 @@ html{width:100%;height:100%;overscroll-behavior:none}body{position:fixed;inset:0
 @media(max-width:340px){#bar{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
 #mouse-status{display:block;margin-top:3px;font:10px monospace;color:#e1e5de}body.mouse-locked>canvas{cursor:none}body.touch-ui #mouse-status{display:none}
+
+#interactbar{display:flex;justify-content:center;gap:5px;pointer-events:none}#interactbar button{pointer-events:auto;min-height:42px;background:#222925ec;border-color:#bec6b4;padding:8px 14px}#interaction-hint{display:block;font:10px monospace;color:#e4e8db;margin-top:3px}body.touch-ui #interactbar button{min-height:44px}@media(max-height:430px) and (orientation:landscape){#interactbar{position:absolute;bottom:46px;right:0;max-width:70%;flex-wrap:wrap}#interactbar button{min-height:40px;padding:6px 9px}}
