@@ -10,6 +10,10 @@ const SIDE=8,PERSON=.76,STOP=20,CAR_LINE=2.5;
 const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
 const phaseLocks=new Set(),junctions=new Map(),transitPriority=new Map();
+// Bounded pedestrian admission independent of occupied crossing locks. Time is in simulation minutes.
+function phaseAt(x,z,time){const t=((time+(x/70+z/70+6)*.85)%16+16)%16;return t<5?0:t<10?1:t<14?2:3;}
+function crossingAdmission(cross,time){return phaseAt(cross.x,cross.z,time)===2;}
+const trafficDependencies=new Map();
 const nodeKey=(x,z)=>x+","+z;
 const solids=[],streetSolids=[],entranceAnchors=new Map();
 const stopControlled=(x,z)=>roadRank(x)===2&&roadRank(z)===2;
@@ -150,10 +154,11 @@ function plannedDir(b,x,z){
 }
 function driveTraffic(w,dt){
  const cars=w.cars,lanes=new Map(),ped=w.citizens.filter(walking);
+ trafficDependencies.clear();
  const key=b=>keyOf(b.x,b.z,b.dir);
  const add=b=>{const k=key(b);if(!lanes.has(k))lanes.set(k,[]);lanes.get(k).push(b);};
  for(const b of cars)add(b);
- transitPriority.clear();for(const b of cars){if(!b.bus||b.wait<=8||b.progress<stopLine(b)-.05)continue;const d=D[b.dir],x=b.x+d[0]*70,z=b.z+d[1]*70,k=nodeKey(x,z),p=transitPriority.get(k);if(!phaseLocks.has(k)&&!junctions.has(k)&&(!p||b.wait>p.wait))transitPriority.set(k,b);}
+ transitPriority.clear();for(const b of cars){if(!b.bus||b.wait<=8||b.progress<stopLine(b)-.05)continue;const d=D[b.dir],x=b.x+d[0]*70,z=b.z+d[1]*70,k=nodeKey(x,z),p=transitPriority.get(k);if(phaseAt(x,z,w.time)===b.dir%2&&!phaseLocks.has(k)&&!junctions.has(k)&&(!p||b.wait>p.wait))transitPriority.set(k,b);}
  for(const [k,b] of junctions)if(!cars.includes(b)||!((nodeKey(b.x,b.z)===k&&b.progress<14)||(nodeKey(b.x+D[b.dir][0]*70,b.z+D[b.dir][1]*70)===k&&b.progress>stopLine(b))))junctions.delete(k);
  const approach=b=>b.progress>=stopLine(b)-.05;
  const list=cars.slice().sort((a,b)=>{
@@ -167,21 +172,21 @@ function driveTraffic(w,dt){
   let limit=70,reason="";
   const lane=lanes.get(key(b))||[];
   if(busBay(b)&&b.pendingStop&&b.progress<=STOP+.01&&!b.bay)b.bay="enter";
-  if(b.bay==="parked"&&b.dwell<=0&&b.progress>=STOP-.025&&!lane.some(q=>q!==b&&Math.abs(q.progress-b.progress)<gap(q,b)+3))b.bay="merge";
-  for(const q of lane)if(q!==b&&q.progress>b.progress&&!(q.bay==="parked"&&!b.bay)&&!(b.bay==="parked"&&!q.bay))limit=Math.min(limit,q.progress-gap(q,b));
+  if(b.bay==="parked"&&b.dwell<=0&&b.progress>=STOP-.025&&!lane.some(q=>q!==b&&q.bay!=="parked"&&Math.abs(q.progress-b.progress)<gap(q,b)))b.bay="merge";
+  for(const q of lane)if(q!==b&&(q.progress>b.progress||(q.progress===b.progress&&q.id<b.id))&&!(q.bay==="parked"&&!b.bay&&q.dwell>0)&&!(b.bay==="parked"&&!q.bay)){const stop=q.progress-gap(q,b);if(stop<limit){limit=stop;trafficDependencies.set(b.id,q.id);}}
   if(limit<70)reason="FOLLOWING";
   let owner=junctions.get(k),committed=owner===b;
   const stopSign=stopControlled(tx,tz);if(stopSign&&b.progress>=line-.05&&!committed)b.stopWait=(b.stopWait||0)+dt;else if(!committed)b.stopWait=0;
   const plan=plannedDir(b,tx,tz);
-  const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&!(v.bay==="parked"&&!b.bus)&&v.progress<14+gap(v,b)+3);
+  const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&!(v.bay==="parked"&&!b.bus)&&v.progress<14+gap(v,b)+1);
   const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
   if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
-   if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2)&&dir!==undefined){
+   if(!owner&&!phaseLocks.has(k)&&signal(tx,tz,w.time,b.dir)===b.dir%2&&(!stopSign||b.stopWait>=.5)&&dir!==undefined){
     junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
    }
   }
-  if(!committed){limit=Math.min(limit,line);if(!reason)reason=phaseLocks.has(k)?"PEDESTRIAN CROSSING":owner?"JUNCTION OCCUPIED":stopSign&&b.stopWait<.5?"STOP SIGN":!stopSign&&signal(tx,tz,w.time,b.dir)!==b.dir%2?"RED SIGNAL":"EXIT BLOCKED";}
+  if(!committed){limit=Math.min(limit,line);if(!reason)reason=phaseLocks.has(k)||phaseAt(tx,tz,w.time)>=2?"PEDESTRIAN CROSSING":owner?"JUNCTION OCCUPIED":stopSign&&b.stopWait<.5?"STOP SIGN":signal(tx,tz,w.time,b.dir)!==b.dir%2?"RED SIGNAL":"EXIT BLOCKED";if(owner&&owner!==b)trafficDependencies.set(b.id,owner.id);if(reason==="EXIT BLOCKED"){const blockers=plan.dirs.flatMap(d=>lanes.get(keyOf(tx,tz,d))||[]).filter(v=>v!==b&&v.progress<14+gap(v,b)+1);if(blockers.length)trafficDependencies.set(b.id,blockers.sort((a,c)=>a.progress-c.progress)[0].id);}}
   let speed=b.speed;
   if(b.bus&&b.pendingStop)speed=Math.min(speed,Math.max(0,(STOP-b.progress)/dt));
   if(b.bus&&b.dwell>0)reason="BUS STOP";
@@ -199,7 +204,7 @@ function driveTraffic(w,dt){
    }else reason="EXIT BLOCKED";
   }
   const moved=b.progress!==old||b.x===tx&&b.z===tz;
-  b.wait=moved?0:(b.wait||0)+dt;b.trafficStatus=moved?"MOVING":reason||"WAITING";
+  b.wait=moved?0:(b.wait||0)+dt;b.trafficStatus=moved?"MOVING":reason||"WAITING";if(moved)trafficDependencies.delete(b.id);
  }
 }
 const cellKey=(x,z)=>Math.floor(x/2)+","+Math.floor(z/2);
@@ -246,7 +251,7 @@ function moveCrowd(w,dt,api){
    const tolerance=c.route.length===1?0.08:p.precise||c.route[1]?.precise?0.18:p.cross?0.40:c.route[1]?.cross?0.58:2.15;
    if(len<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;continue;}
    if(p.cross&&!st.cross){
-    if(signal(p.cross.x,p.cross.z,w.time,0)===p.cross.axis||!crossClear(w,p.cross)){c.walkStatus="WAITING FOR CROSSWALK";break;}
+    if(!crossingAdmission(p.cross,w.time)||!crossClear(w,p.cross)){c.walkStatus="WAITING FOR CROSSWALK";break;}
     st.cross=p.cross;phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
    }
    const step=Math.min(.32,budget,len),ux=dx/len,uz=dz/len;
@@ -445,12 +450,8 @@ export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%
 export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.pendingStop=lines[b.line].stops[b.atStop].active;b.dwell=0;b.progress=0;}
 export function gap(a,b){return a?.bus||b?.bus?10.5:5.8}
 export function signal(x,z,time,dir){
- const key=nodeKey(x,z);if(phaseLocks.has(key))return -1;
- const priority=transitPriority.get(key);if(priority)return priority.dir%2;
- const arterialX=x===0||Math.abs(x)===210,arterialZ=z===0||Math.abs(z)===210;
- const cycle=((time+(x/70+z/70+6)*.85)%8+8)%8;
- const green=arterialX&&!arterialZ?5:arterialZ&&!arterialX?3:4;
- return cycle<green?0:1;
+ const key=nodeKey(x,z),phase=phaseAt(x,z,time);if(phaseLocks.has(key)||phase>=2)return -1;
+ return phase;
 }
 function legacyWalkTo(c,p){
  const gx=clamp(Math.round((c.x+210)/70),0,6)*70-210;
@@ -497,7 +498,7 @@ export function before(w,dt,api){
 export function after(w,dt,api){
  for(const b of w.cars){b.speed=b.driveSpeed;b.wait=b.oldWait;delete b.oldWait;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
- for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;if(b.bay==="enter")b.bay="parked";}
+ for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;b.stopDeadline=w.time+4;if(b.bay==="enter")b.bay="parked";}
  for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st){st.cross=null;st.path=null;st.key=null;c.crossing=null;}}
  for(const c of w.citizens){
  if(c.id===w.possessed){delete c.ride;continue}
@@ -523,7 +524,7 @@ export function after(w,dt,api){
  if(b.dwell<=0||b.atStop<0)continue;
  const p=lines[b.line].stops[b.atStop];
  for(const id of [...b.passengers]){const c=w.citizens[id],r=c?.ride;if(!r||r.bus!==b.id){b.passengers=b.passengers.filter(x=>x!==id);continue;}
- if(r.to===b.atStop||r.cancel){const exit=queueSlot(w,c,p);if(!exit){b.dwell=Math.max(b.dwell,.5);continue;}b.passengers=b.passengers.filter(x=>x!==id);c.x=exit.x;c.z=exit.z;if(!r.cancel&&r.legs&&r.leg+1<r.legs.length){
+ if(r.to===b.atStop||r.cancel){const exit=queueSlot(w,c,p);if(!exit){if(w.time<(b.stopDeadline??w.time))b.dwell=Math.max(b.dwell,.5);continue;}b.passengers=b.passengers.filter(x=>x!==id);c.x=exit.x;c.z=exit.z;if(!r.cancel&&r.legs&&r.leg+1<r.legs.length){
  Object.assign(r,r.legs[++r.leg],{phase:"approach",since:w.time,bus:null,queue:null});r.queue=queueSlot(w,c,lines[r.line].stops[r.from]);if(r.queue){c.route=walkTo(c,r.queue);w.transit.transfers++;}else resume(w,c,api);
  }else{if(r.cancel)w.transit.rerouted=(w.transit.rerouted||0)+1;else w.transit.completed++;resume(w,c,api);}}}
  for(const c of w.citizens.filter(c=>c.ride?.mode!=="metro"&&c.ride?.phase==="waiting"&&c.ride.line===b.line&&c.ride.from===b.atStop).sort((a,b)=>a.ride.since-b.ride.since)){if(b.passengers.length>=capacity(b))break;const r=c.ride;
@@ -532,6 +533,7 @@ export function after(w,dt,api){
  }
  metroStep(w,dt,api);updateTrainMeshes(w);
  moveCrowd(w,dt,api);
+ let cycles=0;const seen=new Set();for(const id of trafficDependencies.keys()){let v=id;const path=new Set();while(trafficDependencies.has(v)&&!seen.has(v)){if(path.has(v)){cycles++;break;}path.add(v);v=trafficDependencies.get(v);}for(const q of path)seen.add(q);}w.transit.deadlockCycles=cycles;
 }
 export function networkMap(w){
  // Schematic based on the actual graph. Each shared route has its own colored track.
@@ -551,7 +553,7 @@ export function networkMap(w){
 }
 export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
- let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","STOP SIGN","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP","WAIT TO MERGE"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap(w);
+ let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","STOP SIGN","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP","WAIT TO MERGE"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><div class="stat"><span>WAIT-FOR CYCLES</span><b>'+(s.deadlockCycles||0)+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap(w);
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+served(l)+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.reduce((n,b)=>n+capacity(b),0)+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/'+capacity(b)+' · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
  html+='<h3>STREET INFRASTRUCTURE</h3><div class="stat"><span>UTILITY GRID</span><b>'+(w.blackout?"BLACKOUT":"ONLINE")+'</b></div>'+Object.entries(inventory).map(([name,n])=>'<div class="stat"><span>'+name.toUpperCase()+'</span><b>'+n+'</b></div>').join('');
  html+='<h3>UNDERGROUND METRO</h3><div class="stat"><span>STATIONS / TRAINS</span><b>'+metroStations.size+' / '+w.metro.trains.length+'</b></div><div class="stat"><span>WAITING</span><b>'+w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting").length+'</b></div><div class="stat"><span>ON BOARD</span><b>'+w.metro.trains.reduce((n,t)=>n+t.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS / COMPLETED</span><b>'+w.metro.boardings+' / '+w.metro.completed+'</b></div>';
