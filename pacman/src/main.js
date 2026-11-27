@@ -3,7 +3,7 @@ import * as Phaser from './bitmap-runtime.js?v=157';
 import {rows,engine,FRUIT_SITE} from './core.js?v=162';
 import {arcadeAudio as audio} from './arcade-audio.js?v=173';
 import {deathFrame,deathPixels,ghostBodyRow,ghostFrame,ghostMasks,DEATH_HOLD} from './fidelity.js?v=152';
-import {CONTROL_MODES,nextControl,controlVector,drawStick} from './touch-controls.js?v=144';
+import {CONTROL_MODES,nextControl,controlVector,drawStick} from './touch-controls.js?v=175';
 import {SETTINGS,normalizeSettings,scoreKey,settingText} from './settings.js?v=146';
 import {choosePad,createGInput,vibratePad} from './ginput.js?v=146';
 import {GHOST_NAMES,GHOST_COLORS,CUSTOM_COLORS,PUPIL_COLORS,normalizeGhost,ghostName,ghostColor,ghostScoreKey} from './ghost-mode.js?v=158';
@@ -110,7 +110,7 @@ function updateControlFeedback(){
  let dir=menuActive?null:touchDir??[...keyDirs.values()].at(-1)??gamepadDir;
  if(dir===null||!settings.feedback)delete pad.dataset.active;else pad.dataset.active=String(dir);
  let x=touchDir!==null?touchX:dir===null?0:[0,-1,0,1][dir],y=touchDir!==null?touchY:dir===null?0:[-1,0,1,0][dir];
- let k=[dir,Math.round(x*17),Math.round(y*14),settings.feedback].join(':');if(k!==lastVisual){lastVisual=k;drawStick(stickContext,x,y,settings.feedback?dir:null)}
+ let k=[dir,Math.round(x*14),Math.round(y*14),settings.feedback].join(':');if(k!==lastVisual){lastVisual=k;drawStick(stickContext,x,y,settings.feedback?dir:null)}
 }
 function clearTouch(){let previous=held;held=null;touchDir=null;touchX=touchY=0;if(previous){try{if(previous.el.hasPointerCapture?.(previous.id))previous.el.releasePointerCapture(previous.id)}catch{}}updateControlFeedback()}
 function syncTouch(){const mode=menuActive?'off':touchMode;document.body.dataset.touchMode=mode;$('movement-slot').hidden=mode==='off';pad.hidden=mode!=='pad';stick.hidden=mode!=='joystick';document.body.classList.toggle('touch-off',mode==='off');updateControlFeedback()}
@@ -159,5 +159,17 @@ $('settings-reset').onclick=()=>{settings=normalizeSettings({});write('maze-sett
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else $('fullscreen').textContent='Not supported'}catch{$('fullscreen').textContent='Unavailable'}};
 document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'Exit fullscreen':'Fullscreen';fit()});
 applySettings();
-function fit(){let d=window.devicePixelRatio||1,w=innerWidth,h=innerHeight,fp=firstPerson&&!menuActive,land=!menuActive&&w>h&&h<650;document.body.classList.toggle('land',land);let move=touchMode==='off'?0:Math.floor(Math.min(h-24,w*.26,{small:170,normal:220,large:265}[settings.size])),actions=Math.floor(Math.min(140,Math.max(92,w*.16)));document.body.style.setProperty('--move-width',move+'px');document.body.style.setProperty('--action-width',actions+'px');let reserve=land?move+actions+(move?16:8):0,maxW=menuActive?Math.min(w-12,448):land?w-reserve-12:Math.min(w-12,fp?960:680),maxH=menuActive?h-300:land?h-18:touchMode==='off'?h-140:h-({small:265,normal:305,large:349}[settings.size]),bw=fp?FP_W:224,bh=fp?FP_H:288,ratio=Math.max(.15,Math.min(maxW*d/bw,maxH*d/bh)),scale=ratio>=1?Math.floor(ratio):ratio;let screen=$('screen');screen.style.width=bw*scale/d+'px';screen.style.height=bh*scale/d+'px';let canvas=$('board').querySelector('canvas');if(canvas){canvas.style.width='100%';canvas.style.height='100%';canvas.style.margin='0'}}
-new Phaser.Game({type:Phaser.CANVAS,parent:'board',width:224,height:288,pixelArt:true,roundPixels:true,antialias:false,backgroundColor:'#000',scene:Arcade,scale:{mode:Phaser.Scale.NONE},fps:{target:60},callbacks:{postBoot:()=>{fit();requestAnimationFrame(fit)}}});window.addEventListener('resize',fit);fit();labels();
+function fit(){
+ const vv=window.visualViewport,w=Math.max(1,Math.floor(vv?.width||innerWidth)),h=Math.max(1,Math.floor(vv?.height||innerHeight)),body=document.body,wide=w>h&&h<650,land=!menuActive&&wide,fp=firstPerson&&!menuActive;
+ body.classList.toggle('wide',wide);body.classList.toggle('land',land);
+ body.style.setProperty('--vw',w+'px');body.style.setProperty('--vh',h+'px');
+ const size={small:.82,normal:1,large:1.16}[settings.size]||1;
+ const stickSize=Math.max(64,Math.floor(Math.min(land?w*.245:w*.54,land?h*.75:h*.29,220)*size));
+ body.style.setProperty('--stick-size',stickSize+'px');body.style.setProperty('--rail-size',Math.round(Math.min(144,Math.max(92,w*.17)))+'px');
+ const stage=$('stage'),screen=$('screen'),bw=fp?FP_W:224,bh=fp?FP_H:288;
+ if(!stage.clientWidth||!stage.clientHeight)return;
+ const border=fp?2:0,scale=Math.max(.01,Math.min((stage.clientWidth-border)/bw,(stage.clientHeight-border)/bh));
+ screen.style.width=Math.floor(bw*scale+border)+'px';screen.style.height=Math.floor(bh*scale+border)+'px';
+ const canvas=$('board').querySelector('canvas');if(canvas){canvas.style.width='100%';canvas.style.height='100%';canvas.style.margin='0'}
+}
+new Phaser.Game({type:Phaser.CANVAS,parent:'board',width:224,height:288,pixelArt:true,roundPixels:true,antialias:false,backgroundColor:'#000',scene:Arcade,scale:{mode:Phaser.Scale.NONE},fps:{target:60},callbacks:{postBoot:()=>{fit();requestAnimationFrame(fit)}}});window.addEventListener('resize',fit);window.visualViewport?.addEventListener('resize',fit);if(typeof ResizeObserver!=='undefined'){const ro=new ResizeObserver(()=>fit());ro.observe($('stage'))}fit();labels();
