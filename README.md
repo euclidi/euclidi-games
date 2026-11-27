@@ -37,6 +37,8 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [Atlantis](atlantis/README.md) | Migration — source recovery, not published | [Spec](atlantis/SPEC.md) · [Roadmap](atlantis/ROADMAP.md) · [Status](atlantis/STATUS.md) |
 
+| [Dracula — The Vigil](draculas-crypt/README.md) | Migration candidate 0.12.0 — not catalog-listed | [Spec](draculas-crypt/SPEC.md) · [Roadmap](draculas-crypt/ROADMAP.md) · [Status](draculas-crypt/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
