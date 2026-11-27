@@ -127,6 +127,22 @@
       800
     ]
   },
+  "pull it out": {
+    "file": "covers/pull-it-out-gameplay.webp",
+    "kind": "gameplay",
+    "original_size": [
+      970,
+      748
+    ],
+    "route": "./pull-it-out/",
+    "selector": "#stage",
+    "sha256": "6a031163801bcea0bedaeaa36279a3e602b4aac59d3dac96d5d6993dfdd6180c",
+    "source": "9cd1ac32ac94d51ea4a3a50f90c5bebd7a18e69d",
+    "viewport": [
+      1280,
+      800
+    ]
+  },
   "ricochet": {
     "file": "covers/ricochet-gameplay.webp",
     "kind": "gameplay",

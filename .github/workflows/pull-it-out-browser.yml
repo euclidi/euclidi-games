@@ -1,0 +1,30 @@
+name: Pull It Out validation
+on:
+  push:
+    branches: [main, pull-it-out-development]
+    paths: ['pull-it-out/**', '.github/workflows/pull-it-out-browser.yml']
+  pull_request:
+    paths: ['pull-it-out/**', '.github/workflows/pull-it-out-browser.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node pull-it-out/tests.mjs
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          python3 -m http.server 8765 > /tmp/pull-it-out-http.log 2>&1 &
+          node pull-it-out/browser-test.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pull-it-out-gameplay-captures
+          path: pull-it-out-*.png

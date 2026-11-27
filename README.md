@@ -43,6 +43,8 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [Innuendo Town](innuendo-town/README.md) | V0.5 — playtest build | [Spec](innuendo-town/SPEC.md) · [Roadmap](innuendo-town/ROADMAP.md) · [Status](innuendo-town/STATUS.md) |
 
+| [Pull It Out](pull-it-out/README.md) | V0.1.2 — browser-tested core loop | [Spec](pull-it-out/SPEC.md) · [Roadmap](pull-it-out/ROADMAP.md) · [Status](pull-it-out/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
