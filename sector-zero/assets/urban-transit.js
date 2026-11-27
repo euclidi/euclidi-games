@@ -72,9 +72,11 @@ function pedestrianPath(from,to){
  }
  push({x:to.x,z:to.z});return out;
 }
+function busBay(b){return b.bus&&roadRank(b.dir%2===0?b.x:b.z)===0;}
+function bayOffset(b,progress){if(!b.bay)return 0;return 2.7*Math.min(clamp((progress-14)/6,0,1),clamp((28-progress)/8,0,1));}
 function carRect(b,progress=b.progress){
- const d=D[b.dir],x=b.x+d[0]*progress+d[1]*CAR_LINE,z=b.z+d[1]*progress-d[0]*CAR_LINE;
- return {x,z,hx:d[0]?(b.bus?4.4:2.35):1.3,hz:d[1]?(b.bus?4.4:2.35):1.3};
+ const d=D[b.dir],offset=CAR_LINE+bayOffset(b,progress),x=b.x+d[0]*progress+d[1]*offset,z=b.z+d[1]*progress-d[0]*offset;
+ return {x,z,hx:d[0]?(b.bus?4.4:2.35):(b.bus?1.2:1.05),hz:d[1]?(b.bus?4.4:2.35):(b.bus?1.2:1.05)};
 }
 function intersects(p,r,pad=PERSON/2){return Math.abs(p.x-r.x)<r.hx+pad&&Math.abs(p.z-r.z)<r.hz+pad;}
 function crossClear(w,cross){
@@ -95,13 +97,15 @@ function driveTraffic(w,dt){
  const add=b=>{const k=key(b);if(!lanes.has(k))lanes.set(k,[]);lanes.get(k).push(b);};
  for(const b of cars)add(b);
  for(const [k,b] of junctions)if(!cars.includes(b)||!((nodeKey(b.x,b.z)===k&&b.progress<14)||(nodeKey(b.x+D[b.dir][0]*70,b.z+D[b.dir][1]*70)===k&&b.progress>stopLine(b))))junctions.delete(k);
- const list=cars.slice().sort((a,b)=>Number(!!b.junction)-Number(!!a.junction)||b.progress-a.progress||a.id-b.id);
+ const list=cars.slice().sort((a,b)=>Number(!!b.junction)-Number(!!a.junction)||b.progress-a.progress||(b.stopWait||0)-(a.stopWait||0)||a.id-b.id);
  for(const b of list){
   const old=b.progress, d=D[b.dir],tx=b.x+d[0]*70,tz=b.z+d[1]*70,k=nodeKey(tx,tz),origin=nodeKey(b.x,b.z),line=stopLine(b);
   const prev=junctions.get(origin);if(prev===b&&b.progress>=14){junctions.delete(origin);delete b.junction;}
   let limit=70,reason="";
   const lane=lanes.get(key(b))||[];
-  for(const q of lane)if(q!==b&&q.progress>b.progress)limit=Math.min(limit,q.progress-gap(q,b));
+  if(busBay(b)&&b.pendingStop&&b.progress<=STOP+.01&&!b.bay)b.bay="enter";
+  if(b.bay==="parked"&&b.dwell<=0&&b.progress>=STOP-.025&&!lane.some(q=>q!==b&&Math.abs(q.progress-b.progress)<gap(q,b)+3))b.bay="merge";
+  for(const q of lane)if(q!==b&&q.progress>b.progress&&!(q.bay==="parked"&&!b.bay)&&!(b.bay==="parked"&&!q.bay))limit=Math.min(limit,q.progress-gap(q,b));
   if(limit<70)reason="FOLLOWING";
   let owner=junctions.get(k),committed=owner===b;
   const stopSign=stopControlled(tx,tz);if(stopSign&&b.progress>=line-.05&&!committed)b.stopWait=(b.stopWait||0)+dt;else if(!committed)b.stopWait=0;
@@ -118,10 +122,11 @@ function driveTraffic(w,dt){
   let speed=b.speed;
   if(b.bus&&b.pendingStop)speed=Math.min(speed,Math.max(0,(STOP-b.progress)/dt));
   if(b.bus&&b.dwell>0)reason="BUS STOP";
+  if(b.bay==="parked"){speed=0;reason=b.dwell>0?"BUS STOP":"WAIT TO MERGE";}
   let next=Math.max(old,Math.min(limit,old+speed*dt));
   const now=carRect(b),to=carRect(b,next),sweep={x:(now.x+to.x)/2,z:(now.z+to.z)/2,hx:now.hx+Math.abs(now.x-to.x)/2,hz:now.hz+Math.abs(now.z-to.z)/2};
   for(const p of ped)if(intersects(p,sweep,.5)){const along=(p.x-now.x)*d[0]+(p.z-now.z)*d[1],half=b.bus?4.4:2.35;if(along>=-half){next=Math.min(next,Math.max(old,old+along-half-.65));reason="PEDESTRIAN AHEAD";}}
-  b.progress=next;
+  b.progress=next;if(b.bay==="merge"&&b.progress>=28)delete b.bay;
   if(next>=70-.0001&&committed){
    const dir=b.turnDir;
    if(dir!==undefined&&space(dir)&&clear(dir)){
@@ -144,7 +149,7 @@ function occupancy(w){
  return{add,remove,free};
 }
 function offRoad(x,z){return Math.abs(x-nearestGrid(x))>=roadHalf(nearestGrid(x))+.42&&Math.abs(z-nearestGrid(z))>=roadHalf(nearestGrid(z))+.42;}
-function inSolid(x,z){return [...solids,...streetSolids].some(o=>Math.abs(x-o.x)<o.w/2+.25&&Math.abs(z-o.z)<o.l/2+.25);}
+function inSolid(x,z){const hit=o=>Math.abs(x-o.x)<o.w/2+.25&&Math.abs(z-o.z)<o.l/2+.25;return solids.some(hit)||streetSolids.some(hit);}
 function destination(w,c){const r=c.ride;return r?.phase==="approach"?(r.queue||(r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from])):w.buildings[c.goal]?.door;}
 function moveCrowd(w,dt,api){
  const occ=occupancy(w),cars=w.cars.map(b=>carRect(b)),list=w.citizens.filter(c=>c.id!==w.possessed&&c.ride?.phase!=="waiting"&&c.ride?.phase!=="riding");
@@ -377,7 +382,7 @@ export function before(w,dt,api){
 export function after(w,dt,api){
  for(const b of w.cars){b.speed=b.driveSpeed;b.wait=b.oldWait;delete b.oldWait;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
- for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;}
+ for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;if(b.bay==="enter")b.bay="parked";}
  for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st)st.cross=null;}
  for(const c of w.citizens){
  if(c.id===w.possessed){delete c.ride;continue}
@@ -413,9 +418,9 @@ export function after(w,dt,api){
  metroStep(w,dt,api);
  moveCrowd(w,dt,api);
 }
-export function networkMap(){
+export function networkMap(w){
  // Schematic based on the actual graph. Each shared route has its own colored track.
- let html='<div style="position:relative;aspect-ratio:1;max-width:285px;margin:12px auto;background:#0d1412;border:1px solid #394c43" aria-label="Six bus routes across the seven by seven street network">';
+ let html='<div style="position:relative;aspect-ratio:1;max-width:285px;margin:12px auto;background:#0d1412;border:1px solid #394c43" aria-label="Bus and subway route network">';
  const p=(v)=>8+(v+210)/420*84;
  for(let j=0;j<7;j++){const v=8+j*14;html+='<i style="position:absolute;left:'+v+'%;top:8%;height:84%;width:1px;background:#415048"></i><i style="position:absolute;top:'+v+'%;left:8%;width:84%;height:1px;background:#415048"></i>';}
  for(let li=0;li<lines.length;li++){const l=lines[li],color="#"+l.color.toString(16).padStart(6,"0"),off=(li-2.5)*.78;
@@ -425,14 +430,16 @@ export function networkMap(){
  if(l.stops[i].active)html+='<i style="position:absolute;width:4px;height:4px;background:'+color+';left:calc('+(p(a.x)+off)+'% - 2px);top:calc('+(p(a.z)+off)+'% - 2px)"></i>';
  }}
  for(const l of metroLines){const a=l.stops[0],b=l.stops.at(-1),h=a.nz===b.nz;html+='<i style="position:absolute;left:'+p(a.nx)+'%;top:'+p(a.nz)+'%;width:'+(h?56:1.1)+'%;height:'+(h?1.1:56)+'%;background:'+l.color+';opacity:.95"></i>';for(const q of l.stops)html+='<i style="position:absolute;left:calc('+p(q.nx)+'% - 3px);top:calc('+p(q.nz)+'% - 3px);width:6px;height:6px;border:1px solid #111;background:'+l.color+';border-radius:50%"></i>';}
+ if(w?.metro)for(const t of w.metro.trains){const l=metroLines[t.line],a=l.stops[t.at],b=l.stops[t.at+t.dir]||a,ratio=t.remaining>0?clamp(1-t.remaining/2.65,0,1):0;html+='<i title="TRAIN '+t.id+'" style="position:absolute;left:calc('+p(a.nx+(b.nx-a.nx)*ratio)+'% - 3px);top:calc('+p(a.nz+(b.nz-a.nz)*ratio)+'% - 3px);width:6px;height:6px;transform:rotate(45deg);background:#fff3bd;border:1px solid #17221e"></i>';}
  return html+'</div>';
 }
 export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
- let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","STOP SIGN","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap();
+ let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","STOP SIGN","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP","WAIT TO MERGE"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap(w);
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+served(l)+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.reduce((n,b)=>n+capacity(b),0)+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/'+capacity(b)+' · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
  html+='<h3>STREET INFRASTRUCTURE</h3>'+Object.entries(inventory).map(([name,n])=>'<div class="stat"><span>'+name.toUpperCase()+'</span><b>'+n+'</b></div>').join('');
  html+='<h3>UNDERGROUND METRO</h3><div class="stat"><span>STATIONS / TRAINS</span><b>'+metroStations.size+' / '+w.metro.trains.length+'</b></div><div class="stat"><span>WAITING</span><b>'+w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting").length+'</b></div><div class="stat"><span>ON BOARD</span><b>'+w.metro.trains.reduce((n,t)=>n+t.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS / COMPLETED</span><b>'+w.metro.boardings+' / '+w.metro.completed+'</b></div>';
+ for(const t of w.metro.trains)html+='<div class="stat"><span>TRAIN '+(t.id+1)+' · '+(t.remaining>0?"IN TUNNEL":metroLines[t.line].stops[t.at].name.toUpperCase())+'</span><b>'+t.passengers.length+' / '+metroCapacity+'</b></div>';
  for(const l of metroLines){html+='<h3 style="color:'+l.color+'">'+l.name+'</h3><p>'+l.stops.map(p=>p.name).join(' · ')+'</p>';}
  return html+'<p>Local loops and limited-stop express services support one transfer. Riders compare estimated trip time with walking and queue in arrival order. Select a bus to locate it.</p>';
 }
@@ -456,7 +463,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
   const d=D[dir];streetLabels.push({text,x:x+d[0]*.058,y,z:z+d[1]*.058,w:w-.08,h:h-.08,dir,bg,fg});
  };
  const wire=(a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,length=Math.hypot(dx,dy,dz);const o=B(.034,.034,length,(a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2,m.wire);o.rotation.y=Math.atan2(dx,dz);o.rotation.x=-Math.atan2(dy,Math.hypot(dx,dz));o.rotation.order="YXZ";};
- const streetName=(v,axis)=>v===0?(axis===0?"CENTRAL AVE":"UNION BLVD"):Math.abs(v)===210?(v<0?"NORTH":"SOUTH")+" RING":(axis===0?"AV ":"ST ")+String(v/70+4).padStart(2,"0");
+ const streetName=(v,axis)=>v===0?(axis===0?"CENTRAL AVE":"UNION BLVD"):Math.abs(v)===210?(axis===0?(v<0?"WEST":"EAST"):(v<0?"NORTH":"SOUTH"))+" RING":(axis===0?"AV ":"ST ")+String(v/70+4).padStart(2,"0");
  const oriented=(axis,v,p,side,offset)=>axis===0?{x:v+side*offset,z:p}:{x:p,z:v+side*offset};
  function bench(axis,x,z){
   const h=axis===1;for(let j=0;j<4;j++)B(h?2.35:.12,.11,h?.12:2.35,x+(h?0:(j-1.5)*.14),.48,z+(h?(j-1.5)*.14:0),m.wood);
@@ -481,7 +488,11 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
    }
    const a=oriented(axis,v,p-12,side,curb);lamp(axis,a.x,a.z,side);
    const h=oriented(axis,v,p+13,-side,curb);hydrant(h.x,h.z);
-   if(local){const a=oriented(axis,v,p+1,side,roadHalf(v)+1.05);bench(axis,a.x,a.z);const b=oriented(axis,v,p+3.8,side,roadHalf(v)+1.05);bin(b.x,b.z);}
+   if(local){const a=oriented(axis,v,p+1,side,roadHalf(v)+1.05);bench(axis,a.x,a.z);const b=oriented(axis,v,p+3.8,side,roadHalf(v)+1.05);bin(b.x,b.z);
+    const rack=oriented(axis,v,p+8,side,roadHalf(v)+1.0);
+    for(const shift of [-.85,0,.85]){const x=rack.x+(axis===1?shift:0),z=rack.z+(axis===0?shift:0);for(const side of [-1,1])pole(x+(axis===0?side*.24:0),z+(axis===1?side*.24:0),.76,.045,m.rail);B(axis===0?.56:.09,.09,axis===1?.56:.09,x,.76,z,m.rail);}
+    footprint(rack.x,rack.z,axis===0?.62:2,axis===0?2:.62);count("bike racks");
+   }
    if((p+175)/70%2===0){const a=oriented(axis,v,p-5,-side,curb);cabinet(a.x,a.z);}
    const man=oriented(axis,v,p+4,1,1.05);C(.46,.46,.025,man.x,.046,man.z,m.iron,16);C(.37,.37,.019,man.x,.066,man.z,m.black,16);for(const k of [-.18,0,.18])B(.47,.016,.04,man.x,.081,man.z+k,m.iron);count("manholes");
    if(p===-105||p===105){const a=oriented(axis,v,p+17,-side,curb);pole(a.x,a.z,2.8);plate(roadRank(v)===0?"SPEED 35":local?"SPEED 20":"SPEED 25",a.x,2.5,a.z,1.05,.88,axis===0?0:1,m.white,"#d4d8cd","#202622");footprint(a.x,a.z,.18,.18);count("speed signs");}
@@ -504,6 +515,7 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
   }
  }
  for(let x=-210;x<=210;x+=70)for(let z=-210;z<=210;z+=70){
+  for(const a of [-1,1])for(const b of [-1,1])B(2.1,.07,2.1,x+a*8,.035,z+b*8,m.stone);
   const sx=x+(x===210?-1:1)*(roadHalf(x)+.4),sz=z+(z===210?-1:1)*11.6;
   pole(sx,sz,3.2);plate(streetName(x,0),sx,3.18,sz,2.1,.39,0,m.green,"#315b49");plate(streetName(z,1),sx,2.75,sz,2.1,.39,1,m.green,"#315b49");footprint(sx,sz,.2,.2);count("street name posts");
   if(stopControlled(x,z)){
@@ -513,7 +525,8 @@ function drawInfrastructure(parent,{box,cyl,merge,mat,group}){
    }
   }
   // Crossing request posts and bollards are placed on the curb, not the walking path.
-  if(!stopControlled(x,z)){const px=x+(x===210?-1:1)*(roadHalf(x)+.4),pz=z+(z===210?-1:1)*13.8;pole(px,pz,1.35,.06);B(.19,.24,.16,px,1.22,pz,m.yellow);B(.12,.12,.19,px,1.22,pz,m.black);footprint(px,pz,.2,.2);count("crossing posts");}
+  if(!stopControlled(x,z)){const px=x+(x===210?-1:1)*(roadHalf(x)+.4),pz=z+(z===210?-1:1)*13.8;pole(px,pz,1.35,.06);B(.19,.24,.16,px,1.22,pz,m.yellow);B(.12,.12,.19,px,1.22,pz,m.black);footprint(px,pz,.2,.2);count("crossing posts");
+  if((x+z)%140===0){const ax=x-(x===-210?-1:1)*(roadHalf(x)+.42),az=z+(z===210?-1:1)*17.6;pole(ax,az,2.9);plate("PED XING",ax,2.7,az,1.3,.8,0,m.yellow,"#d0b760","#292e2c");footprint(ax,az,.2,.2);count("pedestrian signs");}}
  }
  // Subway entrance stair shafts are placed in the open setback at block corners.
  for(const p of metroStations.values()){
@@ -583,6 +596,7 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
  const names=lines.filter(l=>l.stops.some(q=>q.active&&q.x===p.x&&q.z===p.z)).map(l=>l.name[0]).join(" ");const face=(p.dir+1)%4,normal=D[face];streetLabels.push({text:"BUS "+names,x:px+normal[0]*.08,y:3.05,z:pz+normal[1]*.08,w:.86,h:.64,dir:face,bg:"#334c50",fg:"#f2e9d3"});inventory["bus shelters"]=(inventory["bus shelters"]||0)+1;
  // Paint the stop zone along the curb rather than over the moving lane.
  box(parent,h?10:.25,.027,h?.25:10,p.x-d[1]*1.6,.048,p.z+d[0]*1.6,color);
+ if(roadRank(hRoad(p))===0){const xx=p.x-d[1]*(SIDE-5.2),zz=p.z+d[0]*(SIDE-5.2);box(parent,h?14:2.4,.019,h?2.4:14,xx,.028,zz,mat(0x4e5551));for(const k of [-6.8,6.8])box(parent,h?.18:2.4,.024,h?2.4:.18,xx+d[0]*k,.051,zz+d[1]*k,white);inventory["bus pullouts"]=(inventory["bus pullouts"]||0)+1;}
  }}
  merge(parent);for(const s of signalGroups.values())for(const phase of s.phases)merge(phase);updateSignals(420);
 }
@@ -730,5 +744,5 @@ export function drawBuses(cars,position,parent,{group,box,cyl,mat}){
  for(const z of [-2.7,2.65]){const wheel=cyl(m,.48,.48,.33,s*1.12,.5,z,rubber,12);wheel.rotation.z=Math.PI/2;}
  box(m,.55,.2,.08,s*.72,.98,4.12,lights);box(m,.45,.2,.08,s*.72,.98,-4.12,tail);}
  box(m,.07,1.55,1.1,1.19,1.42,2.45,window);parent.add(m);busMeshes.set(b.id,m);}
- const p=position(b);m.position.set(p.x,0,p.z);m.rotation.y=p.a;
+ const p=position(b),r=carRect(b);m.position.set(r.x,0,r.z);m.rotation.y=p.a;
  }}
