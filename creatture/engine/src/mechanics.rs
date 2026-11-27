@@ -19,10 +19,10 @@ fn solve_distance(a:&mut V,b:&mut V,w1:f64,w2:f64,rest:f64,compliance:f64,lambda
 fn volume(p:&[V;4])->f64{dot(sub(p[1],p[0]),cross(sub(p[2],p[0]),sub(p[3],p[0])))/6.}
 fn solve_volume(p:&mut [V;4],rest:f64,lambda:&mut f64){
  let u=sub(p[1],p[0]);let v=sub(p[2],p[0]);let w=sub(p[3],p[0]);
- let g1=mul(cross(v,w),1./6.);let g2=mul(cross(w,u),1./6.);let g3=mul(cross(u,v),1./6.);let g0=mul(add(add(g1,g2),g3),-1.);
- let g=[g0,g1,g2,g3];let alpha=0.0000001/(DT*DT);let sum=g.iter().map(|v|dot(*v,*v)).sum::<f64>()+alpha;
+ let scale=1./(6.*rest);let g1=mul(cross(v,w),scale);let g2=mul(cross(w,u),scale);let g3=mul(cross(u,v),scale);let g0=mul(add(add(g1,g2),g3),-1.);
+ let g=[g0,g1,g2,g3];let alpha=0.000001/(DT*DT);let sum=g.iter().map(|v|dot(*v,*v)).sum::<f64>()+alpha;
  if sum<1e-12{return;}
- let dl=(-(volume(p)-rest)-alpha* *lambda)/sum;*lambda+=dl;
+ let dl=(-(volume(p)/rest-1.)-alpha* *lambda)/sum;*lambda+=dl;
  for i in 0..4{p[i]=add(p[i],mul(g[i],dl));}
 }
 #[derive(Clone,Serialize,Deserialize,Debug,PartialEq)]

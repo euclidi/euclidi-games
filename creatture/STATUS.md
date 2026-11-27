@@ -21,3 +21,6 @@ Added stateful six-node bilateral chains with compliant axial and two-hop bend c
 
 ## 0.1.3 — authored puzzle routes and input
 Six JSON world packages now each specify three distinct priority branches with two outcomes each (36 authored rule-defined labels and descriptions, 12 marked secret). Added deterministic candidate route generation and a native reachability test for all 36 routes at seed 1731. This is not 36 individually modeled forms or 80 cinematic sequences. Culmination has a simple material color transition and cue, not production animation. Basic state hash, gamepad left/right+A input, free cultivation speed and reduced-motion toggle added; physical devices and accessibility remain unverified. Additional world-specific systems and actual art remain outstanding.
+
+## Numerical correction
+Run 45981408538: 10/11 native tests passed; tetrahedral volume preservation failed the 5% tolerance. Normalized the volume constraint and gradients by rest volume rather than weakening tolerance. An independent local numerical reproduction with the same 30% initial compression and 12 iterations gives V/V0 = 0.9999087577. The corrected Rust implementation must still pass CI. Active-chain contact and distance tests passed on the preceding revision.
