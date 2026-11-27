@@ -6,3 +6,6 @@ Professional arcade-console GUI; each campaign board gets a distinct original sy
 
 ## Art Direction Revision 2.0 — approved
 Miniature Worlds with Retro Pre-rendered CGI influence; pre-rendered 3D plus dynamic lighting; mixed roster, two starting companions and five earned by defeating campaign bosses. Remove every manual slow-motion input. Simplify menu flow, rebuild assets, reflective materials and environmental animation. Preserve modes, level soundtrack, bosses, physics and Fever. Blender-produced assets and full lighting fidelity remain required production goals; V0.4 uses an interim analytic precomputation renderer because Blender is unavailable.
+
+## Responsive presentation amendment
+Automatically select desktop, tablet, mobile portrait or mobile landscape presentation based on usable viewport, orientation and input capabilities; no user-agent assumptions or manual mode selection required. Maintain same gameplay world and input mapping when layout changes. Touch-first controls, safe-area padding, compact companion and HUD, preserve logical collision coordinates.
