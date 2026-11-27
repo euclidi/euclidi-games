@@ -1,0 +1,11 @@
+# Implementation and acceptance
+All work below is part of one continuous complete-scope development effort; these are dependencies, not user-facing approval gates.
+
+1. Import exact ROOFRUN 07 baseline; verify Git blob hash 69fdeae785a70b2a1442fdf4e4b3457806b11790 before changes. Keep an immutable reference. Establish browser smoke test and deterministic physics fixtures.
+2. Reproduce directional reports using default and orbited camera, keyboard, touch, standard and generic pads. Assert input vectors against projected camera right/forward. Test both walls, multiple approach angles, attachment, release, jump, reattachment cooldown, gap crossing and momentum. Validate obstacle and overhead contacts, stand clearance, ledge rejection, wall kick and landing roll. Preserve all current course segments.
+3. Compare existing custom motor with a pinned collision-library candidate; verify fixed-step stability, frame-rate independence, swept contact behavior and performance. Integrate only if it improves behavior. Build procedural body balance and contact-driven IK over a verified licensed articulated rig. Measure planted foot drift and reach error; inspect transitions, hands/feet, knee direction, toe-off and landing response. Test recovery from interruption.
+4. Upgrade character and urban environment with verified assets and materials. Remove coplanar geometry, check shadow stability and camera occlusion; benchmark desktop and mobile; ensure menu, touch overlay and camera fit.
+5. Integrate complete game flow: start, practice, all obstacles, scoring, checkpoints, finish, replay, pause, saved controls, controller reconnect and audio. Playtest full course both wall sides, repeat runs and reload. Test 30/60/120 Hz render conditions independently of 120 Hz simulation. Verify no startup/console errors, broken assets or input lock after focus loss.
+6. Commit tested build, capture real gameplay cover, register /roofrun/ in existing catalog, verify actual live Pages URL and catalog play link. Label any remaining limitations explicitly.
+
+Release requires actual browser launch and full traversal evidence, not just successful syntax checks or a commit. Device-specific tests that cannot be performed must remain unverified.
