@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.5.6.
+**Status:** Active — Git revision 1.5.7.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -18,7 +18,7 @@ The title menu opens first. Choose a ghost AI mode, sound and CRT preferences be
 
 ## Runtime
 
-Local 224×288 logical Canvas bitmap compositor with 448×576 backing raster, JS game logic, synthesized Web Audio, optional Vite packaging. No Phaser runtime or CDN needed for static play.
+Local 224×288 Canvas bitmap compositor, JS game logic, synthesized Web Audio, optional Vite packaging. No Phaser runtime or CDN needed for static play.
 
 Serve the repository with a local HTTP server from its root (for example `python3 -m http.server 8000`) and open `http://localhost:8000/pacman/`. Use the hosted build for normal play. CDN-dependent builds need network access; 3D builds need a supported graphics context. Do not open module-based games via file://.
 
@@ -34,6 +34,4 @@ No ROM or official recordings bundled; sprite, audio, timing and intermission fi
 
 Gamepad: browser Gamepad API, standard/legacy mappings, device slot, deadzone and optional supported vibration. D-pad/stick navigates title; A confirms, Start starts/pauses, Back/Select opens menu, B returns, LB/RB switches settings tabs. Legacy mapping is a fallback, not native Windows DirectInput or the GTA GInput plugin.
 
-CUSTOMIZE PAC: choose color, finish, eyes and accessory; animated four-direction preview, selectable cosmetic thumbnails, mouth-pose inspection and classic reset. Changes save locally and apply to the current or new game without modifying physics or scores.
 
-Cosmetic artwork uses 40×40 pixel sprites at 20 logical pixels; the classic 14-pixel body and collision rules are unchanged. Additional accessory silhouettes and detailed eye sprites use this finer grid.

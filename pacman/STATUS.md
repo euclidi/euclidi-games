@@ -2,11 +2,15 @@
 
 **Snapshot:** 2026-11-26, inspected repository commit [631fb3e](https://github.com/euclidi/euclidi-games/commit/631fb3e5474b2ecae65235d216a9c816af00fe17).
 
-**Lifecycle:** Active — Git revision 1.5.6.
+**Lifecycle:** Active — Git revision 1.5.7.
 
 ## Implemented / source-inspected
 
 28×31 maze, 240 pellets, four energizers, three ghost modes, bitmap runtime, death sequence, local high scores, mobile D-pad and synthesized effects.
+
+## Revision 1.5.7 — character customizer removed
+
+Removed the editor, all cosmetic assets and runtime state, menu navigation hooks, and custom sprite compositor scaling. Restored native 16×16 classic Pac-Man sprites and 224×288 backing raster. Existing cosmetic preferences are ignored; other settings and scores remain untouched. Historical revision records below describe removed features, not current functionality.
 
 ## Revision 1.5.6 — fitted original artwork
 
