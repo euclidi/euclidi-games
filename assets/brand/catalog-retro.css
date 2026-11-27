@@ -119,3 +119,8 @@ button,input,select,textarea {font-family:var(--ui-font);}
 .cover-title {overflow-wrap:anywhere;}
 .cover-top,.cover-bottom {line-height:1.3;}
 @media(max-width:550px){.top nav{justify-content:flex-start;gap:10px 16px;}.cover-title{font-size:clamp(20px,7cqw,32px);}}
+
+/* Genuine screenshot or approved box-art cover; never overlay decorative title text. */
+.cover[data-cover-kind] {padding:0;gap:0;display:block;background:var(--bg);}
+.cover[data-cover-kind]::before {display:none;}
+.cover[data-cover-kind] img {display:block;width:100%;height:100%;object-fit:contain;aspect-ratio:16/10;}
