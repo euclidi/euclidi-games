@@ -7,7 +7,7 @@ const congestion=new Map(),keyOf=(x,z,d)=>x+","+z+","+d;
 const SIDE=8,PERSON=.72,STOP=20,CAR_LINE=2.5;
 const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
-const phaseLocks=new Set();
+const phaseLocks=new Set(),junctions=new Map();
 const nodeKey=(x,z)=>x+","+z;
 const solids=[];
 const walkState=new WeakMap();
@@ -76,24 +76,58 @@ function carRect(b,progress=b.progress){
 function intersects(p,r,pad=PERSON/2){return Math.abs(p.x-r.x)<r.hx+pad&&Math.abs(p.z-r.z)<r.hz+pad;}
 function crossClear(w,cross){
  const a=cross.a,b=cross.b,x=(a.x+b.x)/2,z=(a.z+b.z)/2,hx=Math.abs(a.x-b.x)/2+.55,hz=Math.abs(a.z-b.z)/2+.55;
- return !w.cars.some(v=>{const r=carRect(v);return Math.abs(r.x-x)<r.hx+hx&&Math.abs(r.z-z)<r.hz+hz;});
+ return !junctions.has(nodeKey(cross.x,cross.z))&&!w.cars.some(v=>{const r=carRect(v);return Math.abs(r.x-x)<r.hx+hx&&Math.abs(r.z-z)<r.hz+hz;});
 }
-function avoidCar(b,w,dt){
- if(b.speed<=0)return;
- const d=D[b.dir],tx=b.x+d[0]*70,tz=b.z+d[1]*70;
- // Stop before the marked crossing, not at the middle of the intersection.
- const stop=70-SIDE-(b.bus?4.4:2.35)-1.2;
- const locked=phaseLocks.has(nodeKey(tx,tz));
- if((locked||signal(tx,tz,w.time+dt,b.dir)!==b.dir%2)&&b.progress<=stop+.02)b.speed=Math.min(b.speed,Math.max(0,(stop-b.progress)/dt));
- // A vehicle already past the stop line may clear the crosswalk, but cannot enter a locked junction.
- if(locked&&b.progress>stop+.02&&b.progress<70)b.speed=Math.min(b.speed,Math.max(0,(70-b.progress-.1)/dt));
- if(phaseLocks.has(nodeKey(b.x,b.z))&&b.progress<SIDE+5)b.speed=0;
- // Hold short of any pedestrian physically in the lane, including player-controlled citizens.
- const next=carRect(b,b.progress+b.speed*dt),now=carRect(b);
- const sweep={x:(now.x+next.x)/2,z:(now.z+next.z)/2,hx:now.hx+Math.abs(now.x-next.x)/2,hz:now.hz+Math.abs(now.z-next.z)/2};
- for(const c of w.citizens){if(!walking(c)||!intersects(c,sweep,.55))continue;
- const along=(c.x-now.x)*d[0]+(c.z-now.z)*d[1],half=b.bus?4.4:2.35;
- if(along>=-half)b.speed=Math.min(b.speed,Math.max(0,(along-half-.65)/dt));
+function stopLine(b){return 70-SIDE-(b.bus?4.4:2.35)-1.2;}
+function plannedDir(b,x,z){
+ const arrived=x===b.destX&&z===b.destZ;
+ const dest=arrived?(b.bus?nextNode(b):{x:-210+(b.id+b.trips*3+1)%7*70,z:-210+(b.id*3+b.trips+2)%7*70}):{x:b.destX,z:b.destZ};
+ const dirs=[0,1,2,3].filter(d=>Math.abs(x+D[d][0]*70)<=210&&Math.abs(z+D[d][1]*70)<=210&&(!b.bus||x+D[d][0]*70===dest.x&&z+D[d][1]*70===dest.z));
+ dirs.sort((a,c)=>carScore(x,z,a,dest.x,dest.z,b.dir)-carScore(x,z,c,dest.x,dest.z,b.dir));
+ return {dirs,dest,arrived};
+}
+function driveTraffic(w,dt){
+ const cars=w.cars,lanes=new Map(),ped=w.citizens.filter(walking);
+ const key=b=>keyOf(b.x,b.z,b.dir);
+ const add=b=>{const k=key(b);if(!lanes.has(k))lanes.set(k,[]);lanes.get(k).push(b);};
+ for(const b of cars)add(b);
+ for(const [k,b] of junctions)if(!cars.includes(b)||!((nodeKey(b.x,b.z)===k&&b.progress<14)||(nodeKey(b.x+D[b.dir][0]*70,b.z+D[b.dir][1]*70)===k&&b.progress>stopLine(b))))junctions.delete(k);
+ const list=cars.slice().sort((a,b)=>Number(!!b.junction)-Number(!!a.junction)||b.progress-a.progress||a.id-b.id);
+ for(const b of list){
+  const old=b.progress, d=D[b.dir],tx=b.x+d[0]*70,tz=b.z+d[1]*70,k=nodeKey(tx,tz),origin=nodeKey(b.x,b.z),line=stopLine(b);
+  const prev=junctions.get(origin);if(prev===b&&b.progress>=14){junctions.delete(origin);delete b.junction;}
+  let limit=70,reason="";
+  const lane=lanes.get(key(b))||[];
+  for(const q of lane)if(q!==b&&q.progress>b.progress)limit=Math.min(limit,q.progress-gap(q,b));
+  if(limit<70)reason="FOLLOWING";
+  let owner=junctions.get(k),committed=owner===b;
+  const plan=plannedDir(b,tx,tz);
+  const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&v.progress<20+(b.bus?3:0));
+  const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
+  if(!committed&&b.progress>=line-.05&&b.progress<70){
+   const dir=plan.dirs.find(d=>space(d)&&clear(d));
+   if(!owner&&!phaseLocks.has(k)&&signal(tx,tz,w.time,b.dir)===b.dir%2&&dir!==undefined){
+    junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
+   }
+  }
+  if(!committed){limit=Math.min(limit,line);if(!reason)reason=phaseLocks.has(k)?"PEDESTRIAN CROSSING":owner?"JUNCTION OCCUPIED":signal(tx,tz,w.time,b.dir)!==b.dir%2?"RED SIGNAL":"EXIT BLOCKED";}
+  let speed=b.speed;
+  if(b.bus&&b.pendingStop)speed=Math.min(speed,Math.max(0,(STOP-b.progress)/dt));
+  if(b.bus&&b.dwell>0)reason="BUS STOP";
+  let next=Math.max(old,Math.min(limit,old+speed*dt));
+  const now=carRect(b),to=carRect(b,next),sweep={x:(now.x+to.x)/2,z:(now.z+to.z)/2,hx:now.hx+Math.abs(now.x-to.x)/2,hz:now.hz+Math.abs(now.z-to.z)/2};
+  for(const p of ped)if(intersects(p,sweep,.5)){const along=(p.x-now.x)*d[0]+(p.z-now.z)*d[1],half=b.bus?4.4:2.35;if(along>=-half){next=Math.min(next,Math.max(old,old+along-half-.65));reason="PEDESTRIAN AHEAD";}}
+  b.progress=next;
+  if(next>=70-.0001&&committed){
+   const dir=b.turnDir;
+   if(dir!==undefined&&space(dir)&&clear(dir)){
+    lane.splice(lane.indexOf(b),1);Object.assign(b,{x:tx,z:tz,dir,progress:0});
+    if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus)arrive(b);}
+    add(b);delete b.turnDir;
+   }else reason="EXIT BLOCKED";
+  }
+  const moved=b.progress!==old||b.x===tx&&b.z===tz;
+  b.wait=moved?0:(b.wait||0)+dt;b.trafficStatus=moved?"MOVING":reason||"WAITING";
  }
 }
 const cellKey=(x,z)=>Math.floor(x/2)+","+Math.floor(z/2);
@@ -267,17 +301,18 @@ function resume(w,c,api){const r=c.ride;delete c.ride;c.transitGoal=c.goal;
 export function before(w,dt,api){
  prepare(w);
  currentWorld=w;phaseLocks.clear();
- for(const c of w.citizens){const st=walkState.get(c)||{};walkState.set(c,st);if(st.cross&&walking(c))phaseLocks.add(nodeKey(st.cross.x,st.cross.z));}
+ for(const c of w.citizens){const st=walkState.get(c)||{};walkState.set(c,st);if(st.cross&&walking(c)){if(offRoad(c.x,c.z)&&Math.hypot(c.x-st.cross.a.x,c.z-st.cross.a.z)<1.4)st.cross=null;else phaseLocks.add(nodeKey(st.cross.x,st.cross.z));}}
  for(const c of w.citizens)if(c.transitMigration){delete c.transitMigration;if(c.id!==w.possessed)resume(w,c,api);}
  congestion.clear();
  for(const b of w.cars){const key=keyOf(b.x,b.z,b.dir);congestion.set(key,(congestion.get(key)||0)+1);if(!b.bus)b.speed=roadSpeed(b.x,b.z,b.dir)*(w.rain?.77:1)*(.86+(b.id%5)*.07);}
  for(const b of w.cars)if(b.bus){b.dwell=Math.max(0,b.dwell-dt);b.speed=b.dwell>0?0:Math.min(lines[b.line].speed,roadSpeed(b.x,b.z,b.dir)+2)*(w.rain?.82:1);
  b.passengers=b.passengers.filter(id=>{const c=w.citizens[id];if(!c||id===w.possessed||c.ride?.bus!==b.id){if(c?.ride?.bus===b.id)delete c.ride;return false}return true;});}
- for(const b of w.cars){if(b.bus&&b.pendingStop)b.speed=Math.min(b.speed,Math.max(0,(STOP-b.progress)/dt));avoidCar(b,w,dt);}
+ for(const b of w.cars){b.driveSpeed=b.speed;b.speed=0;b.progress=Math.min(b.progress,69.99);}
  // Original simulation remains responsible for intent, economy and needs, not motion.
  for(const c of w.citizens){if(c.id===w.possessed)continue;const st=walkState.get(c);st.speed=c.speed;st.origin=c.inside;c.speed=0;if(c.ride?.phase==="waiting"||c.ride?.phase==="riding")c.route=[{x:c.x,z:c.z}];}
 }
 export function after(w,dt,api){
+ for(const b of w.cars){b.speed=b.driveSpeed;delete b.driveSpeed;}driveTraffic(w,dt);
  const buses=w.cars.filter(b=>b.bus);
  for(const b of buses)if(b.pendingStop&&b.progress>=STOP-.025){b.pendingStop=false;b.dwell=1.8;}
  for(const c of w.citizens){const st=walkState.get(c);if(st&&st.speed!==undefined){c.speed=st.speed;delete st.speed;if(st.origin>=0&&c.inside<0)st.departing=true;}if(c.id===w.possessed&&st)st.cross=null;}
