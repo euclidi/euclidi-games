@@ -1,4 +1,4 @@
-/* Catalog motion — OS default, explicit site override, mouse events independent of media capability. */
+/* Catalog motion — On by default, optional OS-aware Auto mode, mouse events independent of media capability. */
 (()=>{
  const preference=matchMedia('(prefers-reduced-motion: reduce)');
  const replay=document.getElementById('crt-replay'), mode=document.getElementById('motion-mode'), choice=document.getElementById('motion-choice'), status=document.getElementById('motion-status');
@@ -6,7 +6,9 @@
  const line=document.createElement('div');line.className='eg-crt-line';overlay.append(line);document.body.append(overlay);
  let generation=0;
  const key='euclidi.catalog.motion.v4';
- try{const saved=localStorage.getItem(key);if(['auto','on','off'].includes(saved))mode.value=saved;}catch{}
+ mode.value='on'; // Default applies even when the OS requests reduced motion.
+ let hasSavedPreference=false;
+ try{const saved=localStorage.getItem(key);if(['auto','on','off'].includes(saved)){mode.value=saved;hasSavedPreference=true;}}catch{}
  const enabled=()=>mode.value==='on'||(mode.value==='auto'&&!preference.matches);
  function stop(){generation++;overlay.classList.remove('is-playing');}
  function startup(){
@@ -21,10 +23,10 @@
    document.body.dataset.motionPreference=mode.value;
    replay.hidden=false;choice.hidden=false;status.hidden=false;
    replay.disabled=!on;replay.textContent='Replay CRT';
-   status.textContent=on?(mode.value==='on'?'On (manual)':'On (system)'):(mode.value==='off'?'Off (manual)':'Off (system)');
+   status.textContent=on?(mode.value==='on'?(hasSavedPreference?'On (manual)':'On (default)'):'On (system)'):(mode.value==='off'?'Off (manual)':'Off (system)');
    if(!on){stop();document.querySelectorAll('.is-tilted,.eg-hover,.eg-tap').forEach(e=>e.classList.remove('is-tilted','eg-hover','eg-tap'));}
  }
- mode.addEventListener('change',()=>{try{localStorage.setItem(key,mode.value);}catch{}sync();if(enabled())startup();});
+ mode.addEventListener('change',()=>{hasSavedPreference=true;try{localStorage.setItem(key,mode.value);}catch{}sync();if(enabled())startup();});
  replay.addEventListener('click',startup);
  if(preference.addEventListener)preference.addEventListener('change',sync);else preference.addListener(sync);
  sync();
