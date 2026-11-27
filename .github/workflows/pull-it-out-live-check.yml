@@ -1,0 +1,43 @@
+name: Pull It Out live route verification
+on:
+  push:
+    branches: [pull-it-out-development]
+    paths: ['.github/workflows/pull-it-out-live-check.yml']
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - name: Verify public catalog and tested release files
+        run: |
+          python3 - <<'PY'
+          import hashlib, time, urllib.request
+          from html.parser import HTMLParser
+          base='https://euclidi.github.io/euclidi-games/'
+          def fetch(path):
+              req=urllib.request.Request(base+path,headers={'User-Agent':'EuclidiGamesReleaseQA/1.0','Cache-Control':'no-cache'})
+              with urllib.request.urlopen(req,timeout=15) as r:
+                  assert r.status==200, (path,r.status)
+                  return r.read()
+          for attempt in range(15):
+              try:
+                  root=fetch('?qa=0.1.2')
+                  assert b'data-name="pull it out"' in root and b'href="./pull-it-out/" aria-label="Play Pull It Out"' in root
+                  page=fetch('pull-it-out/?qa=0.1.2')
+                  assert b'DEV 0.1.2' in page and b'game.mjs' in page
+                  for p,sha in [('pull-it-out/game.mjs','e593c5375e8f4ac0c7602362f4884e46ddcd0f80'),('pull-it-out/physics.mjs','3f0f76fe6eb9bcc60a37b61b1898c1fec7ca12e6')]:
+                      b=fetch(p)
+                      assert hashlib.sha1(('blob '+str(len(b))+'\0').encode()+b).hexdigest()==sha,p
+                  cover=fetch('covers/pull-it-out-gameplay.webp')
+                  assert hashlib.sha256(cover).hexdigest()=='6a031163801bcea0bedaeaa36279a3e602b4aac59d3dac96d5d6993dfdd6180c'
+                  for p in ['guacamole/vendor/three.module.min.js','guacamole/vendor/rapier.es.js','pull-it-out/style.css']:
+                      assert len(fetch(p))>100,p
+                  print('PASS: live catalog listing, game route, exact tested game modules, cover and engine assets.')
+                  break
+              except Exception as e:
+                  print('Attempt',attempt+1,repr(e),flush=True)
+                  if attempt==14: raise
+                  time.sleep(8)
+          PY
