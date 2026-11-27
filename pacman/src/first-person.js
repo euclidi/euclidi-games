@@ -19,8 +19,14 @@ export function visibleColumns(depth,rect,w=depth.length){let spans=[];let lo=Ma
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const shade=d=>Math.max(.16,1/(1+d*.12+d*d*.009));
 const frac=v=>v-Math.floor(v);
-// Shared world-space skid curves. The paired tracks stay on the path already travelled.
-export function skidPoints(mark){let a=ANGLE[mark.from],b=ANGLE[mark.to],out=[];for(let side of [-1,1])for(let i=0;i<9;i++){let t=i/8,back=.62*(1-t),turn=mark.to===(mark.from+2)%4?0:.12*t*t;out.push({x:mark.x-Math.cos(a)*back+Math.cos(b)*turn-Math.sin(a)*side*.115,y:mark.y-Math.sin(a)*back+Math.sin(b)*turn+Math.cos(a)*side*.115,t})}return out}
+// One centered, transient motion accent; never paired footprints or permanent floor decals.
+export const SKID_CUE_TICKS=14;
+export function skidCue(mark,frame){
+ const age=frame-mark.frame;if(age<0||age>=SKID_CUE_TICKS)return null;
+ const a=ANGLE[mark.from],dx=Math.cos(a),dy=Math.sin(a),reverse=mark.to===(mark.from+2)%4;
+ const fade=1-age/SKID_CUE_TICKS,length=reverse?.82:.68;
+ return {x0:mark.x-dx*length,y0:mark.y-dy*length,x1:mark.x-dx*.06,y1:mark.y-dy*.06,dx,dy,alpha:(reverse?.28:.21)*fade*fade};
+}
 export function rearThreat(run,rows,range=7){let s=run.s;if(s.ghostRole!==null||s.phase!=='play'||s.fright>0)return null;let p=s.player,[px,py]=run.position(p),a=ANGLE[p.d],fx=Math.cos(a),fy=Math.sin(a),best=null;
  for(let g of s.ghosts){if(g.state!=='normal')continue;let [gx,gy]=run.position(g),dx=gx-px,dy=gy-py;if(Math.abs(py-14)<.55&&Math.abs(gy-14)<.55)dx=((dx+42)%28)-14;let dist=Math.hypot(dx,dy);if(dist<.1||dist>range||(dx*fx+dy*fy)>-dist*.65)continue;
   let heading=ANGLE[g.d],toward=-(Math.cos(heading)*dx+Math.sin(heading)*dy)/dist;if(toward<.45)continue;
@@ -51,8 +57,7 @@ export function createFirstPerson(canvas,rows){
   if(reverse){for(let y=0;y<H;y++)for(let x=0;x<W/2;x++){let i=(y*W+x)*4,j=(y*W+W-1-x)*4;for(let k=0;k<3;k++){let v=pixels[i+k];pixels[i+k]=pixels[j+k];pixels[j+k]=v}}}ctx.putImageData(frame,ox,oy);
   const list=[],actor=s.ghostRole===null?s.player:s.ghosts[s.ghostRole];
   function place(x,y,z,height,width,img,kind='sprite'){for(let offset of [-28,0,28]){let q=projectPoint(camera,wrappedX(x)+offset,y,z,height,width,W,H);if(q&&q.depth<32&&q.x+q.w>0&&q.x<W&&q.y+q.h>0&&q.y<H)list.push({...q,img,kind})}}
-  // Decals are floor-aligned, use real world position and wall depth.
-  for(let mark of s.skids||[]){let fade=Math.max(0,1-(s.frame-mark.frame)/48);for(let pt of skidPoints(mark)){for(let off of [-28,0,28]){let q=projectPoint(camera,wrappedX(pt.x+.5)+off,pt.y+.5,.002,.01,.075,W,H);if(!q||q.depth>10)continue;let yy=q.y+q.h;if(yy<0||yy>=H)continue;ctx.globalAlpha=fade*.7;ctx.fillStyle='#090811';for(let x of visibleColumns(depth,q)){let xx=reverse?W-1-x:x;ctx.fillRect(ox+xx,oy+yy,1,Math.max(1,.045*focal/q.depth))}}}}ctx.globalAlpha=1;
+  // Accepted turns are conveyed by camera kick and sound, not persistent floor marks.
   for(let [k,v] of s.pellets){if(v==='o'&&view.blink&&(s.frame/12|0)%2!==0)continue;let large=v==='o';place(k%28+.5,(k/28|0)+.5,.035,large?.30:.12,large?.30:.12,view.texture(large?'power':'dot'))}
   if(s.fruit>0&&s.phase==='play')place(14,17.5,.03,.65,.65,view.texture('fruit'+Math.min(5,s.level-1)));
   if(s.phase!=='intermission'){let actors=[s.player,...s.ghosts];for(let i=0;i<actors.length;i++){let a=actors[i];if(a===actor||!view.actors[i]?.visible)continue;let [x,y]=run.position(a),key=view.actors[i].key;place(x+.5,y+.5,.04,1.02,1.02,view.texture(key),'actor')}}
