@@ -1,5 +1,5 @@
 # Roadmap
 Complete-first workflow; internal milestones are not approval gates.
-- Acquire and audit real salticid/ fly rigs and CC0 natural textures. Candidate: https://polyhaven.com/a/bark_brown_01 ; spider candidate https://sketchfab.com/3d-models/jumping-spider-ef6ba57c08ca495195d8737647f715b5 (license/rig unverified).
-- Implement contact-aware 3D locomotion, traction, coupled weight transfer, compliant silk, persistent custom threads, prey resistance and ecological variety.
-- Verify full play loop, mobile/desktop/controller, asset performance, browser runtime and deployment. Capture actual gameplay cover only after visual validation.
+- Asset acquisition: inspect and retarget [rigged jumping spider](https://vinish.dev/free-3d-models/spiders-and-scorpions), CC BY 4.0; inspect species/anatomy, bone names and weights, skinning and scale before replacing active IK. Compare [research specimen scan](https://zenodo.org/records/842844) after checking license and rig suitability. House fly asset loader added in 0.2; verify flight clip and orientation. [CC0 scanned bark](https://polyhaven.com/a/tree_bark_03) candidate; acquire maps and bake optimized local textures.
+- Evaluate Rapier rigid bodies/contact and joints against existing fixed-step controller. Implement full 3D traction, independent spring-damped leg contact, coupled weight transfer, tension and anchored thread network with persistence, prey resistance and ecological variety. Do not replace contact IK with canned walk clips.
+- Verify full play loop, mobile/desktop/controller, asset performance, browser runtime and actual Pages deployment. Capture real gameplay cover after validation. Vendor approved asset files and dependencies locally when possible.
