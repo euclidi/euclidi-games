@@ -4,6 +4,8 @@ const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.z-b.z);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const roadRank=v=>v===0||Math.abs(v)===210?0:Math.abs(v)===140?1:2;
 const congestion=new Map(),keyOf=(x,z,d)=>x+","+z+","+d;
+const closedEdges=new Set(),plazas=[];
+const edgeOpen=(x,z,dir)=>{const d=D[dir];return Math.abs(x+d[0]*70)<=210&&Math.abs(z+d[1]*70)<=210&&!closedEdges.has(keyOf(x,z,dir));};
 const SIDE=8,PERSON=.76,STOP=20,CAR_LINE=2.5;
 const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
@@ -142,7 +144,7 @@ function stopLine(b){return 70-SIDE-(b.bus?4.4:2.35)-1.2;}
 function plannedDir(b,x,z){
  const arrived=x===b.destX&&z===b.destZ;
  const dest=arrived?(b.bus?nextNode(b):{x:-210+(b.id+b.trips*3+1)%7*70,z:-210+(b.id*3+b.trips+2)%7*70}):{x:b.destX,z:b.destZ};
- const dirs=[0,1,2,3].filter(d=>Math.abs(x+D[d][0]*70)<=210&&Math.abs(z+D[d][1]*70)<=210&&(!b.bus||x+D[d][0]*70===dest.x&&z+D[d][1]*70===dest.z));
+ const dirs=[0,1,2,3].filter(d=>edgeOpen(x,z,d)&&(!b.bus||x+D[d][0]*70===dest.x&&z+D[d][1]*70===dest.z));
  dirs.sort((a,c)=>carScore(x,z,a,dest.x,dest.z,b.dir)-carScore(x,z,c,dest.x,dest.z,b.dir));
  return {dirs,dest,arrived};
 }
@@ -209,7 +211,7 @@ function occupancy(w){
  for(const c of w.citizens)if(walking(c)&&!walkState.get(c)?.departing)add(c);
  return{add,remove,free};
 }
-function offRoad(x,z){return Math.abs(x-nearestGrid(x))>=roadHalf(nearestGrid(x))+.42&&Math.abs(z-nearestGrid(z))>=roadHalf(nearestGrid(z))+.42;}
+function offRoad(x,z){return plazas.some(p=>Math.abs(x-p.x)<(p.dir===0?4.5:24)&&Math.abs(z-p.z)<(p.dir===0?24:4.5))||Math.abs(x-nearestGrid(x))>=roadHalf(nearestGrid(x))+.42&&Math.abs(z-nearestGrid(z))>=roadHalf(nearestGrid(z))+.42;}
 function inSolid(x,z){const hit=o=>Math.abs(x-o.x)<o.w/2+.25&&Math.abs(z-o.z)<o.l/2+.25;return solids.some(hit)||streetSolids.some(hit);}
 function destination(w,c){const r=c.ride;return r?.phase==="approach"?(r.queue||(r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from])):w.buildings[c.goal]?.door;}
 function moveCrowd(w,dt,api){
@@ -278,7 +280,7 @@ function distances(dx,dz){
  const key=dx+","+dz;if(potentials.has(key))return potentials.get(key);
  const cost=Array(49).fill(Infinity),done=new Set();cost[nodeIndex(dx,dz)]=0;
  for(let step=0;step<49;step++){let n=-1;for(let j=0;j<49;j++)if(!done.has(j)&&(n<0||cost[j]<cost[n]))n=j;if(n<0||!Number.isFinite(cost[n]))break;done.add(n);let x=n%7*70-210,z=Math.floor(n/7)*70-210;
- for(let d=0;d<4;d++){const a=x+D[d][0]*70,b=z+D[d][1]*70;if(Math.abs(a)>210||Math.abs(b)>210)continue;const j=nodeIndex(a,b);cost[j]=Math.min(cost[j],cost[n]+linkCost(a,b,d));}}
+ for(let d=0;d<4;d++){const a=x+D[d][0]*70,b=z+D[d][1]*70;if(!edgeOpen(x,z,d))continue;const j=nodeIndex(a,b);cost[j]=Math.min(cost[j],cost[n]+linkCost(a,b,d));}}
  potentials.set(key,cost);return cost;
 }
 export function carScore(x,z,dir,dx,dz,prev){const a=x+D[dir][0]*70,b=z+D[dir][1]*70;return distances(dx,dz)[nodeIndex(a,b)]+linkCost(x,z,dir)+(dir===(prev+2)%4?1.5:dir===prev?0:.17)+(congestion.get(keyOf(x,z,dir))||0)*.14;}
@@ -302,6 +304,39 @@ export const lines=[
 for(const l of lines){
  l.stops=l.nodes.map((p,i)=>{const d=D[direction(p,l.nodes[(i+1)%l.nodes.length])];return{x:p.x+d[0]*STOP+d[1]*SIDE,z:p.z+d[1]*STOP-d[0]*SIDE,dir:direction(p,l.nodes[(i+1)%l.nodes.length]),active:!l.express||i%2===0||p.x===0&&p.z===0}});
  l.speed=l.express?14:11;
+}
+// Convert selected non-transit local road links into connected public courtyards.
+ // Closures are paired in both directions and preserve the complete road graph.
+const transitEdges=new Set();
+for(const l of lines)for(let i=0;i<l.nodes.length;i++){
+ const a=l.nodes[i],b=l.nodes[(i+1)%l.nodes.length],d=direction(a,b);
+ transitEdges.add(keyOf(a.x,a.z,d));transitEdges.add(keyOf(b.x,b.z,(d+2)%4));
+}
+function connectedRoads(){
+ const todo=[{x:0,z:0}],seen=new Set(["0,0"]);
+ for(let i=0;i<todo.length;i++){const a=todo[i];for(let d=0;d<4;d++){if(!edgeOpen(a.x,a.z,d))continue;const b={x:a.x+D[d][0]*70,z:a.z+D[d][1]*70},k=nodeKey(b.x,b.z);if(!seen.has(k)){seen.add(k);todo.push(b);}}}
+ return seen.size===49;
+}
+for(const x of [-140,-70,0,70,140])for(const z of [-140,-70,0,70,140])for(const dir of [0,1]){
+ if(plazas.length>=8||roadRank(dir===0?x:z)!==2||!edgeOpen(x,z,dir)||transitEdges.has(keyOf(x,z,dir)))continue;
+ const d=D[dir],b={x:x+d[0]*70,z:z+d[1]*70};
+ if([0,1,2,3].filter(k=>edgeOpen(x,z,k)).length<3||[0,1,2,3].filter(k=>edgeOpen(b.x,b.z,k)).length<3)continue;
+ const aKey=keyOf(x,z,dir),bKey=keyOf(b.x,b.z,(dir+2)%4);
+ closedEdges.add(aKey);closedEdges.add(bKey);
+ if(!connectedRoads()){closedEdges.delete(aKey);closedEdges.delete(bKey);continue;}
+ plazas.push({x:x+d[0]*35,z:z+d[1]*35,dir});
+}
+function migrateStreetNetwork(w){
+ if(w.streetRevision===1)return;
+ for(const b of w.cars){if(edgeOpen(b.x,b.z,b.dir))continue;
+  if(b.bus)continue;const directions=[0,1,2,3].filter(d=>edgeOpen(b.x,b.z,d));
+  const dir=directions.find(d=>!w.cars.some(q=>q!==b&&q.x===b.x&&q.z===b.z&&q.dir===d&&q.progress<12));
+  if(dir!==undefined){b.dir=dir;b.progress=0;delete b.junction;delete b.turnDir;}
+  else { // Park a migrated car at a free position on a legal segment.
+   let placed=false;for(let x=-210;x<=210&&!placed;x+=70)for(let z=-210;z<=210&&!placed;z+=70)for(let d=0;d<4&&!placed;d++)if(edgeOpen(x,z,d))for(const progress of [15,32,49])if(!w.cars.some(q=>q!==b&&q.x===x&&q.z===z&&q.dir===d&&Math.abs(q.progress-progress)<12)){Object.assign(b,{x,z,dir:d,progress});delete b.junction;delete b.turnDir;placed=true;break;}
+  }
+ }
+ w.streetRevision=1;
 }
 const capacity=b=>b.line>=4?40:28;
 const served=l=>l.stops.filter(p=>p.active).length;
@@ -375,7 +410,7 @@ const variants={
 };
 export function prepare(w){
  initMetro(w);
- if(w.transit?.revision===3&&w.architectureRevision===3)return w;
+ if(w.transit?.revision===3&&w.architectureRevision===3){migrateStreetNetwork(w);return w;}
  // Use a rolling subtype counter per functional category, with a deterministic offset.
  const count={};
  for(const b of w.buildings){const v=variants[b.type]||[b.type];const i=count[b.type]||0;b.architecture=v[i%v.length];count[b.type]=i+1;}
@@ -389,7 +424,7 @@ export function prepare(w){
  const b=w.cars[w.cars.length-fleet+k],line=k%lines.length,l=lines[line],i=Math.floor(Math.floor(k/lines.length)*l.nodes.length/3),p=l.nodes[i],j=(i+1)%l.nodes.length;
  Object.assign(b,{bus:true,line,nextStop:j,x:p.x,z:p.z,dir:direction(p,l.nodes[j]),progress:16,destX:l.nodes[j].x,destZ:l.nodes[j].z,speed:l.speed,wait:0,dwell:0,atStop:-1,passengers:[],trips:0});
  }
- return w;
+ migrateStreetNetwork(w);return w;
 }
 export function nextNode(b){const l=lines[b.line];return l.nodes[(b.nextStop+1)%l.nodes.length]}
 export function arrive(b){b.atStop=b.nextStop;b.nextStop=(b.nextStop+1)%lines[b.line].nodes.length;b.pendingStop=lines[b.line].stops[b.atStop].active;b.dwell=0;b.progress=0;}
@@ -488,6 +523,7 @@ export function networkMap(w){
  let html='<div style="position:relative;aspect-ratio:1;max-width:285px;margin:12px auto;background:#0d1412;border:1px solid #394c43" aria-label="Bus and subway route network">';
  const p=(v)=>8+(v+210)/420*84;
  for(let j=0;j<7;j++){const v=8+j*14;html+='<i style="position:absolute;left:'+v+'%;top:8%;height:84%;width:1px;background:#415048"></i><i style="position:absolute;top:'+v+'%;left:8%;width:84%;height:1px;background:#415048"></i>';}
+ for(const q of plazas)html+='<i title="PEDESTRIAN PLAZA" style="position:absolute;left:'+ (p(q.x)-(q.dir===1?5.5:.75))+'%;top:'+(p(q.z)-(q.dir===0?5.5:.75))+'%;width:'+(q.dir===1?11:1.5)+'%;height:'+(q.dir===0?11:1.5)+'%;background:#82966c"></i>';
  for(let li=0;li<lines.length;li++){const l=lines[li],color="#"+l.color.toString(16).padStart(6,"0"),off=(li-2.5)*.78;
  for(let i=0;i<l.nodes.length;i++){const a=l.nodes[i],b=l.nodes[(i+1)%l.nodes.length],horizontal=a.z===b.z;
  const left=Math.min(p(a.x),p(b.x))+(horizontal?0:off),top=Math.min(p(a.z),p(b.z))+(horizontal?off:0);
@@ -692,6 +728,23 @@ export function drawRoads(parent,{box,cyl,merge,mat,group}){
 
  }}
  drawInfrastructure(parent,{box,cyl,merge,mat,group});
+ // Remove the appearance of through lanes with a raised paved surface and access barriers.
+ const pavers=mat(0x777b70),gravel=mat(0x64695d),planter=mat(0x555f54),foliage=mat(0x515c43);
+ for(const p of plazas){
+  const h=p.dir===1,B=(w,l,x,z,y,hh,m)=>box(parent,h?l:w,hh,h?w:l,p.x+(h?z:x),y,p.z+(h?x:z),m);
+  B(8.6,54,0,0,.12,.20,pavers);
+  for(let j=-24;j<=24;j+=3)B(8.5,.065,0,j,.226,.022,gravel);
+  for(const end of [-25,25])for(const x of [-3,-1.5,0,1.5,3]){
+   const xx=p.x+(h?end:x),zz=p.z+(h?x:end);
+   cyl(parent,.12,.16,.95,xx,.55,zz,steel,8);streetSolids.push({x:xx,z:zz,w:.36,l:.36});
+  }
+  for(const side of [-1,1])for(const j of [-15,0,15]){
+   const x=side*3.25,xx=p.x+(h?j:x),zz=p.z+(h?x:j);
+   B(1.6,2.7,x,j,.43,.62,planter);B(1.35,2.45,x,j,.82,.22,foliage);
+   streetSolids.push({x:xx,z:zz,w:h?2.7:1.6,l:h?1.6:2.7});
+  }
+ }
+ inventory["pedestrian plazas"]=plazas.length;
  const seen=new Set(),hRoad=p=>p.dir%2===0?nearestGrid(p.x):nearestGrid(p.z);
  for(let li=0;li<lines.length;li++){const l=lines[li],color=mat(l.color);for(const p of l.stops){const d=D[p.dir],key=p.x+","+p.z;
  if(!p.active||seen.has(key))continue;seen.add(key);
