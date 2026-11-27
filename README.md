@@ -41,6 +41,8 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [VOIDRUNNER](voidrunner/README.md) | Development v0.24.0 — Earth traversal migration | [Spec](voidrunner/SPEC.md) · [Roadmap](voidrunner/ROADMAP.md) · [Status](voidrunner/STATUS.md) |
 
+| [Innuendo Town](innuendo-town/README.md) | Development branch — not published; browser QA pending | [Spec](innuendo-town/SPEC.md) · [Roadmap](innuendo-town/ROADMAP.md) · [Status](innuendo-town/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
