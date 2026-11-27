@@ -1,32 +1,49 @@
-name: EXOHOSTILE asset vendor
+name: EXOHOSTILE asset preparation
 on:
-  workflow_dispatch:
   push:
+    branches: [exohostile-visual-overhaul]
     paths:
+      - 'exohostile/tools/**'
+      - 'exohostile/index.html'
       - '.github/workflows/exohostile-assets.yml'
-      - 'exohostile/vendor_assets.py'
+  workflow_dispatch:
 permissions:
   contents: write
 concurrency:
-  group: exohostile-assets
-  cancel-in-progress: false
+  group: exohostile-assets-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  vendor:
-    if: github.ref == 'refs/heads/main'
+  prepare:
+    if: github.ref == 'refs/heads/exohostile-visual-overhaul'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: '3.12'
-      - name: Download and verify CC0 source assets
-        run: python exohostile/vendor_assets.py
-      - name: Publish verified assets
+          node-version: '22'
+      - name: Validate and fetch authored assets
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add exohostile/assets
+          node --check exohostile/tools/prepare-assets.mjs
+          node --check exohostile/tools/smoke-test.mjs
+          node exohostile/tools/prepare-assets.mjs
+      - name: Browser smoke test
+        run: |
+          npm install --no-save --no-package-lock --prefix exohostile/tools playwright@1.56.1
+          exohostile/tools/node_modules/.bin/playwright install --with-deps chromium
+          python3 -m http.server 8765 > /tmp/exo-server.log 2>&1 &
+          node exohostile/tools/smoke-test.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exohostile-smoke
+          path: exohostile-smoke.png
+          if-no-files-found: ignore
+      - name: Commit validated local assets to development branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add exohostile/assets/
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Vendor verified EXOHOSTILE CC0 artwork"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          git commit -m "Vendor validated EXOHOSTILE CC0 assets"
+          git push origin HEAD:exohostile-visual-overhaul
