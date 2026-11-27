@@ -45,3 +45,6 @@ The previous audio/replay revision 08c7f1f passed 17 native tests, WASM/Vite com
 
 ## Catalog preview 0.1.8
 The art-enabled source commit 879c19f passed CI run 45984127384: native tests, Blender output, WASM compilation and browser tests, including a complete twelve-element puzzle. Static package commit 070922a preserves original compiled assets and source. This preview is eligible for catalog playtesting, not full Revision 3.0 acceptance. Public URL: https://euclidi.github.io/euclidi-games/creatture/?v=0.1.8 (deployment verification is separate). No approved original box art: use an actual gameplay capture. Full authored creature sculptures, 120+ developmental forms, 80+ cinematic sequences, world-specific full physiology, complete Cosserat and articulated mechanics, complete neural learning, professional animation, audio quality review, full dev tool suite, device benchmarks and physical-device input testing remain outstanding.
+
+## Public preview verification
+Pages deployment 46002309784 and live catalog launch/playthrough 46002309077 passed for 0.1.8. Project documentation index passed, but return-link audit found the existing EUCLIDI anchor lacked accessibility metadata in the build and archived source entry. Added explicit labeled data-catalog-return anchors; rerun audit. Production artwork and the full approved scope remain outstanding.
