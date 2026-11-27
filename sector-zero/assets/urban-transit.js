@@ -46,12 +46,12 @@ function cornerOptions(p){
  });
 }
 const trees=new Map(),cornerLoad=new Float32Array(196);let crowdEpoch=-1;
-function refreshCrowdRoutes(w){const epoch=Math.floor(w.time/5);if(epoch===crowdEpoch)return;crowdEpoch=epoch;trees.clear();cornerLoad.fill(0);for(const c of w.citizens){if(!walking(c))continue;const ix=nearIndex(c.x),iz=nearIndex(c.z),dx=coord[ix]-c.x,dz=coord[iz]-c.z;if(Math.hypot(dx,dz)<11)cornerLoad[iz*14+ix]++;}}
+function refreshCrowdRoutes(w){const epoch=Math.floor(w.time/2);if(epoch===crowdEpoch)return;crowdEpoch=epoch;trees.clear();cornerLoad.fill(0);for(const c of w.citizens){if(!walking(c))continue;const ix=nearIndex(c.x),iz=nearIndex(c.z),dx=coord[ix]-c.x,dz=coord[iz]-c.z;if(Math.hypot(dx,dz)<11)cornerLoad[iz*14+ix]++;}}
 function tree(goal){
  const target=goal.iz*14+goal.ix;if(trees.has(target))return trees.get(target);
  const n=196,cost=Array(n).fill(Infinity),next=Array(n).fill(-1),used=new Uint8Array(n);cost[target]=0;
  for(let j=0;j<n;j++){let v=-1;for(let i=0;i<n;i++)if(!used[i]&&(v<0||cost[i]<cost[v]))v=i;if(v<0)break;used[v]=1;const x=v%14,z=Math.floor(v/14);
- for(const [dx,dz] of D){const a=x+dx,b=z+dz;if(a<0||a>13||b<0||b>13)continue;const k=b*14+a,step=Math.abs(coord[x]-coord[a])+Math.abs(coord[z]-coord[b]);const c=cost[v]+step+(step===SIDE*2?9:0)+Math.min(36,cornerLoad[v]*1.6);if(c<cost[k]){cost[k]=c;next[k]=v;}}}
+ for(const [dx,dz] of D){const a=x+dx,b=z+dz;if(a<0||a>13||b<0||b>13)continue;const k=b*14+a,step=Math.abs(coord[x]-coord[a])+Math.abs(coord[z]-coord[b]);const c=cost[v]+step+(step===SIDE*2?9:0)+Math.min(130,cornerLoad[v]*4.2);if(c<cost[k]){cost[k]=c;next[k]=v;}}}
  const result={cost,next};trees.set(target,result);return result;
 }
 // Parcel-level visibility routing with clearance around actual building and fixture footprints.
@@ -105,6 +105,8 @@ function routeAroundParcels(from,route){
  return out;
 }
 function pedestrianPath(from,to){
+ if(parcel(from).key===parcel(to).key){const d=parcelData(parcel(from));if(d.inside(from)&&d.inside(to)){const r=localDetour(from,to);let p=from;if(r.every(q=>{const ok=d.clear(p,q);p=q;return ok;}))return r;}}
+
  let best=null;
  for(const a of cornerOptions(from))for(const b of cornerOptions(to)){const t=tree(b.corner),start=a.corner.iz*14+a.corner.ix,cost=a.cost+b.cost+t.cost[start];if(!best||cost<best.cost)best={a,b,t,start,cost};}
  const {a,b,t,start}=best,route=[a.projected,a.corner];let k=start;
@@ -114,7 +116,7 @@ function pedestrianPath(from,to){
  const push=(p,metadata)=>{if(dist(last,p)<.001)return;out.push({x:p.x,z:p.z,...(metadata?{cross:metadata}:{})});last=p;};
  for(const p of route){if(dist(prev,p)<.001)continue;
   const dx=p.x-prev.x,dz=p.z-prev.z,horizontal=Math.abs(dz)<.001,vertical=Math.abs(dx)<.001;
-  const cross=crossing(prev,p),lane=.62;
+  const cross=crossing(prev,p),lane=.48+((from.id??0)%3)*.13;
   const sidewalk=horizontal&&coord.some(v=>Math.abs(v-p.z)<.001)||vertical&&coord.some(v=>Math.abs(v-p.x)<.001);
   if(sidewalk&&Math.abs(dx)+Math.abs(dz)>2.5){
    const ox=vertical?Math.sign(dz)*lane:0,oz=horizontal?-Math.sign(dx)*lane:0;
@@ -154,7 +156,7 @@ function driveTraffic(w,dt){
  const list=cars.slice().sort((a,b)=>{
   if(key(a)===key(b))return b.progress-a.progress||a.id-b.id;
   return Number(!!b.junction)-Number(!!a.junction)||Number(approach(b))-Number(approach(a))||
-   (approach(a)&&approach(b)?(b.wait||0)-(a.wait||0):0)||b.progress-a.progress||a.id-b.id;
+   (approach(a)&&approach(b)?(b.wait||0)+(b.bus?12:0)-(a.wait||0)-(a.bus?12:0):0)||b.progress-a.progress||a.id-b.id;
  });
  for(const b of list){
   const old=b.progress, d=D[b.dir],tx=b.x+d[0]*70,tz=b.z+d[1]*70,k=nodeKey(tx,tz),origin=nodeKey(b.x,b.z),line=stopLine(b);
@@ -172,7 +174,7 @@ function driveTraffic(w,dt){
   const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
   if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
-   if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2)&&dir!==undefined){
+   if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2||b.bus&&b.wait>8)&&dir!==undefined){
     junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
    }
   }
@@ -223,7 +225,7 @@ function moveCrowd(w,dt,api){
   if(!c.route.length&&!st.cross&&c.inside>=0&&!st.departing){c.walkingNow=false;continue;}
   if(st.departing||c.inside>=0){const origin=st.origin>=0?st.origin:c.inside,door=w.buildings[origin]?.door;if(door){c.x=door.x;c.z=door.z;}if(!occ.free(c,c.x,c.z)||cars.some(r=>intersects(c,r,.45))){c.inside=origin;c.walkingNow=false;c.walkStatus="DOOR QUEUE";continue;}c.inside=-1;st.departing=false;st.path=null;occ.add(c);}
   const key=target.x+","+target.z;
-  if(st.key!==key||!st.path||!st.path.length||(!st.cross&&(st.stall||0)>6&&w.time-(st.replanAt||0)>12+c.id%11)){st.replanAt=w.time;
+  if(st.key!==key||!st.path||!st.path.length||(!st.cross&&(st.stall||0)>3&&w.time-(st.replanAt||0)>6+c.id%7)){st.replanAt=w.time;
    if(st.cross){const end=st.cross.b;c.route=[{x:end.x,z:end.z,cross:st.cross},...pedestrianPath(end,target)];}
    else c.route=pedestrianPath(c,target);
    st.path=c.route;st.key=key;
@@ -231,10 +233,10 @@ function moveCrowd(w,dt,api){
   let budget=Math.min(1.55,c.speed*dt),loops=0;c.walkStatus="";const oldX=c.x,oldZ=c.z;
   while(budget>.001&&c.route.length&&loops++<8){
    const p=c.route[0],dx=p.x-c.x,dz=p.z-c.z,len=Math.hypot(dx,dz);
-   const tolerance=c.route.length===1?0.08:p.precise||c.route[1]?.precise?0.18:p.cross?0.28:c.route[1]?.cross?0.35:1.55;
+   const tolerance=c.route.length===1?0.08:p.precise||c.route[1]?.precise?0.18:p.cross?0.40:c.route[1]?.cross?0.58:2.15;
    if(len<tolerance){c.route.shift();if(st.cross&&Math.hypot(c.x-st.cross.b.x,c.z-st.cross.b.z)<.35)st.cross=null;continue;}
    if(p.cross&&!st.cross){
-    if(signal(p.cross.x,p.cross.z,w.time,0)===p.cross.axis||!crossClear(w,p.cross)||!occ.free(c,p.x,p.z)){c.walkStatus="WAITING FOR CROSSWALK";break;}
+    if(signal(p.cross.x,p.cross.z,w.time,0)===p.cross.axis||!crossClear(w,p.cross)){c.walkStatus="WAITING FOR CROSSWALK";break;}
     st.cross=p.cross;phaseLocks.add(nodeKey(p.cross.x,p.cross.z));
    }
    const step=Math.min(.32,budget,len),ux=dx/len,uz=dz/len;
@@ -243,9 +245,9 @@ function moveCrowd(w,dt,api){
    let x=c.x+ux*step,z=c.z+uz*step;
    if(!can(x,z)){
     let found=false;
-    if(st.cross||offRoad(c.x,c.z))for(const [angle,side] of [[.6,1],[.6,-1],[1.1,1],[1.1,-1],[1.55,1],[1.55,-1]]){const xx=c.x+(ux*Math.cos(angle)+uz*Math.sin(angle)*side)*step,zz=c.z+(uz*Math.cos(angle)-ux*Math.sin(angle)*side)*step;
+    if(st.cross||offRoad(c.x,c.z))for(const [angle,side] of [[.6,1],[.6,-1],[1.1,1],[1.1,-1],[1.55,1],[1.55,-1],[1.9,1],[1.9,-1]]){const xx=c.x+(ux*Math.cos(angle)+uz*Math.sin(angle)*side)*step,zz=c.z+(uz*Math.cos(angle)-ux*Math.sin(angle)*side)*step;
      const permitted=st.cross?(st.cross.axis===0?Math.abs(zz-(nearestGrid(st.cross.a.z)+(st.cross.a.z<nearestGrid(st.cross.a.z)?-SIDE:SIDE)))<=.96:Math.abs(xx-(nearestGrid(st.cross.a.x)+(st.cross.a.x<nearestGrid(st.cross.a.x)?-SIDE:SIDE)))<=.96):offRoad(xx,zz);
-     if(permitted&&can(xx,zz)&&Math.hypot(xx-p.x,zz-p.z)<len+.06){x=xx;z=zz;found=true;break;}}
+     if(permitted&&can(xx,zz)&&Math.hypot(xx-p.x,zz-p.z)<len+.22){x=xx;z=zz;found=true;break;}}
     if(!found&&!st.cross&&offRoad(c.x,c.z)&&(st.stall||0)>2){
      for(const angle of [2.1,-2.1,2.7,-2.7,Math.PI]){const xx=c.x+(ux*Math.cos(angle)+uz*Math.sin(angle))*step,zz=c.z+(uz*Math.cos(angle)-ux*Math.sin(angle))*step;
       if(offRoad(xx,zz)&&can(xx,zz)){x=xx;z=zz;found=true;st.stall=1;break;}}
