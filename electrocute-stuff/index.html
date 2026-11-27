@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Electrocute Stuff — VoltageLab V4 — Asset-first physics preview</title><script src="./vendor/matter.min.js"></script><script src="./vendor/samples.js"></script></head><body style="margin:0;background:#0c1117"><div id="electrocute-stuff-app" class="es-app">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Electrocute Stuff — VoltageLab V3 — Development</title></head><body style="margin:0;background:#0c1117"><div id="electrocute-stuff-app" class="es-app">
   <style>
     #electrocute-stuff-app{--base:#10151b;--edge:#3a454f;--light:#dfe9ed;--muted:#8c9ba5;--yellow:#f8d05b;--cyan:#85eaff;--red:#e97062;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:linear-gradient(#1a222b,#10151c);color:var(--light);border:1px solid #34404b;border-radius:13px;padding:14px;max-width:1100px;margin:0 auto;box-shadow:0 14px 35px #0007;user-select:none;-webkit-user-select:none;box-sizing:border-box}
     #electrocute-stuff-app *{box-sizing:border-box}
@@ -53,7 +53,7 @@
     @media(max-width:640px){#electrocute-stuff-app .es-stage{height:380px}#electrocute-stuff-app .es-lab{grid-template-columns:repeat(3,minmax(0,1fr))}#electrocute-stuff-app .es-readout{grid-template-columns:repeat(2,minmax(0,1fr))}#electrocute-stuff-app .es-note{flex-direction:column;align-items:flex-start}#electrocute-stuff-app .es-tut{text-align:left}#electrocute-stuff-app .es-readout strong{font-size:15px}}
     #electrocute-stuff-app{border-radius:0;box-shadow:none;background:#141719;}#electrocute-stuff-app button:not(.es-zap),#electrocute-stuff-app .es-panel,#electrocute-stuff-app .es-stage,#electrocute-stuff-app .es-monitor,#electrocute-stuff-app .es-score{border-radius:0;box-shadow:none;}#electrocute-stuff-app button:not(.es-zap){background:#24292c;}#electrocute-stuff-app .es-zap{border-radius:0;background:#e7be58;box-shadow:none;}#electrocute-stuff-app .es-tabs button[aria-pressed=true]{background:#453a24;}
   </style>
-  <div class="es-head"><div><h2>ELECTROCUTE STUFF</h2><div class="es-sub">VOLTAGELAB V4 // MATERIAL COLLISIONS + CIRCUIT PHYSICS</div></div><div class="es-score"><small>SCORE</small><span id="es-score">000000</span></div></div>
+  <div class="es-head"><div><h2>ELECTROCUTE STUFF</h2><div class="es-sub">VOLTAGELAB V3 // THERMAL ZONES + CIRCUIT PHYSICS</div></div><div class="es-score"><small>SCORE</small><span id="es-score">000000</span></div></div>
   <div class="es-stage" id="es-stage">
     <canvas id="es-canvas" aria-label="Interactive electric test chamber. Drag red and blue metal probe tips onto conductive parts, then hold SHOCK. Optionally add water, ground return, or a capacitor pulse."></canvas>
     <div class="es-stage-top"><div class="es-monitor"><div class="k">SPECIMEN  /  <span id="es-index">01</span></div><div class="v" id="es-target">SODA CAN</div><div class="k" id="es-target-state">INTACT</div><div class="es-meter"><i id="es-health"></i></div></div><div class="es-monitor" style="text-align:right"><div class="k">CAPACITOR</div><div class="v" id="es-charge">100%</div><div class="k" id="es-connection">2 PROBES READY</div><div class="es-meter" style="margin-left:auto"><i id="es-energy" style="background:#7adce7"></i></div></div></div>
@@ -109,12 +109,7 @@
     const local=(p)=>{let c=center();return{x:(p.x-c.x)/S,y:(p.y-c.y)/S}};
     const pos=(x,y)=>{let c=center();return{x:c.x+x*S,y:c.y+y*S}};
     function eventLog(message){$('es-event').textContent=message;}
-    const audioSamples={}; let crackleActive=false,arcActive=false,lastImpact=-Infinity;
-    function getSample(name){if(!window.VoltageLabSamples?.[name])return null;if(!audioSamples[name]){let a=new Audio(window.VoltageLabSamples[name]);a.preload='auto';audioSamples[name]=a;}return audioSamples[name]}
-    function sample(name,volume=.25){if(!soundEnabled)return false;const a=getSample(name);if(!a||a.error)return false;try{a.volume=volume;a.currentTime=0;a.play().catch(()=>{});return true}catch(e){return false}}
-    function syncSample(on,intensity){const a=getSample('crackle');if(!a||a.error)return false;on=!!(soundEnabled&&on);if(on!==crackleActive){crackleActive=on;if(on){a.loop=true;a.play().catch(()=>{crackleActive=false})}else a.pause()}if(on)a.volume=Math.min(.33,.06+intensity*.035);if(on&&!arcActive)sample('arc',.12);arcActive=on;return on&&!a.paused;}
     function hitSound(heavy=false){
-      if(heavy&&sample(idx===1||idx===5?'glass':'metal',.45))return;
       if(!soundEnabled)return;initAudio();if(!ac)return;
       try{ac.resume();let o=ac.createOscillator(),g=ac.createGain(),start=ac.currentTime;
         o.type=heavy?'sawtooth':'triangle';o.frequency.setValueAtTime(heavy?180:720,start);
@@ -130,47 +125,13 @@
     const tabButtons=[...tabs.querySelectorAll('button')];
     function initAudio(){if(ac)return;try{let C=window.AudioContext||window.webkitAudioContext;if(!C)return;ac=new C;let buffer=ac.createBuffer(1,ac.sampleRate*1.5,ac.sampleRate);let data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.58;let src=ac.createBufferSource();src.buffer=buffer;src.loop=true;let filter=ac.createBiquadFilter();filter.type='bandpass';filter.frequency.value=900;filter.Q.value=.7;soundGain=ac.createGain();soundGain.gain.value=0;src.connect(filter).connect(soundGain).connect(ac.destination);src.start();}catch(e){ac=null}}
     function resetProbes(){let x=W*.5,y=H*.78-95*S;let x0=idx===1?21:58,dy=idx===1?55:idx===6?25:7;probes[0].x=x-x0*S;probes[0].y=y+dy*S;probes[1].x=idx===1?x:x+x0*S;probes[1].y=y+(idx===1?82:dy)*S}
-    const rigid=window.Matter||null;
-    let debrisEngine=null,debrisBodies=new Map();
-    function resetDebrisWorld(){
-      if(!rigid)return;
-      if(debrisEngine){rigid.Composite.clear(debrisEngine.world,false,true);rigid.Engine.clear(debrisEngine);}
-      debrisBodies.clear();
-      debrisEngine=rigid.Engine.create({enableSleeping:true,positionIterations:8,velocityIterations:6});
-      debrisEngine.gravity.y=550*S/1000;
-      const floor=H*.78;
-      rigid.Composite.add(debrisEngine.world,[rigid.Bodies.rectangle(W/2,floor+25,W+100,50,{isStatic:true,friction:.65}),rigid.Bodies.rectangle(-20,H/2,40,H+100,{isStatic:true}),rigid.Bodies.rectangle(W+20,H/2,40,H+100,{isStatic:true})]);
-      rigid.Events.on(debrisEngine,'collisionStart',ev=>{
-        if(!soundEnabled||performance.now()-lastImpact<110)return;
-        for(const pair of ev.pairs){const a=pair.bodyA,b=pair.bodyB;if(!a.isStatic&&!b.isStatic)continue;
-          const speed=Math.hypot(a.velocity.x-b.velocity.x,a.velocity.y-b.velocity.y);if(speed<1.1)continue;
-          lastImpact=performance.now();sample(idx===1||idx===5?'glass':'metal',Math.min(.3,.035+speed*.045));break;}
-      });
-    }
-    function updateRigidDebris(dt){
-      if(!rigid||!debrisEngine)return false;
-      for(const f of fragments){
-        if(debrisBodies.has(f))continue;
-        const verts=[{x:-f.w*.65,y:-f.size*.5},{x:f.w*.7,y:-f.size*.4},{x:f.w*.15,y:f.size*.7},{x:-f.w*.4,y:f.size*.2}];
-        const offset=rigid.Vertices.centre(verts);
-        const c=Math.cos(f.rot),sn=Math.sin(f.rot);
-        const body=rigid.Bodies.fromVertices(f.x+c*offset.x-sn*offset.y,f.y+sn*offset.x+c*offset.y,[verts],{density:idx===1||idx===5?.0025:idx===2?.001:.002,friction:.55,restitution:idx===6?.5:.22,frictionAir:.008,slop:.02},true);
-        if(!body)continue;
-        rigid.Body.setAngle(body,f.rot);rigid.Body.setVelocity(body,{x:f.vx/60,y:f.vy/60});rigid.Body.setAngularVelocity(body,f.spin/60);
-        rigid.Composite.add(debrisEngine.world,body);debrisBodies.set(f,{body,offset});
-      }
-      rigid.Engine.update(debrisEngine,dt*1000);
-      for(const [f,{body,offset}] of debrisBodies){const c=Math.cos(body.angle),sn=Math.sin(body.angle);f.x=body.position.x-c*offset.x+sn*offset.y;f.y=body.position.y-sn*offset.x-c*offset.y;f.rot=body.angle;f.vx=body.velocity.x*60;f.vy=body.velocity.y*60;f.spin=body.angularVelocity*60;f.settled=body.isSleeping;}
-      return true;
-    }
-    function layout(){const oldW=W,oldH=H,oldS=S,oldC=center(),oldProbes=probes.map(p=>({x:(p.x-oldC.x)/oldS,y:(p.y-oldC.y)/oldS}));const r=stage.getBoundingClientRect();W=Math.max(1,r.width);H=Math.max(1,r.height);let d=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(W*d);canvas.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);S=clamp(Math.min(W/750,H/500)*1.1,.42,1.4);if(initialized){for(let i=0;i<2;i++)Object.assign(probes[i],pos(oldProbes[i].x,oldProbes[i].y));for(const f of fragments){f.x*=W/oldW;f.y*=H/oldH;f.size*=S/oldS;f.w*=S/oldS;f.vx*=S/oldS;f.vy*=S/oldS;}parts.length=0;}else{resetProbes();initialized=true;}resetDebrisWorld();}
+    function layout(){const oldW=W,oldH=H,oldS=S,oldC=center(),oldProbes=probes.map(p=>({x:(p.x-oldC.x)/oldS,y:(p.y-oldC.y)/oldS}));const r=stage.getBoundingClientRect();W=Math.max(1,r.width);H=Math.max(1,r.height);let d=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(W*d);canvas.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);S=clamp(Math.min(W/750,H/500)*1.1,.42,1.4);if(initialized){for(let i=0;i<2;i++)Object.assign(probes[i],pos(oldProbes[i].x,oldProbes[i].y));for(const f of fragments){f.x*=W/oldW;f.y*=H/oldH;f.size*=S/oldS;f.w*=S/oldS;f.vx*=S/oldS;f.vy*=S/oldS;}parts.length=0;}else{resetProbes();initialized=true;}}
     new ResizeObserver(layout).observe(stage);layout();
-    root.dataset.physics=rigid?'matter-0.20.0':'legacy-fallback';
-    function select(i){idx=i;initZones();setHot(false);keyHot=false;canvasHot=false;drag=-1;intervalMark=0;pulseCooldown=0;hp=kinds[i].hp;heat=0;temp=22;current=0;dead=false;wetted=false;damageStreak=0;filamentFailed=false;mechanicalFailed=false;stageFlags.clear();marks.length=0;fragments.length=0;resetDebrisWorld();parts.length=0;pulseTimer=0;energy=100;brownout=false;resetProbes();for(let j=0;j<tabButtons.length;j++)tabButtons[j].setAttribute('aria-pressed',i===j?'true':'false');$('es-index').textContent=String(i+1).padStart(2,'0');$('es-target').textContent=kinds[i].name;$('es-wet').textContent='ADD WATER';$('es-wet').setAttribute('aria-pressed','false');$('es-target-state').textContent='INTACT';eventLog(specs[i].kind+' — specimen loaded.');toast(kinds[i].name+' LOADED')}
+    function select(i){idx=i;initZones();setHot(false);keyHot=false;canvasHot=false;drag=-1;intervalMark=0;pulseCooldown=0;hp=kinds[i].hp;heat=0;temp=22;current=0;dead=false;wetted=false;damageStreak=0;filamentFailed=false;mechanicalFailed=false;stageFlags.clear();marks.length=0;fragments.length=0;parts.length=0;pulseTimer=0;energy=100;brownout=false;resetProbes();for(let j=0;j<tabButtons.length;j++)tabButtons[j].setAttribute('aria-pressed',i===j?'true':'false');$('es-index').textContent=String(i+1).padStart(2,'0');$('es-target').textContent=kinds[i].name;$('es-wet').textContent='ADD WATER';$('es-wet').setAttribute('aria-pressed','false');$('es-target-state').textContent='INTACT';eventLog(specs[i].kind+' — specimen loaded.');toast(kinds[i].name+' LOADED')}
     function toast(s){$('es-toast').textContent=s;toastT=1.8;$('es-toast').style.opacity='1'}
     $('es-replace').onclick=()=>select(idx);
     $('es-wet').onclick=()=>{wetted=!wetted;$('es-wet').textContent=wetted?'DRY OBJECT':'ADD WATER';$('es-wet').setAttribute('aria-pressed',String(wetted));burst(W*.5,H*.78-70*S,13,'water');eventLog(wetted?'Moisture increases surface conductivity.':'Surface dried; resistance restored.');toast(wetted?'SURFACE SOAKED':'WATER REMOVED')};
-    $('es-sound').onclick=()=>{soundEnabled=!soundEnabled;$('es-sound').textContent=soundEnabled?'SOUND ON':'SOUND OFF';$('es-sound').setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled){initAudio();ac?.resume()}else{for(const a of Object.values(audioSamples))a.pause();crackleActive=false;arcActive=false;}};
+    $('es-sound').onclick=()=>{soundEnabled=!soundEnabled;$('es-sound').textContent=soundEnabled?'SOUND ON':'SOUND OFF';$('es-sound').setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled){initAudio();ac?.resume()}};
     $('es-power').oninput=e=>{power=Number(e.target.value);$('es-volts').textContent=Math.round(500+power*115).toLocaleString()+' V'};$('es-power').dispatchEvent(new Event('input'));
     $('es-ground').onclick=()=>{grounded=!grounded;$('es-ground').setAttribute('aria-pressed',String(grounded));$('es-ground').textContent=grounded?'GROUND CLAMP ON':'GROUND CLAMP OFF';eventLog(grounded?'Ground return enabled: one attached probe can complete a path.':'Ground removed: two connected probes required.')};
     $('es-pulse').onclick=()=>{if(energy<32||pulseCooldown>0||dead){toast('CAPACITOR NOT READY');return}energy-=32;pulseTimer=.6;pulseCooldown=1.8;eventLog('Capacitor discharge — brief high-current pulse.');toast('CAPACITOR DISCHARGE');if(soundEnabled){initAudio();ac?.resume()}};
@@ -292,7 +253,7 @@
       if(pressed&&!closed&&!dead&&!filamentFailed&&Math.random()<dt*1.8)eventLog(contactCount===1?'Second probe is not connected; move it to the object.':'Open circuit — attach both probes or enable grounding.');
       if(dead&&temp>55&&Math.random()<dt*5)spawn(c.x+rnd(-48,48)*S,c.y-50*S,'smoke');
       for(let i=parts.length-1;i>=0;i--){let p=parts[i];p.life-=dt;if(p.life<=0){parts.splice(i,1);continue}p.x+=p.vx*dt;p.y+=p.vy*dt;p.rotation+=p.spin*dt;if(p.type==='smoke'){p.vy-=50*dt;p.vx*=.97;p.r+=dt*8*S}else{p.vy+=(p.type==='spark'?510:420)*dt;p.vx*=.992;if(p.y>H*.78-5*S){p.y=H*.78-5*S;p.vy*=-.32;p.vx*=.65}}}
-      if(!updateRigidDebris(dt)) { for(const f of fragments){if(f.settled)continue;f.vy+=550*S*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.rot+=f.spin*dt;f.vx*=.995;
+      for(const f of fragments){if(f.settled)continue;f.vy+=550*S*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.rot+=f.spin*dt;f.vx*=.995;
         if(f.y>H*.78-f.size/3){f.y=H*.78-f.size/3;f.vy*=-.28;f.vx*=.63;f.spin*=.73;if(Math.abs(f.vy)<19*S){f.vy=0;f.settled=true;}}
         if(f.x<7){f.x=7;f.vx=Math.abs(f.vx)*.3}if(f.x>W-7){f.x=W-7;f.vx=-Math.abs(f.vx)*.3}
       }
@@ -304,9 +265,8 @@
         if(rel< -4){const impulse=-rel*.62;a.vx-=impulse*nx;a.vy-=impulse*ny;b.vx+=impulse*nx;b.vy+=impulse*ny;a.settled=b.settled=false;}
         for(const f of [a,b])f.y=Math.min(f.y,H*.78-f.size/3);
       }
-      }
       if(t-lastSaved>2){lastSaved=t;saveProgress();}
-      const recordedCrackle=syncSample(raw>.1,raw);if(soundGain&&ac){let gain=soundEnabled&&raw>0&&!recordedCrackle?Math.min(.1,.025+raw*.009):0;soundGain.gain.setTargetAtTime(gain,ac.currentTime,.03)}
+      if(soundGain&&ac){let gain=soundEnabled&&raw>0?Math.min(.1,.025+raw*.009):0;soundGain.gain.setTargetAtTime(gain,ac.currentTime,.03)}
       uiClock+=dt;if(uiClock<1/30)return;uiClock=0;$('es-score').textContent=String(Math.floor(score)).padStart(6,'0');$('es-charge').textContent=Math.floor(energy)+'%';
       $('es-health').style.width=(100*hp/kinds[idx].hp)+'%';$('es-health').style.background=hp/kinds[idx].hp<.28?'#ec7363':'#e6c86b';
       $('es-energy').style.width=energy+'%';$('es-connection').textContent=contactCount+' PROBE'+(contactCount===1?'':'S')+' CONNECTED';
@@ -320,7 +280,7 @@
     }
     $('es-units').onclick=()=>{metric=!metric;$('es-units').textContent=metric?'°C / METRIC':'°F / IMPERIAL';saveProgress();};
     $('es-units').textContent=metric?'°C / METRIC':'°F / IMPERIAL';$('es-progress').textContent='OBJECTS DESTROYED '+cleared.size+' / '+kinds.length;
-    document.addEventListener('visibilitychange',()=>{if(document.hidden){setHot(false);keyHot=false;canvasHot=false;drag=-1;for(const a of Object.values(audioSamples))a.pause();crackleActive=false;arcActive=false;saveProgress();}});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){setHot(false);keyHot=false;canvasHot=false;drag=-1;saveProgress();}});
     function rr(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}}
     function ellipse(x,y,rx,ry,fill,stroke,width=1){ctx.beginPath();ctx.ellipse(x,y,Math.max(.01,rx),Math.max(.01,ry),0,0,Math.PI*2);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
     function line(x1,y1,x2,y2,color,width=1){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
