@@ -1,0 +1,21 @@
+# VOIDRUNNER — Recovered development specification
+Revision 1.0, 2026-11-27. Existing approved requirements recovered from the original requests and cumulative v5–v23 code; this document is a reconstruction, not a claim that a new architecture was approved. Preserve prior approvals. The current renderer remains in use for compatibility; major migration must be reviewed.
+
+## Experience
+First-person superhuman free traversal with optional body view. Momentum remains meaningful without automatic braking. Walk, run, launch, fly, move through deep space, enter atmospheres with fiery reentry, land, swim, dive to abyss and emerge, with seamless transitions. Multiple planets and moons, appropriate radius, gravity, atmosphere, cloud/ocean effects and geography. Earth, Moon, Mars and Jupiter appeared in v9's body data; Jupiter is gaseous, not a solid landing surface. Do not add an aircraft as default player. An optional rideable vehicle can be discovered naturally; do not reveal its location in public catalog copy.
+
+## Character and interaction
+Independent temperament, appearance, launch and power customization. Retain four launch profiles (power jump, levitation, meteor burst, running leap), four temperaments, four suit palettes and five powers: continuous optical beam with surface burn trails, cryokinesis with shallow ice and puddle effects, storm creation, kinetic impulses, and solar thermal counterpower. Distinct animation, actual local consequences, limits and recovery. Physical interactions should persist appropriately; a visual decal alone is not a complete destruction system.
+
+## Art and world
+Consistent bitmap/pixel aesthetic through LOD, recognizable real planetary textures and believable scale; coherent clouds, water, underwater scattering, lighting, rocks, terrain and site geometry. Avoid primitive-looking proxies as finished art. Author or source high-quality humanoid and environmental meshes/animation; weighted gait and swimming, smooth flight/land transitions, body-camera alignment, grounded contact. Low-key HUD, minimal chrome, sound responsive to medium and speed. No gratuitous blur, gradients or mismatched styles.
+
+## Technology and assets
+Current cumulative code: self-contained WebGL ray/sphere renderer with CPU Canvas2D fallback, nearest pixel sampling, JS vector physics now fixed 120 Hz, browser input/Gamepad API, Web Audio and localStorage. Preserve as runnable migration baseline, not final fidelity claim. Evaluate Three.js scene graph/GLTF skeletal assets and tiled planet rendering (including geocentric high precision and origin rebasing) for integrated terrain, character and contacts; compare Rapier for local surface/rigid-body interactions vs custom large-scale orbital dynamics. Material architecture change is not approved yet. Keep one coherent simulation across modes; use mature licensed assets and verify real devices before changing baseline. NASA Blue Marble atlas from earlier v9 embedded image, resized 2048x1024 to 512x256 WebP; earlier source identifies NASA, exact edition attribution requires traceability. Candidate maps: NASA CGI Moon Kit https://svs.gsfc.nasa.gov/4720 and USGS Viking mosaic https://www.usgs.gov/media/images/mars-viking-color-mosaic. Do not claim these latter maps are integrated yet. Original programmatic human/site overlays remain temporary scaffolding; no new external model incorporated.
+
+## Acceptance
+- Real-time continuous Earth/space/moon/planet transitions with body-specific physical scale and gravity; maintain velocity and sensible contacts without reliance on teleports.
+- All five powers operate in their valid environments with visible and physical effects, independent character options, discoverable optional vehicle.
+- Pixel-consistent terrain/planet detail, properly aligned real 3D or equivalent authored assets, no clipping, readable HUD, desktop/mobile landscape/portrait; keyboard, mouse, touch and remappable DirectInput tested on real hardware.
+- Save/reload character and world, pause/input cancellation, recover from failed assets/context loss.
+- No startup errors, measurable representative frame rate, repeatable browser smoke, inspect actual captures, document missing/partial/unverified features. Publish only an accurately labeled development build until all acceptance criteria are satisfied.

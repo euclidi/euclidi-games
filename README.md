@@ -39,6 +39,8 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [Dracula — The Vigil](draculas-crypt/README.md) | Migration candidate 0.12.0 — not catalog-listed | [Spec](draculas-crypt/SPEC.md) · [Roadmap](draculas-crypt/ROADMAP.md) · [Status](draculas-crypt/STATUS.md) |
 
+| [VOIDRUNNER](voidrunner/README.md) | Development v0.24.0 — Earth traversal migration | [Spec](voidrunner/SPEC.md) · [Roadmap](voidrunner/ROADMAP.md) · [Status](voidrunner/STATUS.md) |
+
 ## Development
 
 - [Repository rules for humans and agents](AGENTS.md)
