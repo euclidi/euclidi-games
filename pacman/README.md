@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.7.4.
+**Status:** Active — Git revision 1.7.5.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -14,7 +14,7 @@ Unofficial browser recreation of classic arcade maze gameplay, with selectable a
 
 ## Controls
 
-The title menu opens first. Choose a ghost AI mode, sound and CRT preferences before starting. Enter/Space or controller Start/A starts a game; Left/Right changes mode. In play, use arrows/WASD, swipe, D-pad or controller. Escape or Main Menu suspends the current session; Resume Game returns to it. Mode selection applies to new games. CONTROL cycles between a yellow-feedback D-pad, a four-way red ball-top joystick, and hidden touch controls. The setting is saved; keyboard, swipe and physical gamepad remain available. Mobile landscape places one selected movement control on the left, the game in the middle, and utility buttons on the right. CONTROL OFF removes the movement slot entirely. SETTINGS provides five compact tabs with 19 persistent gameplay, audio, control and display options, plus fullscreen and restore defaults. Starting lives, bonus threshold and ghost speed apply to new games; non-default rule sets have separate high scores.
+The title menu opens first. Choose a ghost AI mode, sound and CRT preferences before starting. Enter/Space or controller Start/A starts a game; Left/Right changes mode. In play, use arrows/WASD, swipe, D-pad or controller. Escape or Main Menu suspends the current session; Resume Game returns to it. Mode selection applies to new games. CONTROL cycles between a yellow-feedback D-pad, a four-way red ball-top joystick, and hidden touch controls. The setting is saved; keyboard, swipe and physical gamepad remain available. Mobile landscape places one selected movement control on the left, the game in the middle, and utility buttons on the right. CONTROL OFF removes the movement slot entirely. Revision 1.7.5 measures the actual remaining display area, tracks browser viewport changes, preserves the maze aspect ratio and uses a compact top-down bitmap ball-top joystick. SETTINGS provides five compact tabs with 19 persistent gameplay, audio, control and display options, plus fullscreen and restore defaults. Starting lives, bonus threshold and ghost speed apply to new games; non-default rule sets have separate high scores.
 
 ## Runtime
 
