@@ -15,7 +15,7 @@ Projects are actively developed and may contain unfinished features or experimen
 | [Dummy Lab — W1.7](dummy-lab/README.md) | Archived — predecessor to W1.8 | [Spec](dummy-lab/SPEC.md) · [Roadmap](dummy-lab/ROADMAP.md) · [Status](dummy-lab/STATUS.md) |
 | [Sanctuary](sanctuary/README.md) | Active — development 0.2 | [Spec](sanctuary/SPEC.md) · [Roadmap](sanctuary/ROADMAP.md) · [Status](sanctuary/STATUS.md) |
 | [Dojo X](dojo/README.md) | Active — Stage 1D physical-controller research; Stage 2 gated | [Spec](dojo/SPEC.md) · [Roadmap](dojo/ROADMAP.md) · [Status](dojo/STATUS.md) |
-| [PAC-MAN — Maze Arcade / 1980](pacman/README.md) | Active — Git revision 1.4.x | [Spec](pacman/SPEC.md) · [Roadmap](pacman/ROADMAP.md) · [Status](pacman/STATUS.md) |
+| [PAC-MAN — Maze Arcade / 1980](pacman/README.md) | Active — Git revision 1.7.1 | [Spec](pacman/SPEC.md) · [Roadmap](pacman/ROADMAP.md) · [Status](pacman/STATUS.md) |
 | [Backyard Astronaut](backyard-astronaut/README.md) | Active — unified V2 preview; Alpha 0.3 retained | [Spec](backyard-astronaut/SPEC.md) · [Roadmap](backyard-astronaut/ROADMAP.md) · [Status](backyard-astronaut/STATUS.md) |
 | [Backyard Astronaut — V2](backyard-astronaut/v2/README.md) | Active — experimental unified build | [Spec](backyard-astronaut/v2/SPEC.md) · [Roadmap](backyard-astronaut/v2/ROADMAP.md) · [Status](backyard-astronaut/v2/STATUS.md) |
 | [Brick Breaker](brick-breaker/README.md) | Active — browser 0.2 adaptation | [Spec](brick-breaker/SPEC.md) · [Roadmap](brick-breaker/ROADMAP.md) · [Status](brick-breaker/STATUS.md) |
@@ -28,6 +28,8 @@ Projects are actively developed and may contain unfinished features or experimen
 | [RICOCHET](ricochet/README.md) | Development 0.4.3 — adaptive layout, unverified | [Spec](ricochet/SPEC.md) · [Roadmap](ricochet/ROADMAP.md) · [Status](ricochet/STATUS.md) |
 
 | [Lunar Angler](lunar-angler/README.md) | Experimental v0.1 — WASM core, browser unverified | [Spec](lunar-angler/SPEC.md) · [Roadmap](lunar-angler/ROADMAP.md) · [Status](lunar-angler/STATUS.md) |
+
+| [Night Watch](night-watch/README.md) | Active — retro FPS v0.1.0 | [Spec](night-watch/SPEC.md) · [Roadmap](night-watch/ROADMAP.md) · [Status](night-watch/STATUS.md) |
 
 ## Development
 

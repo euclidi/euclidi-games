@@ -1,6 +1,6 @@
 import {MAP,W,H,solid,ray,GUNS} from './core.js';
 import {soldierArt,pickupArt,weaponArt} from './art.js';
-import {projectPoint,visibleColumns} from '../src/first-person.js';
+import {projectPoint,visibleColumns} from './projection.js';
 const WIDTH=480,HEIGHT=300,plane=Math.tan(41*Math.PI/180),focal=WIDTH/(2*plane),eye=.80,wallH=1.8;
 const frac=v=>v-Math.floor(v),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),shade=d=>Math.max(.16,1/(1+d*.10+d*d*.015));
 export function createRenderer(canvas){const c=canvas.getContext('2d',{alpha:false});c.imageSmoothingEnabled=false;let img=c.createImageData(WIDTH,HEIGHT),depth=new Float32Array(WIDTH),soldiers=Array.from({length:3},(_,i)=>Array.from({length:5},(_,p)=>soldierArt(i,p))),items=Object.fromEntries(['light','shells','med','armor','key','shellgun','repeater','exit'].map(t=>[t,pickupArt(t)])),guns=[0,1,2].map(weaponArt);

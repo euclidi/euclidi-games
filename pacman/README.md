@@ -2,7 +2,7 @@
 
 Unofficial browser recreation of classic arcade maze gameplay, with selectable authentic, advanced and hybrid ghost intelligence.
 
-**Status:** Active — Git revision 1.7.0.
+**Status:** Active — Git revision 1.7.1.
 
 [Open browser build](https://euclidi.github.io/euclidi-games/pacman/) · [Game catalog](https://euclidi.github.io/euclidi-games/)
 
@@ -45,7 +45,3 @@ Choose Blinky, Pinky, Inky, Clyde or create a named ghost with a classic bitmap 
 Use VIEW 2D/3D (V on keyboard, Y on standard gamepad during play) before or during a match. Both Pac-Man and Ghost Mode use the same simulation and a local 480×360 ray-cast renderer with depth-occluded original bitmap characters, perspective pellets, textured maze and optional locator map (M / RB). In first person, directions are relative: up forward, left/right turn, down reverse. Turns are buffered until legal and the camera follows the actual heading. Overhead controls remain absolute. No CDN, WebGL or extra assets required.
 
 First-person upgrade: higher-density beveled wall panels, perspective floor shading, color-coded ghost minimap, immediate accepted-turn skid decals and synthesized friction sound, rapid camera settle and a live reflected rear-view inset when a normal ghost approaches Pac-Man from behind in line of sight. Skid marks fade and do not affect game physics.
-
-## Night Watch — v1.7.0
-
-Separate local Wolfenstein-style raycast shooter at [night-watch/](night-watch/). One compact connected 19×15 compound, broad rooms, cover and looped corridors. Eight hooded sentries with patrol/alert-style idle and pursuit, readable attack windup, three fictional arcade weapons, reload, ammo, health, armor, keycard and extraction. Keyboard/mouse, touch and standard gamepad, pause, minimap, difficulty selector, original hand-rasterized pixel clusters. No changes to original maze simulation. Core checks and 3,600 simulation ticks passed in JS evaluation. Browser/device playtest, audio and final asset polish remain unverified. No claim of Doom engine or original licensed assets.

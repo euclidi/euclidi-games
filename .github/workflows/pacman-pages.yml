@@ -19,7 +19,7 @@ jobs:
           node-version: '22'
       - name: Test game logic
         run: |
-          node --test pacman/test.mjs dummy-lab/tests.mjs
+          node --test pacman/test.mjs night-watch/test.mjs dummy-lab/tests.mjs
           node dojo/tests.cjs
           diff dummy-lab/math.js dummy-lab-w18/math.js
       - name: Validate catalog entry paths
@@ -75,6 +75,7 @@ jobs:
             ['dojo','dojo/',async p=>{await p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Persistent archive ready'));await p.locator('#next').click();await p.locator('#play').click()}],
             ['dojo-legacy','dojo/legacy/dojo-ix.html',async p=>{await p.waitForFunction(()=>typeof window.__test==='function');const state=await p.evaluate(()=>window.__test());assert(state.fighters.every(f=>f.finite));assert(!state.err)}],
             ['pacman','pacman/',async p=>{await p.waitForFunction(()=>document.documentElement.dataset.gameReady==='true');await p.locator('#boot').waitFor({state:'hidden'});await p.locator('#start').click();await p.keyboard.press('ArrowLeft')}],
+            ['night-watch','night-watch/',async p=>{await p.waitForFunction(()=>document.documentElement.dataset.gameReady==='true');await p.locator('#play').click();await p.locator('#overlay').waitFor({state:'hidden'});await p.keyboard.press('Space');await p.locator('#pause').click();await p.locator('#overlay').waitFor({state:'visible'})}],
             ['backyard-astronaut','backyard-astronaut/',async p=>{await p.waitForFunction(()=>window.audit?.ready&&window.gameAudit);await p.locator('[data-mode=build]').click();assert.equal(await p.evaluate(()=>window.gameAudit.mode),'build');await p.locator('[data-mode=yard]').click();assert.equal(await p.evaluate(()=>window.gameAudit.mode),'yard')}]
           ];
           let failures=0;

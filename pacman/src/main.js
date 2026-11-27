@@ -71,14 +71,14 @@ function syncMenu(){
  document.documentElement.dataset.screen=menuActive?'menu':'game';
  document.body.classList.toggle('title-open',menuActive);
  $('resume').hidden=!(menuActive&&run&&run.s.phase!=='over');
- $('mode').hidden=!menuActive;$('pause').hidden=menuActive;$('menu').hidden=menuActive;$('settings').hidden=!menuActive;$('ghost-mode').hidden=!menuActive;$('night-watch').hidden=!menuActive;
+ $('mode').hidden=!menuActive;$('pause').hidden=menuActive;$('menu').hidden=menuActive;$('settings').hidden=!menuActive;$('ghost-mode').hidden=!menuActive;
  if(scene?.titleImage)scene.titleImage.setVisible(menuActive);if(menuActive)scene?.hunterMark?.setVisible(false);
  syncView();syncTouch();labels();fit();if(menuActive)markTitle();
 }
 function openMenu(){ghostOpen=false;syncGhostPanel();menuActive=true;titleFocus=0;settingsOpen=false;syncSettingsPanel();clearTouch();paused=!!(run&&run.s.phase!=='over');audio.stopAll();syncMenu()}
 function resumeGame(){if(!run||run.s.phase==='over')return;unlock();menuActive=false;paused=false;acc=0;syncMenu()}
 function cycleMode(delta=1){let modes=['authentic','advanced','hybrid'];selectedMode=modes[(modes.indexOf(selectedMode)+delta+3)%3];write('maze-mode',selectedMode);labels();if(scene&&menuActive)drawTitle(scene,menuTime)}
-function labels(){label($('night-watch'),'NIGHT WATCH',yellow);label($('view'),firstPerson?'VIEW 3D':'VIEW 2D',yellow);label($('view-map'),fpMap?'MAP ON':'MAP OFF');label($('ghost-mode'),'GHOST MODE',yellow);label($('settings'),'SETTINGS',yellow);label($('start'),menuActive?'START GAME':run&&run.s.phase!=='over'?'RESTART':'PLAY AGAIN',yellow);label($('resume'),'RESUME GAME',yellow);label($('menu'),'MAIN MENU');label($('pause'),paused?'RESUME':'PAUSE');label($('mode'),'MODE '+selectedMode.toUpperCase());label($('sound'),muted?'MUTED':'SOUND');label($('crt'),$('screen').classList.contains('crt')?'CRT ON':'CRT OFF');label($('touch-toggle'),touchMode==='pad'?'CONTROL PAD':touchMode==='joystick'?'CONTROL STICK':'CONTROL OFF',yellow)}
+function labels(){label($('view'),firstPerson?'VIEW 3D':'VIEW 2D',yellow);label($('view-map'),fpMap?'MAP ON':'MAP OFF');label($('ghost-mode'),'GHOST MODE',yellow);label($('settings'),'SETTINGS',yellow);label($('start'),menuActive?'START GAME':run&&run.s.phase!=='over'?'RESTART':'PLAY AGAIN',yellow);label($('resume'),'RESUME GAME',yellow);label($('menu'),'MAIN MENU');label($('pause'),paused?'RESUME':'PAUSE');label($('mode'),'MODE '+selectedMode.toUpperCase());label($('sound'),muted?'MUTED':'SOUND');label($('crt'),$('screen').classList.contains('crt')?'CRT ON':'CRT OFF');label($('touch-toggle'),touchMode==='pad'?'CONTROL PAD':touchMode==='joystick'?'CONTROL STICK':'CONTROL OFF',yellow)}
 function start(){launch(!menuActive&&activeGhost?activeGhost:null)}
 function launch(profile){if(!scene)return;ghostOpen=false;syncGhostPanel();activeGhost=profile?normalizeGhost(profile):null;if(activeGhost?.slot===4)refreshCustomGhost(activeGhost);unlock();audio.stopAll();ti=0;mode=selectedMode;activeRules={...settings};menuActive=false;run=engine(rows,mode,sound,12345,{...activeRules,...(activeGhost?{ghostSlot:activeGhost.slot===4?0:activeGhost.slot}:{})});scene.lastHud=null;fpRenderer?.reset();run.s.timer=settings.intro&&settings.music?Math.max(4.3,audio.duration('intro')+.15):1.8;paused=false;acc=0;scene?.rebuild();syncMenu();if(settings.intro&&settings.music)audio.play('intro',0,'music')}
 function direction(d){if(menuActive)return;unlock();if(run&&run.s.phase!=='over'){let a=run.s.ghostRole===null?run.s.player:run.s.ghosts[run.s.ghostRole];run.input(firstPerson?relativeDir(a.d,d):d)}}
@@ -120,7 +120,7 @@ syncTouch();
 function applySettings(){audio.configure(settings);document.body.dataset.controlSize=settings.size;document.body.dataset.scan=settings.scan;updateControlFeedback();fit()}
 function syncSettingsPanel(){document.body.classList.toggle('settings-open',settingsOpen);$('settings-panel').hidden=!settingsOpen}
 
-function titleButtons(){return ['start','resume','mode','sound','crt','touch-toggle','settings','ghost-mode','view','night-watch'].map($).filter(b=>!b.hidden)}
+function titleButtons(){return ['start','resume','mode','sound','crt','touch-toggle','settings','ghost-mode','view'].map($).filter(b=>!b.hidden)}
 function markTitle(){let all=titleButtons();titleFocus=Math.max(0,Math.min(titleFocus,all.length-1));all.forEach((b,i)=>{if(i===titleFocus)b.dataset.nav='true';else delete b.dataset.nav})}
 function navTitle(d){let all=titleButtons();titleFocus=(titleFocus+d+all.length)%all.length;markTitle()}
 function activateTitle(){titleButtons()[titleFocus]?.onclick?.()}
@@ -145,7 +145,7 @@ function renderGhost(){for(let i=0;i<5;i++)$('ghost-choice-'+i).setAttribute('ar
 function saveGhost(){ghostProfile=normalizeGhost(ghostProfile);write('maze-ghost-profile',JSON.stringify(ghostProfile));renderGhost()}
 function openGhost(){if(!menuActive)return;ghostOpen=true;ghostFocus=ghostProfile.slot;ghostMenuTime=0;syncGhostPanel();renderGhost()}
 function closeGhost(){ghostOpen=false;syncGhostPanel();fit();markTitle()}
-$('night-watch').onclick=()=>{window.location.href='./night-watch/'};$('ghost-mode').onclick=openGhost;$('ghost-back').onclick=closeGhost;$('ghost-start').onclick=()=>launch(ghostProfile);
+$('ghost-mode').onclick=openGhost;$('ghost-back').onclick=closeGhost;$('ghost-start').onclick=()=>launch(ghostProfile);
 for(let i=0;i<5;i++)$('ghost-choice-'+i).onclick=()=>{ghostProfile.slot=i;ghostFocus=i;saveGhost()};
 $('ghost-color').onclick=()=>{ghostProfile.color=CUSTOM_COLORS[(CUSTOM_COLORS.indexOf(ghostProfile.color)+1)%CUSTOM_COLORS.length];saveGhost()};
 $('ghost-pupil').onclick=()=>{ghostProfile.pupil=PUPIL_COLORS[(PUPIL_COLORS.indexOf(ghostProfile.pupil)+1)%PUPIL_COLORS.length];saveGhost()};
@@ -155,5 +155,5 @@ $('settings-reset').onclick=()=>{settings=normalizeSettings({});write('maze-sett
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else $('fullscreen').textContent='Not supported'}catch{$('fullscreen').textContent='Unavailable'}};
 document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'Exit fullscreen':'Fullscreen';fit()});
 applySettings();
-function fit(){let d=window.devicePixelRatio||1,w=innerWidth,h=innerHeight,fp=firstPerson&&!menuActive,land=!menuActive&&w>h&&h<650;document.body.classList.toggle('land',land);let reserve=land?(touchMode==='off'?140:Math.min(400,Math.max(230,w*.35))):0,maxW=menuActive?Math.min(w-12,448):land?w-reserve-24:Math.min(w-12,fp?960:680),maxH=menuActive?h-340:land?h-18:touchMode==='off'?h-140:h-({small:265,normal:305,large:349}[settings.size]),bw=fp?FP_W:224,bh=fp?FP_H:288,ratio=Math.max(.15,Math.min(maxW*d/bw,maxH*d/bh)),scale=ratio>=1?Math.floor(ratio):ratio;let screen=$('screen');screen.style.width=bw*scale/d+'px';screen.style.height=bh*scale/d+'px';let canvas=$('board').querySelector('canvas');if(canvas){canvas.style.width='100%';canvas.style.height='100%';canvas.style.margin='0'}}
+function fit(){let d=window.devicePixelRatio||1,w=innerWidth,h=innerHeight,fp=firstPerson&&!menuActive,land=!menuActive&&w>h&&h<650;document.body.classList.toggle('land',land);let reserve=land?(touchMode==='off'?140:Math.min(400,Math.max(230,w*.35))):0,maxW=menuActive?Math.min(w-12,448):land?w-reserve-24:Math.min(w-12,fp?960:680),maxH=menuActive?h-300:land?h-18:touchMode==='off'?h-140:h-({small:265,normal:305,large:349}[settings.size]),bw=fp?FP_W:224,bh=fp?FP_H:288,ratio=Math.max(.15,Math.min(maxW*d/bw,maxH*d/bh)),scale=ratio>=1?Math.floor(ratio):ratio;let screen=$('screen');screen.style.width=bw*scale/d+'px';screen.style.height=bh*scale/d+'px';let canvas=$('board').querySelector('canvas');if(canvas){canvas.style.width='100%';canvas.style.height='100%';canvas.style.margin='0'}}
 new Phaser.Game({type:Phaser.CANVAS,parent:'board',width:224,height:288,pixelArt:true,roundPixels:true,antialias:false,backgroundColor:'#000',scene:Arcade,scale:{mode:Phaser.Scale.NONE},fps:{target:60},callbacks:{postBoot:()=>{fit();requestAnimationFrame(fit)}}});window.addEventListener('resize',fit);fit();labels();
