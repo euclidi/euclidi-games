@@ -47,6 +47,20 @@ jobs:
               await p.waitForFunction(()=>window.sectorZeroAudit().render.frame>5);
               const start=await p.evaluate(()=>window.sectorZeroAudit());
               assert.equal(start.population,1000);assert.equal(start.vehicles,150);assert(start.render.drawCalls>0);
+              const width=await p.locator('#game').evaluate(e=>e.clientWidth);
+              await p.locator('#paneltoggle').click();await p.locator('#panel').waitFor({state:'hidden'});
+              if(!mobile)assert(await p.locator('#game').evaluate(e=>e.clientWidth)>width,'panel collapse did not enlarge viewport');
+              await p.locator('#paneltoggle').click();await p.locator('#panel').waitFor({state:'visible'});
+              await p.locator('[data-tab="city"]').click();
+              await p.locator('#search').fill('10');
+              await p.evaluate(()=>{window.__szTestSearch=document.querySelector('#search');});
+              await p.locator('[data-speed="5"]').click();await p.locator('#search').focus();
+              await p.waitForTimeout(1800);
+              assert(await p.evaluate(()=>document.activeElement===window.__szTestSearch&&document.querySelector('#search')===window.__szTestSearch&&window.__szTestSearch.value==='10'),'search identity/focus lost');
+              await p.locator('[data-speed="0"]').click();
+              await p.getByRole('button',{name:'CIVIC',exact:true}).click();await p.locator('#civic').waitFor({state:'visible'});
+              assert(await p.evaluate(()=>{const r=document.querySelector('#civic').getBoundingClientRect(),t=document.querySelector('#tools').getBoundingClientRect(),q=document.querySelector('#panel').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&(innerWidth<=820||r.left>=t.right&&r.right<=q.left);}), 'Civic modal overlaps workspace');
+              await p.locator('#civicClose').click();
               await p.screenshot({path:'sector-zero-audit/'+(mobile?'mobile':'desktop')+'-surface.png'});
               await p.getByRole('button',{name:'METRO WALK',exact:true}).click();
               await p.locator('#metro-choice').selectOption('5');await p.locator('#metro-enter').click();
@@ -59,8 +73,14 @@ jobs:
                 assert(Math.hypot(after.x-before.x,after.z-before.z)>.05,'Metro walking did not move camera');
               }
               await p.screenshot({path:'sector-zero-audit/'+(mobile?'mobile':'desktop')+'-metro.png'});
-              await p.locator('#metro-close').click();await p.locator('#lower').click();
+              await p.locator('#metro-close').click();
               await p.waitForFunction(()=>!window.sectorZeroAudit().underground&&!window.sectorZeroAudit().metro);
+              assert.equal(await p.locator('#lower').evaluate(e=>e.classList.contains('active')),false);
+              assert.equal(await p.locator('#panel').isVisible(),true);
+              await p.locator('#lower').click();await p.waitForFunction(()=>window.sectorZeroAudit().underground);
+              await p.locator('#lower').click();await p.waitForFunction(()=>!window.sectorZeroAudit().underground);
+              const surface=await p.evaluate(()=>window.sectorZeroAudit().camera);
+              assert(Math.abs(surface.zoom-start.camera.zoom)<.01,'surface zoom not restored');
               assert.equal(errors.length,0,errors.join('; '));
               console.log('PASS',mobile?'mobile emulation':'desktop',JSON.stringify(start.render));
             }finally{await p.close();}
