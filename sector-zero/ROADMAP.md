@@ -18,3 +18,11 @@ This is an ordered development backlog, not a declaration that milestones are co
 - [ ] Verify the actual GitHub Pages release and catalog links before labeling a build verified.
 
 [Specification](SPEC.md) · [Current status](STATUS.md)
+
+### Street infrastructure follow-up
+
+- [x] Populate curbside street furniture, utilities, signs and drainage; generate mounted lettering and collision footprints.
+- [x] Introduce four all-way-stop junctions, arterial bus pullouts, and two operational simulated metro corridors with nine surface entrances and a live schematic.
+- [ ] Verify visual fidelity and performance in the live browser, including signage orientations and nighttime fixtures.
+- [ ] Add walkable subway platforms, tunnels and trains; physical street-light illumination, electrical feeder simulation, water and drainage network behavior, manual crossing requests, and player collision coverage.
+- [ ] Resolve remaining congestion and pedestrian throughput regressions; validate full-day traffic and transit behavior continuously.
