@@ -1,0 +1,7 @@
+# TENPIN — scope revision 1
+
+Preserve the original swipe-only, large playable lane, variable power, release position, directional aim, curved hook, ball and pin impact, ten-frame scoring, three camera views and sound. No adjustment sliders. Mouse/touch first, keyboard and standard browser gamepad support. Render a coherent retro 3D bowling alley with layered pin profiles, dimensionally consistent lane, gutters, markings, rolling ball and grounded contact shadows. Model ball/pin mass, collisions, friction, angular momentum, pin tipping and deadwood clearance. Keep a persistent best score, scorecard and reset. Deploy via Euclidi Games GitHub Pages.
+
+Selected architecture: Three.js r180, cannon-es 0.20.0, 120 Hz fixed step, responsive reduced-resolution WebGL. The pin silhouette retains the previous cross-section profile as a lathed mesh; true sprite-stack rasterization is not retained. Lane oil/hook is an approximation rather than measured oil traction. UI direction: warm wood and muted green vintage alley, compact score strip, no sliders.
+
+Acceptance: complete game including tenth-frame bonuses, gutter and spare behavior, variable release speed and angle, mobile input, camera switching, no floating geometry, stable physics and verified catalog launch. Validate actual collisions and rendering before release.
