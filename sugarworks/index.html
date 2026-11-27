@@ -1,0 +1,593 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sugarworks — Maribel's Cottage v4.2 — Service Systems</title>
+<style>html,body{margin:0;min-height:100%;background:#17141a;color:#e6d6df}body{padding:16px 10px 30px;box-sizing:border-box}#sw2{margin:0 auto;min-height:600px}</style>
+<style>html,body{height:100%;overflow:auto}body{padding:0}#sw2.sw2{max-width:none;width:100%;min-height:100dvh;border:0;border-radius:0;display:flex;flex-direction:column}#sw2 .viewport{height:auto;min-height:360px;flex:1}#sw2 .sbar,#sw2 .foot{flex-shrink:0}#sw2 .job{max-width:270px}#sw2 .service-readout{margin-top:7px;font:10px ui-monospace,monospace;line-height:1.65;color:#e0c5c8}#sw2 button{border-radius:2px;min-height:36px}#sw2 .tools{border-radius:3px}#sw2 .hud{border-radius:3px;backdrop-filter:none} @media(max-width:640px){#sw2 .viewport{min-height:430px}#sw2 .actions{flex-wrap:wrap}#sw2 .actions button{min-height:40px}#sw2 .service-readout{font-size:9px}#sw2 .job{max-width:48%}#sw2 .tools{max-width:98%}#sw2 .tools button{min-width:0}#sw2 .touch{bottom:78px}}</style></head><body><div id="sw2" class="sw2">
+<style>
+.sw2{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#ded2d5;background:#211e25;border:1px solid #493b46;border-radius:9px;overflow:hidden;max-width:1100px;margin:auto;--bg:#211e25;--line:#4a3b46;--muted:#ae9ca9;--rose:#ad7890}.sw2 *{box-sizing:border-box}.sw2 button{font:inherit;color:#e8d7dc;background:#342a34;border:1px solid #594451;border-radius:5px;padding:7px 10px;font-size:11px;cursor:pointer}.sw2 button:hover{background:#49333f}.sw2 button.active{background:#80546d;border-color:#a4738d;color:#fff}.sw2 .sbar{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 13px;background:#29242b;border-bottom:1px solid #493b46;flex-wrap:wrap}.sw2 .brand{font-size:12px;font-weight:850;letter-spacing:1.2px;color:#dfb0be}.sw2 .subtitle{font-size:10px;color:#aa94a2;margin-top:2px}.sw2 .actions{display:flex;align-items:center;gap:5px}.sw2 .viewport{position:relative;height:500px;overflow:hidden;background:#574850;user-select:none;touch-action:none}.sw2 canvas{width:100%;height:100%;display:block;touch-action:none}.sw2 .hud{position:absolute;z-index:3;pointer-events:none;background:#24202bdc;border:1px solid #6b4c6070;border-radius:6px;backdrop-filter:blur(5px)}.sw2 .job{top:12px;left:12px;width:min(257px,48%);padding:11px 12px}.sw2 .caps{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:#d6a8b9;font-weight:850}.sw2 .job h3{font-size:14px;font-weight:780;margin:5px 0 5px;line-height:1.27}.sw2 .job p{font-size:11px;margin:0;color:#c1aebb;line-height:1.5}.sw2 .job .meter{height:3px;margin-top:10px;background:#5a4653;border-radius:3px;overflow:hidden}.sw2 .job .meter>div{height:100%;background:#d69aaa;width:0;transition:width .3s}.sw2 .pay{right:12px;top:12px;padding:10px 12px;min-width:90px;text-align:right}.sw2 .pay b{display:block;font-variant-numeric:tabular-nums;font-size:19px;margin-top:3px}.sw2 .npcstatus{right:12px;bottom:86px;padding:8px 10px;font-size:10px;color:#ead8df;max-width:42%;line-height:1.4}.sw2 .tip{position:absolute;bottom:87px;left:50%;transform:translateX(-50%);background:#24202bcc;color:#f3dce6;border-radius:5px;padding:6px 9px;pointer-events:none;text-align:center;font-size:10px;white-space:nowrap}.sw2 .cross{position:absolute;left:50%;top:50%;width:12px;height:12px;transform:translate(-50%,-50%);pointer-events:none;display:none}.sw2 .cross:before,.sw2 .cross:after{content:'';position:absolute;background:#ffe7ef}.sw2 .cross:before{width:1px;height:12px;left:5.5px}.sw2 .cross:after{height:1px;width:12px;top:5.5px}.sw2 .toast{position:absolute;z-index:8;top:17%;left:50%;transform:translateX(-50%);border-radius:5px;background:#2d2731ec;color:#ffe9ed;border:1px solid #805668;padding:9px 12px;font-size:12px;text-align:center;max-width:78%;pointer-events:none;opacity:0;transition:opacity .18s}.sw2 .toast.show{opacity:1}.sw2 .dialog{position:absolute;z-index:9;bottom:81px;right:12px;width:min(365px,calc(100% - 24px));background:#29232df2;border:1px solid #7e5d70;border-radius:6px;padding:14px;display:none;box-shadow:0 6px 22px #130f14a0;backdrop-filter:blur(7px)}.sw2 .dialog.open{display:block}.sw2 .dialog .who{font-size:10px;text-transform:uppercase;color:#dca7b8;font-weight:800;letter-spacing:1px}.sw2 .dialog .words{font-size:13px;white-space:pre-line;line-height:1.55;padding:8px 0 12px;color:#f2e3e9}.sw2 .dialog .opts{display:flex;gap:6px;flex-wrap:wrap}.sw2 .tools{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:#28232de8;border:1px solid #685063;border-radius:7px;padding:5px;z-index:4}.sw2 .tools button{display:flex;gap:6px;align-items:center;min-width:76px;padding:7px}.sw2 .tools .i{font-size:18px;line-height:1}.sw2 .tools .t{font-size:10px;text-align:left}.sw2 .tools small{display:block;font-size:9px;color:#c6aebd;margin-top:2px}.sw2 .touch{display:none;position:absolute;z-index:4;bottom:96px;left:12px;gap:8px;align-items:end}.sw2 .pad{width:104px;height:104px;border:1px solid #b1879f99;background:#392b3888;border-radius:50%;position:relative;touch-action:none}.sw2 .nub{position:absolute;width:31px;height:31px;border-radius:50%;background:#bd829e;left:36px;top:36px;box-shadow:0 0 0 1px #efd5e280;pointer-events:none}.sw2 .touch .use{height:39px}.sw2 .foot{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px;color:#ad9ca7;font-size:10px;background:#29242b;flex-wrap:wrap}.sw2 .foot b{color:#ddc3d0}.sw2 .viewctrl{display:flex;gap:4px}
+@media(max-width:640px){.sw2 .viewport{height:535px}.sw2 .sbar{padding:9px}.sw2 .brand{font-size:11px}.sw2 .job{top:8px;left:8px;padding:9px;width:55%}.sw2 .job h3{font-size:12px}.sw2 .job p{font-size:10px}.sw2 .pay{top:8px;right:8px;padding:8px;min-width:70px}.sw2 .pay b{font-size:16px}.sw2 .tools{bottom:7px;gap:1px;padding:3px}.sw2 .tools button{min-width:60px;padding:6px 4px;gap:4px}.sw2 .tools .i{font-size:15px}.sw2 .tools .t{font-size:9px}.sw2 .npcstatus{bottom:73px;right:7px;max-width:42%;font-size:9px}.sw2 .tip{bottom:74px;font-size:9px;white-space:normal;width:43%}.sw2 .touch{display:flex;bottom:81px;left:6px}.sw2 .dialog{bottom:71px}.sw2 .foot{font-size:9px}}
+</style>
+<div class="sbar"><div><div class="brand">SUGARWORKS <span style="color:#775d6a">/</span> COTTAGE CALL 07 · v4.2</div><div class="subtitle">Dusk shift · hand-finished praline cottage</div></div><div class="actions"><button id="sw-view" class="active">Scene view</button><button id="sw-walk">Walk inside</button><button id="sw-follow" class="active">Track Maribel</button><button id="sw-plan">Layout</button><button id="sw-face">Face detail</button><button id="sw-minus" title="Zoom out">−</button><button id="sw-plus" title="Zoom in">+</button><button id="sw-help">?</button><button id="sw-reset">New visit</button><a href="../" style="color:#d9c4ce;font-size:11px;padding:6px">Library</a></div></div>
+<div class="viewport" id="sw-stage"><div class="hud job"><div class="caps" id="sw-stepno">Work order 0 / 8</div><h3 id="sw-task">Speak with Maribel</h3><p id="sw-desc">Ask about the dripping sink and jelly-clogged bath.</p><div class="meter"><div id="sw-meter"></div></div><div class="service-readout" id="sw-hydraulics" aria-live="off"></div></div><div class="hud pay"><div class="caps">Earnings</div><b id="sw-cash">$0</b></div><div class="hud npcstatus" id="sw-activity">Maribel · walking and sitting</div><div class="tip" id="sw-hint">Drag to orbit · Tap fixtures or Maribel</div><div class="cross" id="sw-cross"></div><div class="toast" id="sw-toast"></div><div class="dialog" id="sw-dialog"><div class="who" id="sw-who">Maribel</div><div class="words" id="sw-words"></div><div class="opts" id="sw-options"></div></div><div class="tools"><button data-sw-tool="0" class="active"><span class="i">⌁</span><span class="t">Wrench<small>1</small></span></button><button data-sw-tool="1"><span class="i">◎</span><span class="t">Gasket<small>2</small></span></button><button data-sw-tool="2"><span class="i">◈</span><span class="t">Inspect<small>3</small></span></button><button data-sw-tool="3"><span class="i">↧</span><span class="t">Plunger<small>4</small></span></button></div><div class="touch" id="sw-touch"><div class="pad" id="sw-pad"><div class="nub" id="sw-nub"></div></div><button id="sw-use" class="use">Interact</button></div></div>
+<div class="foot"><span><b>Scene:</b> drag orbit · tap objects &nbsp; <b>Walk:</b> WASD / left stick · drag to look · E / A interact</span><span id="sw-state">Initializing…</span></div>
+
+<script>
+(()=>{
+'use strict';
+const root=document.getElementById('sw2');if(root.dataset.ready)return;root.dataset.ready='1';const $=s=>root.querySelector('#'+s),stage=$('sw-stage');
+const st={mode:'scene',follow:true,tool:0,started:false,water:true,opened:false,sealed:false,tested:false,bath:false,done:false,tea:false,pay:0,dialog:false,px:1.15,pz:3.60,yaw:0,pitch:0,az:.44,el:.66,zoom:13.7,keys:{},stickX:0,stickY:0,frame:0,t:0,walkAmount:0,hover:null,focus:false,gpHold:false,gpMode:false,visFails:false};
+const hydraulics={pressure:1,leak:.58,flow:0,jelly:1,testing:false,testTime:0};
+const saveKey='euclidi.sugarworks.visit.v1', saveFields=['started','water','opened','sealed','tested','bath','done','tea','pay','px','pz','yaw'];
+function saveVisit(){try{let v={schema:1,jelly:hydraulics.jelly};for(let k of saveFields)v[k]=st[k];localStorage.setItem(saveKey,JSON.stringify(v))}catch(e){}}
+try{let v=JSON.parse(localStorage.getItem(saveKey)||'null');if(v&&v.schema===1){for(let k of saveFields)if(typeof v[k]===typeof st[k]&&(typeof v[k]!=='number'||Number.isFinite(v[k])))st[k]=v[k];hydraulics.pressure=st.water?1:0;hydraulics.jelly=st.bath?0:Math.max(0,Math.min(1,Number.isFinite(v.jelly)?v.jelly:1));}}catch(e){}
+function hydraulic(h,dt,water,sealed){let conductance=sealed?.015:.58;h.pressure=Math.max(0,Math.min(1,h.pressure+dt*((water?1:0)-h.pressure)*(water?2.8:4.2)));h.leak=h.pressure*conductance;h.flow=h.testing?h.pressure*.82:0;h.jelly=Math.max(0,h.jelly-dt*(h.jelly<.15?.18:0));if(h.testing)h.testTime+=dt;return h}
+function serviceTick(dt){hydraulic(hydraulics,dt,st.water,st.sealed);if(hydraulics.testing&&hydraulics.testTime>=2.2){hydraulics.testing=false;if(st.water&&st.sealed&&hydraulics.pressure>.92&&hydraulics.leak<.025){if(!st.tested){st.tested=true;st.pay+=35;notify('Leak test passed · +$35');refresh()}}else notify('Leak test failed · inspect the supply and seal')};if(!st.bath&&st.tested&&hydraulics.jelly<=.001){st.bath=true;st.pay+=20;if(jelly)jelly.visible=false;notify('Drain flowing · +$20');refresh()}let el=$('sw-hydraulics'),label='PRESSURE '+Math.round(hydraulics.pressure*100)+'% · LEAK '+Math.round(hydraulics.leak*100)+'%\nDRAIN '+Math.round((1-hydraulics.jelly)*100)+'%'+(hydraulics.testing?' · TESTING':'');if(el.textContent!==label)el.textContent=label;if(jelly){jelly.visible=!st.bath;jelly.scale.y=Math.max(.05,hydraulics.jelly);}}
+const steps=[['Speak with Maribel','Ask about the dripping sink and jelly-clogged bath.'],['Isolate the supply','Shut off the striped peppermint valve under the kitchen counter.'],['Open the U-bend','Select the wrench (1) and loosen the sticky trap.'],['Fit a fresh seal','Select the new gasket (2) and secure the joint.'],['Restore pressure','Turn the peppermint supply valve back on.'],['Run a leak test','Operate the kitchen faucet and check for syrup drips.'],['Unblock the bath','Select the plunger (4) and clear the jelly-filled drain.'],['Speak with Maribel','Collect your service fee and finish the visit.'],['Service complete','The cottage pipes are working again.']];
+const coords={valve:[-5.92,-2.55],trap:[-4.76,-2.67],faucet:[-4.58,-3.5],bath:[5.45,-2.65]};
+let renderer,scene,camera,ray,clock,npc=null,npcParts=null,leaks=[],candyDust=[],valveWheel=null,seal=null,sealMat=null,jelly=null,interactObjects=[],sceneMat={},gamepad,hitPanels={},worldTouch=null;
+let showToastUntil=0,dialogMode=false,toastCount=0;
+function notify(text){let e=$('sw-toast');e.textContent=text;e.classList.add('show');showToastUntil=performance.now()+2700}
+function step(){if(!st.started)return 0;if(st.water&&!st.opened&&!st.sealed)return 1;if(!st.opened)return 2;if(!st.sealed)return 3;if(!st.water)return 4;if(!st.tested)return 5;if(!st.bath)return 6;if(!st.done)return 7;return 8}
+function refresh(){let n=step();$('sw-stepno').textContent='Work order '+n+' / 8';$('sw-task').textContent=steps[n][0];$('sw-desc').textContent=steps[n][1];$('sw-meter').style.width=(n/8*100)+'%';$('sw-cash').textContent='$'+st.pay.toFixed(0);saveVisit()}
+function dismiss(){st.dialog=false;$('sw-dialog').classList.remove('open');}
+function dialogue(name,copy,choices){st.dialog=true;$('sw-who').textContent=name;$('sw-words').textContent=copy;let box=$('sw-options');box.textContent='';for(const [label,cb] of choices){let b=document.createElement('button');b.textContent=label;b.addEventListener('click',()=>{dismiss();if(cb)cb()});box.appendChild(b)}$('sw-dialog').classList.add('open')}
+function finish(tea){if(st.done)return;st.done=true;st.tea=tea;st.pay+=35;refresh();dialogue('Maribel',tea?'The kettle clicks off. Maribel pours cinnamon tea into two tiny porcelain mugs. “It is nice to have someone to talk to for once. Thank you for staying.”':'Maribel presses the payment into your hand. “Come back sometime, even if the pipes are behaving.”',[['Close invoice',()=>notify('Invoice signed · $'+st.pay.toFixed(0))]])}
+function npcChat(){if(!st.started){dialogue('Maribel · cottage owner','Oh! My plumber arrived. What a relief. The sink keeps dripping raspberry syrup, and the bathtub is filling with jelly. I live alone, so I have been worrying about both.',[['I can fix them.',()=>{st.started=true;refresh();notify('Work order accepted · supplies ready')}],['Is the water still running?',()=>{st.started=true;refresh();notify('Maribel: “Yes, there is a shutoff valve below the sink.”')}]]);return}
+if(st.bath&&st.tested&&!st.done){dialogue('Maribel','The faucet is dry and my bathtub drains again. I had forgotten how comforting a visitor can be. Can I offer you cinnamon tea after you finish the invoice?',[['I would love some.',()=>finish(true)],['Another time, thank you.',()=>finish(false)]]);return}
+let isSitting=st.npc?.mode==='sitting';dialogue('Maribel',isSitting?'I like this chair. It was made for me by the old butterscotch carpenter. It is nice to have you here.':'I make my own frosting each morning. The cottage is quieter than it used to be, but it keeps me busy.',[['That sounds lovely.',()=>notify('Maribel gives a gentle smile.')],['Back to the repairs.',()=>{}]])}
+function use(id){if(st.dialog)return;if(!id){notify('Move close to a fixture or tap it in the scene.');return}if(id==='maribel'){npcChat();return}if(!st.started){notify('Speak to Maribel before working on the pipes.');return}
+if(st.tool===2){let msg={valve:st.water?'Inspection: syrup-water pressure is on.':'Inspection: supply is isolated.',trap:st.sealed?'Inspection: the replacement seal is seated.':'Inspection: the trap gasket is swollen and cracked.',faucet:st.tested?'Inspection: flow steady; no leaks detected.':'Inspection: a pressure test is still needed.',bath:st.bath?'Inspection: jelly residue cleared.':'Inspection: thick jelly blocks the drain.'};notify(msg[id]);return}
+if(id==='valve'){if(st.water&&!st.sealed){st.water=false;if(valveWheel)valveWheel.rotation.z=.7;notify('Supply closed · residual pressure falling');refresh()}else if(!st.water&&st.sealed){st.water=true;if(valveWheel)valveWheel.rotation.z=0;notify('Supply restored · pressure stable');refresh()}else notify(st.water?'Supply is already open.':'Fit the new gasket before reopening the valve.');return}
+if(id==='trap'){if(st.water||hydraulics.pressure>.08){notify(st.water?'Shut off the supply before loosening the trap.':'Wait for residual pressure to fall below 8%.');return}if(!st.opened){if(st.tool!==0){notify('Select the wrench (1).');return}st.opened=true;notify('Trap opened · old gasket removed')}else if(!st.sealed){if(st.tool!==1){notify('Select the new gasket (2).');return}st.sealed=true;if(seal)seal.material=sealMat;notify('New gasket installed · trap tightened')}else notify('The U-bend is sealed.');refresh();return}
+if(id==='faucet'){if(!st.sealed){notify('Replace the damaged trap gasket first.');return}if(!st.water){notify('Restore water pressure first.');return}if(!st.tested){if(hydraulics.testing){notify('Pressure test in progress');return}hydraulics.testing=true;hydraulics.testTime=0;notify('Running pressure and leak test…')}else notify('Water flows cleanly without dripping.');return}
+if(id==='bath'){if(!st.tested){notify('Finish the kitchen test first.');return}if(st.bath){notify('The bath is already clear.');return}if(st.tool!==3){notify('Select the plunger (4).');return}hydraulics.jelly=Math.max(0,hydraulics.jelly-.24);notify(hydraulics.jelly<.15?'Blockage broken · bath draining…':'Plunger stroke · '+Math.round(hydraulics.jelly*100)+'% obstruction remains');refresh()}}
+function selectTool(n){st.tool=n;root.querySelectorAll('[data-sw-tool]').forEach(b=>b.classList.toggle('active',+b.dataset.swTool===n));notify(['Wrench equipped','Replacement gasket ready','Inspection lamp ready','Plunger equipped'][n])}
+root.querySelectorAll('[data-sw-tool]').forEach(b=>b.addEventListener('click',()=>selectTool(+b.dataset.swTool)));
+function switchMode(m){st.mode=m;$('sw-view').classList.toggle('active',m==='scene');$('sw-walk').classList.toggle('active',m==='walk');$('sw-cross').style.display=m==='walk'?'block':'none';$('sw-hint').textContent=m==='scene'?'Drag to orbit · Tap Maribel or fixtures':'Drag to look · Move with WASD / touch pad';$('sw-touch').style.opacity=m==='walk'?'1':'.4';notify(m==='walk'?'First-person movement enabled':'Scene viewer enabled')}
+$('sw-face').onclick=()=>{st.focus=!st.focus;st.follow=true;switchMode('scene');$('sw-face').classList.toggle('active',st.focus);$('sw-follow').classList.add('active');notify(st.focus?'Character close-up enabled':'Full-room view restored')};$('sw-plan').onclick=()=>{st.follow=false;st.focus=false;st.az=0;st.el=1.48;st.zoom=19.8;switchMode('scene');$('sw-follow').classList.remove('active');$('sw-face').classList.remove('active');notify('Cutaway floor plan · kitchen / bedroom / sitting room / bath / utility')};$('sw-minus').onclick=()=>st.zoom=Math.min(25,st.zoom+1.5);$('sw-plus').onclick=()=>st.zoom=Math.max(7.5,st.zoom-1.5);$('sw-view').onclick=()=>switchMode('scene');$('sw-walk').onclick=()=>switchMode('walk');$('sw-follow').onclick=()=>{st.follow=!st.follow;st.focus=false;$('sw-face').classList.remove('active');$('sw-follow').classList.toggle('active',st.follow);notify(st.follow?'Camera tracking Maribel':'Free orbit camera')};$('sw-help').onclick=()=>dialogue('Controls','Scene: drag to orbit; wheel or +/− to zoom; tap an object to interact. Walk: WASD or left stick to move, drag to look, E or gamepad A to interact. Buttons 1–4 choose tools. Gamepad Y swaps modes; shoulder buttons cycle tools. Maribel walks, rests in her chair, blinks and responds to conversation.',[['Return',()=>{}]]);$('sw-use').onclick=()=>use(st.hover||closest());
+function closest(){const entries={...coords,maribel:npc?[npc.position.x,npc.position.z]:[-1,-1]};let best=null,dist=2.35;for(const [id,p] of Object.entries(entries)){let d=Math.hypot(p[0]-st.px,p[1]-st.pz);if(d<dist){dist=d;best=id}}return best}
+function vec3(v){return new THREE.Vector3(v[0],v[1],v[2])}
+function mat(c,metalness=0,roughness=.82){return new THREE.MeshStandardMaterial({color:c,roughness,metalness})}
+function mesh(g,m,x=0,y=0,z=0,parent=scene){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function bx(x,y,z,w,h,d,m,p=scene){return mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z,p)}
+function orb(x,y,z,rx,ry,rz,m,p=scene,seg=24){let o=mesh(new THREE.SphereGeometry(1,seg,16),m,x,y,z,p);o.scale.set(rx,ry,rz);return o}
+function cy(x,y,z,r1,r2,h,m,p=scene,segments=18){return mesh(new THREE.CylinderGeometry(r1,r2,h,segments),m,x,y,z,p)}
+function path(points,r,m,p=scene,s=24){return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(vec3)),s,r,8,false),m,0,0,0,p)}
+function ring(x,y,z,r,t,m,p=scene){return mesh(new THREE.TorusGeometry(r,t,10,32),m,x,y,z,p)}
+function turn(profile,m,p=scene){return mesh(new THREE.LatheGeometry(profile.map(q=>new THREE.Vector2(q[0],q[1])),32),m,0,0,0,p)}
+function shape3(points,m,x,y,z,depth=.055,p=scene){let s=new THREE.Shape();s.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)s.lineTo(points[i][0],points[i][1]);s.closePath();let g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:true,bevelThickness:.012,bevelSize:.012,bevelSegments:2,steps:1});return mesh(g,m,x,y,z,p)}
+function interact(id,obj){obj.userData.id=id;interactObjects.push(obj);return obj}
+function showAt(id){return id==='maribel'&&npc?npc.position.clone().add(new THREE.Vector3(0,1.6,0)):new THREE.Vector3((coords[id]||[0,0])[0],1.2,(coords[id]||[0,0])[1])}
+// Surface modeling helpers: custom beveled profiles, curved bowls, skin-conforming decals,
+// material grain. Construction primitives below are deliberately not used as finished furniture.
+function bevelPlate(w,h,depth,r,m,x,y,z,p=scene,rotationX=0){
+ r=Math.min(r,w*.48,h*.48);let s=new THREE.Shape();
+ s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);
+ s.lineTo(w/2,h/2-r);s.quadraticCurveTo(w/2,h/2,w/2-r,h/2);
+ s.lineTo(-w/2+r,h/2);s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);
+ s.lineTo(-w/2,-h/2+r);s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);
+ let g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:true,bevelSize:Math.min(.021,r*.18),bevelThickness:.014,bevelSegments:3,curveSegments:5,steps:1});
+ const o=mesh(g,m,x,y,z,p);o.rotation.x=rotationX;return o;
+}
+function loftY(layers,m,p=scene,n=32){
+ let vs=[],uv=[],inds=[];for(let j=0;j<layers.length;j++){let L=layers[j];for(let i=0;i<n;i++){let a=i/n*Math.PI*2;vs.push((L.x||0)+Math.cos(a)*L.rx,L.y,(L.z||0)+Math.sin(a)*L.rz);uv.push(i/n,j/(layers.length-1))}}
+ for(let j=0;j<layers.length-1;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n,c=(j+1)*n+i,d=(j+1)*n+(i+1)%n;inds.push(a,b,c,b,d,c)}
+ let g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vs,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(inds);g.computeVertexNormals();let o=mesh(g,m,0,0,0,p);o.material.side=THREE.DoubleSide;return o;
+}
+function softBasin(x,y,z,w,d,depth,m,p=scene){
+ const n=48,levels=[{wx:1,wz:1,yy:0},{wx:.91,wz:.91,yy:-.035},{wx:.77,wz:.77,yy:-depth*.62},{wx:.61,wz:.64,yy:-depth},{wx:.36,wz:.39,yy:-depth-.014}],vs=[],uv=[],ind=[];
+ for(let j=0;j<levels.length;j++){let L=levels[j];for(let i=0;i<n;i++){let a=i/n*Math.PI*2,c=Math.cos(a),s=Math.sin(a),k=2/3.8;vs.push(x+Math.sign(c)*Math.pow(Math.abs(c),k)*w*.5*L.wx,y+L.yy,z+Math.sign(s)*Math.pow(Math.abs(s),k)*d*.5*L.wz);uv.push(i/n,j/(levels.length-1))}}
+ for(let j=0;j<levels.length-1;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n,c=(j+1)*n+i,d=(j+1)*n+(i+1)%n;ind.push(a,c,b,b,c,d)}
+ let g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vs,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(ind);g.computeVertexNormals();let o=mesh(g,m,0,0,0,p);o.material.side=THREE.DoubleSide;return o;
+}
+function frameCurve(points,m,r=.025,p=scene,steps=36){return path(points,r,m,p,steps)}
+function seeded(seed){return()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296}}
+function artTexture(kind){const c=document.createElement('canvas');c.width=512;c.height=512;const q=c.getContext('2d'),r=seeded(kind==='wood'?135:kind==='plaster'?535:kind==='cloth'?42:652);
+ const W=512;q.fillStyle=kind==='wood'?'#8c6964':kind==='plaster'?'#af9093':kind==='cloth'?'#bca09f':'#c8aaab';q.fillRect(0,0,W,W);
+ if(kind==='wood'){
+ for(let y=0;y<512;y+=64){q.fillStyle=y%128===0?'#9c766e':'#82615d';q.fillRect(0,y,W,63);q.fillStyle='#604547';q.fillRect(0,y,W,2);for(let x=0;x<W;x++){let v=120+r()*42;q.fillStyle='rgba(48,25,34,'+(r()*.065)+')';q.fillRect(x,y+Math.sin(x*.021+y)*5+r()*60,1,1)}}
+ for(let i=0;i<220;i++){let yy=r()*512;let x=r()*512;q.strokeStyle='rgba(49,31,39,'+(r()*.19)+')';q.lineWidth=.4+r()*1.1;q.beginPath();q.moveTo(x,yy);q.bezierCurveTo(x+30,yy+Math.sin(x*.02)*3,x+90,yy-3,x+130,yy);q.stroke()}
+ }else if(kind==='plaster'){
+ for(let i=0;i<12000;i++){let x=r()*512,y=r()*512,s=r()*2;q.fillStyle=r()>.5?'rgba(255,230,219,.06)':'rgba(69,36,49,.05)';q.fillRect(x,y,s,s)}
+ for(let y=0;y<512;y+=64){q.strokeStyle='rgba(91,59,70,.20)';q.lineWidth=3;q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();for(let x=0;x<512;x+=64){q.fillStyle='rgba(230,190,190,.10)';q.fillRect(x+23,y+5,3,55)}}
+ }else if(kind==='cloth'){
+ for(let a=0;a<512;a+=5){q.fillStyle='rgba(82,43,63,.16)';q.fillRect(a,0,2,512);q.fillRect(0,a,512,2)}
+ for(let i=0;i<2700;i++){let x=r()*512,y=r()*512;q.fillStyle=r()>.5?'rgba(255,238,221,.09)':'rgba(52,34,43,.11)';q.fillRect(x,y,1,2)}
+ }else{
+ for(let i=0;i<50;i++){let x=r()*512,y=r()*512;q.fillStyle='rgba(106,77,78,.04)';q.beginPath();q.arc(x,y,8+r()*23,0,Math.PI*2);q.fill()}
+ for(let y=0;y<512;y+=72){q.strokeStyle='rgba(120,86,94,.17)';q.lineWidth=2;q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke()}
+ }
+ const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t;
+}
+function makeDetailedMaterials(){const m=sceneMat;let texWood=artTexture('wood'),texPlaster=artTexture('plaster'),texCloth=artTexture('cloth'),texStone=artTexture('stone');
+ const floors=texWood.clone();floors.repeat.set(3.6,4.8);floors.needsUpdate=true;m.floor=new THREE.MeshStandardMaterial({color:'#aa9293',map:floors,roughness:.88});
+ const walls=texPlaster.clone();walls.repeat.set(4.2,1.6);walls.needsUpdate=true;m.wall=new THREE.MeshStandardMaterial({color:'#a88a89',map:walls,roughness:.92});
+ m.wood=new THREE.MeshStandardMaterial({color:'#a08b81',map:texWood,roughness:.86});m.cabinet=new THREE.MeshStandardMaterial({color:'#c09a9e',map:texWood,roughness:.78});
+ m.upholstery=new THREE.MeshStandardMaterial({color:'#a28b94',map:texCloth,roughness:1});m.apron=new THREE.MeshStandardMaterial({color:'#d6c2ba',map:texCloth,roughness:1,side:THREE.DoubleSide});
+ m.dress=new THREE.MeshStandardMaterial({color:'#997588',map:texCloth,roughness:1,side:THREE.DoubleSide});m.counter=new THREE.MeshStandardMaterial({color:'#c9aaa7',map:texStone,roughness:.40});
+ m.skin=new THREE.MeshStandardMaterial({color:'#dbab96',roughness:.49,metalness:0});m.hair=new THREE.MeshStandardMaterial({color:'#745064',roughness:.67});
+ m.cream=new THREE.MeshStandardMaterial({color:'#c8ab9a',roughness:.58});m.steel=new THREE.MeshStandardMaterial({color:'#c6bec2',metalness:.67,roughness:.31});m.basin=new THREE.MeshStandardMaterial({color:'#d9c8c0',roughness:.26,metalness:.03,side:THREE.DoubleSide});
+ m.icing=new THREE.MeshStandardMaterial({color:'#bd8e9f',roughness:.48});m.mint=new THREE.MeshStandardMaterial({color:'#97c7b2',roughness:.48});
+}
+function flower(x,y,z,m,p=scene){
+ orb(x,y,z,.09,.09,.09,sceneMat.cream,p);for(let i=0;i<7;i++){let a=i*Math.PI*2/7;orb(x+Math.cos(a)*.13,y+Math.sin(a)*.13,z,.105,.075,.035,m,p).rotation.z=a}}
+function ceramicJar(x,y,z,s,m,p=scene){let g=new THREE.Group();p.add(g);g.position.set(x,y,z);g.scale.setScalar(s);loftY([{y:0,rx:.19,rz:.19},{y:.05,rx:.25,rz:.25},{y:.35,rx:.32,rz:.32},{y:.55,rx:.27,rz:.27},{y:.62,rx:.25,rz:.25}],m,g,26);ring(0,.60,0,.25,.025,sceneMat.steel,g).rotation.x=Math.PI/2;cy(0,.66,0,.24,.27,.08,sceneMat.cream,g);orb(0,.73,0,.065,.058,.065,sceneMat.icing,g);for(let j=0;j<5;j++){let a=j*Math.PI*2/5;path([[Math.sin(a)*.25,.33,Math.cos(a)*.25],[Math.sin(a)*.28,.42,Math.cos(a)*.28]],.025,sceneMat.icing,g,8)}return g}
+
+function drawRoom(){const m=sceneMat;makeDetailedMaterials();
+// Timber cottage architecture, scored floorboards, plaster and candy-cane crown moulding.
+bx(0,-.19,0,15.6,.30,10.2,m.foundation);bx(0,-.012,0,15.15,.032,9.90,m.floor);
+for(let x=-7.34;x<7.4;x+=.78)bx(x,.011,0,.012,.008,9.85,m.grout);
+for(let z=-4.8;z<5;z+=1.15)bx(0,.012,z,15.0,.009,.013,m.grout);
+for(let [x,z,w,d]of [[0,-4.93,15.35,.22],[-7.57,0,.22,10],[7.57,0,.22,10]])bx(x,1.82,z,w,3.64,d,m.wall);
+for(let y of [.26,1.01,2.77,3.47]){
+  frameCurve([[-7.44,y,-4.75],[7.42,y,-4.75]],m.cream,y>3?.073:.034);
+  frameCurve([[-7.36,y,-4.77],[-7.36,y,4.73]],m.cream,.042);
+  frameCurve([[7.35,y,-4.77],[7.35,y,4.73]],m.cream,.042);
+}
+for(let x=-7.25;x<7.36;x+=.33){let c=i=>Math.round(i*100)%4===0;orb(x,3.43,-4.75,.165,.12,.145,((Math.round((x+7.25)/.33)%5===0)?m.icing:m.cream),scene,14)}
+for(let x of [-7.33,7.33])for(let z of [-4.73,4.58]){
+  loftY([{x,y:.12,z,rx:.12,rz:.12},{x,y:.20,z,rx:.15,rz:.15},{x,y:3.35,z,rx:.15,rz:.15},{x,y:3.45,z,rx:.18,rz:.18}],m.cream);
+  for(let y=.45;y<3.35;y+=.43){let band=ring(x,y,z,.15,.025,m.icing);band.rotation.x=Math.PI/2}
+}
+// Shaped arched window recesses and patterned curtains.
+for(let x of [-2.5,5.75]){
+ bevelPlate(1.91,1.75,.075,.34,m.wood,x,2.23,-4.78);bevelPlate(1.65,1.49,.06,.27,m.window,x,2.23,-4.69);
+ for(let v of [0])bx(x,2.23,-4.60,.047,1.50,.05,m.cream);
+ bx(x,2.24,-4.60,1.70,.052,.05,m.cream);for(let j=0;j<5;j++){let yy=1.61+j*.29;path([[x-.83,yy,-4.54],[x-.70,yy+.045,-4.52],[x-.60,yy,-4.52]],.018,m.curtain)}
+ for(let s of [-1,1]){path([[x+s*.84,3.06,-4.54],[x+s*.69,2.72,-4.53],[x+s*.77,2.18,-4.53],[x+s*.64,1.56,-4.53]],.082,m.curtain);for(let j=0;j<4;j++){let yy=1.69+j*.3;path([[x+s*.75,yy,-4.52],[x+s*.62,yy+.05,-4.51]],.016,m.cream)}}
+}
+// DELIBERATE SINGLE-LEVEL PLAN: private bedroom left front, working kitchen left rear,
+// living room in the centre, enclosed bath right rear and laundry/pantry right front.
+// The camera-facing facade is a dollhouse cutaway. All internal partitions have real doorways.
+function partX(x,z0,z1){if(z1<=z0)return;bx(x,1.46,(z0+z1)/2,.18,2.92,z1-z0,m.wall);for(let y of [.18,2.82])path([[x,y,z0],[x,y,z1]],.039,m.cream)}
+function partZ(z,x0,x1){if(x1<=x0)return;bx((x0+x1)/2,1.46,z,x1-x0,2.92,.18,m.wall);for(let y of [.18,2.82])path([[x0,y,z],[x1,y,z]],.039,m.cream)}
+function portalX(x,z0,z1,side=1){
+ const w=z1-z0,h=2.36;
+ for(const z of [z0,z1]){bx(x,1.20,z,.26,2.40,.16,m.wood);bx(x,1.19,z,.045,2.32,.20,m.cream)}
+ bx(x,2.55,(z0+z1)/2,.22,.36,w+.21,m.wood);
+ bx(x,2.41,(z0+z1)/2,.22,.08,w-.02,m.cream);
+ // Doors are held open against the partition, not hovering across the walkway.
+ const hinge=new THREE.Group();hinge.position.set(x,z0===-1.91?0.03:0,z0);scene.add(hinge);
+ let leaf=bevelPlate(w-.12,2.22,.06,.09,m.wood,side*(w-.12)/2,1.14,0,hinge);
+ leaf.rotation.y=Math.PI/2;
+ hinge.rotation.y=side*1.43;
+ for(let j=0;j<3;j++)bx(x, .65+j*.55,z0,.038,.11,.066,m.metal);
+}
+partX(-2.72,-4.81,-1.91);partX(-2.72,-.69,.55);portalX(-2.72,-1.91,-.69,-1); // kitchen entry
+partZ(.54,-7.43,-2.72); // bedroom privacy wall behind the kitchen
+partX(-2.72,.54,1.51);partX(-2.72,2.66,4.76);portalX(-2.72,1.51,2.66,-1); // bedroom entry
+partX(2.73,-4.81,-1.42);partX(2.73,-.26,.11);portalX(2.73,-1.42,-.26,1); // bath entry
+partZ(.12,2.73,7.44); // closed wet room / utility separation
+partX(2.73,.13,1.48);partX(2.73,2.57,4.76);portalX(2.73,1.48,2.57,1); // laundry entry
+// Street entry at the front, with porch, door pillars and a cut-away facade.
+bx(1.15,-.13,5.13,2.53,.24,1.15,m.foundation);
+for(let x of [.47,1.82]){loftY([{x,y:.04,z:4.82,rx:.16,rz:.16},{x,y:2.66,z:4.82,rx:.13,rz:.13}],m.wood);loftY([{x,y:2.61,z:4.82,rx:.23,rz:.18},{x,y:2.76,z:4.82,rx:.2,rz:.17}],m.cream)}
+bx(1.145,2.76,4.82,1.58,.18,.22,m.wood);bx(1.15,.22,5.2,2.20,.08,.72,m.trim);
+// Embedded room tags make the spatial arrangement legible in orbit view.
+function roomSign(x,y,z,w,labelMat){bevelPlate(w,.24,.045,.05,m.wood,x,y,z);bevelPlate(w-.14,.14,.047,.035,labelMat,x,y,z+.047)}
+roomSign(-4.9,2.50,.57,1.18,m.upholstery);roomSign(5.2,2.49,.22,1.15,m.mint);
+// Wainscot panels are inset rather than flat lines: carved trim, corners and rosettes.
+for(let x=-6.94;x<7.15;x+=1.32){bevelPlate(1.1,.53,.034,.095,m.trim,x,.62,-4.74);bevelPlate(.94,.39,.034,.08,m.wall,x,.62,-4.698)}
+// Wall-mounted artworks in individual thick, profiled frames.
+function artFrame(x,y,z,w,h,painting){bevelPlate(w,h,.10,.10,m.wood,x,y,z);bevelPlate(w-.17,h-.17,.11,.065,m.cream,x,y,z+.05);bevelPlate(w-.24,h-.24,.025,.055,painting,x,y,z+.16)}
+artFrame(.75,2.17,-4.66,.94,.77,m.cabinet);artFrame(3.8,2.10,-4.65,.68,.95,m.mint);
+for(let i=0;i<9;i++){let t=i*.38;let xx=.75+Math.sin(t*4)*.25,yy=2.2+Math.cos(t*4)*.20;orb(xx,yy,-4.47,.032,.039,.01,i%2?m.cream:m.icing)}
+// Working kitchen. Cabinet frames use beveled door profiles and recessed inset panels.
+for(let [cx,width]of [[-6.50,1.15],[-3.75,1.16]]){
+  bevelPlate(width,1.27,.70,.12,m.wood,cx,.67,-3.63,scene,-Math.PI/2);
+  bevelPlate(width-.11,1.00,.08,.08,m.cabinet,cx,.74,-2.83);
+  bevelPlate(width-.33,.70,.10,.07,m.wood,cx,.74,-2.75);
+  bevelPlate(width-.42,.61,.10,.06,m.cabinet,cx,.74,-2.64);
+  frameCurve([[cx+width*.25,.60,-2.55],[cx+width*.25,.86,-2.55]],m.steel,.018);
+  for(let s of [-1,1])loftY([{x:cx+s*.36,y:.04,z:-3.0,rx:.11,rz:.11},{x:cx+s*.36,y:.14,z:-3.0,rx:.08,rz:.08}],m.wood);
+}
+// Upper cabinet doors and curved cornice.
+for(let cx of [-6.55,-3.65]){
+  bevelPlate(1.11,1.09,.22,.11,m.wood,cx,2.60,-4.66);
+  bevelPlate(.90,.85,.08,.11,m.cabinet,cx,2.62,-4.51);
+  bevelPlate(.71,.63,.07,.08,m.wood,cx,2.63,-4.43);
+  frameCurve([[cx+.34,2.52,-4.34],[cx+.34,2.75,-4.34]],m.steel,.019);
+}
+// Stone countertop is assembled around the opening: the basin is actually hollow.
+for(let [x,w]of [[-6.44,1.35],[-3.70,1.25]])bevelPlate(w,1.72,.14,.13,m.counter,x,1.31,-3.48,scene,-Math.PI/2);
+bevelPlate(1.70,.36,.14,.11,m.counter,-5.08,1.31,-4.16,scene,-Math.PI/2);
+bevelPlate(1.70,.27,.14,.11,m.counter,-5.08,1.31,-2.75,scene,-Math.PI/2);
+softBasin(-5.09,1.43,-3.47,1.63,1.06,.37,m.basin);
+let drain=ring(-5.09,1.04,-3.47,.105,.023,m.steel);drain.rotation.x=Math.PI/2;for(let i=-2;i<=2;i++)bx(-5.09+i*.033,1.047,-3.47,.014,.015,.16,m.metal);
+// Articulated crook faucet, ceramic inserts, physically separate hot/cold valves.
+const faucet=new THREE.Group();scene.add(faucet);path([[-4.55,1.42,-4.04],[-4.55,1.85,-4.04],[-4.62,2.08,-3.98],[-4.80,2.14,-3.73],[-5.07,2.00,-3.43]],.055,m.steel,faucet,54);
+cy(-5.07,1.985,-3.43,.068,.083,.16,m.steel,faucet);ring(-5.07,1.90,-3.43,.075,.013,m.metal,faucet).rotation.x=Math.PI/2;
+for(let [s,clr]of [[-1,m.icing],[1,m.mint]]){cy(-4.55+s*.22,1.47,-4.04,.07,.075,.13,m.steel,faucet);let h=bevelPlate(.20,.12,.055,.045,clr,-4.55+s*.22,1.58,-4.04,faucet,-Math.PI/2);h.rotation.y=s*.28}
+interact('faucet',faucet);
+// Actual connected trap with two nuts and visible replacement seal.
+const trap=new THREE.Group();scene.add(trap);path([[-5.09,1.07,-3.47],[-5.09,.66,-3.47],[-5.04,.43,-3.47],[-4.84,.36,-3.47],[-4.61,.47,-3.47],[-4.61,.78,-3.47]],.082,m.steel,trap,54);
+for(let [x,y]of [[-5.09,.84],[-4.61,.70]]){let collar=cy(x,y,-3.47,.127,.138,.115,m.metal,trap,12);for(let i=0;i<9;i++){let a=i*2*Math.PI/9;orb(x+.127*Math.cos(a),y,-3.47+.127*Math.sin(a),.015,.04,.015,m.wood,trap)}}
+seal=ring(-4.61,.69,-3.47,.13,.021,m.rust,trap);seal.rotation.x=Math.PI/2;sealMat=m.mint;interact('trap',trap);
+// Pipe run with candy-striped working isolation wheel.
+const valve=new THREE.Group();scene.add(valve);path([[-6.93,.55,-3.99],[-6.44,.55,-3.98],[-5.93,.58,-3.31],[-5.92,.78,-2.56]],.075,m.steel,valve,42);
+cy(-5.92,.85,-2.54,.12,.12,.15,m.metal,valve);valveWheel=new THREE.Group();valveWheel.position.set(-5.92,.97,-2.52);valve.add(valveWheel);ring(0,0,0,.22,.038,m.icing,valveWheel);for(let a=0;a<6;a++){let t=a*Math.PI/3;path([[0,0,0],[Math.cos(t)*.20,Math.sin(t)*.20,0]],.026,a%2?m.cream:m.mint,valveWheel,8)}orb(0,0,.01,.07,.07,.036,m.steel,valveWheel);interact('valve',valve);
+// Curved rail and hanging dishcloth, backsplash individual grouted peppermint tile.
+for(let x=-7.0;x<-3.18;x+=.27)for(let y=1.52;y<1.9;y+=.20){bevelPlate(.24,.17,.017,.035,Math.round((x+y)*11)%7===0?m.icing:m.cream,x,y,-4.70)}
+path([[-6.85,1.98,-4.51],[-5.98,1.98,-4.51]],.025,m.steel);for(let j=0;j<2;j++){let tx=-6.5+j*.36;path([[tx,1.96,-4.48],[tx-.05,1.76,-4.43],[tx-.01,1.65,-4.42]],.075,j?m.icing:m.mint)}
+// Slim shelves, individual jelly bottles with caps and embossed rings.
+bevelPlate(1.48,.31,.10,.07,m.wood,-6.4,2.16,-4.50,scene,-Math.PI/2);
+for(let i=0;i<5;i++)ceramicJar(-6.95+i*.28,2.21,-4.37,.32+i%2*.07,i%2?m.icing:m.mint);
+// Bathroom tiled floor stops at its wall: no more giant one-sided tiled strip.
+bevelPlate(4.50,4.75,.028,.08,m.cream,5.22,.015,-2.49,scene,-Math.PI/2);
+for(let x=3.05;x<7.29;x+=.52)for(let z=-4.68;z<-.30;z+=.52){let ix=Math.round((x-3.05)/.52),iz=Math.round((z+4.68)/.52);bevelPlate(.47,.47,.008,.048,(ix+iz)%7===0?m.icing:(ix+iz)%2===0?m.trim:m.basin,x,.051,z,scene,-Math.PI/2)}
+// Separate utility room has warm slate-caramel flooring and a sugar-glazed border.
+bevelPlate(4.50,4.41,.022,.08,m.wood,5.22,.016,2.46,scene,-Math.PI/2);
+for(let z=.34;z<4.71;z+=.65)path([[3.05,.054,z],[7.29,.054,z]],.009,m.grout);
+// True tub with shaped rolled rim and deep cavity, tilted shower arm, raised clawfeet.
+for(let [x,z]of [[4,-3.70],[6.76,-3.70],[4,-1.35],[6.76,-1.35]]){loftY([{x,y:.10,z,rx:.18,rz:.14},{x,y:.34,z,rx:.12,rz:.13}],m.steel)}
+softBasin(5.40,.88,-2.52,3.38,2.47,.62,m.cream);softBasin(5.40,.84,-2.52,3.03,2.11,.55,m.basin);
+let tubWater=bevelPlate(2.58,1.77,.014,.46,m.water,5.4,.48,-2.52,scene,-Math.PI/2);tubWater.material.transparent=true;tubWater.material.opacity=.60;
+const bath=new THREE.Group();scene.add(bath);ring(5.45,.50,-2.62,.13,.031,m.steel,bath).rotation.x=Math.PI/2;for(let a=0;a<6;a++){let t=a*Math.PI/3;path([[5.45,.50,-2.62],[5.45+Math.cos(t)*.11,.50,-2.62+Math.sin(t)*.11]],.012,m.steel,bath,8)}interact('bath',bath);
+jelly=new THREE.Group();scene.add(jelly);for(let j=0;j<9;j++){let a=j*2.399;let o=orb(5.45+Math.cos(a)*(.06+j*.025),.52,-2.62+Math.sin(a)*(.06+j*.023),.065+j*.005,.035,.068+j*.007,j%3?m.icing:m.jelly,jelly)}
+path([[6.76,.81,-4.12],[6.76,2.46,-4.12],[6.62,2.61,-4.12],[6.43,2.61,-4.12]],.062,m.steel,scene,50);let sh=loftY([{x:6.42,y:2.49,z:-4.12,rx:.21,rz:.20},{x:6.42,y:2.60,z:-4.12,rx:.12,rz:.12}],m.steel);for(let j=0;j<8;j++)orb(6.42+Math.sin(j*2.4)*.11,2.45,-4.12+Math.cos(j*2.4)*.12,.018,.018,.018,m.metal);
+// Vanity and elliptical pedestal basin.
+loftY([{x:3.73,y:.09,z:-4.16,rx:.17,rz:.16},{x:3.73,y:.86,z:-4.16,rx:.17,rz:.16},{x:3.73,y:1.27,z:-4.16,rx:.32,rz:.24}],m.cream);
+softBasin(3.72,1.47,-4.13,1.19,.87,.26,m.basin);path([[3.77,1.49,-4.50],[3.77,1.85,-4.50],[3.65,1.95,-4.28]],.046,m.steel);
+// Rounded mirror frame and layered towels.
+bevelPlate(.90,1.02,.08,.3,m.wood,3.72,2.53,-4.70);bevelPlate(.71,.82,.04,.28,m.window,3.72,2.53,-4.61);
+path([[6.32,1.68,-4.57],[7.03,1.68,-4.57]],.026,m.steel);for(let i=0;i<2;i++){let x=6.5+i*.36;bevelPlate(.29,.62,.036,.055,i?m.icing:m.mint,x,1.30,-4.52)}
+for(let i=0;i<4;i++)ceramicJar(6.36+i*.20,2.17,-4.53,.19,i%2?m.icing:m.mint);
+// Sitting area, articulated soft armchair with fitted cushions and individually shaped legs.
+const chair=new THREE.Group();chair.position.set(0,0,1.93);chair.rotation.y=Math.PI;chair.scale.setScalar(.82);scene.add(chair);
+for(let x of [-.57,.57])for(let z of [-.45,.48])loftY([{x,y:.065,z,rx:.095,rz:.092},{x:x*1.07,y:.48,z,rx:.085,rz:.087}],m.wood,chair);
+bevelPlate(1.62,1.35,.30,.28,m.wood,0,.61,.06,chair,-Math.PI/2);
+bevelPlate(1.36,1.12,.24,.25,m.upholstery,0,.70,.02,chair,-Math.PI/2);
+let back=bevelPlate(1.51,1.46,.25,.30,m.wood,0,1.39,.48,chair);back.rotation.x=-.11;
+let backSoft=bevelPlate(1.32,1.24,.13,.28,m.upholstery,0,1.37,.34,chair);backSoft.rotation.x=-.12;
+for(let s of [-1,1]){loftY([{x:s*.69,y:.54,z:0,rx:.13,rz:.53},{x:s*.69,y:1.07,z:0,rx:.16,rz:.55},{x:s*.69,y:1.17,z:0,rx:.15,rz:.55}],m.wood,chair);bevelPlate(.30,1.09,.10,.12,m.upholstery,s*.69,1.15,0,chair,-Math.PI/2)}
+for(let s of [-1,1]){path([[s*.47,.81,-.20],[s*.49,.81,.17],[s*.47,.81,.46]],.016,m.cream,chair);orb(s*.47,1.5,.29,.048,.048,.02,m.icing,chair)}
+// Bedroom: a genuine bed and nightstand, not a sofa floating behind the kitchen.
+const bed=new THREE.Group();bed.position.set(-5.15,0,3.10);scene.add(bed);
+for(let x of [-1.05,1.05])for(let z of [-1.33,1.34])loftY([{x,y:.06,z,rx:.10,rz:.09},{x,y:.43,z,rx:.10,rz:.10}],m.wood,bed);
+bevelPlate(2.43,3.04,.23,.20,m.wood,0,.40,0,bed,-Math.PI/2);
+bevelPlate(2.19,2.78,.21,.17,m.cream,0,.58,0,bed,-Math.PI/2);
+bevelPlate(2.12,1.20,.035,.12,m.upholstery,0,.73,-.61,bed,-Math.PI/2);
+for(let x of [-.56,.56]){bevelPlate(.93,.50,.10,.18,m.apron,x,.77,1.05,bed,-Math.PI/2);path([[x-.32,.85,1.12],[x,.86,1.15],[x+.32,.85,1.12]],.014,m.cream,bed)}
+let headboard=bevelPlate(2.47,1.14,.22,.17,m.wood,0,1.07,1.50,bed);
+let inset=bevelPlate(2.20,.85,.12,.15,m.upholstery,0,1.11,1.37,bed);
+for(let x of [-.70,0,.70])for(let y of [.96,1.18]){let b=cy(x,y,1.48,.035,.04,.022,m.cream,bed,10);b.rotation.x=Math.PI/2}
+for(let z of [-1.48,1.48])path([[-1.11,.45,z],[1.11,.45,z]],.036,m.cream,bed);
+const bedside=new THREE.Group();bedside.position.set(-3.36,0,3.80);scene.add(bedside);
+bevelPlate(.72,.63,.74,.09,m.wood,0,.49,0,bedside,-Math.PI/2);
+bevelPlate(.60,.28,.08,.06,m.cabinet,0,.48,-.36,bedside);
+cy(0,.49,-.28,.024,.024,.045,m.metal,bedside);
+loftY([{y:.86,rx:.05,rz:.05},{y:1.12,rx:.055,rz:.05}],m.wood,bedside);
+loftY([{y:1.10,rx:.21,rz:.21},{y:1.27,rx:.12,rz:.12}],m.icing,bedside);
+// Chest of drawers sits against the outer left wall, leaving bedroom circulation clear.
+bevelPlate(.74,1.25,.78,.09,m.wood,-6.97,.69,1.58,scene,-Math.PI/2);
+for(let y of [.36,.70,1.02]){bevelPlate(.65,.21,.07,.05,m.cabinet,-6.97,y,1.16);bx(-6.97,y,1.21,.13,.018,.025,m.metal)}
+
+// Turned tea table with porcelain teapot and cups.
+const table=new THREE.Group();table.position.set(.10,0,3.02);scene.add(table);
+loftY([{y:.05,rx:.40,rz:.40},{y:.11,rx:.32,rz:.32},{y:.25,rx:.14,rz:.14},{y:.53,rx:.16,rz:.16},{y:.61,rx:.47,rz:.47}],m.wood,table);
+cy(0,.68,0,.61,.62,.10,m.wood,table,40);
+for(let x of [-.19,.24]){loftY([{x,y:.74,z:.13,rx:.105,rz:.10},{x,y:.87,z:.13,rx:.13,rz:.13},{x,y:.93,z:.13,rx:.12,rz:.12}],m.cream,table);ring(x+.10,.85,.13,.073,.02,m.cream,table)}
+loftY([{x:0,y:.74,z:-.24,rx:.17,rz:.17},{x:0,y:1.02,z:-.24,rx:.23,rz:.20},{x:0,y:1.13,z:-.24,rx:.09,rz:.09}],m.cream,table);ring(0,1.15,-.24,.105,.025,m.icing,table).rotation.x=Math.PI/2;
+// Fabric rug with interlaced border, without the flat untextured rectangle aesthetic.
+bevelPlate(3.37,2.68,.016,.18,m.upholstery,-1.19,.038,.12,scene,-Math.PI/2);
+for(let k=0;k<3;k++){const wx=3.26-k*.18,wz=2.56-k*.18;for(let s of [-1,1]){path([[-1.19-wx/2,.068,.12+s*wz/2],[-1.19+wx/2,.068,.12+s*wz/2]],.013,k===1?m.cream:m.icing);path([[-1.19+s*wx/2,.068,.12-wz/2],[-1.19+s*wx/2,.068,.12+wz/2]],.013,k===1?m.cream:m.icing)}}
+// Practical utility/laundry room: machines face the accessible aisle, shelving faces the door.
+const washer=new THREE.Group();washer.position.set(6.54,0,2.40);scene.add(washer);
+bevelPlate(1.29,1.15,1.16,.12,m.cream,0,.68,0,washer,-Math.PI/2);
+bevelPlate(1.12,.91,.08,.085,m.counter,0,.70,-.59,washer);
+let drum=cy(0,.68,-.65,.35,.35,.05,m.steel,washer,40);drum.rotation.x=Math.PI/2;
+let glass=cy(0,.68,-.686,.29,.29,.023,m.window,washer,40);glass.rotation.x=Math.PI/2;
+ring(0,.68,-.705,.29,.027,m.metal,washer);
+for(let x of [-.4,.4])cy(x,1.25,-.60,.065,.067,.028,m.metal,washer,20).rotation.x=Math.PI/2;
+for(let z of [.65,4.36]){bx(6.36,1.23,z,1.55,.11,.42,m.wood);for(let x of [5.87,6.87]){loftY([{x,y:.15,z,rx:.065,rz:.07},{x,y:1.23,z,rx:.065,rz:.07}],m.wood)}}
+for(let [x,z] of [[5.85,.75],[6.35,.75],[5.85,4.39],[6.35,4.39]])ceramicJar(x,1.34,z,.56,x<6?m.icing:m.mint);
+// Compact enclosed toilet, aligned with bathroom partition and the bath approach.
+const toilet=new THREE.Group();toilet.position.set(6.70,0,-.63);scene.add(toilet);
+loftY([{y:.07,rx:.18,rz:.20},{y:.34,rx:.24,rz:.26},{y:.49,rx:.28,rz:.31}],m.cream,toilet,32);
+softBasin(0,.53,0,.65,.58,.14,m.basin,toilet);
+const seat=ring(0,.56,0,.27,.051,m.cream,toilet);seat.rotation.x=Math.PI/2;
+bevelPlate(.75,.46,.34,.13,m.cream,0,.93,.24,toilet);
+cy(-.18,1.13,-.09,.043,.043,.05,m.steel,toilet);
+// Room-aware planters and lamps (fixtures actually sit on supporting surfaces).
+for(let [x,z] of [[-1.3,-3.75],[1.65,-3.75],[5.55,3.93]]){
+ let vase=ceramicJar(x,.09,z,.72,m.wood);for(let j=0;j<5;j++){let a=j*2*Math.PI/5,vx=x+Math.cos(a)*.16,vz=z+Math.sin(a)*.16;path([[x,.55,z],[vx,.74,vz],[vx,1.0,vz]],.040,m.mint);bevelPlate(.11,.21,.02,.06,m.leaf,vx,.95,vz)}
+}
+for(let [x,z]of [[-4.05,-1.05],[.45,-.95],[5.45,-2.5],[5.5,2.8]]){path([[x,3.46,z],[x,3.12,z]],.025,m.metal);loftY([{x,y:2.70,z,rx:.23,rz:.23},{x,y:2.78,z,rx:.35,rz:.35},{x,y:2.92,z,rx:.26,rz:.26}],m.lamp);cy(x,2.69,z,.22,.22,.09,m.cream)}
+
+// Small wall clock with readable hands, not a featureless disk.
+cy(-.90,2.56,-4.65,.37,.37,.07,m.wood).rotation.x=Math.PI/2;
+cy(-.90,2.56,-4.53,.30,.30,.035,m.cream).rotation.x=Math.PI/2;
+for(let i=0;i<12;i++){let a=i*Math.PI/6;orb(-.90+Math.sin(a)*.253,2.56+Math.cos(a)*.253,-4.49,.015,.021,.012,m.wood)}
+path([[-.90,2.56,-4.46],[-.80,2.68,-4.46]],.018,m.wood);path([[-.90,2.56,-4.46],[-1.06,2.47,-4.46]],.015,m.wood);
+for(let i=0;i<7;i++){let d=orb(-4.83,1.13,-2.58,.021,.045,.021,m.jelly);leaks.push({obj:d,phase:i/7})}
+}
+
+// MARIBEL v4 — a continuous sculptural silhouette, not a stack of stretched spheres.
+// The confectionery materials describe a person; the anatomy is supplied by cross-section meshes.
+function createMaribel(){
+ const m=sceneMat,rig=new THREE.Group();rig.name='Maribel — caramel fondant';
+ rig.position.set(-1.18,0,-1.15);rig.scale.setScalar(.69);scene.add(rig);
+ const bodyRoot=new THREE.Group();bodyRoot.position.y=1.27;rig.add(bodyRoot);
+ const torso=new THREE.Group();bodyRoot.add(torso);
+ function shell(layers,material,parent,n=48,form=null){
+  let vertices=[],uv=[],indices=[];
+  layers.forEach((q,j)=>{for(let i=0;i<n;i++){
+   let a=i/n*Math.PI*2,c=Math.cos(a),s=Math.sin(a),f=1;
+   if(form==='cloth')f+=.014*Math.cos(a*9+j*.41)*(j/layers.length);
+   const xx=(q.x||0)+c*q.w*f;
+   const zz=(q.z||0)+s*q.d*f+(form==='torso'&&s>0?.018*Math.exp(-Math.pow((q.y-.18)/.45,2))*s:0);
+   vertices.push(xx,q.y+(q.hem?Math.sin(a*9)*q.hem:0),zz);uv.push(i/n,j/(layers.length-1));
+  }});
+  for(let j=0;j<layers.length-1;j++)for(let i=0;i<n;i++){
+   let a=j*n+i,b=j*n+(i+1)%n,c=(j+1)*n+i,d=(j+1)*n+(i+1)%n;
+   indices.push(a,c,b,b,c,d);
+  }
+  let g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();
+  let model=mesh(g,material,0,0,0,parent);model.material.side=THREE.DoubleSide;return model;
+ }
+ // A generous but anatomically deliberate form: shoulders, bust, belly, hips, cloth flare.
+ shell([{y:-.57,w:.07,d:.08},{y:-.52,w:.58,d:.46,hem:.012},{y:-.41,w:.61,d:.47},{y:-.20,w:.58,d:.46},{y:.03,w:.59,d:.49},{y:.22,w:.62,d:.51},{y:.42,w:.56,d:.44},{y:.62,w:.49,d:.36},{y:.85,w:.46,d:.32},{y:1.02,w:.40,d:.28},{y:1.11,w:.25,d:.19},{y:1.13,w:.04,d:.06}],m.dress,torso,64,'cloth');
+ // Panel seams follow the body, with a surface-fitted waist apron instead of a detached slab.
+ const apron=new THREE.Group();torso.add(apron);
+ function frontDepth(x,y){let bands=[[-.49,.43],[-.20,.47],[.03,.49],[.22,.51],[.42,.44],[.62,.36],[.85,.32],[1.03,.28]];
+  let k=0;while(k<bands.length-2&&y>bands[k+1][0])k++;
+  let a=bands[k],b=bands[k+1],t=Math.max(0,Math.min(1,(y-a[0])/(b[0]-a[0]))),d=a[1]*(1-t)+b[1]*t;
+  return d*Math.sqrt(Math.max(.02,1-(x/.61)**2))+.025;
+ }
+ const nw=20,nh=17,aa=[],ii=[],uv=[];
+ for(let j=0;j<=nh;j++){let v=j/nh,y=-.47+v*1.38,width=.39-(v*.04);for(let i=0;i<=nw;i++){
+  let u=i/nw,x=(u-.5)*2*width;aa.push(x,y,frontDepth(x,y)+.013);uv.push(u,v);
+ }}
+ for(let j=0;j<nh;j++)for(let i=0;i<nw;i++){let a=j*(nw+1)+i,b=a+1,c=a+nw+1,d=c+1;ii.push(a,b,c,b,d,c)}
+ let ag=new THREE.BufferGeometry();ag.setAttribute('position',new THREE.Float32BufferAttribute(aa,3));ag.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));ag.setIndex(ii);ag.computeVertexNormals();let ap=mesh(ag,m.apron,0,0,0,apron);ap.material.side=THREE.DoubleSide;
+ for(let s of [-1,1]){let pts=[];for(let j=0;j<=14;j++){let y=-.47+j/14*1.38,x=s*(.39-j/14*.04);pts.push([x,y,frontDepth(x,y)+.025])}path(pts,.013,m.cream,apron,28)}
+ let hem=[];for(let j=0;j<=32;j++){let x=(j/32-.5)*.78;hem.push([x,-.472,frontDepth(x,-.47)+.026])}path(hem,.018,m.frost,apron,45);
+ for(let s of [-1,1])path([[s*.35,.88,frontDepth(s*.35,.88)+.03],[s*.32,1.065,.20],[s*.19,1.12,.21]],.035,m.cream,torso,22);
+ // Pocket is cloth following the belly curvature.
+ let pocketPts=[],pin=[];for(let j=0;j<=6;j++)for(let i=0;i<=10;i++){
+  let x=(i/10-.5)*.42-.06,y=.01+j/6*.27;pocketPts.push(x,y,frontDepth(x,y)+.026);
+  if(j<6&&i<10){let a=j*11+i;pin.push(a,a+11,a+1,a+1,a+11,a+12)}
+ }
+ let pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.Float32BufferAttribute(pocketPts,3));pg.setIndex(pin);pg.computeVertexNormals();mesh(pg,m.pocket,0,0,0,torso).material.side=THREE.DoubleSide;
+ path([[-.27,.30,frontDepth(-.27,.30)+.034],[-.06,.30,frontDepth(-.06,.30)+.034],[.15,.30,frontDepth(.15,.30)+.034]],.016,m.cream,torso);
+ for(let k=0;k<4;k++){let y=.49+k*.115;const x=.06;cy(x,y,frontDepth(x,y)+.044,.025,.026,.018,m.cream,torso,12).rotation.x=Math.PI/2}
+ // Neck is an integral narrowing from shoulders, finished with a piped sugar collar.
+ shell([{y:1.085,w:.22,d:.20},{y:1.17,w:.172,d:.152},{y:1.39,w:.177,d:.159}],m.skin,torso,32);
+ for(let s of [-1,1])path([[s*.18,1.085,.20],[s*.30,1.045,.25],[s*.39,.93,.25]],.043,m.cream,torso,24);
+ const head=new THREE.Group();head.position.set(0,1.34,.02);torso.add(head);
+ // Ten measured cross-sections: chin, jaw, cheek, temple, forehead and crown.
+ // The skull is one mesh with broad cheek planes and a softly squared jaw.
+ const skull=[{y:-.10,w:.035,d:.06,z:.03},{y:-.082,w:.20,d:.21,z:.022},{y:.022,w:.32,d:.29,z:0},{y:.13,w:.391,d:.331,z:0},{y:.248,w:.416,d:.342,z:-.012},{y:.386,w:.409,d:.327,z:-.020},{y:.526,w:.393,d:.309,z:-.035},{y:.622,w:.359,d:.292,z:-.04},{y:.696,w:.280,d:.232,z:-.045},{y:.752,w:.145,d:.13,z:-.04},{y:.774,w:.015,d:.02,z:-.04}];
+ shell(skull,m.skin,head,68);
+ function skullDim(y){let n=0;while(n<skull.length-2&&y>skull[n+1].y)n++;let A=skull[n],B=skull[n+1],t=Math.max(0,Math.min(1,(y-A.y)/(B.y-A.y)));return {w:A.w*(1-t)+B.w*t,d:A.d*(1-t)+B.d*t,z:A.z*(1-t)+B.z*t}}
+ function skinZ(x,y,off=0){let D=skullDim(y);let q=Math.max(.01,1-Math.pow(x/D.w,2));let cheek=.023*Math.exp(-Math.pow((Math.abs(x)-.23)/.13,2)-Math.pow((y-.19)/.15,2));return D.z+D.d*Math.sqrt(q)+cheek+off}
+ function surfacePatch(cx,cy,rx,ry,material,off=.009){let v=[cx,cy,skinZ(cx,cy,off)],ids=[];for(let i=0;i<36;i++){let t=i/36*Math.PI*2,x=cx+Math.cos(t)*rx,y=cy+Math.sin(t)*ry;v.push(x,y,skinZ(x,y,off))}for(let i=0;i<36;i++)ids.push(0,i+1,(i+1)%36+1);
+  let g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(v,3));g.setIndex(ids);g.computeVertexNormals();let mm=mesh(g,material,0,0,0,head);mm.material.side=THREE.DoubleSide;return mm}
+ function faceLine(points,r,material,off=.013){return path(points.map(p=>[p[0],p[1],skinZ(p[0],p[1],off)]),r,material,head,Math.max(16,points.length*6))}
+ const eyeIvory=mat('#e9d6c8',0,.94),iris=mat('#65464b',0,.62),pupil=mat('#312830',0,.5),rim=mat('#b29785',.34,.42),eyelid=mat('#8c6065'),lidShuts=[];const eyes=[];
+ for(let s of [-1,1]){
+  let cx=s*.167,cy=.365;
+  let white=surfacePatch(cx,cy,.103,.053,eyeIvory,.008),ir=surfacePatch(cx+s*.008,cy-.008,.038,.041,iris,.012),pu=surfacePatch(cx+s*.011,cy-.008,.021,.031,pupil,.014);
+  let shine=surfacePatch(cx+s*.000,cy+.013,.009,.009,m.cream,.017);
+  faceLine([[cx-.105,cy-.005],[cx-.045,cy+.059],[cx+.040,cy+.061],[cx+.106,cy]],.009,eyelid,.015);
+  faceLine([[cx-.102,cy-.004],[cx,cy-.048],[cx+.101,cy-.003]],.007,m.hair,.010);
+  faceLine([[cx-.10,cy+.135],[cx,cy+.157],[cx+.10,cy+.130]],.023,m.hair,.009);
+  const lid=faceLine([[cx-.107,cy],[cx,cy-.018],[cx+.106,cy]],.019,eyelid,.019);lid.visible=false;eyes.push({whites:white,ir,pu,hi:shine,shut:lid});
+  let frame=[];for(let j=0;j<=44;j++){let a=j*Math.PI*2/44,x=cx+Math.cos(a)*.145,y=cy+Math.sin(a)*.106;frame.push([x,y,skinZ(x,y,.034)])}path(frame,.012,rim,head,60);
+  path([[s*.310,.38,skinZ(s*.310,.38,.032)],[s*.37,.381,.19],[s*.413,.376,.026]],.012,rim,head,24);
+  for(let j=0;j<3;j++){let x=s*(.22+j*.03),y=.213+Math.sin(j*2.8)*.012;surfacePatch(x,y,.007,.007,m.blush,.009)}
+ }
+ faceLine([[-.045,.398],[0,.406],[.045,.398]],.012,rim,.032);
+ // Shaped bridge and nostrils, with a modest projection from the forehead.
+ shell([{y:.163,w:.065,d:.066,z:.340},{y:.208,w:.071,d:.068,z:.335},{y:.266,w:.045,d:.047,z:.318},{y:.343,w:.018,d:.019,z:.284}],m.skin,head,24);
+ for(let s of [-1,1])surfacePatch(s*.045,.163,.013,.007,m.mouth,.012);
+ faceLine([[-.105,.085],[-.047,.062],[0,.057],[.047,.062],[.105,.085]],.010,m.mouth,.014);
+ faceLine([[-.062,.036],[0,.027],[.060,.036]],.005,m.blush,.012);
+ // Piped toffee hair grows directly from the skull, with flat swept ribbons rather than orb clumps.
+ const hair=new THREE.Group();head.add(hair);
+ shell([{y:.45,w:.365,d:.29,z:-.042},{y:.55,w:.393,d:.317,z:-.042},{y:.66,w:.401,d:.323,z:-.046},{y:.737,w:.342,d:.291,z:-.043},{y:.797,w:.22,d:.207,z:-.047},{y:.820,w:.015,d:.018,z:-.04}],m.hair,hair,52);
+ function ribbon(points,width,material,parent=head){let v=[],idx=[],p=points.map(q=>new THREE.Vector3(...q));for(let i=0;i<p.length;i++){let tangent=p[Math.max(0,i-1)].clone().sub(p[Math.min(p.length-1,i+1)]).normalize(),side=new THREE.Vector3(-tangent.y,tangent.x,0).normalize().multiplyScalar(width*(1-i/p.length*.5));v.push(p[i].x-side.x,p[i].y-side.y,p[i].z-.006,p[i].x+side.x,p[i].y+side.y,p[i].z+.006);if(i<p.length-1){let k=i*2;idx.push(k,k+1,k+2,k+1,k+3,k+2)}}let gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(v,3));gg.setIndex(idx);gg.computeVertexNormals();mesh(gg,material,0,0,0,parent).material.side=THREE.DoubleSide}
+ for(let i=0;i<9;i++){let x=-.31+i*.077;ribbon([[x,.775,.036],[x+.03,.711,.159],[x-.015,.615,.279],[x+.014,.55,.271]],.036,i%3?m.frost:m.hair,hair)}
+ for(let s of [-1,1]){ribbon([[s*.335,.70,-.08],[s*.408,.59,.012],[s*.406,.42,.042],[s*.363,.245,.036]],.09,m.hair,hair);ribbon([[s*.315,.708,.04],[s*.389,.545,.148],[s*.375,.39,.127]],.029,m.frost,hair)}
+ // Cut-piece mint-sugar barrette, set into hair (no giant sphere).
+ bevelPlate(.14,.083,.032,.025,m.mint,.25,.693,.261,hair);path([[.22,.69,.294],[.279,.69,.294]],.013,m.cream,hair,8);
+ const arms=[],legs=[];
+ for(let i=0;i<2;i++){
+  let s=i?1:-1;
+  // Tailored sleeves are uninterrupted from shoulder to elbow; the joint cap is under the cuff.
+  let shoulder=new THREE.Group();shoulder.position.set(s*.44,.974,-.004);torso.add(shoulder);
+  shell([{y:-.505,w:.126,d:.126},{y:-.477,w:.151,d:.151},{y:-.34,w:.168,d:.167},{y:-.13,w:.199,d:.194},{y:-.015,w:.197,d:.182},{y:.063,w:.109,d:.105}],m.dress,shoulder,28);
+  path([[-.13,-.49,.08],[0,-.50,.135],[.13,-.49,.08]],.014,m.cream,shoulder,14);
+  let elbow=new THREE.Group();elbow.position.set(0,-.48,0);shoulder.add(elbow);
+  shell([{y:-.47,w:.081,d:.082},{y:-.42,w:.097,d:.094},{y:-.26,w:.114,d:.120},{y:-.09,w:.136,d:.136},{y:.06,w:.123,d:.120}],m.skin,elbow,28);
+  // Four-finger sugar-glove silhouette, contiguous palm with scored finger lines.
+  shell([{y:-.62,w:.065,d:.060,z:.026},{y:-.58,w:.115,d:.071,z:.030},{y:-.48,w:.135,d:.086,z:.025},{y:-.418,w:.089,d:.082,z:.012}],m.skin,elbow,24);
+  for(let j=0;j<3;j++)path([[(j-1)*.053,-.601,.088],[(j-1)*.053,-.54,.103]],.007,m.blush,elbow,7);
+  arms.push({shoulder,elbow,s});
+  let hip=new THREE.Group();hip.position.set(s*.292,-.135,0);bodyRoot.add(hip);
+  shell([{y:-.57,w:.119,d:.134},{y:-.50,w:.158,d:.172},{y:-.36,w:.184,d:.195},{y:-.14,w:.234,d:.225},{y:.015,w:.213,d:.214}],m.legging,hip,32);
+  let knee=new THREE.Group();knee.position.set(0,-.53,0);hip.add(knee);
+  shell([{y:-.49,w:.098,d:.117,z:.012},{y:-.42,w:.116,d:.129,z:.008},{y:-.25,w:.142,d:.153},{y:-.082,w:.163,d:.174},{y:.073,w:.152,d:.164}],m.legging,knee,32);
+  path([[-.11,-.30,.114],[0,-.32,.157],[.11,-.30,.114]],.014,m.cream,knee,16);
+  let ankle=new THREE.Group();ankle.position.set(0,-.49,.005);knee.add(ankle);
+  shell([{y:-.075,w:.185,d:.278,z:.107},{y:-.025,w:.189,d:.285,z:.108},{y:.052,w:.179,d:.268,z:.102},{y:.149,w:.118,d:.142,z:.02},{y:.168,w:.025,d:.031}],m.shoe,ankle,36);
+  path([[-.18,-.055,.28],[0,-.063,.38],[.18,-.055,.28]],.024,m.cream,ankle,18);
+  for(let j=0;j<3;j++)path([[-.088,.098,.10+j*.053],[.088,.098,.10+j*.053]],.009,m.cream,ankle,10);
+  legs.push({hip,knee,ankle,s});
+ }
+ const nav=[
+  {x:-1.18,z:-1.15,wait:2},
+  {x:-2.04,z:-1.20},{x:-3.03,z:-1.24},{x:-3.73,z:-1.31,wait:3},
+  {x:-3.03,z:-1.24},{x:-2.04,z:-1.20},{x:-1.1,z:-.25},
+  {x:-1.85,z:1.11},{x:-2.40,z:2.05},{x:-3.26,z:2.04,wait:3},
+  {x:-2.40,z:2.05},{x:-1.85,z:1.11},{x:-.52,z:.2},
+  {x:0,z:.74},{x:0,z:1.93,sit:11},{x:0,z:.74},
+  {x:1.0,z:.8},{x:2.3,z:1.96},{x:3.26,z:1.96},{x:4.33,z:3.36,wait:4},
+  {x:3.26,z:1.96},{x:2.3,z:1.96},{x:1.0,z:.8},
+  {x:.65,z:-1.18,wait:3}
+ ];
+ const anim={rig,bodyRoot,torso,headPivot:head,eyes,legs,arms,nav,index:0,mode:'walk',timer:0,phase:0,walkBlend:0,sitBlend:0,yaw:.08,speed:0};
+ st.npc=anim;npc=rig;interact('maribel',rig);return anim;
+}
+
+function easeToward(a,b,dt,rate=5){return a+(b-a)*(1-Math.exp(-dt*rate))}
+function angleTowards(a,b,rate){let d=Math.atan2(Math.sin(b-a),Math.cos(b-a));return a+d*rate}
+function npcTick(dt){let a=st.npc;if(!a)return;let moving=false,sitting=a.mode==='sitting'||a.mode==='sitDown'||a.mode==='standUp';
+if(!st.dialog){
+ if(a.mode==='walk'){
+ let goal=a.nav[a.index],dx=goal.x-npc.position.x,dz=goal.z-npc.position.z,dist=Math.hypot(dx,dz);
+ if(dist>.10){
+  let desired=Math.atan2(dx,dz),turn=Math.abs(Math.atan2(Math.sin(desired-a.yaw),Math.cos(desired-a.yaw)));
+  a.yaw=angleTowards(a.yaw,desired,Math.min(1,dt*3.15));
+  const targetSpeed=Math.min(.89,Math.max(.10,dist*1.1))*Math.max(0,1-turn/1.25);
+  a.speed=easeToward(a.speed,targetSpeed,dt,3.4);
+  if(a.speed>.013){npc.position.x+=dx/dist*a.speed*dt;npc.position.z+=dz/dist*a.speed*dt;
+    moving=true;a.phase+=a.speed*dt*9.5;}
+ }
+ else{npc.position.set(goal.x,0,goal.z);if(goal.sit){a.mode='sitDown';a.timer=0;a.yaw=angleTowards(a.yaw,0,.7)}else{a.mode='idle';a.timer=goal.wait||3}}}
+ else if(a.mode==='idle'){a.timer-=dt;if(a.timer<=0){a.index=(a.index+1)%a.nav.length;a.mode='walk'}}
+ else if(a.mode==='sitDown'){a.yaw=angleTowards(a.yaw,0,Math.min(1,dt*5));a.timer+=dt;a.sitBlend=Math.min(1,a.timer/1.35);if(a.timer>=1.35){a.sitBlend=1;a.mode='sitting';a.timer=a.nav[a.index].sit||8}}
+ else if(a.mode==='sitting'){a.timer-=dt;if(a.timer<=0){a.mode='standUp';a.timer=0}}
+ else if(a.mode==='standUp'){a.timer+=dt;a.sitBlend=Math.max(0,1-a.timer/1.2);if(a.timer>=1.2){a.sitBlend=0;a.index=(a.index+1)%a.nav.length;a.mode='walk'}}
+ }else{a.yaw=angleTowards(a.yaw,Math.atan2(st.px-npc.position.x,st.pz-npc.position.z),Math.min(1,dt*1.5))}
+ a.walkBlend=easeToward(a.walkBlend,moving?1:0,dt,4.0);if(!moving)a.speed=easeToward(a.speed,0,dt,5);
+ let sit=a.sitBlend,blend=sit*sit*(3-2*sit),w=a.walkBlend,phase=a.phase; a.rig.rotation.y=a.yaw;
+ const bob=(Math.abs(Math.sin(phase*2))*.031*w)+(Math.sin(st.t*1.5)*.007);
+ a.bodyRoot.position.y=1.27-(.29*blend)-.052*w+bob*(1-blend);
+ a.torso.rotation.x=.025*w + .035*blend + .013*Math.sin(st.t*1.6);
+ a.torso.rotation.z=Math.sin(phase)*.022*w;
+ a.headPivot.rotation.z=.028*Math.sin(st.t*.85);a.headPivot.rotation.x=.032*Math.sin(st.t*.9)+.08*blend;
+ let blink=Math.pow(Math.max(0,Math.sin(st.t*1.46+1.83)),58)>.38;for(let eye of (a.eyes||[])){eye.whites.visible=!blink;eye.ir.visible=!blink;eye.pu.visible=!blink;eye.hi.visible=!blink;eye.shut.visible=blink}
+ for(let i=0;i<2;i++){
+ let leg=a.legs[i],arm=a.arms[i],side=i===0?1:-1,cyc=phase+(i*Math.PI),stride=Math.sin(cyc),lift=Math.max(0,Math.cos(cyc));
+ // Analytical two-bone leg IK: thigh .53, shin .49. Foot rests on the floor
+ // in stance and follows a short elevated arc in swing, reducing floating feet.
+ const L1=.53,L2=.49;
+ const footZ=stride*.142*w,footY=.125+Math.pow(lift,1.5)*.117*w;
+ const hipY=a.bodyRoot.position.y-.135;
+ const dy=hipY-footY,dis=Math.min(L1+L2-.005,Math.max(.09,Math.hypot(footZ,dy)));
+ const base=Math.atan2(footZ,dy);
+ const offset=Math.acos(Math.max(-1,Math.min(1,(L1*L1+dis*dis-L2*L2)/(2*L1*dis))));
+ const kneeAngle=Math.PI-Math.acos(Math.max(-1,Math.min(1,(L1*L1+L2*L2-dis*dis)/(2*L1*L2))));
+ const hipAngle=-base-offset;
+ leg.hip.rotation.x=hipAngle*w*(1-blend)-1.12*blend;
+ leg.knee.rotation.x=kneeAngle*w*(1-blend)+1.33*blend;
+ leg.ankle.rotation.x=(-hipAngle-kneeAngle)*w*(1-blend)-.05*blend;
+ leg.hip.rotation.z=side*(.035+.03*w);
+ arm.shoulder.rotation.x=.33*stride*w*(1-blend)-.48*blend+.05*Math.sin(st.t*1.4);
+ arm.shoulder.rotation.z=side*(.08-.08*blend);
+ arm.elbow.rotation.x=-.32-(.16+.1*Math.max(0,stride))*w-.70*blend;
+ }
+ let text=a.mode==='walk'?'walking through the cottage':a.mode==='sitting'?'resting in her armchair':a.mode==='idle'?'looking around':a.mode==='sitDown'?'sitting down':'standing up';$('sw-activity').textContent='Maribel · '+(st.dialog?'talking with you':text);
+}
+function cameraTick(dt){let ratio=stage.clientWidth/stage.clientHeight;if(camera.aspect!==ratio){camera.aspect=ratio;camera.updateProjectionMatrix();renderer.setSize(stage.clientWidth,stage.clientHeight)}
+if(st.mode==='scene'){let g=null;try{g=Array.from(navigator.getGamepads?.()||[]).find(x=>x&&x.connected)}catch(e){}if(g){let view=!!g.buttons[3]?.pressed;if(view&&!st.gpMode)switchMode('walk');st.gpMode=view}let target=st.follow&&npc?npc.position:new THREE.Vector3(0,0,0);let ty=st.focus?2.01:st.follow?1.30:1.15;let dist=st.focus?2.95:st.zoom, elev=st.focus?.055:st.el, az=st.focus&&npc?npc.rotation.y+st.az*.28:st.az;let x=target.x+Math.sin(az)*Math.cos(elev)*dist,z=target.z+Math.cos(az)*Math.cos(elev)*dist,y=ty+Math.sin(elev)*dist;camera.position.set(x,y,z);camera.lookAt(target.x,ty,target.z);st.hover=null}
+else{let dx=(st.keys.d||st.keys.arrowright?1:0)-(st.keys.a||st.keys.arrowleft?1:0)+st.stickX,dy=(st.keys.s||st.keys.arrowdown?1:0)-(st.keys.w||st.keys.arrowup?1:0)+st.stickY;let g=null;try{g=Array.from(navigator.getGamepads?.()||[]).find(x=>x&&x.connected)}catch(e){}if(g){function dz(v){return Math.abs(v)>.16?v:0}dx+=dz(g.axes[0]||0);dy+=dz(g.axes[1]||0);let left=!!g.buttons[4]?.pressed,right=!!g.buttons[5]?.pressed;if(left&&!st.gpLeft)selectTool((st.tool+3)%4);if(right&&!st.gpRight)selectTool((st.tool+1)%4);st.gpLeft=left;st.gpRight=right;st.yaw+=dz(g.axes[2]||0)*dt*2.3;st.pitch=Math.max(-.6,Math.min(.65,st.pitch-dz(g.axes[3]||0)*dt*1.7));let press=g.buttons[0]?.pressed,view=g.buttons[3]?.pressed;if(press&&!st.gpHold)use(st.hover||closest());if(view&&!st.gpMode)switchMode('scene');st.gpHold=press;st.gpMode=view}
+let len=Math.hypot(dx,dy);if(len>.07&&!st.dialog){dx/=Math.max(1,len);dy/=Math.max(1,len);let speed=dt*2.1,xx=Math.cos(st.yaw)*dx-Math.sin(st.yaw)*dy,zz=Math.sin(st.yaw)*dx+Math.cos(st.yaw)*dy;let nx=st.px+xx*speed,nz=st.pz+zz*speed;
+const blocked=(x,z)=>{
+const rects=[[-7.5,-3.07,-4.81,-2.69],[-6.35,-3.87,1.65,4.63],[-7.5,-6.40,.80,2.23],
+[-2.85,-2.58,-4.9,-1.91],[-2.85,-2.58,-.69,1.51],[-2.85,-2.58,2.66,4.90],
+[-7.5,-2.58,.43,.67],[2.59,2.86,-4.9,-1.42],[2.59,2.86,-.26,1.48],[2.59,2.86,2.57,4.9],
+[2.73,7.55,.01,.23],[3.65,7.18,-3.95,-1.23],[5.84,7.40,-.95,-.28],
+[5.86,7.38,1.7,3.02],[-.63,.83,2.37,3.72]];
+if(rects.some(([x0,x1,z0,z1])=>x>x0&&x<x1&&z>z0&&z<z1))return true;
+if(Math.hypot(x,z-1.93)<.66)return true;
+return !!(npc&&Math.hypot(x-npc.position.x,z-npc.position.z)<.58);
+};
+if(nx>-7.10&&nx<7.10&&!blocked(nx,st.pz))st.px=nx;if(nz>-4.35&&nz<4.35&&!blocked(st.px,nz))st.pz=nz;st.walkAmount=easeToward(st.walkAmount,1,dt,5)}else st.walkAmount=easeToward(st.walkAmount,0,dt,5);
+let bob=Math.abs(Math.sin(st.t*9.8))*.044*st.walkAmount;camera.position.set(st.px,1.7+bob,st.pz);camera.lookAt(st.px+Math.sin(st.yaw)*Math.cos(st.pitch),1.7+bob+Math.sin(st.pitch),st.pz-Math.cos(st.yaw)*Math.cos(st.pitch));st.hover=pick(stage.clientWidth/2,stage.clientHeight/2,stage.clientWidth,stage.clientHeight,3.3)||closest();
+}
+let label=st.hover?{maribel:'Maribel · talk',valve:'Supply valve · turn',trap:'U-bend · service',faucet:'Faucet · test',bath:'Drain · clear'}[st.hover]:null;$('sw-hint').textContent=st.mode==='walk'?(label||'Walk up to a fixture · press E / A'):'Drag to orbit · Tap Maribel or fixtures';}
+function pick(x,y,w,h,maxDist=Infinity){if(st.fallback)return fallbackPick(x,y,w,h);if(!ray)return null;ray.setFromCamera(new THREE.Vector2(x/w*2-1,-(y/h)*2+1),camera);let hits=ray.intersectObjects(interactObjects,true);for(let h of hits){if(h.distance>maxDist)continue;let o=h.object;while(o){if(o.userData?.id)return o.userData.id;o=o.parent}}return null}
+function update(dt){serviceTick(dt);st.t+=dt;st.frame++;npcTick(dt);for(let d of leaks){d.phase=(d.phase+dt*.57)%1;d.obj.visible=hydraulics.leak>.03;d.obj.position.y=1.1-d.phase*.74;d.obj.position.x=-4.8+Math.sin(d.phase*3)*.03}cameraTick(dt);if(performance.now()>showToastUntil)$('sw-toast').classList.remove('show')}
+let pointer=null;stage.addEventListener('pointerdown',e=>{if(e.target.closest('button,.dialog,.job,.pay,.npcstatus,.tools,.pad'))return;let r=stage.getBoundingClientRect();pointer={id:e.pointerId,x:e.clientX-r.left,y:e.clientY-r.top,lastX:e.clientX,lastY:e.clientY,drag:false};stage.setPointerCapture?.(e.pointerId)});
+stage.addEventListener('pointermove',e=>{if(!pointer||e.pointerId!==pointer.id)return;let dx=e.clientX-pointer.lastX,dy=e.clientY-pointer.lastY;pointer.lastX=e.clientX;pointer.lastY=e.clientY;let r=stage.getBoundingClientRect();if(Math.hypot(e.clientX-r.left-pointer.x,e.clientY-r.top-pointer.y)>7)pointer.drag=true;if(st.mode==='scene'){st.az+=dx*.009;st.el=Math.max(.28,Math.min(1.30,st.el-dy*.007))}else{st.yaw+=dx*.007;st.pitch=Math.max(-.6,Math.min(.65,st.pitch-dy*.006))}});
+stage.addEventListener('pointerup',e=>{if(!pointer||e.pointerId!==pointer.id)return;let r=stage.getBoundingClientRect();if(!pointer.drag){let id=pick(e.clientX-r.left,e.clientY-r.top,r.width,r.height,st.mode==='walk'?3.5:Infinity);if(id)use(id);else if(st.mode==='walk')use(closest())}pointer=null});stage.addEventListener('wheel',e=>{if(st.mode==='scene'){st.zoom=Math.max(8,Math.min(25,st.zoom+e.deltaY*.014));e.preventDefault()}},{passive:false});
+window.addEventListener('keydown',e=>{if(!root.isConnected)return;let k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)&&!['INPUT','TEXTAREA'].includes(document.activeElement?.tagName))e.preventDefault();st.keys[k]=true;if(e.repeat)return;if(k==='e'||k===' ')use(st.hover||closest());if(['1','2','3','4'].includes(k))selectTool(+k-1);if(k==='f')switchMode(st.mode==='scene'?'walk':'scene')});window.addEventListener('keyup',e=>{st.keys[e.key.toLowerCase()]=false});
+let pad=$('sw-pad'),nub=$('sw-nub'),padId=null;function movePad(e){const r=pad.getBoundingClientRect(),dx=(e.clientX-r.left-r.width/2)/(r.width*.36),dy=(e.clientY-r.top-r.height/2)/(r.height*.36),len=Math.max(1,Math.hypot(dx,dy));st.stickX=dx/len;st.stickY=dy/len;nub.style.transform=`translate(${st.stickX*30}px,${st.stickY*30}px)`}pad.onpointerdown=e=>{padId=e.pointerId;pad.setPointerCapture(e.pointerId);movePad(e)};pad.onpointermove=e=>{if(padId===e.pointerId)movePad(e)};function resetPad(){st.stickX=st.stickY=0;padId=null;nub.style.transform=''}pad.onpointerup=resetPad;pad.onpointercancel=resetPad;
+function boot(){if(st.fallback)return;try{if(!window.THREE)throw Error('Three.js library unavailable');scene=new THREE.Scene();scene.background=new THREE.Color('#342d36');scene.fog=new THREE.Fog('#342d36',22,51);renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(stage.clientWidth,stage.clientHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.67;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;stage.insertBefore(renderer.domElement,stage.firstChild);camera=new THREE.PerspectiveCamera(50,stage.clientWidth/stage.clientHeight,.08,70);ray=new THREE.Raycaster();clock=new THREE.Clock();
+const colors={foundation:'#54404a',floor:'#80646a',grout:'#6e555d',wall:'#756069',trim:'#9c8086',icing:'#be91a3',cream:'#c9aa9e',window:'#526877',curtain:'#a97b91',wood:'#60464a',cabinet:'#8d6871',counter:'#b8a1a0',metal:'#ac9a9d',steel:'#a7adb1',basin:'#736b71',mint:'#819c92',water:'#668f90',rug:'#9c7780',rugPattern:'#bd929d',upholstery:'#966d81',lamp:'#ad7c8c',leaf:'#567a69',jelly:'#a35d71',rust:'#6b4547',skin:'#bd8b78',dress:'#745264',apron:'#bb9998',pocket:'#ac848d',hair:'#5b3a45',frost:'#916376',eye:'#2d252b',blush:'#c17c82',mouth:'#784654',glassFrame:'#a78d86',legging:'#805e69',shoe:'#583e48'};
+for(const [k,c]of Object.entries(colors))sceneMat[k]=mat(c,k==='metal'||k==='steel'?.35:0,k==='water'?.35:.85);
+scene.add(new THREE.HemisphereLight('#d1b9b3','#2f2931',.95));let sun=new THREE.DirectionalLight('#d6ab9a',1.15);sun.position.set(-6,10,6);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-13;sun.shadow.camera.right=13;sun.shadow.camera.top=13;sun.shadow.camera.bottom=-13;sun.shadow.bias=-.00035;scene.add(sun);for(let [x,z,power] of [[-4,-1,.92],[0,-1.1,.89],[5.2,-2,.91]]){let l=new THREE.PointLight('#d6a78c',power,7.5,2);l.position.set(x,2.68,z);scene.add(l)}
+drawRoom();createMaribel();if(valveWheel)valveWheel.rotation.z=st.water?0:.7;if(seal&&st.sealed)seal.material=sealMat;if(jelly)jelly.visible=!st.bath;refresh();$('sw-state').textContent='v4.2 · service systems · autosave';animate()}
+catch(e){console.error('Sugarworks',e);$('sw-state').textContent='WebGL renderer unavailable';fallback(e)}}
+function animate(){if(!root.isConnected){renderer?.dispose();return}try{let dt=Math.min(.042,clock.getDelta());update(dt);renderer.render(scene,camera);requestAnimationFrame(animate)}catch(err){console.error('Sugarworks render recovery:',err);if(renderer?.domElement)renderer.domElement.remove();fallback(err)}}
+function fallback(err){
+ if(st.fallback)return;st.fallback=true;
+ for(const key of ['sw-walk','sw-follow','sw-face','sw-plus','sw-minus','sw-plan']){let btn=$(key);if(btn){btn.disabled=true;btn.title='3D-only control unavailable in the offline floor plan'}}
+ $('sw-view').classList.add('active');$('sw-hint').textContent='Offline view · tap Maribel and plumbing fixtures to interact';
+ const c=document.createElement('canvas');stage.insertBefore(c,stage.firstChild);const g=c.getContext('2d');
+ npc={position:{x:-1.28,z:-1.1}};st.npc={mode:'walk'};refresh();$('sw-state').textContent='Interactive floorplan · 3D unavailable';
+ let nav=[[-1.18,-1.15],[-2.02,-1.2],[-3.72,-1.3],[-2.02,-1.2],[0,.75],[0,1.93],[0,.75],[2.3,1.95],[4.35,3.35],[2.3,1.95]],index=0,timer=0;
+ function xy(x,z,w,h){return [(x+7.6)/15.2*w,(z+5.0)/10*h]}
+ function rr(x,y,w,h,r,fill){g.fillStyle=fill;g.beginPath();g.roundRect(x,y,w,h,r);g.fill()}
+ function region(x,z,a,b,fill,W,H){let p=xy(x,z,W,H),q=xy(x+a,z+b,W,H);rr(p[0],p[1],q[0]-p[0],q[1]-p[1],Math.min(11,Math.abs(q[0]-p[0])*.12),fill)}
+ let lastDraw=performance.now();function draw(){if(!root.isConnected||!st.fallback)return;requestAnimationFrame(draw);let now=performance.now();serviceTick(Math.min(.1,(now-lastDraw)/1000));lastDraw=now;let W=stage.clientWidth,H=stage.clientHeight,d=Math.min(devicePixelRatio||1,1.8);if(c.width!==Math.round(W*d)||c.height!==Math.round(H*d)){c.width=Math.round(W*d);c.height=Math.round(H*d)}g.setTransform(d,0,0,d,0,0);g.fillStyle='#322a32';g.fillRect(0,0,W,H);
+ // Accurate plan projection: same wall breaks, room boundaries, fixtures and doorways as the 3D scene.
+ region(-7.5,-4.85,15,9.65,'#80676b',W,H);
+ for(let x=-7.3;x<7.45;x+=.66){let a=xy(x,-4.85,W,H),b=xy(x,4.8,W,H);g.strokeStyle='#644b58';g.lineWidth=1;g.beginPath();g.moveTo(...a);g.lineTo(...b);g.stroke()}
+ region(-7.42,-4.77,4.65,5.31,'#957479',W,H); // kitchen
+ region(-7.42,.57,4.65,4.18,'#795f70',W,H);  // bedroom
+ region(-2.62,-4.75,5.27,9.50,'#997c80',W,H); // living room
+ region(2.83,-4.75,4.50,4.80,'#a58a91',W,H); // bathroom
+ region(2.83,.23,4.50,4.52,'#766368',W,H); // laundry
+ for(let x=3.04;x<7.3;x+=.53)for(let z=-4.64;z<-.25;z+=.53)region(x,z,.49,.48,(Math.round(x*4+z*3)%3===0)?'#c6abad':'#b7a1a1',W,H);
+ // Furnishings fit inside their assigned rooms, rather than overlapping the hall.
+ region(-7.22,-4.45,4.13,1.77,'#694b4d',W,H);region(-5.92,-4.04,1.64,1.05,'#b3ada5',W,H);
+ region(-6.28,1.65,2.35,2.78,'#5e4851',W,H);region(-6.11,1.78,2.02,2.41,'#ceafb7',W,H);
+ region(-7.30,.94,.65,1.36,'#59454c',W,H);
+ region(-.53,1.51,1.12,.95,'#8d697d',W,H);region(-.57,2.44,1.30,1.33,'#6c5258',W,H);
+ region(3.73,-3.85,3.36,2.48,'#d0bdb5',W,H);region(3.91,-3.66,3.02,2.12,'#759795',W,H);
+ region(3.16,-4.59,1.16,.80,'#c1b1ac',W,H);region(6.18,-.99,.92,.66,'#d9c4be',W,H);
+ region(5.87,1.69,1.45,1.31,'#c5b0af',W,H);
+ // Internal walls (black cherry trim), respecting each door opening.
+ for(let [x,z,w,d]of [
+ [-2.81,-4.85,.19,2.94],[-2.81,-.69,.19,2.20],[-2.81,2.66,.19,2.16],
+ [-7.50,.49,4.69,.14],[2.65,-4.85,.19,3.43],[2.65,-.26,.19,1.74],[2.65,2.57,.19,2.23],
+ [2.73,.055,4.76,.17]])region(x,z,w,d,'#483941',W,H);
+ function labelRoom(label,x,z){const v=xy(x,z,W,H);g.fillStyle='#ecd9d9';g.font='bold 10px system-ui';g.textAlign='center';g.fillText(label,v[0],v[1])}
+ labelRoom('KITCHEN',-5.3,-1.50);labelRoom('BEDROOM',-5.15,1.24);
+ labelRoom('LIVING',0,-3.68);labelRoom('BATHROOM',5.27,-.53);labelRoom('UTILITY',4.40,3.86);
+ const items={maribel:[npc.position.x,npc.position.z,'MARIBEL','#d8aeb2'],valve:[-5.92,-2.55,'VALVE','#8ab5a4'],trap:[-4.76,-2.67,'U-BEND','#c9c7c4'],faucet:[-4.58,-3.5,'FAUCET','#a4c8c4'],bath:[5.45,-2.65,'DRAIN','#d496ac']};
+ for(let [key,o] of Object.entries(items)){let [x,y]=xy(o[0],o[1],W,H);g.beginPath();g.arc(x,y,key==='maribel'?14:10,0,Math.PI*2);g.fillStyle=o[3];g.fill();g.strokeStyle='#493843';g.lineWidth=2;g.stroke();g.font='bold 10px system-ui';g.fillStyle='#382e38';g.textAlign='center';g.fillText(o[2],x,y+27)}
+ g.textAlign='center';g.font='12px system-ui';g.fillStyle='#fff1ea';g.fillText('SUGARWORKS · FLOORPLAN VIEW',W/2,38);
+ if(!st.dialog&&timer>1.8){timer=0;index=(index+1)%nav.length}timer+=.016;let target=nav[index],dx=target[0]-npc.position.x,dz=target[1]-npc.position.z;if(!st.dialog&&Math.hypot(dx,dz)>.05){npc.position.x+=dx*.018;npc.position.z+=dz*.018;st.npc.mode='walk'}else st.npc.mode='idle';$('sw-activity').textContent='Maribel · '+(st.dialog?'talking with you':'moving about the cottage');
+ if(performance.now()>showToastUntil)$('sw-toast').classList.remove('show');}
+ draw();
+}
+function fallbackPick(x,y,w,h){const cx={...coords,maribel:npc?[npc.position.x,npc.position.z]:[-1,-1]};let result=null,best=43;for(let [id,p]of Object.entries(cx)){let px=(p[0]+7.6)/15.2*w,py=(p[1]+5)/10*h,d=Math.hypot(x-px,y-py);if(d<best){best=d;result=id}}return result}
+
+$('sw-reset').onclick=()=>{dialogue('New visit','Reset this visit and its payment?', [['Reset visit',()=>{try{localStorage.removeItem(saveKey)}catch(e){}location.reload()}],['Keep progress',()=>{}]])};window.addEventListener('blur',()=>{st.keys={};resetPad();pointer=null;saveVisit()});window.addEventListener('pagehide',saveVisit);stage.addEventListener('pointercancel',()=>{pointer=null});root.__test={state:st,hydraulics,use,selectTool,refresh,npc:()=>npc};
+let swBooted=false;
+function swLaunch(){if(swBooted)return;swBooted=true;boot()}
+window.addEventListener('sugarworks-engine-ready',swLaunch,{once:true});
+window.addEventListener('sugarworks-engine-failed',swLaunch,{once:true});
+if(window.THREE) swLaunch();
+})();
+</script>
+</div>
+<script>
+(function(){
+const urls=[
+'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js',
+'https://unpkg.com/three@0.150.1/build/three.min.js',
+'https://raw.githubusercontent.com/mrdoob/three.js/r150/build/three.min.js'
+];
+let i=0,finished=false;
+const status=()=>document.getElementById('sw-state');
+function complete(ok){if(finished)return;finished=true; window.dispatchEvent(new Event(ok?'sugarworks-engine-ready':'sugarworks-engine-failed'))}
+function next(){
+ if(finished)return;
+ if(window.THREE){complete(true);return}
+ if(i>=urls.length){if(status()) status().textContent='No 3D connection · opening interactive 2D floor plan';complete(false);return}
+ const url=urls[i++],script=document.createElement('script');script.src=url;script.async=true;script.crossOrigin='anonymous';
+ if(status())status().textContent='Loading 3D engine · source '+i+' of '+urls.length;
+ let resolved=false;const timeout=setTimeout(()=>{if(resolved)return;resolved=true;script.remove();next()},2400);
+ script.onload=()=>{if(resolved)return;resolved=true;clearTimeout(timeout);if(window.THREE)complete(true);else next()};
+ script.onerror=()=>{if(resolved)return;resolved=true;clearTimeout(timeout);script.remove();next()};
+ document.head.appendChild(script)
+}
+// Defer until the application registers its listeners.
+window.addEventListener('DOMContentLoaded',next,{once:true});
+})();
+</script></body></html>
