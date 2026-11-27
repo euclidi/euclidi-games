@@ -9,7 +9,10 @@ const nearestGrid=v=>clamp(Math.round(v/70)*70,-210,210);
 const roadHalf=v=>[6.5,5.75,4.25][roadRank(v)];
 const phaseLocks=new Set(),junctions=new Map();
 const nodeKey=(x,z)=>x+","+z;
-const solids=[];
+const solids=[],streetSolids=[];
+const stopControlled=(x,z)=>roadRank(x)===2&&roadRank(z)===2;
+const streetLabels=[];let streetLabelGroup=null;
+const inventory={};
 const walkState=new WeakMap();
 let currentWorld=null;
 function walking(c){return c.inside<0&&c.ride?.phase!=="riding";}
@@ -101,16 +104,17 @@ function driveTraffic(w,dt){
   for(const q of lane)if(q!==b&&q.progress>b.progress)limit=Math.min(limit,q.progress-gap(q,b));
   if(limit<70)reason="FOLLOWING";
   let owner=junctions.get(k),committed=owner===b;
+  const stopSign=stopControlled(tx,tz);if(stopSign&&b.progress>=line-.05&&!committed)b.stopWait=(b.stopWait||0)+dt;else if(!committed)b.stopWait=0;
   const plan=plannedDir(b,tx,tz);
   const space=dir=>!(lanes.get(keyOf(tx,tz,dir))||[]).some(v=>v!==b&&v.progress<14+gap(v,b)+3);
   const clear=dir=>!ped.some(p=>intersects(p,carRect({x:tx,z:tz,dir,bus:b.bus},0),.5));
   if(!committed&&b.progress>=line-.05&&b.progress<70&&limit>=70){
    const dir=plan.dirs.find(d=>space(d)&&clear(d));
-   if(!owner&&!phaseLocks.has(k)&&signal(tx,tz,w.time,b.dir)===b.dir%2&&dir!==undefined){
+   if(!owner&&!phaseLocks.has(k)&&(stopSign?b.stopWait>=.5:signal(tx,tz,w.time,b.dir)===b.dir%2)&&dir!==undefined){
     junctions.set(k,b);b.junction=k;b.turnDir=dir;committed=true;
    }
   }
-  if(!committed){limit=Math.min(limit,line);if(!reason)reason=phaseLocks.has(k)?"PEDESTRIAN CROSSING":owner?"JUNCTION OCCUPIED":signal(tx,tz,w.time,b.dir)!==b.dir%2?"RED SIGNAL":"EXIT BLOCKED";}
+  if(!committed){limit=Math.min(limit,line);if(!reason)reason=phaseLocks.has(k)?"PEDESTRIAN CROSSING":owner?"JUNCTION OCCUPIED":stopSign&&b.stopWait<.5?"STOP SIGN":!stopSign&&signal(tx,tz,w.time,b.dir)!==b.dir%2?"RED SIGNAL":"EXIT BLOCKED";}
   let speed=b.speed;
   if(b.bus&&b.pendingStop)speed=Math.min(speed,Math.max(0,(STOP-b.progress)/dt));
   if(b.bus&&b.dwell>0)reason="BUS STOP";
@@ -123,7 +127,7 @@ function driveTraffic(w,dt){
    if(dir!==undefined&&space(dir)&&clear(dir)){
     lane.splice(lane.indexOf(b),1);Object.assign(b,{x:tx,z:tz,dir,progress:0});
     if(plan.arrived){b.destX=plan.dest.x;b.destZ=plan.dest.z;b.trips++;w.stats.trips++;if(b.bus)arrive(b);}
-    add(b);delete b.turnDir;
+    add(b);delete b.turnDir;b.stopWait=0;
    }else reason="EXIT BLOCKED";
   }
   const moved=b.progress!==old||b.x===tx&&b.z===tz;
@@ -140,8 +144,8 @@ function occupancy(w){
  return{add,remove,free};
 }
 function offRoad(x,z){return Math.abs(x-nearestGrid(x))>=roadHalf(nearestGrid(x))+.42&&Math.abs(z-nearestGrid(z))>=roadHalf(nearestGrid(z))+.42;}
-function inSolid(x,z){return solids.some(o=>Math.abs(x-o.x)<o.w/2+.25&&Math.abs(z-o.z)<o.l/2+.25);}
-function destination(w,c){return c.ride?.phase==="approach"?(c.ride.queue||lines[c.ride.line].stops[c.ride.from]):w.buildings[c.goal]?.door;}
+function inSolid(x,z){return [...solids,...streetSolids].some(o=>Math.abs(x-o.x)<o.w/2+.25&&Math.abs(z-o.z)<o.l/2+.25);}
+function destination(w,c){const r=c.ride;return r?.phase==="approach"?(r.queue||(r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from])):w.buildings[c.goal]?.door;}
 function moveCrowd(w,dt,api){
  const occ=occupancy(w),cars=w.cars.map(b=>carRect(b)),list=w.citizens.filter(c=>c.id!==w.possessed&&c.ride?.phase!=="waiting"&&c.ride?.phase!=="riding");
  // Crossing pedestrians have priority; otherwise rotate order so one ID never monopolizes a doorway.
@@ -234,6 +238,64 @@ const capacity=b=>b.line>=4?40:28;
 const served=l=>l.stops.filter(p=>p.active).length;
 const travel=(l,a,b)=>{let count=(b-a+l.nodes.length)%l.nodes.length,n=0;for(let k=1;k<=count;k++)if(l.stops[(a+k)%l.nodes.length].active)n++;return count*70/l.speed+n*1.8;};
 const transfers=lines.map((l,i)=>lines.map((m,j)=>i===j?[]:l.stops.flatMap((p,a)=>p.active?m.stops.flatMap((q,b)=>q.active&&dist(p,q)<=39?[{a,b,d:dist(p,q)}]:[]):[])));
+// Two underground shuttle corridors, sharing an interchange at Central.
+const metroStations=new Map();
+function station(x,z,name){
+ const key=nodeKey(x,z);if(!metroStations.has(key))metroStations.set(key,{key,name,nx:x,nz:z,x:x+15,z:z+10.5,dir:3});
+ return metroStations.get(key);
+}
+const metroLines=[
+ {name:"M1 / NORTH–SOUTH",color:"#82b9af",stops:[-140,-70,0,70,140].map((z,i)=>station(0,z,["North Works","North Quarter","Central","South Quarter","South Works"][i]))},
+ {name:"M2 / EAST–WEST",color:"#cc9b64",stops:[-140,-70,0,70,140].map((x,i)=>station(x,0,["West Works","West Quarter","Central","East Quarter","East Works"][i]))}
+];
+const metroCapacity=72;
+function initMetro(w){
+ if(w.metro?.revision===1)return;
+ w.metro={revision:1,boardings:0,completed:0,transfers:0,abandoned:0,trains:metroLines.flatMap((l,line)=>[0,1].map(i=>({id:line*2+i,line,at:i?l.stops.length-1:0,dir:i?-1:1,dwell:1.5,remaining:0,passengers:[]})))};
+}
+function metroPlan(c,b){
+ const end=b.door,speed=Math.max(3,c.speed),walk=dist(c,end)/speed;
+ let best=null,score=walk-3;if(dist(c,end)<120)return null;
+ function offer(legs,cost){if(cost<score){score=cost;best={mode:"metro",...legs[0],legs,leg:0,goal:c.goal,phase:"approach",estimate:cost};}}
+ const cost=(line,a,b)=>Math.abs(a-b)*4.15+5;
+ for(let li=0;li<2;li++)for(let a=0;a<5;a++)for(let j=0;j<2;j++)for(let b=0;b<5;b++){
+  const p=metroLines[li].stops[a],q=metroLines[j].stops[b],access=dist(c,p),egress=dist(q,end);
+  if(access>110||egress>110)continue;
+  if(li===j){if(a!==b)offer([{line:li,from:a,to:b}],(access+egress)/speed+cost(li,a,b));}
+  else if(a!==2&&b!==2)offer([{line:li,from:a,to:2},{line:j,from:2,to:b}],(access+egress)/speed+cost(li,a,2)+cost(j,2,b)+1.5);
+ }
+ return best;
+}
+function metroSlot(w,c,p){
+ for(let i=0;i<20;i++){
+ const q={x:p.x-4.5+(i%10)*.94,z:p.z-.25+Math.floor(i/10)*.95};
+ if(!offRoad(q.x,q.z)||inSolid(q.x,q.z))continue;
+ if(!w.citizens.some(o=>o!==c&&walking(o)&&(Math.hypot(o.x-q.x,o.z-q.z)<PERSON||o.ride?.queue&&Math.hypot(o.ride.queue.x-q.x,o.ride.queue.z-q.z)<PERSON)))return q;
+ }
+ return null;
+}
+function metroStep(w,dt,api){
+ for(const t of w.metro.trains){
+  const l=metroLines[t.line];
+  t.passengers=t.passengers.filter(id=>{const c=w.citizens[id];return c&&c.id!==w.possessed&&c.ride?.mode==="metro"&&c.ride.train===t.id});
+  if(t.remaining>0){t.remaining=Math.max(0,t.remaining-dt);if(t.remaining>0)continue;t.at+=t.dir;t.dwell=1.5;}
+  if(t.at===0)t.dir=1;if(t.at===l.stops.length-1)t.dir=-1;
+  const p=l.stops[t.at];
+  for(const id of [...t.passengers]){
+   const c=w.citizens[id],r=c.ride;if(r.to!==t.at&&!r.cancel)continue;
+   const slot=metroSlot(w,c,p);if(!slot){t.dwell=Math.max(t.dwell,.5);continue;}
+   t.passengers=t.passengers.filter(i=>i!==id);c.x=slot.x;c.z=slot.z;
+   if(!r.cancel&&r.leg+1<r.legs.length){Object.assign(r,r.legs[++r.leg],{phase:"approach",train:null,since:w.time,queue:slot});c.route=walkTo(c,slot);w.metro.transfers++;}
+   else{if(!r.cancel)w.metro.completed++;resume(w,c,api);}
+  }
+  for(const c of w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting"&&c.ride.line===t.line&&c.ride.from===t.at&&Math.sign(c.ride.to-t.at)===t.dir).sort((a,b)=>a.ride.since-b.ride.since)){
+   if(t.passengers.length>=metroCapacity)break;
+   c.ride.phase="riding";c.ride.train=t.id;c.ride.queue=null;c.route=[];t.passengers.push(c.id);w.metro.boardings++;
+  }
+  t.dwell=Math.max(0,t.dwell-dt);
+  if(t.dwell===0)t.remaining=2.65;
+ }
+}
 const variants={
  Housing:["Tenement","Row residences","Apartment tower","Workers' hostel","Courtyard flats","Brutalist terrace","Micro flats","Duplex courts","Stacked maisonettes"],
  Market:["Covered market","Grocery","Fuel station","Canteen","Trading arcade","Night bazaar","Corner shops","Department store"],
@@ -243,6 +305,7 @@ const variants={
  Clinic:["Hospital","Community clinic","Dispensary"]
 };
 export function prepare(w){
+ initMetro(w);
  if(w.transit?.revision===3&&w.architectureRevision===3)return w;
  // Use a rolling subtype counter per functional category, with a deterministic offset.
  const count={};
@@ -284,7 +347,7 @@ function itinerary(c,b){
  const starts=lines.map(l=>near(l,c)),ends=lines.map(l=>near(l,end));
  let best=null,score=direct/speed-2;
  const wait=l=>l.nodes.length*70/l.speed/6+served(l)*.3;
- const consider=(cost,legs)=>{if(cost<score){score=cost;best={...legs[0],legs,leg:0,goal:c.goal,phase:"approach",since:0};}};
+ const consider=(cost,legs)=>{if(cost<score){score=cost;best={...legs[0],legs,leg:0,goal:c.goal,phase:"approach",since:0,estimate:cost};}};
  for(let i=0;i<lines.length;i++)for(const a of starts[i])for(let j=0;j<lines.length;j++)for(const z of ends[j]){
  const l=lines[i],m=lines[j],walking=(a.d+z.d)/speed;
  if(i===j){if(a.i!==z.i)consider(walking+wait(l)+travel(l,a.i,z.i),[{line:i,from:a.i,to:z.i}]);continue;}
@@ -322,9 +385,15 @@ export function after(w,dt,api){
  if(r&&r.goal!==c.goal){if(r.phase==="riding"){r.goal=c.goal;r.cancel=true}else{delete c.ride;r=null;}}
  if(!r&&c.inside<0&&c.route.length&&c.transitGoal!==c.goal){
  c.transitGoal=c.goal;
- if(c.id%4!==0&&w.buildings[c.goal]){r=itinerary(c,w.buildings[c.goal]);if(r){r.since=w.time;r.activity=c.activity;const p=lines[r.line].stops[r.from];r.queue=queueSlot(w,c,p);if(r.queue){c.ride=r;c.route=walkTo(c,r.queue);}else r=null;}}
+ if(c.id%4!==0&&w.buildings[c.goal]){r=itinerary(c,w.buildings[c.goal]);const rail=metroPlan(c,w.buildings[c.goal]);if(rail&&(!r||rail.estimate<r.estimate))r=rail;if(r){r.since=w.time;r.activity=c.activity;const p=r.mode==="metro"?metroLines[r.line].stops[r.from]:lines[r.line].stops[r.from];r.queue=r.mode==="metro"?metroSlot(w,c,p):queueSlot(w,c,p);if(r.queue){c.ride=r;c.route=walkTo(c,r.queue);}else r=null;}}
  }
  if(!r)continue;
+ if(r.mode==="metro"){
+  if(r.phase==="approach"){const p=r.queue;if(p&&dist(c,p)<.17){r.phase="waiting";r.since=w.time;c.route=[];}else if(p&&(!c.route.length||dist(c.route[c.route.length-1],p)>.1))c.route=walkTo(c,p);}
+  if(r.phase==="waiting"){c.inside=-1;c.route=[];c.walkStatus="WAITING FOR METRO";if(w.time-r.since>75){w.metro.abandoned++;resume(w,c,api);}}
+  if(r.phase==="riding"){c.inside=-1;c.route=[];}
+  continue;
+ }
  if(r.phase==="approach"){const p=r.queue||lines[r.line].stops[r.from];if(Math.hypot(c.x-p.x,c.z-p.z)<.13){r.phase="waiting";r.since=w.time;c.route=[];}else if(!c.route.length||dist(c.route[c.route.length-1],p)>.1)c.route=walkTo(c,p);}
  if(r.phase==="waiting"){c.inside=-1;c.route=[];c.walkStatus="WAITING FOR BUS";if(w.time-r.since>110){w.transit.abandoned++;resume(w,c,api);}}
  if(r.phase==="riding"){const b=buses.find(x=>x.id===r.bus);if(!b){resume(w,c,api);continue}const p=api.carPosition(b);c.x=p.x;c.z=p.z;c.heading=p.a;c.inside=-1;c.route=[];}
@@ -337,10 +406,11 @@ export function after(w,dt,api){
  if(r.to===b.atStop||r.cancel){const exit=queueSlot(w,c,p);if(!exit){b.dwell=Math.max(b.dwell,.5);continue;}b.passengers=b.passengers.filter(x=>x!==id);c.x=exit.x;c.z=exit.z;if(!r.cancel&&r.legs&&r.leg+1<r.legs.length){
  Object.assign(r,r.legs[++r.leg],{phase:"approach",since:w.time,bus:null,queue:null});r.queue=queueSlot(w,c,lines[r.line].stops[r.from]);if(r.queue){c.route=walkTo(c,r.queue);w.transit.transfers++;}else resume(w,c,api);
  }else{if(r.cancel)w.transit.rerouted=(w.transit.rerouted||0)+1;else w.transit.completed++;resume(w,c,api);}}}
- for(const c of w.citizens.filter(c=>c.ride?.phase==="waiting"&&c.ride.line===b.line&&c.ride.from===b.atStop).sort((a,b)=>a.ride.since-b.ride.since)){if(b.passengers.length>=capacity(b))break;const r=c.ride;
+ for(const c of w.citizens.filter(c=>c.ride?.mode!=="metro"&&c.ride?.phase==="waiting"&&c.ride.line===b.line&&c.ride.from===b.atStop).sort((a,b)=>a.ride.since-b.ride.since)){if(b.passengers.length>=capacity(b))break;const r=c.ride;
  if(r?.phase==="waiting"&&r.line===b.line&&r.from===b.atStop&&c.id!==w.possessed){
  r.phase="riding";r.bus=b.id;r.queue=null;b.passengers.push(c.id);c.route=[];w.transit.boardings++;api.note(w,c,"Boarded bus "+lines[b.line].name);}}
  }
+ metroStep(w,dt,api);
  moveCrowd(w,dt,api);
 }
 export function networkMap(){
@@ -354,15 +424,18 @@ export function networkMap(){
  html+='<i style="position:absolute;left:'+left+'%;top:'+top+'%;width:'+(horizontal?14:0.7)+'%;height:'+(horizontal?0.7:14)+'%;background:'+color+'"></i>';
  if(l.stops[i].active)html+='<i style="position:absolute;width:4px;height:4px;background:'+color+';left:calc('+(p(a.x)+off)+'% - 2px);top:calc('+(p(a.z)+off)+'% - 2px)"></i>';
  }}
+ for(const l of metroLines){const a=l.stops[0],b=l.stops.at(-1),h=a.nz===b.nz;html+='<i style="position:absolute;left:'+p(a.nx)+'%;top:'+p(a.nz)+'%;width:'+(h?56:1.1)+'%;height:'+(h?1.1:56)+'%;background:'+l.color+';opacity:.95"></i>';for(const q of l.stops)html+='<i style="position:absolute;left:calc('+p(q.nx)+'% - 3px);top:calc('+p(q.nz)+'% - 3px);width:6px;height:6px;border:1px solid #111;background:'+l.color+';border-radius:50%"></i>';}
  return html+'</div>';
 }
 export function panel(w){
  const s=w.transit,buses=w.cars.filter(b=>b.bus),waiting=w.citizens.filter(c=>c.ride?.phase==="waiting").length;
- let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap();
+ let html='<h2>TRANSIT CONTROL</h2><h3>TRAFFIC FLOW</h3>'+["MOVING","RED SIGNAL","STOP SIGN","FOLLOWING","JUNCTION OCCUPIED","EXIT BLOCKED","PEDESTRIAN CROSSING","PEDESTRIAN AHEAD","BUS STOP"].map(reason=>'<div class="stat"><span>'+reason+'</span><b>'+w.cars.filter(c=>c.trafficStatus===reason).length+'</b></div>').join("")+'<div class="stat"><span>LONG WAIT (20+ MIN)</span><b>'+w.cars.filter(c=>c.wait>20).length+'</b></div><h3>PEDESTRIANS</h3><div class="stat"><span>CROSSWALK WAIT</span><b>'+w.citizens.filter(c=>c.walkStatus==="WAITING FOR CROSSWALK").length+'</b></div><div class="stat"><span>PEDESTRIAN YIELD</span><b>'+w.citizens.filter(c=>c.walkStatus==="YIELDING").length+'</b></div><div class="stat"><span>ACTIVE BUSES</span><b>'+buses.length+'</b></div><div class="stat"><span>WAITING</span><b>'+waiting+'</b></div><div class="stat"><span>ON BOARD</span><b>'+buses.reduce((n,b)=>n+b.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS</span><b>'+s.boardings+'</b></div><div class="stat"><span>COMPLETED RIDES</span><b>'+s.completed+'</b></div><div class="stat"><span>WAIT TIMEOUTS</span><b>'+s.abandoned+'</b></div><div class="stat"><span>INTERRUPTED RIDES</span><b>'+(s.rerouted||0)+'</b></div><div class="stat"><span>TRANSFERS</span><b>'+(s.transfers||0)+'</b></div><h3>ROUTE NETWORK</h3>'+networkMap();
  for(let i=0;i<lines.length;i++){const l=lines[i],v=buses.filter(b=>b.line===i);html+='<h3 style="color:#'+l.color.toString(16)+'">'+l.name+'</h3><div class="stat"><span>STOPS / BUSES</span><b>'+served(l)+' / '+v.length+'</b></div><div class="stat"><span>PASSENGERS</span><b>'+v.reduce((n,b)=>n+b.passengers.length,0)+' / '+v.reduce((n,b)=>n+capacity(b),0)+'</b></div>'+v.map(b=>'<button data-bus="'+b.id+'">BUS '+b.id+' · '+b.passengers.length+'/'+capacity(b)+' · '+(b.dwell>0?'STOP':'RUN')+'</button>').join('')}
+ html+='<h3>UNDERGROUND METRO</h3><div class="stat"><span>STATIONS / TRAINS</span><b>'+metroStations.size+' / '+w.metro.trains.length+'</b></div><div class="stat"><span>WAITING</span><b>'+w.citizens.filter(c=>c.ride?.mode==="metro"&&c.ride.phase==="waiting").length+'</b></div><div class="stat"><span>ON BOARD</span><b>'+w.metro.trains.reduce((n,t)=>n+t.passengers.length,0)+'</b></div><div class="stat"><span>BOARDINGS / COMPLETED</span><b>'+w.metro.boardings+' / '+w.metro.completed+'</b></div>';
+ for(const l of metroLines){html+='<h3 style="color:'+l.color+'">'+l.name+'</h3><p>'+l.stops.map(p=>p.name).join(' · ')+'</p>';}
  return html+'<p>Local loops and limited-stop express services support one transfer. Riders compare estimated trip time with walking and queue in arrival order. Select a bus to locate it.</p>';
 }
-export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+lines[r.line].name+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
+export function citizen(c){const r=c.ride;return r?'<div class="stat"><span>TRANSIT</span><b>'+r.phase.toUpperCase()+' / '+(r.mode==="metro"?metroLines[r.line].name:lines[r.line].name)+'</b></div>':c.walkStatus?'<div class="stat"><span>MOVEMENT</span><b>'+c.walkStatus+'</b></div>':'';}
 const signalGroups=new Map();
 export function updateSignals(time){for(const s of signalGroups.values()){const p=signal(s.x,s.z,time,0);s.phases[0].visible=p===0;s.phases[1].visible=p===1;s.phases[2].visible=p===-1;}}
 export function drawRoads(parent,{box,cyl,merge,mat,group}){
