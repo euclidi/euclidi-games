@@ -24,7 +24,7 @@ export function ensureTownAI(old,now,shops,residents){
     const p=door(shops[n.id%shops.length],n.id);
     return {id:n.id,x:p.x,y:p.y,place,activity:working?'Working':'Out walking',goal:null,route:[],until:now+(working?25:1+n.id%4),
       needs:{hunger:18+(n.id*13)%50,fatigue:12+(n.id*7)%35,social:24+(n.id*17)%58},
-      cash:32+(n.id*19)%76,workMinutes:0,visits:0,shiftDay:-1,decisionCount:0,lastSocial:now-20};
+      cash:32+(n.id*19)%76,workMinutes:0,visits:0,shiftDay:-1,decisionCount:0,lastSocial:now-20,breakUntil:0,workVisits:0};
   })};
 }
 function event(ai,e,out){let item={...e,time:Math.floor(ai.time)};ai.events.push(item);if(ai.events.length>50)ai.events.shift();out.push(item)}
@@ -38,7 +38,7 @@ function routeTo(a,p,shops,pathfind){
 }
 function arrive(ai,a,g,shops,residents,out){
  a.place=g.place;a.activity=g.activity;a.until=ai.time+g.duration;a.route=[];a.goal=null;
- if(g.activity==='Working')return;
+ if(g.activity==='Working'){a.workVisits=(a.workVisits||0)+1;return}
  if(g.place>=0){
   const store=ai.shops[g.place];const price=g.activity==='Eating'?6:g.activity==='Exercising'?5:8+(g.place%3);
   a.visits++;store.customers++;
@@ -52,15 +52,23 @@ function choose(ai,a,shops,residents){
  const available=shops.filter(s=>open(s,m));
  const goal=(activity,place,duration)=>({activity,place,duration,...(place===-2?home(a.id):place===-1?door(shops[(a.id+day(ai.time))%shops.length],a.id):door(shops[place],a.id))});
  const pick=(ids)=>ids.map(i=>shops[i]).find(s=>s&&open(s,m)&&ai.shops[s.id].stock>0);
- if(n.work!==undefined&&open(shops[n.work],m))return goal('Working',n.work,30);
- if(needs.fatigue>79||h<5.5||(h>=23&&a.id%3!==0))return goal('Resting',-2,45);
- if(needs.hunger>48&&a.cash>=6){let s=pick([0,7,2]);if(s)return goal('Eating',s.id,25)}
- if(n.work===undefined&&h>=10&&h<16&&a.shiftDay!==day(ai.time)){
-  let s=shops[a.id%shops.length];if(open(s,m)){a.shiftDay=day(ai.time);return goal('Working',s.id,90)}
+ const onDuty=n.work!==undefined&&open(shops[n.work],m);
+ if(onDuty&&ai.time>=(a.breakUntil||0)){
+  if(needs.hunger>=68){a.breakUntil=ai.time+60;let s=a.cash>=6?pick([0,7,2]):null;return s?goal('Eating',s.id,25):goal('Eating at home',-2,25)}
+  if(needs.fatigue>=78){a.breakUntil=ai.time+75;return goal('Resting',-2,45)}
+  return goal('Working',n.work,30);
  }
- if(needs.social>40){let s=pick(a.id%2?[7,2,1,0]:[2,1,7,0]);if(s)return goal('Socializing',s.id,35)}
+ if(needs.fatigue>79||h<5.5||(h>=23&&a.id%3!==0))return goal('Resting',-2,45);
+ if(needs.hunger>48){let s=a.cash>=6?pick([0,7,2]):null;return s?goal('Eating',s.id,25):goal('Eating at home',-2,25)}
+ if(n.work===undefined&&h>=8&&h<18&&(a.shiftDay!==day(ai.time)||a.cash<10)){
+  let s=shops[a.id%shops.length];if(open(s,m)){a.shiftDay=day(ai.time);return goal('Working',s.id,150)}
+ }
+ if(needs.social>40){
+  const friends=ai.agents.filter(b=>b.id!==a.id&&b.place>=0&&(ai.bonds[bondKey(a.id,b.id)]||0)>=4&&open(shops[b.place],m)).sort((b,c)=>(ai.bonds[bondKey(a.id,c.id)]||0)-(ai.bonds[bondKey(a.id,b.id)]||0));
+  let s=friends.length?shops[friends[0].place]:pick(a.id%2?[7,2,1,0]:[2,1,7,0]);if(s)return goal('Socializing',s.id,35)
+ }
  if(needs.fatigue>55)return goal('Resting',-2,35);
- if(available.length&&a.cash>=10){let s=available[(a.id+Math.floor(ai.time/35))%available.length];return goal(s.id===1?'Exercising':'Shopping',s.id,18+(a.id%3)*5)}
+ if(available.length&&a.cash>=22){const preferences=n.mood==='Competitive'?[1,4,5]:n.mood==='Reserved'?[2,6,0]:n.mood==='Flirtatious'||n.mood==='Gossip'?[7,2,6]:[(a.id+Math.floor(ai.time/35))%shops.length,2,0];let s=pick(preferences)||available[(a.id+Math.floor(ai.time/35))%available.length];return goal(s.id===1?'Exercising':'Shopping',s.id,18+(a.id%3)*5)}
  return goal('Out walking',-1,15+a.id%4*5);
 }
 function plan(ai,a,shops,residents,pathfind,out){
@@ -69,7 +77,7 @@ function plan(ai,a,shops,residents,pathfind,out){
  if(a.place===g.place&&g.place>=0){arrive(ai,a,g,shops,residents,out);return}
  const route=routeTo(a,g,shops,pathfind);
  if(!route){a.until=ai.time+5;return}
- a.place=-1;a.activity='Traveling';a.goal=g;a.route=route;a.until=Infinity;
+ a.place=-1;a.activity='Traveling';a.goal=g;a.route=route;a.until=ai.time+2880;
 }
 function move(ai,a,dt,shops,residents,out){
  if(!a.goal)return;let remaining=dt*(28+a.id%4*3);
@@ -87,7 +95,7 @@ export function townContacts(ai){
 function tick(ai,shops,residents,pathfind,out){
  for(const a of ai.agents){
   const n=residents[a.id],need=a.needs;
-  need.hunger=clamp(need.hunger+(a.activity==='Eating'?-3.4:.23),0,100);
+  need.hunger=clamp(need.hunger+((a.activity==='Eating'||a.activity==='Eating at home')?-3.4:.23),0,100);
   need.fatigue=clamp(need.fatigue+(a.activity==='Resting'?-1.8:a.activity==='Exercising'?.7:.18),0,100);
   need.social=clamp(need.social+(a.activity==='Socializing'?-1.4:.28),0,100);
   if(a.activity==='Working'&&a.place>=0){
@@ -95,7 +103,7 @@ function tick(ai,shops,residents,pathfind,out){
    if(a.workMinutes>=60){const wage=Math.min(s.cash,Math.max(3,Math.floor(shops[a.place].pay/3)));a.cash+=wage;s.cash-=wage;a.workMinutes-=60;ai.completedShifts++}
    if(n.work===a.place&&s.stock<=6&&s.cash>=24){s.cash-=24;s.stock+=18;s.restocks++;event(ai,{kind:'business',text:n.name+' restocked '+shops[a.place].name+'.'},out)}
   }
-  if(!a.goal&&(a.until<=ai.time||a.activity==='Working'&&!open(shops[a.place],minute(ai.time))||n.work!==undefined&&open(shops[n.work],minute(ai.time))&&a.activity!=='Working'))plan(ai,a,shops,residents,pathfind,out);
+  if(!a.goal&&(a.until<=ai.time||a.activity==='Working'&&!open(shops[a.place],minute(ai.time))||n.work!==undefined&&open(shops[n.work],minute(ai.time))&&ai.time>=(a.breakUntil||0)&&(a.activity!=='Working'||need.hunger>=68||need.fatigue>=78)))plan(ai,a,shops,residents,pathfind,out);
  }
  if(Math.floor(ai.time)%5!==0)return;
  const pairs=townContacts(ai);
