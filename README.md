@@ -45,6 +45,18 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 
 | [Pull It Out](pull-it-out/README.md) | V0.1.2 — browser-tested core loop | [Spec](pull-it-out/SPEC.md) · [Roadmap](pull-it-out/ROADMAP.md) · [Status](pull-it-out/STATUS.md) |
 
+| [Bump Hoppers](bump-hoppers/README.md) | See project status | [Spec](bump-hoppers/SPEC.md) · [Roadmap](bump-hoppers/ROADMAP.md) · [Status](bump-hoppers/STATUS.md) |
+| [Candy Land Sewer](candy-land-sewer/README.md) | See project status | [Spec](candy-land-sewer/SPEC.md) · [Roadmap](candy-land-sewer/ROADMAP.md) · [Status](candy-land-sewer/STATUS.md) |
+| [Electrocute Stuff](electrocute-stuff/README.md) | See project status | [Spec](electrocute-stuff/SPEC.md) · [Roadmap](electrocute-stuff/ROADMAP.md) · [Status](electrocute-stuff/STATUS.md) |
+| [EXOHOSTILE](exohostile/README.md) | See project status | [Spec](exohostile/SPEC.md) · [Roadmap](exohostile/ROADMAP.md) · [Status](exohostile/STATUS.md) |
+| [Floor 20 — Reclaimed](floor-20/README.md) | See project status | [Spec](floor-20/SPEC.md) · [Roadmap](floor-20/ROADMAP.md) · [Status](floor-20/STATUS.md) |
+| [Nereid K-07](nereid-k07/README.md) | See project status | [Spec](nereid-k07/SPEC.md) · [Roadmap](nereid-k07/ROADMAP.md) · [Status](nereid-k07/STATUS.md) |
+| [Salticid](salticid/README.md) | See project status | [Spec](salticid/SPEC.md) · [Roadmap](salticid/ROADMAP.md) · [Status](salticid/STATUS.md) |
+| [Sugarworks](sugarworks/README.md) | See project status | [Spec](sugarworks/SPEC.md) · [Roadmap](sugarworks/ROADMAP.md) · [Status](sugarworks/STATUS.md) |
+| [TENPIN](tenpin/README.md) | See project status | [Spec](tenpin/SPEC.md) · [Roadmap](tenpin/ROADMAP.md) · [Status](tenpin/STATUS.md) |
+| [Through the Boards](through-the-boards/README.md) | See project status | [Spec](through-the-boards/SPEC.md) · [Roadmap](through-the-boards/ROADMAP.md) · [Status](through-the-boards/STATUS.md) |
+| [Throw Lab](throw-lab/README.md) | See project status | [Spec](throw-lab/SPEC.md) · [Roadmap](throw-lab/ROADMAP.md) · [Status](throw-lab/STATUS.md) |
+
 ## Development
 
 - [Reusable art and development resources](assets/resource-library/README.md)
