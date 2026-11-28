@@ -6,5 +6,8 @@
 - Keyboard, touch and tap navigation.
 - Asset-first: authentic reusable sprite artwork, coherent map, native engine, independently test before release.
  
+## World autonomy
+Resident simulation persists independently of the active scene; needs, travel, work, trade, relationships and generated town news progress without player input. Shops have stock and revenue, and the player may observe resident state. No uncontrolled offline time progression.
+
 ## Release gates
 Desktop and mobile browser boot; no runtime errors; asset dimensions and frame selection visually reviewed; all eight entrances and job loops; input recovery; save/reload; performance and screenshot review. Publish to Euclidi Games only after these pass.
