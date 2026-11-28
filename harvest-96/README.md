@@ -1,0 +1,3 @@
+# Harvest '96
+
+Original rural-life simulator inspired by the 1996 console farming genre. Phaser 4.2.1, ES modules, dedicated worker and IndexedDB. Development v0.4 includes agriculture, livestock, market and shipping, weather, households, terrain zones and contextual tools. Keyboard: WASD/arrows, Space/Enter. Touch: direction pad and Use Tool. Controller: left stick and primary button. Management: Market, Animals, People, Ledger, Build and Rest. Run with an HTTP server. Earlier revisions passed Chromium smoke; v0.4 awaits current QA, visual review and catalog deployment. See SPEC, ROADMAP and STATUS. CC0 asset credits in assets/CREDITS.md.

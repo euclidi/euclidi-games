@@ -66,3 +66,9 @@ Related project: [Euclidi Labs catalog](https://euclidi.github.io/euclidi-labs/)
 - [Automated catalog and project audits](https://github.com/euclidi/euclidi-games/actions)
 
 Scrap Orbit is retained in source but intentionally excluded from the playable catalog.
+
+## Unpublished development
+
+| Project | Status | Documentation |
+|---|---|---|
+| [Harvest '96](harvest-96/README.md) | Development v0.4 — not catalog-listed | [Spec](harvest-96/SPEC.md) · [Roadmap](harvest-96/ROADMAP.md) · [Status](harvest-96/STATUS.md) |
