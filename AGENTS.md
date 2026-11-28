@@ -16,6 +16,19 @@ Every game directory with an entry index.html, including separately listed relea
 - After playtesting, use the existing GitHub Pages catalog at https://euclidi.github.io/euclidi-games/ unless explicitly instructed otherwise. Keep launch routes, public documentation links, version labels and source records consistent; verify deployed version separately from Git commit. Never allow one project workflow to replace the whole site.
 - Do not claim future work was completed or a deployment is live until evidence exists. Record blockers and decisions in STATUS.md.
 
+## Mandatory visual development reporting
+
+The owner's reporting standard applies to all new, existing, resumed and archived projects when development resumes, regardless of project type or contributing agent. Every substantive user-facing development update must be visual-first, compact, and evidence-based. It is a reporting requirement, not a substitute for implementation.
+
+- Start with a graphical dashboard showing actual revision/commit, current phase and playtest readiness.
+- Show the development pipeline visually with distinct completed, active, pending and blocked states. Separate implementation from verification and deployment.
+- Show what changed since the previous checkpoint using visual before/after comparisons; include actual gameplay screenshots or rendered output when available. Identify reference images as references, never as actual output.
+- Use real charts or graphical status components for test counts, performance, measured feature coverage and other meaningful quantities. Label denominators, revision and measurement context. Do not fabricate percentages, progress scores, performance data or screenshots; avoid ASCII progress bars and text pretending to be charts. When quantitative data is absent, use categorical status visualization.
+- Show failures, blockers, unresolved decisions and unverified changes separately from completed work. A previous revision's successful test must not be attributed to a newer revision.
+- Show next actions visually in dependency/priority order, with a clear playtest handoff state. Include a prominent clickable Play button linking directly to the specific verified live game on Euclidi Games once its route and catalog entry have been verified. Never substitute the catalog homepage, source link or an unverified route for this button.
+- Keep reports succinct and readily interpretable. Prefer actual visual components in chat-capable interfaces; where the host cannot render them, use a rendered report or supported graphical format when feasible, disclose the limitation and do not simulate graphics with text bars.
+- Preserve verifiable evidence in project STATUS.md and QA artifacts so subsequent agents can reconstruct the dashboard accurately. Do not require the owner to perform engineering or automated QA; the owner provides hands-on playtesting and feedback unless they explicitly request otherwise.
+
 Catalog interface palette: use neutral grayscale for shared backgrounds, panels, borders, text, buttons, focus states and browser theme colors (equal RGB channels). Preserve approved logo assets and project-specific cover art/accents. Do not reintroduce an olive or other color cast into the shared interface without owner approval.
 
 Catalog typography: use neutral system sans-serif throughout the Games catalog, including all headings, game titles, navigation, controls and metadata. The owner rejected Sinistre's gothic appearance even when limited to display headings. Do not reintroduce decorative gothic or blackletter fonts without explicit approval. Preserve approved logos, project artwork and game-specific interfaces.
