@@ -38,6 +38,7 @@ function routeTo(a,p,shops,pathfind){
 }
 function arrive(ai,a,g,shops,residents,out){
  a.place=g.place;a.activity=g.activity;a.until=ai.time+g.duration;a.route=[];a.goal=null;
+ if(g.place>=0&&!open(shops[g.place],minute(ai.time))){a.place=-1;a.activity='Out walking';a.until=ai.time+1;return}
  if(g.activity==='Working'){a.workVisits=(a.workVisits||0)+1;return}
  if(g.place>=0){
   const store=ai.shops[g.place];const price=g.activity==='Eating'?6:g.activity==='Exercising'?5:8+(g.place%3);
@@ -108,7 +109,7 @@ function tick(ai,shops,residents,pathfind,out){
    }
    if(n.work===a.place&&s.stock<=6&&s.cash>=24){s.cash-=24;s.stock+=18;s.restocks++;event(ai,{kind:'business',text:n.name+' restocked '+shops[a.place].name+'.'},out)}
   }
-  if(!a.goal&&(a.until<=ai.time||a.activity==='Working'&&!open(shops[a.place],minute(ai.time))||n.work!==undefined&&open(shops[n.work],minute(ai.time))&&ai.time>=(a.breakUntil||0)&&(a.activity!=='Working'||need.hunger>=68||need.fatigue>=78)))plan(ai,a,shops,residents,pathfind,out);
+  if(!a.goal&&(a.until<=ai.time||a.place>=0&&!open(shops[a.place],minute(ai.time))||n.work!==undefined&&open(shops[n.work],minute(ai.time))&&ai.time>=(a.breakUntil||0)&&(a.activity!=='Working'||need.hunger>=68||need.fatigue>=78)))plan(ai,a,shops,residents,pathfind,out);
  }
  if(Math.floor(ai.time)%5!==0)return;
  const pairs=townContacts(ai);
