@@ -14,7 +14,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
 function log(t){S.news.unshift(clock()+'  '+t);S.news=S.news.slice(0,50);save();if(tab==='news')showTab('news')}
 function syncTown(){
  const events=advanceTownAI(S.townAI,S.day*1440+S.minute+timeAcc,SHOPS,RESIDENTS,pathfind);
- for(const e of events){log(e.text);if(e.kind==='awkward')witnessIncident(S,e.actor,e.witness,'remark')}
+ for(const e of events){if(e.kind==='awkward')witnessIncident(S,e.actor,e.witness,'remark');log(e.text)}
 }
 function registerText(n){const a=S.townAI.agents[n.id];return n.mood+' · '+residentStatus(S.townAI,n.id,SHOPS)+' · $'+a.cash+' · Hunger '+Math.round(a.needs.hunger)+' / Fatigue '+Math.round(a.needs.fatigue)+' / Social '+Math.round(a.needs.social)}
 function shopStatus(b){const a=S.townAI.shops[b.id];return (isOpen(b,S.minute)?'Open · '+b.owner:'Closed · '+clockAt(b.open))+' · Stock '+a.stock+' · Visits '+a.customers}
