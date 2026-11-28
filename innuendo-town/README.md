@@ -1,5 +1,5 @@
 # Innuendo Town
-A standalone top-down urban comedy sandbox for adult fictional characters. Development playtest build 0.5.
+A standalone top-down urban comedy sandbox for adult fictional characters. Development playtest build 0.5.1.
  
 Run from an HTTP server, not file://. The game uses Phaser 3.90 with native Arcade Physics, a vendored original 432×288 Kenney RPG Urban atlas, and separate simulation content. Controls: WASD/arrows, Shift, E; touch D-pad, ACT, and destination selection.
 
@@ -10,4 +10,6 @@ Run from an HTTP server, not file://. The game uses Phaser 3.90 with native Arca
 [Play Innuendo Town](https://euclidi.github.io/euclidi-games/innuendo-town/) · [Game catalog](https://euclidi.github.io/euclidi-games/).
 
 ## Project records
-[Specification](SPEC.md) · [Roadmap](ROADMAP.md) · [Status](STATUS.md) · [Draft PR](https://github.com/euclidi/euclidi-games/pull/7). Playtest release; visual defects and incomplete scope are documented in STATUS.md.
+[Specification](SPEC.md) · [Roadmap](ROADMAP.md) · [Status](STATUS.md) · [Original implementation PR](https://github.com/euclidi/euclidi-games/pull/7). Playtest release; visual defects and incomplete scope are documented in STATUS.md.
+
+Sprite correction: source atlas columns verified at enlarged scale (left/front/back/right). Traffic uses named complete vehicle regions rather than adjacent cells. See STATUS.md for regression evidence.
