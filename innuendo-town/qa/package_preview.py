@@ -26,14 +26,14 @@ marker='</div><p id="empty" hidden>'
 assert s.count(marker)==1
 if 'data-name="innuendo town"' not in s: index.write_text(s.replace(marker,card+marker))
 else:
-    assert 'V0.7 · Playtest build' in s
+    assert 'V0.8 · Playtest build' in s
     print('Existing game card retained; refreshing gameplay cover only.')
 print('Packaged actual gameplay cover and one catalog card.')
 
 # A small contact sheet of actual browser frames and runtime-generated textures.
 from PIL import ImageDraw
 qa=root/'innuendo-town/qa'
-evidence=Image.new('RGB',(1100,1120),(31,34,32))
+evidence=Image.new('RGB',(1100,1400),(31,34,32))
 d=ImageDraw.Draw(evidence)
 def place(file,x,y,w,h,label,nearest=False):
     a=Image.open(root/file).convert('RGBA')
@@ -50,4 +50,5 @@ place('town-interior.png',10,485,700,435,'ACTUAL INTERIOR')
 place('town-art-player.png',745,570,335,250,'PLAYER WALK SHEET',True)
 place('town-art-traffic.png',10,940,700,165,'TRAFFIC ATLAS',True)
 place('town-art-resident-11.png',745,855,335,250,'RESIDENT WALK SHEET',True)
-evidence.save(qa/'evidence-v070.webp','WEBP',quality=87,method=6)
+place('town-landscape.png',10,1150,1080,240,'ACTUAL LANDSCAPE MOBILE')
+evidence.save(qa/'evidence-v080.webp','WEBP',quality=87,method=6)

@@ -16,7 +16,7 @@ try {
  await page.waitForFunction(()=>window.townQA().town.decisions>0,null,{timeout:12000});
  const autonomous=await state();assert.ok(autonomous.town.time>first.town.time);assert.equal(autonomous.player.x,first.player.x);assert.equal(autonomous.player.y,first.player.y);
  assert.equal(first.vehicles.length,8);
- assert.equal(first.art.version,'070');assert.equal(first.art.actorWidth,20);assert.equal(first.art.actorHeight,28);
+ assert.equal(first.art.version,'080');assert.deepEqual(first.art.shipment,[968,526]);assert.equal(first.art.actorWidth,20);assert.equal(first.art.actorHeight,28);
  const models=['sedan','taxi','hatch','wagon','coupe','van'];
  for(const c of first.vehicles){assert.ok(models.includes(c.color));assert.equal(c.frame,c.color+(c.dir<0?'-left':'-right'));assert.deepEqual([c.width,c.height,c.angle],[38,18,0]);assert.equal(c.cutX,models.indexOf(c.color)*38);assert.equal(c.cutY,c.dir<0?18:0)}
  const preview=await page.evaluate(()=>window.townArtPreview());
@@ -36,10 +36,11 @@ try {
  assert.equal(await page.locator('#panel .entry').count(),16);assert.equal(await page.locator('#panel .portrait').count(),16);
  await page.screenshot({path:'town-people.png'});
  await page.locator('[data-tab=directory]').click();
- assert.equal(await page.locator('#panel .entry').count(),8);
+ assert.equal(await page.locator('#panel .entry').count(),8);assert.equal(await page.locator('#town-map').isVisible(),true);
+ await page.locator('#registerToggle').click();assert.equal(await page.locator('#townRegister').isVisible(),false);await page.locator('#registerToggle').click();assert.equal(await page.locator('#townRegister').isVisible(),true);
  await page.locator('#panel .entry').first().getByRole('button',{name:'Go'}).click();
  await page.waitForFunction(()=>document.querySelector('#district').textContent==='THE MEAT MARKET',{},{timeout:30000});
- assert.equal((await state()).art.backdrop,'room-backdrop-070-0');
+ assert.equal((await state()).art.backdrop,'room-backdrop-080-0');
  await page.waitForFunction(()=>window.townQA().art.sound.loops.includes('interior'),null,{timeout:15000});
  const indoorStart=(await state()).town;
  await page.waitForFunction(t=>window.townQA().town.time>t+1,indoorStart.time,{timeout:5000});
@@ -60,5 +61,14 @@ try {
  mobile.on('pageerror',e=>errors.push(e.message));
  await mobile.goto('http://127.0.0.1:8080/innuendo-town/');await mobile.locator('#boot').waitFor({state:'hidden',timeout:30000});await mobile.screenshot({path:'town-mobile.png'});
  assert.equal(await mobile.locator('[data-move=up]').isVisible(),true);assert.equal(await mobile.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);
+ const landscape=await browser.newPage({viewport:{width:844,height:390},isMobile:true,hasTouch:true});
+ landscape.on('pageerror',e=>errors.push(e.message));await landscape.goto('http://127.0.0.1:8080/innuendo-town/?qa=1');await landscape.locator('#boot').waitFor({state:'hidden',timeout:30000});
+ assert.equal(await landscape.locator('#townRegister').isVisible(),false);
+ const bounds=async(sel)=>landscape.locator(sel).boundingBox();const game=await bounds('#viewport'),pad=await bounds('.dpad'),act=await bounds('#act');
+ assert.ok(pad.x+pad.width<=game.x+1&&act.x>=game.x+game.width-1);
+ assert.equal(await landscape.evaluate(()=>document.documentElement.scrollWidth<=innerWidth&&document.documentElement.scrollHeight<=innerHeight+1),true);
+ await landscape.screenshot({path:'town-landscape.png'});
+ await landscape.locator('#registerToggle').click();assert.equal(await landscape.locator('#townRegister').isVisible(),true);
+ await landscape.locator('#registerToggle').click();assert.equal(await landscape.locator('#townRegister').isVisible(),false);
  assert.deepEqual(errors,[]);console.log('Browser smoke checks passed');
 }finally{await browser.close()}

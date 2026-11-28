@@ -1,5 +1,5 @@
 # Innuendo Town
-A standalone top-down urban comedy sandbox for adult fictional characters. Development playtest build 0.7.
+A standalone top-down urban comedy sandbox for adult fictional characters. Development playtest build 0.8.
  
 Run from an HTTP server, not file://. The game uses Phaser 3.90 with native Arcade Physics, a vendored original 432×288 Kenney RPG Urban atlas, and separate simulation content. Controls: WASD/arrows, Shift, E; touch D-pad, ACT, and destination selection.
 
@@ -18,3 +18,6 @@ The town now has a persistent resident simulation. Residents pursue needs, commu
 
 ## Presentation
 Native bitmap backgrounds, detailed storefronts and distinct interiors, 20×28 adult-character animation frames, 38×18 traffic sprites, contact shadows and dithered night lighting. The original Kenney urban atlas remains a locally bundled source for vegetation. New bitmap artwork is generated deterministically in `presentation.js`. Audio is sample-based; see [audio credits](assets/audio/CREDITS.md). The v0.6 autonomy build passed [browser QA](https://github.com/euclidi/euclidi-games/actions/runs/46091692069) and its seven-day simulation regression.
+
+## Resource shipment integration
+The original [Roguelike RPG Pack](https://kenney.nl/assets/roguelike-rpg-pack) and [UI Pack – Pixel Adventure](https://kenney.nl/assets/ui-pack-pixel-adventure) sheets were extracted from the shared library. Selected complete native pixels are used for storefront vegetation, furniture, rug borders and mobile control glyphs. See [asset decisions](assets/shipment/CREDITS.md). Modern street and adult actor art from the verified 0.7 revision is retained; the town map and new compact register can be toggled with M or the header button.

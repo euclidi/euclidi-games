@@ -41,6 +41,6 @@ jobs:
           python3 innuendo-town/qa/package_preview.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add covers/manifest.json covers/innuendo-town-gameplay.webp innuendo-town/qa/evidence-v070.webp
-          git commit -m "Capture v0.7 actual gameplay and bitmap asset QA evidence"
+          git add covers/manifest.json covers/innuendo-town-gameplay.webp innuendo-town/qa/evidence-v080.webp
+          git commit -m "Capture v0.8 actual gameplay and bitmap asset QA evidence"
           git push origin HEAD:dev/innuendo-town-art

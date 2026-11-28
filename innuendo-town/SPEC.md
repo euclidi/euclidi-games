@@ -14,3 +14,6 @@ Cohesive native-pixel urban artwork, adult-proportioned directional sprites, com
 
 ## Release gates
 Desktop and mobile browser boot; no runtime errors; asset dimensions and frame selection visually reviewed; all eight entrances and job loops; input recovery; save/reload; performance and screenshot review. Publish to Euclidi Games only after these pass.
+
+### v0.8 presentation refinement
+Use compatible new shared-library sprites for generic furnishings, vegetation, floor accents and UI glyphs, normalized to the existing palette. Keep modern street art and collision layout. Live town map reflects simulated residents and open businesses; collapsible register and separate landscape controls preserve playable area.
