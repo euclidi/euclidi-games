@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://kit_mover.gd" id="1"]
+[ext_resource type="PackedScene" path="res://models/mine_door.glb" id="2"]
+
+[node name="Door" type="Node3D"]
+script = ExtResource("1")
+motion = 0
+axis = Vector3(0, 1, 0)
+open_amount = -80.0
+duration = 1.2
+
+[node name="Part" parent="." instance=ExtResource("2")]

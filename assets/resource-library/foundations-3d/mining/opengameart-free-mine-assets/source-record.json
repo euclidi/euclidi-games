@@ -1,0 +1,142 @@
+{
+  "record_version": 1,
+  "title": "OpenGameArt Free Mine Assets Pack",
+  "source_urls": [
+    "https://opengameart.org/node/27105"
+  ],
+  "publisher": "rubberduck (OpenGameArt)",
+  "license_ids": [
+    "CC0-1.0"
+  ],
+  "license_urls": [
+    "https://creativecommons.org/publicdomain/zero/1.0/"
+  ],
+  "license_verified": true,
+  "redistribution_allowed": true,
+  "license_evidence_path": "acquisition/evidence/source-review.md#mining-coverage",
+  "attribution_texts": [
+    "No attribution required under CC0; source author is rubberduck."
+  ],
+  "source_ids": [
+    "mining-opengameart-free-mine-assets"
+  ],
+  "files": [
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/mine_parts.blend",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/mine_parts.blend",
+      "bytes": 4787000,
+      "sha256": "61ddf987246e67b0d2394a0e3028b0abab3a571f443c3cd41f4a1dc64a4cf4a8",
+      "format": "blend",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/mine_parts_prev.blend",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/mine_parts_prev.blend",
+      "bytes": 11838152,
+      "sha256": "cea2804166fad43d2c3e3dac5531c14335adf0c17ce87e444cb072f4f0d875de",
+      "format": "blend",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/iron_diffuse.png",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/iron_diffuse.png",
+      "bytes": 1718688,
+      "sha256": "4683a951011cc47afbe867dd1e399fb12002f8bec72e7834f9f7ca822fb60ca2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/iron_normal.png",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/iron_normal.png",
+      "bytes": 1777675,
+      "sha256": "662da6cc6ddac6cfee31f802c8e33c58f93dc00873f9d838bcc3969cd947c71c",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/rock1.png",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/rock1.png",
+      "bytes": 2152443,
+      "sha256": "aaf4979333753a9fe1c6776f4891fbfe9546010170a974f43d33c02de7dd94d2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/rock1_norm.png",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/rock1_norm.png",
+      "bytes": 1796485,
+      "sha256": "c2ab0de9df51f9ca5393bce6b37bbd773d1946f79581f1db6abe002d43f50c65",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/rock1_spec.png",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/rock1_spec.png",
+      "bytes": 1724513,
+      "sha256": "4a179ad690026102716e61fde5026693b1b0edfe2a5fa214c7968079807cc4ee",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/wood1.png",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/wood1.png",
+      "bytes": 1320388,
+      "sha256": "99802da436780aa5f5ccfab8d27e218e301ab3f001531d80ca19e290130b59d6",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/wood1_norm.png",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets-extracted/textures/wood1_norm.png",
+      "bytes": 437081,
+      "sha256": "e2bd03b8011bf031b1330ac84c523af71e5331628f4118e458712bf78f54d780",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets.zip",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets.zip",
+      "bytes": 15879070,
+      "sha256": "526057cfbfa67933f7fe9173c730212b479a3fb3feb5a71f33ace377f0e4fcb5",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets.zip.source.json",
+      "path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets.zip.source.json",
+      "bytes": 339,
+      "sha256": "1897f69d2ca0874fe2c272c79a71780c618a2f6c2cbc08611dbcdaf47c722b0a",
+      "format": "json",
+      "role": "download-receipt"
+    }
+  ],
+  "file_count": 11,
+  "bytes_total": 43431834,
+  "note": "SHA-256 is recorded for each included archive, download receipt, extracted file, and local source note. Original archives are retained beside safe extractions where the publisher distributed a ZIP.",
+  "source_url": "https://opengameart.org/node/27105",
+  "license_id": "CC0-1.0",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attribution_text": "No attribution required under CC0; source author is rubberduck.",
+  "sources": [
+    {
+      "id": "mining-opengameart-free-mine-assets",
+      "title": "Free Mine Assets Pack (35+ 3D pieces)",
+      "publisher": "rubberduck (OpenGameArt)",
+      "source_url": "https://opengameart.org/node/27105",
+      "download_url": "https://opengameart.org/sites/default/files/free_mine_assets.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; source author is rubberduck.",
+      "sha256": "526057cfbfa67933f7fe9173c730212b479a3fb3feb5a71f33ace377f0e4fcb5",
+      "bytes": 15879070,
+      "local_path": "foundations-3d/mining/opengameart-free-mine-assets/free_mine_assets.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Official page lists 35+ wooden supports, stones at several polygon levels, stalagmites/stalactites, rail system, lamps, minecart, treasure chest and coins. Source preview crystals came from a separate pack and are not assumed included."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+Deepvein Mine Kit v1.2.0 - CC0 1.0 Universal
+
+To the extent possible under law, the author has waived all copyright and related or neighboring rights
+to this work (models, scripts, renders). You can copy, modify, distribute and use it, even for
+commercial purposes, without asking permission and without credit.
+
+Full legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode

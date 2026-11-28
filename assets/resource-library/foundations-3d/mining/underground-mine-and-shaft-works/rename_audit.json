@@ -1,0 +1,445 @@
+{
+  "renamed_generic_cdn_files": [
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24463",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-shotcrete-lined-be91b44f.glb",
+      "sha256": "3e77ec03b4bd53f24028bc156ea4e4dee787b9cd80bef416b6bd2149b0ca9a7b",
+      "bytes": 78892
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24464",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-tee-junction-1937fb92.glb",
+      "sha256": "744fbaece85a83f3f0efc02e9f1c5fd6e24889eadf7004733f1ee9aa69e51c74",
+      "bytes": 49500
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24465",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-straight-4m-6c107307.glb",
+      "sha256": "702a1ecbe54d6e2ae5e5d37225fa6b4d9b98c99a8d269a16906d799bbd006008",
+      "bytes": 53512
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24466",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-timbered-set-a76922be.glb",
+      "sha256": "eccab5b37091b7e604d1936e27d0ae6951c3f35d9b09c85c4b9af5a188bcd5ed",
+      "bytes": 44260
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24467",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-cross-junction-1b3023dc.glb",
+      "sha256": "ebd4871551d2a0353d739bf63fe0e1e5a97d09892f9a36dd3c64c84192d96751",
+      "bytes": 51248
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24468",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-curve-left-4b6fb6fe.glb",
+      "sha256": "86c11515b526a2d991edf5034f3f3f89d7ee0394491a42b528ad4ee3cb978c78",
+      "bytes": 98480
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24469",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-curve-right-6b6d1275.glb",
+      "sha256": "88be2e7b0c173f5f9ee2ba19156bf725095200e0d72162202aa3dfcf8b9e0b22",
+      "bytes": 98484
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24470",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-steel-arch-set-82f5050c.glb",
+      "sha256": "5965837cc1fbe6bfa26420d41b7bd3315374bed7878e35b577cfd7cfe2328b36",
+      "bytes": 64304
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24471",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-incline-ramp-1684cab3.glb",
+      "sha256": "4c9e833cc8db6bb75f23aa7d1aa8d5aab2f526cb6602dd44206fa77dc9062422",
+      "bytes": 73544
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24472",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-ore-pass-raise-collar-9b0a8927.glb",
+      "sha256": "b97f97d47f1e58c236f9abb96756fb0a8c440280e6e0f41c666394a666729d41",
+      "bytes": 17344
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24473",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-chamber-cutaway-597f067c.glb",
+      "sha256": "16883b133d588a28188227b99a1d74890dff3eb157a23438d1f0ed88d0cd7ef9",
+      "bytes": 33096
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24474",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-dead-end-face-d04dbbab.glb",
+      "sha256": "c19f7cd3bab1c872224235b138cf08478df8b58f2a082e05f4daf8a2b7f7e2c0",
+      "bytes": 82192
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24475",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-widened-chamber-68a47bd3.glb",
+      "sha256": "a6615f36cd8aac54b19ed283f0f98ea55a71f4760d928445908606edebd943e4",
+      "bytes": 33652
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24476",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-cutaway-study-6ced5e56.glb",
+      "sha256": "e99711a6db9440391e044bd1c06bd9ae2d70755c0b2319aa6d9fc91fb981474f",
+      "bytes": 36272
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24477",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-shaft-headframe-34246797.glb",
+      "sha256": "3760214a538da9dcf22fa4faf86c37a5fc5b6c998616f21d0e54b8a827070047",
+      "bytes": 108388
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24478",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-winder-house-aba1d59b.glb",
+      "sha256": "c0947cb1a53c41ba8743fd1f9253c4a76f7e8f48ce2dcc96d8255d0cc098dcc9",
+      "bytes": 50304
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24479",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-sheave-wheel-stand-6a7cc386.glb",
+      "sha256": "6f833068b30aae10abe6b148efe029706512d136bbd05bf23d9f899fa010fde0",
+      "bytes": 38736
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24480",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-man-cage-26bebcc5.glb",
+      "sha256": "daab08a1a14168f078a8c204e6c2a68ff080c06075d253eaacaabee550a8d95d",
+      "bytes": 55732
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24481",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-shaft-collar-5bd54298.glb",
+      "sha256": "68d6ca6a4c3d6a7be0fed91e56068adf64ac57dd40b4adb69cbcb6b22522d1e4",
+      "bytes": 35424
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24482",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-ore-skip-e961f4cf.glb",
+      "sha256": "6419dff8b16323c49671c5c88e8c24f5d4668a9e61a96c54919d835fb9b29e13",
+      "bytes": 19880
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24483",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-shaft-station-cutaway-460b9674.glb",
+      "sha256": "7bfa64209e45d21832ef5a031261bb8bb210d8b7cbc258b6c513e9f2823ab4a8",
+      "bytes": 49852
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24484",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-shaft-station-chamber-fe9a0521.glb",
+      "sha256": "18bdefee817746fff69139e3dc83b5beb0da240fce6095a85b68af7fe64640a6",
+      "bytes": 50416
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24485",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-loading-pocket-25a8fd0a.glb",
+      "sha256": "a453042baede8b4f85a0c894061843efde2eba5b93edc4a07aa8f4e7ba7a1f51",
+      "bytes": 22100
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24486",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-track-narrow-straight-c7db920f.glb",
+      "sha256": "b2345475d0cc264b70cd84216e75002cdf8eac9c68a5df9b44bffa06d7ec474f",
+      "bytes": 10620
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24487",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-track-narrow-curve-72d3ab75.glb",
+      "sha256": "42f97a6bef1a5742eaf8b77a77dc19149c93afd0fed7a66e93f20bf29a714ef0",
+      "bytes": 42308
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24488",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-ore-cart-3f953fa4.glb",
+      "sha256": "43512b8c0d3966c6310569c0c2d8948cdb2caf27eaceab9d60a28332392825d9",
+      "bytes": 51404
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24489",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-rail-switch-narrow-6485324d.glb",
+      "sha256": "6a5acf8abcd4881b2bcf495218ced313a48544da5e5f5dafb378de9f067ba51b",
+      "bytes": 33544
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24490",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-ore-cart-end-tipping-928aae12.glb",
+      "sha256": "e8137333d11db50d10b1a67d41d87665648f3c2636a0b140102e775b6f8cb2ac",
+      "bytes": 50116
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24491",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-battery-locomotive-96292f16.glb",
+      "sha256": "e9d8f5d7a702b8cc4273b538ba4f6011eb72d462677daa7e8f8a863c7f106379",
+      "bytes": 98992
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24492",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-rail-tipple-7239f34e.glb",
+      "sha256": "5ef646984a35b160cbd0651b1fead647f0ff6ac05abbcdf38c113c1e4b71af4a",
+      "bytes": 33224
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24493",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-lhd-loader-fd3ac2b4.glb",
+      "sha256": "7ff85a2d727478ca73c3230f9c37e27ff203697bc553ff282884907e76113c9a",
+      "bytes": 144624
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24494",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drill-jumbo-two-boom-6f3a6280.glb",
+      "sha256": "bc65a6d0d9c10bf22f95c17f80f0db63e3d7b3c60776b46c7e8689eaf90468f4",
+      "bytes": 179320
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24495",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-roof-bolter-86785992.glb",
+      "sha256": "f8af527338bc6646c94674d2f81f29ade647ba31e51b941e015b1260a9a70a6c",
+      "bytes": 148284
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24496",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-shotcrete-sprayer-060d815d.glb",
+      "sha256": "a90b6abd96a690b7daad2e830ab16b87d9ef0db36d503ea94da56e00e0e028b8",
+      "bytes": 144908
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24497",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-explosive-charging-un-c25b312e.glb",
+      "sha256": "b57a7969a29873b9b19d6276834422130268439bc0c5cc35936c0eaec87778fc",
+      "bytes": 147108
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24498",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-personnel-carrier-2e9e00f9.glb",
+      "sha256": "bd50f6df4881ea72761c9fb72e78db347525f4161e52f1af8c01e2c153a1813b",
+      "bytes": 105052
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24499",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-scaling-rig-0c8fe503.glb",
+      "sha256": "3e8e9fb617412316be4473a368c00679f4e9a724b16db5bed29590a0f3620213",
+      "bytes": 136364
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24500",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-main-fan-house-46a91910.glb",
+      "sha256": "369357b257396b48c48ad9cd53981dfb92c54ca0602b55f12323c734395ce1ce",
+      "bytes": 105624
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24501",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-vent-duct-bend-90ba1d18.glb",
+      "sha256": "dd0d6db60d425ba1d35f86897a921c89f70c0ad9e71b3695b433d6d550a3f65d",
+      "bytes": 33344
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24502",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-vent-duct-run-ccce3687.glb",
+      "sha256": "b07b834a3139f96513e467e51aee98ce9bab61a76c6377a5ff58b3829a27cac2",
+      "bytes": 38012
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24503",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-brattice-curtain-7d981e98.glb",
+      "sha256": "f6b0f0d00cb1a48156c10d668092bc146d3fba0f3215e8e7d74d9016d33f5795",
+      "bytes": 15696
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24504",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-ventilation-airlock-d-00d2af85.glb",
+      "sha256": "9a551830384bda902268a26698548722562f5eb5f8167cd17c6c03ff5291bf8d",
+      "bytes": 20892
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24505",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-pump-station-62bda8fd.glb",
+      "sha256": "52feba4b7e77f5a31adad50cfd6e3bb1090fe3d2d04746d772691b9860e8a6d3",
+      "bytes": 39864
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24506",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-refuge-chamber-c0699a81.glb",
+      "sha256": "4d4a01b4f7a480b8aeedc00da79d9a4c87b91e9f195cb28424d606eefdb0c816",
+      "bytes": 36788
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24507",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drainage-sump-76583d5e.glb",
+      "sha256": "8d8a73265d995b2106074c427159cbb79768ae9cae6017b24c93e8c506fb2737",
+      "bytes": 24408
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24508",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-power-distribution-bo-766a67c0.glb",
+      "sha256": "159e79a76e867a092bc7f767df1000662229ab6e14645fc1c9323101bca00b51",
+      "bytes": 29412
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24509",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-cable-tray-run-35cbee03.glb",
+      "sha256": "b791df3569d02ef418dd9c61aa3c69bec6781852991c5899e87699abb87b73e3",
+      "bytes": 21952
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24510",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-compressed-air-line-0201fe38.glb",
+      "sha256": "53bebca2930fa02998e5c36c72f73ca99a62cc707a364fd5e188b563eacd305b",
+      "bytes": 31012
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24511",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-hard-hat-cap-lamp-feea06fe.glb",
+      "sha256": "d0041b320fca59d1e0277b54b47e785991c02ca16211a3124b5286fd18f15498",
+      "bytes": 29680
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24512",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-water-line-c1b7c942.glb",
+      "sha256": "935abd1e4dde8a1b4e5e738ad642dd11a6408f921a9c02bbe0ac4b9ac00fb149",
+      "bytes": 30952
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24513",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-self-rescuer-71f38b32.glb",
+      "sha256": "2034c20b580fcf963262b7a2b6a955bc50b63456d49e0a0d6ff70b9648e06625",
+      "bytes": 18296
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24514",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-survey-station-6e7dd213.glb",
+      "sha256": "b5810b35f9fa2c37b8482322df936191c71df9d2175ad0a15695a8e918df5a39",
+      "bytes": 26692
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24515",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-powder-box-9708722c.glb",
+      "sha256": "0fe88b7597e84c960406c1ec7fff64dc3ba410c82da92030f0180dea33b3f199",
+      "bytes": 13884
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24516",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-blasting-wire-spool-796ee172.glb",
+      "sha256": "6734e2d2dd1c083e595c201d3c08ce4ed715b85db64def27ed60b79d04627d26",
+      "bytes": 24380
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24517",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-ore-sample-tray-69d90386.glb",
+      "sha256": "cfc07ef06f721a3e9ce732a47a93129432272eb1163e7f9a84ff36e2ddc9e000",
+      "bytes": 22892
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24518",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-timber-stack-96f1ed0e.glb",
+      "sha256": "344f449fe68fac9851d27eab65b679c57c55b3bb64c27b357eb59a21783f9fa0",
+      "bytes": 46052
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24519",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drill-steel-rack-632b17ab.glb",
+      "sha256": "cd8ad80b4dd3ee3a87c84605f8e038758611208edc63009641a9657f256bd856",
+      "bytes": 46148
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24520",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-warning-sign-9c3d0317.glb",
+      "sha256": "171b4769a20d196fed17ce852e394b7b7438fd5e3ae71dc2d585217d4dabd788",
+      "bytes": 13344
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24521",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-tally-board-4bcc67ef.glb",
+      "sha256": "f2dec453d93310dde7ff2aee351e4f44b38a038cb4224589c122d2d704180760",
+      "bytes": 67764
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24522",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-shaft-b-705d0084-starter-scene.glb",
+      "sha256": "6815c4ccfa0bb7f4b7e723268937cb23e2eb69d643845049ec5a80623675f81d",
+      "bytes": 592912
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24523",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-drift-run-to-face-9caece0b.glb",
+      "sha256": "ce4b25007331ebea722aa1552160eb362a80f5c80149885de86ae08f3c215602",
+      "bytes": 805932
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24524",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-surface-shaft-headwor-6f9d9c50.glb",
+      "sha256": "f0e1767499d09aa75bec6039d194f80603cd35562bbd2bf7ebc70337f43e3962",
+      "bytes": 639228
+    },
+    {
+      "source_id": "mining-underground-mine-and-shaft-works-24525",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/underground-mine-and-shaft-works/models/underground-mine-and-shaft-works-mine-connector-cases-4816567e.glb",
+      "sha256": "b348f6b9b98bfab244585839a74b69cab53a1c225e7050ca10e2312616e20223",
+      "bytes": 484520
+    }
+  ]
+}

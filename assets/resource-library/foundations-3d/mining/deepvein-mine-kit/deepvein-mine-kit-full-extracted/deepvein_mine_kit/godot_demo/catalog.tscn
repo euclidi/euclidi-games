@@ -1,0 +1,1235 @@
+[gd_scene load_steps=112 format=3]
+
+[ext_resource type="PackedScene" path="res://models/mine_floor.glb" id="1"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_rails.glb" id="2"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_rails_curve.glb" id="3"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_rails_end.glb" id="4"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_shaft.glb" id="5"]
+[ext_resource type="PackedScene" path="res://models/mine_wall.glb" id="6"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_half.glb" id="7"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_ore.glb" id="8"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_crystal.glb" id="9"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_timbered.glb" id="10"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_entrance.glb" id="11"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_collapsed.glb" id="12"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_corner.glb" id="13"]
+[ext_resource type="PackedScene" path="res://models/mine_support_frame.glb" id="14"]
+[ext_resource type="PackedScene" path="res://models/mine_ceiling.glb" id="15"]
+[ext_resource type="PackedScene" path="res://models/mine_stairs.glb" id="16"]
+[ext_resource type="PackedScene" path="res://models/mine_bridge.glb" id="17"]
+[ext_resource type="PackedScene" path="res://models/mine_rock_pillar.glb" id="18"]
+[ext_resource type="PackedScene" path="res://models/mine_shaft_headframe.glb" id="19"]
+[ext_resource type="PackedScene" path="res://models/mine_door.glb" id="20"]
+[ext_resource type="PackedScene" path="res://models/mine_hatch.glb" id="21"]
+[ext_resource type="PackedScene" path="res://models/mine_lift_cage.glb" id="22"]
+[ext_resource type="PackedScene" path="res://models/mine_cart.glb" id="23"]
+[ext_resource type="PackedScene" path="res://models/mine_cart_ore.glb" id="24"]
+[ext_resource type="PackedScene" path="res://models/mine_lantern_hanging.glb" id="25"]
+[ext_resource type="PackedScene" path="res://models/mine_lantern_post.glb" id="26"]
+[ext_resource type="PackedScene" path="res://models/mine_lantern_wall.glb" id="27"]
+[ext_resource type="PackedScene" path="res://models/mine_pickaxe.glb" id="28"]
+[ext_resource type="PackedScene" path="res://models/mine_shovel.glb" id="29"]
+[ext_resource type="PackedScene" path="res://models/mine_tool_rack.glb" id="30"]
+[ext_resource type="PackedScene" path="res://models/mine_ore_pile_gold.glb" id="31"]
+[ext_resource type="PackedScene" path="res://models/mine_ore_pile_iron.glb" id="32"]
+[ext_resource type="PackedScene" path="res://models/mine_coal_pile.glb" id="33"]
+[ext_resource type="PackedScene" path="res://models/mine_crystal_cluster.glb" id="34"]
+[ext_resource type="PackedScene" path="res://models/mine_crystal_large.glb" id="35"]
+[ext_resource type="PackedScene" path="res://models/mine_boulders.glb" id="36"]
+[ext_resource type="PackedScene" path="res://models/mine_stalagmite.glb" id="37"]
+[ext_resource type="PackedScene" path="res://models/mine_dynamite_crate.glb" id="38"]
+[ext_resource type="PackedScene" path="res://models/mine_detonator.glb" id="39"]
+[ext_resource type="PackedScene" path="res://models/mine_winch.glb" id="40"]
+[ext_resource type="PackedScene" path="res://models/mine_switch_lever.glb" id="41"]
+[ext_resource type="PackedScene" path="res://models/mine_switch_lever_handle.glb" id="42"]
+[ext_resource type="PackedScene" path="res://models/mine_ladder.glb" id="43"]
+[ext_resource type="PackedScene" path="res://models/mine_scaffold.glb" id="44"]
+[ext_resource type="PackedScene" path="res://models/mine_sign_danger.glb" id="45"]
+[ext_resource type="PackedScene" path="res://models/mine_mushrooms_glow.glb" id="46"]
+[ext_resource type="PackedScene" path="res://models/mine_plank_pile.glb" id="47"]
+[ext_resource type="PackedScene" path="res://models/mine_workbench.glb" id="48"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_rails_junction.glb" id="49"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_rails_cross.glb" id="50"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_rails_slope.glb" id="51"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_pit.glb" id="52"]
+[ext_resource type="PackedScene" path="res://models/mine_rail_bridge.glb" id="53"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_puddles.glb" id="54"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_rubble.glb" id="55"]
+[ext_resource type="PackedScene" path="res://models/mine_floor_planks.glb" id="56"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_silver.glb" id="57"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_gems.glb" id="58"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_coal_seam.glb" id="59"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_low_tunnel.glb" id="60"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_alcove.glb" id="61"]
+[ext_resource type="PackedScene" path="res://models/mine_wall_corner_round.glb" id="62"]
+[ext_resource type="PackedScene" path="res://models/mine_gate_bars.glb" id="63"]
+[ext_resource type="PackedScene" path="res://models/mine_support_braced.glb" id="64"]
+[ext_resource type="PackedScene" path="res://models/mine_support_post.glb" id="65"]
+[ext_resource type="PackedScene" path="res://models/mine_ceiling_timbered.glb" id="66"]
+[ext_resource type="PackedScene" path="res://models/mine_ceiling_shaft.glb" id="67"]
+[ext_resource type="PackedScene" path="res://models/mine_ceiling_stalactites.glb" id="68"]
+[ext_resource type="PackedScene" path="res://models/mine_stairs_timber.glb" id="69"]
+[ext_resource type="PackedScene" path="res://models/mine_walkway.glb" id="70"]
+[ext_resource type="PackedScene" path="res://models/mine_platform.glb" id="71"]
+[ext_resource type="PackedScene" path="res://models/mine_cave_in.glb" id="72"]
+[ext_resource type="PackedScene" path="res://models/mine_rock_arch.glb" id="73"]
+[ext_resource type="PackedScene" path="res://models/mine_loading_chute.glb" id="74"]
+[ext_resource type="PackedScene" path="res://models/mine_rails_switch_blade.glb" id="75"]
+[ext_resource type="PackedScene" path="res://models/mine_conveyor.glb" id="76"]
+[ext_resource type="PackedScene" path="res://models/mine_stamp_mill.glb" id="77"]
+[ext_resource type="PackedScene" path="res://models/mine_stamp_head.glb" id="78"]
+[ext_resource type="PackedScene" path="res://models/mine_pulley_frame.glb" id="79"]
+[ext_resource type="PackedScene" path="res://models/mine_ore_bucket.glb" id="80"]
+[ext_resource type="PackedScene" path="res://models/mine_chute_gate.glb" id="81"]
+[ext_resource type="PackedScene" path="res://models/mine_lamp_miner.glb" id="82"]
+[ext_resource type="PackedScene" path="res://models/mine_lamp_string.glb" id="83"]
+[ext_resource type="PackedScene" path="res://models/mine_sign_arrow.glb" id="84"]
+[ext_resource type="PackedScene" path="res://models/mine_sign_board.glb" id="85"]
+[ext_resource type="PackedScene" path="res://models/mine_crate_ore.glb" id="86"]
+[ext_resource type="PackedScene" path="res://models/mine_barrel_powder.glb" id="87"]
+[ext_resource type="PackedScene" path="res://models/mine_water_trough.glb" id="88"]
+[ext_resource type="PackedScene" path="res://models/mine_drill_hand.glb" id="89"]
+[ext_resource type="PackedScene" path="res://models/mine_mushroom_giant.glb" id="90"]
+[ext_resource type="PackedScene" path="res://models/mine_mushrooms_wall.glb" id="91"]
+[ext_resource type="PackedScene" path="res://models/mine_geode.glb" id="92"]
+[ext_resource type="PackedScene" path="res://models/mine_crystal_hanging.glb" id="93"]
+[ext_resource type="PackedScene" path="res://models/mine_crystal_shards.glb" id="94"]
+[ext_resource type="PackedScene" path="res://models/mine_rail_stack.glb" id="95"]
+[ext_resource type="PackedScene" path="res://models/mine_wheelbarrow.glb" id="96"]
+[ext_resource type="PackedScene" path="res://models/mine_sack_pile.glb" id="97"]
+[ext_resource type="PackedScene" path="res://models/mine_table.glb" id="98"]
+[ext_resource type="PackedScene" path="res://models/mine_canary_cage.glb" id="99"]
+[ext_resource type="PackedScene" path="res://models/mine_rope_coil.glb" id="100"]
+[ext_resource type="PackedScene" path="res://models/mine_strongbox.glb" id="101"]
+[ext_resource type="PackedScene" path="res://models/mine_dynamite_bundle.glb" id="102"]
+[ext_resource type="PackedScene" path="res://models/mine_vent_fan.glb" id="103"]
+[ext_resource type="PackedScene" path="res://models/mine_vent_chimney.glb" id="104"]
+[ext_resource type="PackedScene" path="res://models/mine_water_pump.glb" id="105"]
+[ext_resource type="PackedScene" path="res://models/mine_scaffold_tall.glb" id="106"]
+[ext_resource type="PackedScene" path="res://models/mine_stalactite.glb" id="107"]
+[ext_resource type="PackedScene" path="res://models/mine_bats.glb" id="108"]
+[ext_resource type="PackedScene" path="res://models/mine_cart_flat.glb" id="109"]
+[ext_resource type="PackedScene" path="res://models/mine_handcar.glb" id="110"]
+
+[sub_resource type="Environment" id="env"]
+background_mode = 1
+background_color = Color(0.62, 0.6, 0.57, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 4
+
+[node name="Catalog" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.82, -0.33, 0.47, 0, 0.82, 0.57, -0.57, -0.47, 0.67, 0, 10, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(30, 43.4, 78.4)
+rotation = Vector3(-0.62, 0, 0)
+fov = 50.0
+
+[node name="mine_floor" parent="." instance=ExtResource("1")]
+position = Vector3(0.0, 0, 0.0)
+
+[node name="mine_floor_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor"
+
+[node name="mine_floor_rails" parent="." instance=ExtResource("2")]
+position = Vector3(6.0, 0, 0.0)
+
+[node name="mine_floor_rails_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_rails"
+
+[node name="mine_floor_rails_curve" parent="." instance=ExtResource("3")]
+position = Vector3(12.0, 0, 0.0)
+
+[node name="mine_floor_rails_curve_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_rails_curve"
+
+[node name="mine_floor_rails_end" parent="." instance=ExtResource("4")]
+position = Vector3(18.0, 0, 0.0)
+
+[node name="mine_floor_rails_end_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_rails_end"
+
+[node name="mine_floor_shaft" parent="." instance=ExtResource("5")]
+position = Vector3(24.0, 0, 0.0)
+
+[node name="mine_floor_shaft_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_shaft"
+
+[node name="mine_wall" parent="." instance=ExtResource("6")]
+position = Vector3(30.0, 0, 0.0)
+
+[node name="mine_wall_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall"
+
+[node name="mine_wall_half" parent="." instance=ExtResource("7")]
+position = Vector3(36.0, 0, 0.0)
+
+[node name="mine_wall_half_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_half"
+
+[node name="mine_wall_ore" parent="." instance=ExtResource("8")]
+position = Vector3(42.0, 0, 0.0)
+
+[node name="mine_wall_ore_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_ore"
+
+[node name="mine_wall_crystal" parent="." instance=ExtResource("9")]
+position = Vector3(48.0, 0, 0.0)
+
+[node name="mine_wall_crystal_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_crystal"
+
+[node name="mine_wall_timbered" parent="." instance=ExtResource("10")]
+position = Vector3(54.0, 0, 0.0)
+
+[node name="mine_wall_timbered_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_timbered"
+
+[node name="mine_wall_entrance" parent="." instance=ExtResource("11")]
+position = Vector3(60.0, 0, 0.0)
+
+[node name="mine_wall_entrance_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 2.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_entrance"
+
+[node name="mine_wall_collapsed" parent="." instance=ExtResource("12")]
+position = Vector3(0.0, 0, 7.0)
+
+[node name="mine_wall_collapsed_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_collapsed"
+
+[node name="mine_wall_corner" parent="." instance=ExtResource("13")]
+position = Vector3(6.0, 0, 7.0)
+
+[node name="mine_wall_corner_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_corner"
+
+[node name="mine_support_frame" parent="." instance=ExtResource("14")]
+position = Vector3(12.0, 0, 7.0)
+
+[node name="mine_support_frame_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "support_frame"
+
+[node name="mine_ceiling" parent="." instance=ExtResource("15")]
+position = Vector3(18.0, 0, 7.0)
+
+[node name="mine_ceiling_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ceiling"
+
+[node name="mine_stairs" parent="." instance=ExtResource("16")]
+position = Vector3(24.0, 0, 7.0)
+
+[node name="mine_stairs_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "stairs"
+
+[node name="mine_bridge" parent="." instance=ExtResource("17")]
+position = Vector3(30.0, 0, 7.0)
+
+[node name="mine_bridge_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "bridge"
+
+[node name="mine_rock_pillar" parent="." instance=ExtResource("18")]
+position = Vector3(36.0, 0, 7.0)
+
+[node name="mine_rock_pillar_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "rock_pillar"
+
+[node name="mine_shaft_headframe" parent="." instance=ExtResource("19")]
+position = Vector3(42.0, 0, 7.0)
+
+[node name="mine_shaft_headframe_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "shaft_headframe"
+
+[node name="mine_door" parent="." instance=ExtResource("20")]
+position = Vector3(48.0, 0, 7.0)
+
+[node name="mine_door_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "door"
+
+[node name="mine_hatch" parent="." instance=ExtResource("21")]
+position = Vector3(54.0, 0, 7.0)
+
+[node name="mine_hatch_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "hatch"
+
+[node name="mine_lift_cage" parent="." instance=ExtResource("22")]
+position = Vector3(60.0, 0, 7.0)
+
+[node name="mine_lift_cage_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 9.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "lift_cage"
+
+[node name="mine_cart" parent="." instance=ExtResource("23")]
+position = Vector3(0.0, 0, 14.0)
+
+[node name="mine_cart_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "cart"
+
+[node name="mine_cart_ore" parent="." instance=ExtResource("24")]
+position = Vector3(6.0, 0, 14.0)
+
+[node name="mine_cart_ore_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "cart_ore"
+
+[node name="mine_lantern_hanging" parent="." instance=ExtResource("25")]
+position = Vector3(12.0, 0, 14.0)
+
+[node name="mine_lantern_hanging_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "lantern_hanging"
+
+[node name="mine_lantern_post" parent="." instance=ExtResource("26")]
+position = Vector3(18.0, 0, 14.0)
+
+[node name="mine_lantern_post_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "lantern_post"
+
+[node name="mine_lantern_wall" parent="." instance=ExtResource("27")]
+position = Vector3(24.0, 0, 14.0)
+
+[node name="mine_lantern_wall_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "lantern_wall"
+
+[node name="mine_pickaxe" parent="." instance=ExtResource("28")]
+position = Vector3(30.0, 0, 14.0)
+
+[node name="mine_pickaxe_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "pickaxe"
+
+[node name="mine_shovel" parent="." instance=ExtResource("29")]
+position = Vector3(36.0, 0, 14.0)
+
+[node name="mine_shovel_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "shovel"
+
+[node name="mine_tool_rack" parent="." instance=ExtResource("30")]
+position = Vector3(42.0, 0, 14.0)
+
+[node name="mine_tool_rack_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "tool_rack"
+
+[node name="mine_ore_pile_gold" parent="." instance=ExtResource("31")]
+position = Vector3(48.0, 0, 14.0)
+
+[node name="mine_ore_pile_gold_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ore_pile_gold"
+
+[node name="mine_ore_pile_iron" parent="." instance=ExtResource("32")]
+position = Vector3(54.0, 0, 14.0)
+
+[node name="mine_ore_pile_iron_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ore_pile_iron"
+
+[node name="mine_coal_pile" parent="." instance=ExtResource("33")]
+position = Vector3(60.0, 0, 14.0)
+
+[node name="mine_coal_pile_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 16.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "coal_pile"
+
+[node name="mine_crystal_cluster" parent="." instance=ExtResource("34")]
+position = Vector3(0.0, 0, 21.0)
+
+[node name="mine_crystal_cluster_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "crystal_cluster"
+
+[node name="mine_crystal_large" parent="." instance=ExtResource("35")]
+position = Vector3(6.0, 0, 21.0)
+
+[node name="mine_crystal_large_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "crystal_large"
+
+[node name="mine_boulders" parent="." instance=ExtResource("36")]
+position = Vector3(12.0, 0, 21.0)
+
+[node name="mine_boulders_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "boulders"
+
+[node name="mine_stalagmite" parent="." instance=ExtResource("37")]
+position = Vector3(18.0, 0, 21.0)
+
+[node name="mine_stalagmite_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "stalagmite"
+
+[node name="mine_dynamite_crate" parent="." instance=ExtResource("38")]
+position = Vector3(24.0, 0, 21.0)
+
+[node name="mine_dynamite_crate_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "dynamite_crate"
+
+[node name="mine_detonator" parent="." instance=ExtResource("39")]
+position = Vector3(30.0, 0, 21.0)
+
+[node name="mine_detonator_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "detonator"
+
+[node name="mine_winch" parent="." instance=ExtResource("40")]
+position = Vector3(36.0, 0, 21.0)
+
+[node name="mine_winch_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "winch"
+
+[node name="mine_switch_lever" parent="." instance=ExtResource("41")]
+position = Vector3(42.0, 0, 21.0)
+
+[node name="mine_switch_lever_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "switch_lever"
+
+[node name="mine_switch_lever_handle" parent="." instance=ExtResource("42")]
+position = Vector3(48.0, 0, 21.0)
+
+[node name="mine_switch_lever_handle_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "switch_lever_handle"
+
+[node name="mine_ladder" parent="." instance=ExtResource("43")]
+position = Vector3(54.0, 0, 21.0)
+
+[node name="mine_ladder_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ladder"
+
+[node name="mine_scaffold" parent="." instance=ExtResource("44")]
+position = Vector3(60.0, 0, 21.0)
+
+[node name="mine_scaffold_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 23.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "scaffold"
+
+[node name="mine_sign_danger" parent="." instance=ExtResource("45")]
+position = Vector3(0.0, 0, 28.0)
+
+[node name="mine_sign_danger_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "sign_danger"
+
+[node name="mine_mushrooms_glow" parent="." instance=ExtResource("46")]
+position = Vector3(6.0, 0, 28.0)
+
+[node name="mine_mushrooms_glow_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "mushrooms_glow"
+
+[node name="mine_plank_pile" parent="." instance=ExtResource("47")]
+position = Vector3(12.0, 0, 28.0)
+
+[node name="mine_plank_pile_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "plank_pile"
+
+[node name="mine_workbench" parent="." instance=ExtResource("48")]
+position = Vector3(18.0, 0, 28.0)
+
+[node name="mine_workbench_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "workbench"
+
+[node name="mine_floor_rails_junction" parent="." instance=ExtResource("49")]
+position = Vector3(24.0, 0, 28.0)
+
+[node name="mine_floor_rails_junction_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_rails_junction"
+
+[node name="mine_floor_rails_cross" parent="." instance=ExtResource("50")]
+position = Vector3(30.0, 0, 28.0)
+
+[node name="mine_floor_rails_cross_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_rails_cross"
+
+[node name="mine_floor_rails_slope" parent="." instance=ExtResource("51")]
+position = Vector3(36.0, 0, 28.0)
+
+[node name="mine_floor_rails_slope_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_rails_slope"
+
+[node name="mine_floor_pit" parent="." instance=ExtResource("52")]
+position = Vector3(42.0, 0, 28.0)
+
+[node name="mine_floor_pit_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_pit"
+
+[node name="mine_rail_bridge" parent="." instance=ExtResource("53")]
+position = Vector3(48.0, 0, 28.0)
+
+[node name="mine_rail_bridge_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "rail_bridge"
+
+[node name="mine_floor_puddles" parent="." instance=ExtResource("54")]
+position = Vector3(54.0, 0, 28.0)
+
+[node name="mine_floor_puddles_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_puddles"
+
+[node name="mine_floor_rubble" parent="." instance=ExtResource("55")]
+position = Vector3(60.0, 0, 28.0)
+
+[node name="mine_floor_rubble_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 30.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_rubble"
+
+[node name="mine_floor_planks" parent="." instance=ExtResource("56")]
+position = Vector3(0.0, 0, 35.0)
+
+[node name="mine_floor_planks_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "floor_planks"
+
+[node name="mine_wall_silver" parent="." instance=ExtResource("57")]
+position = Vector3(6.0, 0, 35.0)
+
+[node name="mine_wall_silver_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_silver"
+
+[node name="mine_wall_gems" parent="." instance=ExtResource("58")]
+position = Vector3(12.0, 0, 35.0)
+
+[node name="mine_wall_gems_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_gems"
+
+[node name="mine_wall_coal_seam" parent="." instance=ExtResource("59")]
+position = Vector3(18.0, 0, 35.0)
+
+[node name="mine_wall_coal_seam_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_coal_seam"
+
+[node name="mine_wall_low_tunnel" parent="." instance=ExtResource("60")]
+position = Vector3(24.0, 0, 35.0)
+
+[node name="mine_wall_low_tunnel_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_low_tunnel"
+
+[node name="mine_wall_alcove" parent="." instance=ExtResource("61")]
+position = Vector3(30.0, 0, 35.0)
+
+[node name="mine_wall_alcove_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_alcove"
+
+[node name="mine_wall_corner_round" parent="." instance=ExtResource("62")]
+position = Vector3(36.0, 0, 35.0)
+
+[node name="mine_wall_corner_round_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wall_corner_round"
+
+[node name="mine_gate_bars" parent="." instance=ExtResource("63")]
+position = Vector3(42.0, 0, 35.0)
+
+[node name="mine_gate_bars_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "gate_bars"
+
+[node name="mine_support_braced" parent="." instance=ExtResource("64")]
+position = Vector3(48.0, 0, 35.0)
+
+[node name="mine_support_braced_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "support_braced"
+
+[node name="mine_support_post" parent="." instance=ExtResource("65")]
+position = Vector3(54.0, 0, 35.0)
+
+[node name="mine_support_post_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "support_post"
+
+[node name="mine_ceiling_timbered" parent="." instance=ExtResource("66")]
+position = Vector3(60.0, 0, 35.0)
+
+[node name="mine_ceiling_timbered_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 37.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ceiling_timbered"
+
+[node name="mine_ceiling_shaft" parent="." instance=ExtResource("67")]
+position = Vector3(0.0, 0, 42.0)
+
+[node name="mine_ceiling_shaft_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ceiling_shaft"
+
+[node name="mine_ceiling_stalactites" parent="." instance=ExtResource("68")]
+position = Vector3(6.0, 0, 42.0)
+
+[node name="mine_ceiling_stalactites_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ceiling_stalactites"
+
+[node name="mine_stairs_timber" parent="." instance=ExtResource("69")]
+position = Vector3(12.0, 0, 42.0)
+
+[node name="mine_stairs_timber_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "stairs_timber"
+
+[node name="mine_walkway" parent="." instance=ExtResource("70")]
+position = Vector3(18.0, 0, 42.0)
+
+[node name="mine_walkway_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "walkway"
+
+[node name="mine_platform" parent="." instance=ExtResource("71")]
+position = Vector3(24.0, 0, 42.0)
+
+[node name="mine_platform_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "platform"
+
+[node name="mine_cave_in" parent="." instance=ExtResource("72")]
+position = Vector3(30.0, 0, 42.0)
+
+[node name="mine_cave_in_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "cave_in"
+
+[node name="mine_rock_arch" parent="." instance=ExtResource("73")]
+position = Vector3(36.0, 0, 42.0)
+
+[node name="mine_rock_arch_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "rock_arch"
+
+[node name="mine_loading_chute" parent="." instance=ExtResource("74")]
+position = Vector3(42.0, 0, 42.0)
+
+[node name="mine_loading_chute_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "loading_chute"
+
+[node name="mine_rails_switch_blade" parent="." instance=ExtResource("75")]
+position = Vector3(48.0, 0, 42.0)
+
+[node name="mine_rails_switch_blade_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "rails_switch_blade"
+
+[node name="mine_conveyor" parent="." instance=ExtResource("76")]
+position = Vector3(54.0, 0, 42.0)
+
+[node name="mine_conveyor_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "conveyor"
+
+[node name="mine_stamp_mill" parent="." instance=ExtResource("77")]
+position = Vector3(60.0, 0, 42.0)
+
+[node name="mine_stamp_mill_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 44.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "stamp_mill"
+
+[node name="mine_stamp_head" parent="." instance=ExtResource("78")]
+position = Vector3(0.0, 0, 49.0)
+
+[node name="mine_stamp_head_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "stamp_head"
+
+[node name="mine_pulley_frame" parent="." instance=ExtResource("79")]
+position = Vector3(6.0, 0, 49.0)
+
+[node name="mine_pulley_frame_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "pulley_frame"
+
+[node name="mine_ore_bucket" parent="." instance=ExtResource("80")]
+position = Vector3(12.0, 0, 49.0)
+
+[node name="mine_ore_bucket_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "ore_bucket"
+
+[node name="mine_chute_gate" parent="." instance=ExtResource("81")]
+position = Vector3(18.0, 0, 49.0)
+
+[node name="mine_chute_gate_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "chute_gate"
+
+[node name="mine_lamp_miner" parent="." instance=ExtResource("82")]
+position = Vector3(24.0, 0, 49.0)
+
+[node name="mine_lamp_miner_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "lamp_miner"
+
+[node name="mine_lamp_string" parent="." instance=ExtResource("83")]
+position = Vector3(30.0, 0, 49.0)
+
+[node name="mine_lamp_string_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "lamp_string"
+
+[node name="mine_sign_arrow" parent="." instance=ExtResource("84")]
+position = Vector3(36.0, 0, 49.0)
+
+[node name="mine_sign_arrow_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "sign_arrow"
+
+[node name="mine_sign_board" parent="." instance=ExtResource("85")]
+position = Vector3(42.0, 0, 49.0)
+
+[node name="mine_sign_board_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "sign_board"
+
+[node name="mine_crate_ore" parent="." instance=ExtResource("86")]
+position = Vector3(48.0, 0, 49.0)
+
+[node name="mine_crate_ore_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "crate_ore"
+
+[node name="mine_barrel_powder" parent="." instance=ExtResource("87")]
+position = Vector3(54.0, 0, 49.0)
+
+[node name="mine_barrel_powder_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "barrel_powder"
+
+[node name="mine_water_trough" parent="." instance=ExtResource("88")]
+position = Vector3(60.0, 0, 49.0)
+
+[node name="mine_water_trough_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 51.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "water_trough"
+
+[node name="mine_drill_hand" parent="." instance=ExtResource("89")]
+position = Vector3(0.0, 0, 56.0)
+
+[node name="mine_drill_hand_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "drill_hand"
+
+[node name="mine_mushroom_giant" parent="." instance=ExtResource("90")]
+position = Vector3(6.0, 0, 56.0)
+
+[node name="mine_mushroom_giant_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "mushroom_giant"
+
+[node name="mine_mushrooms_wall" parent="." instance=ExtResource("91")]
+position = Vector3(12.0, 0, 56.0)
+
+[node name="mine_mushrooms_wall_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "mushrooms_wall"
+
+[node name="mine_geode" parent="." instance=ExtResource("92")]
+position = Vector3(18.0, 0, 56.0)
+
+[node name="mine_geode_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "geode"
+
+[node name="mine_crystal_hanging" parent="." instance=ExtResource("93")]
+position = Vector3(24.0, 0, 56.0)
+
+[node name="mine_crystal_hanging_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "crystal_hanging"
+
+[node name="mine_crystal_shards" parent="." instance=ExtResource("94")]
+position = Vector3(30.0, 0, 56.0)
+
+[node name="mine_crystal_shards_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "crystal_shards"
+
+[node name="mine_rail_stack" parent="." instance=ExtResource("95")]
+position = Vector3(36.0, 0, 56.0)
+
+[node name="mine_rail_stack_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "rail_stack"
+
+[node name="mine_wheelbarrow" parent="." instance=ExtResource("96")]
+position = Vector3(42.0, 0, 56.0)
+
+[node name="mine_wheelbarrow_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "wheelbarrow"
+
+[node name="mine_sack_pile" parent="." instance=ExtResource("97")]
+position = Vector3(48.0, 0, 56.0)
+
+[node name="mine_sack_pile_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "sack_pile"
+
+[node name="mine_table" parent="." instance=ExtResource("98")]
+position = Vector3(54.0, 0, 56.0)
+
+[node name="mine_table_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "table"
+
+[node name="mine_canary_cage" parent="." instance=ExtResource("99")]
+position = Vector3(60.0, 0, 56.0)
+
+[node name="mine_canary_cage_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 58.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "canary_cage"
+
+[node name="mine_rope_coil" parent="." instance=ExtResource("100")]
+position = Vector3(0.0, 0, 63.0)
+
+[node name="mine_rope_coil_label" type="Label3D" parent="."]
+position = Vector3(0.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "rope_coil"
+
+[node name="mine_strongbox" parent="." instance=ExtResource("101")]
+position = Vector3(6.0, 0, 63.0)
+
+[node name="mine_strongbox_label" type="Label3D" parent="."]
+position = Vector3(6.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "strongbox"
+
+[node name="mine_dynamite_bundle" parent="." instance=ExtResource("102")]
+position = Vector3(12.0, 0, 63.0)
+
+[node name="mine_dynamite_bundle_label" type="Label3D" parent="."]
+position = Vector3(12.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "dynamite_bundle"
+
+[node name="mine_vent_fan" parent="." instance=ExtResource("103")]
+position = Vector3(18.0, 0, 63.0)
+
+[node name="mine_vent_fan_label" type="Label3D" parent="."]
+position = Vector3(18.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "vent_fan"
+
+[node name="mine_vent_chimney" parent="." instance=ExtResource("104")]
+position = Vector3(24.0, 0, 63.0)
+
+[node name="mine_vent_chimney_label" type="Label3D" parent="."]
+position = Vector3(24.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "vent_chimney"
+
+[node name="mine_water_pump" parent="." instance=ExtResource("105")]
+position = Vector3(30.0, 0, 63.0)
+
+[node name="mine_water_pump_label" type="Label3D" parent="."]
+position = Vector3(30.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "water_pump"
+
+[node name="mine_scaffold_tall" parent="." instance=ExtResource("106")]
+position = Vector3(36.0, 0, 63.0)
+
+[node name="mine_scaffold_tall_label" type="Label3D" parent="."]
+position = Vector3(36.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "scaffold_tall"
+
+[node name="mine_stalactite" parent="." instance=ExtResource("107")]
+position = Vector3(42.0, 0, 63.0)
+
+[node name="mine_stalactite_label" type="Label3D" parent="."]
+position = Vector3(42.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "stalactite"
+
+[node name="mine_bats" parent="." instance=ExtResource("108")]
+position = Vector3(48.0, 0, 63.0)
+
+[node name="mine_bats_label" type="Label3D" parent="."]
+position = Vector3(48.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "bats"
+
+[node name="mine_cart_flat" parent="." instance=ExtResource("109")]
+position = Vector3(54.0, 0, 63.0)
+
+[node name="mine_cart_flat_label" type="Label3D" parent="."]
+position = Vector3(54.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "cart_flat"
+
+[node name="mine_handcar" parent="." instance=ExtResource("110")]
+position = Vector3(60.0, 0, 63.0)
+
+[node name="mine_handcar_label" type="Label3D" parent="."]
+position = Vector3(60.0, 0.3, 65.4)
+billboard = 1
+pixel_size = 0.012
+outline_size = 6
+text = "handcar"
+

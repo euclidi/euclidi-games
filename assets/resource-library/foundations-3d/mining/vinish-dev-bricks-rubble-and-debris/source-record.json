@@ -1,0 +1,485 @@
+{
+  "record_version": 1,
+  "title": "Vinish Bricks, Rubble and Debris Models",
+  "source_urls": [
+    "https://vinish.dev/free-3d-models/bricks-rubble-and-debris"
+  ],
+  "publisher": "vinish.dev",
+  "license_ids": [
+    "CC-BY-4.0"
+  ],
+  "license_urls": [
+    "https://creativecommons.org/licenses/by/4.0/"
+  ],
+  "license_verified": true,
+  "redistribution_allowed": true,
+  "license_evidence_path": "acquisition/evidence/source-review.md#mining-coverage",
+  "attribution_texts": [
+    "“Broken Cinder Blocks” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Broken Concrete Column” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Broken Concrete Pipe” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Broken Concrete Slab” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Broken Roof Tiles” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Debris Wheelbarrow” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Demolition Debris Mound” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Fallen Brick Wall Chunk” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Loose Brick Pile” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Rebar Concrete Chunk” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Smashed Drywall Sheets” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+    "“Snapped Timber Beams” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0."
+  ],
+  "source_ids": [
+    "mining-vinish-rubble-loose-brick-pile",
+    "mining-vinish-rubble-broken-concrete-slab",
+    "mining-vinish-rubble-rebar-concrete-chunk",
+    "mining-vinish-rubble-demolition-debris-mound",
+    "mining-vinish-rubble-fallen-brick-wall-chunk",
+    "mining-vinish-rubble-broken-cinder-blocks",
+    "mining-vinish-rubble-snapped-timber-beams",
+    "mining-vinish-rubble-smashed-drywall-sheets",
+    "mining-vinish-rubble-broken-concrete-pipe",
+    "mining-vinish-rubble-debris-wheelbarrow",
+    "mining-vinish-rubble-broken-roof-tiles",
+    "mining-vinish-rubble-broken-concrete-column"
+  ],
+  "files": [
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-cinder-blocks.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-cinder-blocks.glb",
+      "bytes": 361000,
+      "sha256": "8df34af39056bc2a2c366498e9c8d08b427e51fe12ec20eafd92bb92c41b54d2",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-cinder-blocks.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-cinder-blocks.glb.source.json",
+      "bytes": 368,
+      "sha256": "ac4588a90a3527567bcdc4c4c97782af94a0c0e002b490b097e2e11d74a38bea",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-column.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-column.glb",
+      "bytes": 414860,
+      "sha256": "332db36b1c90d243774f6c23d86777389f878f439b0b1625dab37c2914f60295",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-column.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-column.glb.source.json",
+      "bytes": 370,
+      "sha256": "685fec312a5213d9dfecfe19121ed60bba0bb9522ddd632d637b2d5fb9176182",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-pipe.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-pipe.glb",
+      "bytes": 478832,
+      "sha256": "315bc0e86d10e5358fc7161a156c63a24cdfcc4b2d87e255f2ce258afec9bdf2",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-pipe.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-pipe.glb.source.json",
+      "bytes": 368,
+      "sha256": "4ba9d2d0741e19f4c91b6e4a731ec895981310314220b635192fa37b7df0a7c1",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-slab.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-slab.glb",
+      "bytes": 326104,
+      "sha256": "5e766330aad74876f264ddbb6f9fb73a4154dd1c810d36da64790f12a55a3cc2",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-slab.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-slab.glb.source.json",
+      "bytes": 368,
+      "sha256": "b66175d3d016931d7de063abe41d31866d63b5e90c763ca54c53d11e2644ca17",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-roof-tiles.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-roof-tiles.glb",
+      "bytes": 588660,
+      "sha256": "23fcfd3dd401f08a5bcda9f65d4d8c649858feab935829401b61375816648eaa",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-roof-tiles.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-roof-tiles.glb.source.json",
+      "bytes": 365,
+      "sha256": "8f063e9bcfa3bf777af1cde3c6a1729c932e09a90b7c8bad7deb4f180ea4b028",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/debris-wheelbarrow.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/debris-wheelbarrow.glb",
+      "bytes": 358188,
+      "sha256": "134bc26780b50a6832abd4ca37a327baff1c3f9f15390170fa92d846f5efb477",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/debris-wheelbarrow.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/debris-wheelbarrow.glb.source.json",
+      "bytes": 366,
+      "sha256": "5215b16414a877aa1016db66afa65efef88b7d8d7731724d6990062b48efb351",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/demolition-debris-mound.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/demolition-debris-mound.glb",
+      "bytes": 760508,
+      "sha256": "3ad491233993c10b0e984d741936c8619af34d990b95fcef2f7819a595da8383",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/demolition-debris-mound.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/demolition-debris-mound.glb.source.json",
+      "bytes": 371,
+      "sha256": "54f57a83a1fc1a1e31817973fe7d6c845d0f9ff486ab18b84dcc259d76cbf575",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/fallen-brick-wall-chunk.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/fallen-brick-wall-chunk.glb",
+      "bytes": 826524,
+      "sha256": "7228f41cdd3349424e869abcfbb5c877a7f19cab317ea40e80bf912eddda8c0c",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/fallen-brick-wall-chunk.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/fallen-brick-wall-chunk.glb.source.json",
+      "bytes": 371,
+      "sha256": "4ba2b0321109288abe3acd5ebe8861f57e3b56ec49af61dcfe26f245aaa1bd04",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/loose-brick-pile.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/loose-brick-pile.glb",
+      "bytes": 963028,
+      "sha256": "1522651b925dd9916cf2d131090a28f70ab687597616b37b8b42e7ead6c93aa4",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/loose-brick-pile.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/loose-brick-pile.glb.source.json",
+      "bytes": 364,
+      "sha256": "d683e545bf6c9d10b6c5f53697a061808ee80b4a67e25d0bbb0f05b532b5f50f",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/README.md",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/README.md",
+      "bytes": 812,
+      "sha256": "580ddca55b108438ea80e672e22cf344a0360387b78f9f29d30316c484eab765",
+      "format": "md",
+      "role": "local-use-and-license-notes"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/rebar-concrete-chunk.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/rebar-concrete-chunk.glb",
+      "bytes": 345996,
+      "sha256": "7dca24ecd772956d267eb0893f069e0f509f17553a89a726b8adbf187023c691",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/rebar-concrete-chunk.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/rebar-concrete-chunk.glb.source.json",
+      "bytes": 368,
+      "sha256": "b8f2e64253d39e69bcc99cda3e8f68d0b5996c49bc9c280218f722ccb2f341b9",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/smashed-drywall-sheets.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/smashed-drywall-sheets.glb",
+      "bytes": 116624,
+      "sha256": "c9af4a99e3c1a8ebcf09d2674329774fd0bc82b83609873cc9bd8361d91a9193",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/smashed-drywall-sheets.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/smashed-drywall-sheets.glb.source.json",
+      "bytes": 370,
+      "sha256": "1a59e0b3614a55eb05cf8fee1ecb8b1fd8556b4af455c3405f5e24bcd7474143",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/snapped-timber-beams.glb",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/snapped-timber-beams.glb",
+      "bytes": 153596,
+      "sha256": "eaeec04b93359df3f6673ebebe8a5e5a8099ea9cd4e35862f9101fd428a4c87f",
+      "format": "glb",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/snapped-timber-beams.glb.source.json",
+      "path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/snapped-timber-beams.glb.source.json",
+      "bytes": 368,
+      "sha256": "240fcf944dcd43acc5e3fa68ec2f5656b48f48ccf053190c42100a27acc21c1a",
+      "format": "json",
+      "role": "download-receipt"
+    }
+  ],
+  "file_count": 25,
+  "bytes_total": 5699149,
+  "note": "SHA-256 is recorded for each included archive, download receipt, extracted file, and local source note. Original archives are retained beside safe extractions where the publisher distributed a ZIP.",
+  "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+  "license_id": "CC-BY-4.0",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution_text": "See the per-source attribution rows below; each Vinish model also embeds its copyright notice.",
+  "sources": [
+    {
+      "id": "mining-vinish-rubble-loose-brick-pile",
+      "title": "Loose Brick Pile",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/loose-brick-pile.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Loose Brick Pile” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "1522651b925dd9916cf2d131090a28f70ab687597616b37b8b42e7ead6c93aa4",
+      "bytes": 963028,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/loose-brick-pile.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 9,364 triangles, 1.71 × 1.75 × 0.56 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-broken-concrete-slab",
+      "title": "Broken Concrete Slab",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/broken-concrete-slab.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Broken Concrete Slab” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "5e766330aad74876f264ddbb6f9fb73a4154dd1c810d36da64790f12a55a3cc2",
+      "bytes": 326104,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-slab.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 2,523 triangles, 2.81 × 2.44 × 0.31 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-rebar-concrete-chunk",
+      "title": "Rebar Concrete Chunk",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/rebar-concrete-chunk.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Rebar Concrete Chunk” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "7dca24ecd772956d267eb0893f069e0f509f17553a89a726b8adbf187023c691",
+      "bytes": 345996,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/rebar-concrete-chunk.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 3,416 triangles, 1.91 × 1.67 × 1.31 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-demolition-debris-mound",
+      "title": "Demolition Debris Mound",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/demolition-debris-mound.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Demolition Debris Mound” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "3ad491233993c10b0e984d741936c8619af34d990b95fcef2f7819a595da8383",
+      "bytes": 760508,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/demolition-debris-mound.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 6,984 triangles, 2.69 × 2.94 × 1.05 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-fallen-brick-wall-chunk",
+      "title": "Fallen Brick Wall Chunk",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/fallen-brick-wall-chunk.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Fallen Brick Wall Chunk” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "7228f41cdd3349424e869abcfbb5c877a7f19cab317ea40e80bf912eddda8c0c",
+      "bytes": 826524,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/fallen-brick-wall-chunk.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 7,312 triangles, 2.71 × 1.96 × 0.20 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-broken-cinder-blocks",
+      "title": "Broken Cinder Blocks",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/broken-cinder-blocks.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Broken Cinder Blocks” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "8df34af39056bc2a2c366498e9c8d08b427e51fe12ec20eafd92bb92c41b54d2",
+      "bytes": 361000,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-cinder-blocks.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 3,072 triangles, 2.00 × 2.00 × 0.38 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-snapped-timber-beams",
+      "title": "Snapped Timber Beams",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/snapped-timber-beams.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Snapped Timber Beams” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "eaeec04b93359df3f6673ebebe8a5e5a8099ea9cd4e35862f9101fd428a4c87f",
+      "bytes": 153596,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/snapped-timber-beams.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 1,424 triangles, 3.04 × 3.01 × 0.52 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-smashed-drywall-sheets",
+      "title": "Smashed Drywall Sheets",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/smashed-drywall-sheets.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Smashed Drywall Sheets” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "c9af4a99e3c1a8ebcf09d2674329774fd0bc82b83609873cc9bd8361d91a9193",
+      "bytes": 116624,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/smashed-drywall-sheets.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 2,564 triangles, 3.13 × 3.85 × 0.28 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-broken-concrete-pipe",
+      "title": "Broken Concrete Pipe",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/broken-concrete-pipe.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Broken Concrete Pipe” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "315bc0e86d10e5358fc7161a156c63a24cdfcc4b2d87e255f2ce258afec9bdf2",
+      "bytes": 478832,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-pipe.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 6,400 triangles, 2.72 × 1.91 × 1.36 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-debris-wheelbarrow",
+      "title": "Debris Wheelbarrow",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/debris-wheelbarrow.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Debris Wheelbarrow” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "134bc26780b50a6832abd4ca37a327baff1c3f9f15390170fa92d846f5efb477",
+      "bytes": 358188,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/debris-wheelbarrow.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 2,936 triangles, 0.68 × 1.90 × 0.77 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-broken-roof-tiles",
+      "title": "Broken Roof Tiles",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/broken-roof-tiles.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Broken Roof Tiles” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "23fcfd3dd401f08a5bcda9f65d4d8c649858feab935829401b61375816648eaa",
+      "bytes": 588660,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-roof-tiles.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 8,760 triangles, 1.66 × 1.76 × 0.41 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    },
+    {
+      "id": "mining-vinish-rubble-broken-concrete-column",
+      "title": "Broken Concrete Column",
+      "publisher": "vinish.dev",
+      "source_url": "https://vinish.dev/free-3d-models/bricks-rubble-and-debris",
+      "download_url": "https://vinish-models.pages.dev/bricks-rubble-and-debris/broken-concrete-column.glb",
+      "license_id": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "“Broken Concrete Column” by vinish.dev (https://vinish.dev/free-3d-models/), CC BY 4.0.",
+      "sha256": "332db36b1c90d243774f6c23d86777389f878f439b0b1625dab37c2914f60295",
+      "bytes": 414860,
+      "local_path": "foundations-3d/mining/vinish-dev-bricks-rubble-and-debris/broken-concrete-column.glb",
+      "formats": [
+        "glb"
+      ],
+      "coverage": "Single GLB rubble/debris model, 4,024 triangles, 2.02 × 1.79 × 1.80 m; publisher says mesh parts can be split in a 3D tool for physics or destruction effects. The source does not include rigid-body parameters or a fracture solver."
+    }
+  ]
+}

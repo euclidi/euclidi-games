@@ -1,0 +1,446 @@
+{
+ "mine_floor": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_floor_rails": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_floor_rails_curve": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_floor_rails_end": {
+  "category": "structure",
+  "placement": "below"
+ },
+ "mine_floor_shaft": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_wall": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_half": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_ore": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_crystal": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_timbered": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_entrance": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_collapsed": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_corner": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_support_frame": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_ceiling": {
+  "category": "structure",
+  "placement": "ceiling"
+ },
+ "mine_stairs": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_bridge": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_rock_pillar": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_shaft_headframe": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_door": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_hatch": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_lift_cage": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_cart": {
+  "category": "props",
+  "placement": "free"
+ },
+ "mine_cart_ore": {
+  "category": "props",
+  "placement": "free"
+ },
+ "mine_lantern_hanging": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_lantern_post": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_lantern_wall": {
+  "category": "props",
+  "placement": "decor"
+ },
+ "mine_pickaxe": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_shovel": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_tool_rack": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_ore_pile_gold": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_ore_pile_iron": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_coal_pile": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_crystal_cluster": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_crystal_large": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_boulders": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_stalagmite": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_dynamite_crate": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_detonator": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_winch": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_switch_lever": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_switch_lever_handle": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_ladder": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_scaffold": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_sign_danger": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_mushrooms_glow": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_plank_pile": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_workbench": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_floor_rails_junction": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_floor_rails_cross": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_floor_rails_slope": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_floor_pit": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_rail_bridge": {
+  "category": "structure",
+  "placement": "below"
+ },
+ "mine_floor_puddles": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_floor_rubble": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_floor_planks": {
+  "category": "structure",
+  "placement": "floor"
+ },
+ "mine_wall_silver": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_gems": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_coal_seam": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_low_tunnel": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_alcove": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_wall_corner_round": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_gate_bars": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_support_braced": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_support_post": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_ceiling_timbered": {
+  "category": "structure",
+  "placement": "ceiling"
+ },
+ "mine_ceiling_shaft": {
+  "category": "structure",
+  "placement": "ceiling"
+ },
+ "mine_ceiling_stalactites": {
+  "category": "structure",
+  "placement": "free"
+ },
+ "mine_stairs_timber": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_walkway": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_platform": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_cave_in": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_rock_arch": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_loading_chute": {
+  "category": "structure",
+  "placement": "ground"
+ },
+ "mine_rails_switch_blade": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_conveyor": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_stamp_mill": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_stamp_head": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_pulley_frame": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_ore_bucket": {
+  "category": "props",
+  "placement": "hanging"
+ },
+ "mine_chute_gate": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_lamp_miner": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_lamp_string": {
+  "category": "props",
+  "placement": "hanging"
+ },
+ "mine_sign_arrow": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_sign_board": {
+  "category": "props",
+  "placement": "decor"
+ },
+ "mine_crate_ore": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_barrel_powder": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_water_trough": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_drill_hand": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_mushroom_giant": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_mushrooms_wall": {
+  "category": "props",
+  "placement": "decor"
+ },
+ "mine_geode": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_crystal_hanging": {
+  "category": "props",
+  "placement": "hanging"
+ },
+ "mine_crystal_shards": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_rail_stack": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_wheelbarrow": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_sack_pile": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_table": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_canary_cage": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_rope_coil": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_strongbox": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_dynamite_bundle": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_vent_fan": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_vent_chimney": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_water_pump": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_scaffold_tall": {
+  "category": "props",
+  "placement": "ground"
+ },
+ "mine_stalactite": {
+  "category": "props",
+  "placement": "hanging"
+ },
+ "mine_bats": {
+  "category": "props",
+  "placement": "hanging"
+ },
+ "mine_cart_flat": {
+  "category": "props",
+  "placement": "free"
+ },
+ "mine_handcar": {
+  "category": "props",
+  "placement": "free"
+ },
+ "_kit": {
+  "depth": 1.6,
+  "floor_top": 0.2
+ }
+}

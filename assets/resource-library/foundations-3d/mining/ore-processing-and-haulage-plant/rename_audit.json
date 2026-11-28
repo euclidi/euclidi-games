@@ -1,0 +1,396 @@
+{
+  "renamed_generic_cdn_files": [
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13381",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-dust-suppression-unit-1fe1f188.glb",
+      "sha256": "3886a6801d253e32f8644722c502a70f94d7242aa39aceccf32341b7fd6c8706",
+      "bytes": 125796
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13382",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-apron-feeder-3357b8e3.glb",
+      "sha256": "cd1ee570317477f86a03aec9907be1a156129b69f670096eaafd98e9ddbf29ba",
+      "bytes": 131308
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13383",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-cone-crusher-38306e2f.glb",
+      "sha256": "2ea5647baf8ba2d41ca3fca2fe724fa1139aa02634f6f822977687c121f21dba",
+      "bytes": 203132
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13384",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-dump-pocket-04362164.glb",
+      "sha256": "d53415a8945275a5b908216725a892a913f6aea6cce0aa1e4c1c5e295a0ecb22",
+      "bytes": 75828
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13385",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-rock-breaker-boom-30a497e0.glb",
+      "sha256": "62a43d8de4e497ee434622feb7b4c6a29eaa425a71fb46b58b3e0bc99336ba8d",
+      "bytes": 47044
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13386",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-grizzly-feeder-d6626472.glb",
+      "sha256": "37c3c1ee41cffe8bc43ccf5432fa83e3763c962ba7a9eb2ce99a5f930d566a1f",
+      "bytes": 97860
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13387",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-jaw-crusher-station-d2646170.glb",
+      "sha256": "500516d76cd14f0ee7acfca397679337ee560d18c66f31596d9f98165bd2910b",
+      "bytes": 161288
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13388",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-vibrating-screen-deck-5cc91c38.glb",
+      "sha256": "180553ef18b6ddcfa90483fbe88cb6e9866ece00a8d5cc5a2421e7f952852ce0",
+      "bytes": 153084
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13389",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-incline-12m-fd4ba7d1.glb",
+      "sha256": "ddb2efd99d74860e8b2985320fef1e8176eb70dcb6f12c9b0b65cce86acc13b7",
+      "bytes": 151144
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13390",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-gallery-brid-99b770ba.glb",
+      "sha256": "befbb592927aacd1e6161c62eb0a3ab742a96868b58fdaac39256dbc4c75c871",
+      "bytes": 133820
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13391",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-straight-12m-1c63193a.glb",
+      "sha256": "74c7038c35daf6c6221ddf4c7959876a2bd4ffe904e8b2a4575b3622ccd604f6",
+      "bytes": 97928
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13392",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-gallery-incl-4a3a6249.glb",
+      "sha256": "191aa3ac6707f9021e7c9248c53c0f21441e490c1714529e2a79310e45ef2523",
+      "bytes": 133888
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13393",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-curve-30deg-abac40f2.glb",
+      "sha256": "e989fba0bf53e490734dd2013422789b5389c21b9c3fe408abd1d9979f3ee8f5",
+      "bytes": 157540
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13394",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-head-station-24789898.glb",
+      "sha256": "3422bdbb0d736728a3477cb5a5b58debbfab51832d93c91332a3bbdc90855051",
+      "bytes": 146108
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13395",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-transfer-tow-7adea84b.glb",
+      "sha256": "fc200ca439e3a20d97fe3ce0b7d1e9de99210f6c25921ca06288435c9f6f1e5a",
+      "bytes": 351884
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13396",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-tail-station-aef06d79.glb",
+      "sha256": "903a778c69304bc36a797dc0a8ea57c4ade8f7119320ce47047e54de33644035",
+      "bytes": 96284
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13397",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-conveyor-walkway-modu-5d9c5fea.glb",
+      "sha256": "23ee1c7036f67d39e3687035a99eeb956325ba734442f0ad6e6f2af7d6c248fb",
+      "bytes": 56556
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13398",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-sag-mill-44da84c8.glb",
+      "sha256": "b58441bd6bbe2b4250e69871592b590f6dce80a6a3e8195a6aca665d09376692",
+      "bytes": 255852
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13399",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-radial-stacker-8b8f21c3.glb",
+      "sha256": "bd211d11ffecd431ada82780ad698980861ab018fa2c0b799a6d1d97e3346a6d",
+      "bytes": 255168
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13400",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-tripper-car-f1988f04.glb",
+      "sha256": "f7cc94193dcec332e64eefaf469e0f11cc489a9ed6edb7e72b9ab4a3179ef130",
+      "bytes": 126160
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13401",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-ball-mill-53210c99.glb",
+      "sha256": "4cb5dd7b13acb82b4bb47957b80d23bebf143e76bf2cbaf49eae2f164c6e0e94",
+      "bytes": 262120
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13402",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-thickener-tank-4a9096de.glb",
+      "sha256": "4d8c913f26a2529514f90492eb79aa48ec637e09df4dd9b0a656bc6361e267a9",
+      "bytes": 169368
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13403",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-cyclone-cluster-0c656350.glb",
+      "sha256": "fe32487d5e8ce872f81541a53fd1e8b4ea2c1b5a298f5a6e8e77cdf182b404a3",
+      "bytes": 231740
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13404",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-flotation-cell-bank-f0761855.glb",
+      "sha256": "705e252c835660a4b5f0a9982f1d2174d8da4fd651f2ef1c0ddc314f75171e0b",
+      "bytes": 355572
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13413",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-sample-tower-aca717ad.glb",
+      "sha256": "4d7117abe00d66a84f546ac1d35871bb8eae7102fae9cd35ead3df5e0c97e6e7",
+      "bytes": 182632
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13414",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-reagent-tank-farm-ab10b5f1.glb",
+      "sha256": "8d9a9d407e6895b9790222917e114006fe6576351a0fbc43526010c2438e8f70",
+      "bytes": 421568
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13415",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-filter-press-d8f78a69.glb",
+      "sha256": "4cb9dd46bef10a35fd11472dce87c1e3ee8320532159f11931f7fc8036a1dae4",
+      "bytes": 74308
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13416",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-coarse-ore-stockpile-4f749627.glb",
+      "sha256": "03dbdca89e7de03172f0784b8ba58bfcf3ae454ff0752664a15c1bb32fc0635d",
+      "bytes": 51776
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13417",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-product-stockpile-aa36b920.glb",
+      "sha256": "416e562c2190e63b1d9f5b6efebfe945589adda7fb736ec7e579a6e86a39124d",
+      "bytes": 22244
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13418",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-silo-cluster-e4dde4e2.glb",
+      "sha256": "76792e974c3e3f60a99b27897cb39203096c5951f20e890c55fca9a2e7dc0e14",
+      "bytes": 235980
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13419",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-rail-loadout-bin-0597b778.glb",
+      "sha256": "e006d6856c042242475f7c20a1b86d717d8ebb71f856184a7d8a5eef167ecf66",
+      "bytes": 194860
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13423",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-truck-loadout-872f7ff4.glb",
+      "sha256": "33bbcfb247b609cb9a12661e0061152f643b3cbd9fa23b1d957260e9fa7dcc69",
+      "bytes": 97300
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13426",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-weighbridge-4c15d7de.glb",
+      "sha256": "57db614c15b6f533fd9404f0ee3f20eac957240a56b49fde75336e3c5aee80f8",
+      "bytes": 36264
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13427",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-reclaim-tunnel-entran-120fdb63.glb",
+      "sha256": "754e0ced435d508b05d6a9fef9dfcf1a6d4097f6ac23beb0184c5b854d3ed5f0",
+      "bytes": 102876
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13431",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-silo-feed-conveyor-77f6f8c9.glb",
+      "sha256": "ada462ae12ec60ffffdd1052e3c3f5ec8a7d1604522944c8233674632c0205a4",
+      "bytes": 432788
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13433",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-tailings-berm-module-65fb0c2c.glb",
+      "sha256": "0d561d98bdf6cdf785935406862e09305612563b9e13d7668a027e0ed96d64cf",
+      "bytes": 29800
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13435",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-decant-tower-f01151e1.glb",
+      "sha256": "f9db1eeb730aeffbd3eae6b2e887d9a622b25ed1e5ec94a44c46f5b39da28e11",
+      "bytes": 111716
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13438",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-pump-house-778c76aa.glb",
+      "sha256": "76f9d8fdb3dbcc0a65e4050052cfac1e21322818b6f3bf4af5946f3b687c95d9",
+      "bytes": 114880
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13439",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-slurry-pipeline-modul-0c7f76d6.glb",
+      "sha256": "82b86c1195538617e953ec6c213ab6af02a40331df36a89359caa892440c45b7",
+      "bytes": 65644
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13440",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-process-water-tank-70b51852.glb",
+      "sha256": "2929bedb051b5792d8695c4b2d5385858fc8aec595b032504ee247e5e8046b2d",
+      "bytes": 133968
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13443",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-settling-pond-edge-e28c77f9.glb",
+      "sha256": "065156fb2c6ef098d4d49f2211eaacba9fea1c96610740d9b6e77bf2f32b7ad1",
+      "bytes": 39740
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13445",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-spillway-chute-41afc6f4.glb",
+      "sha256": "82b956319543544f0f1b436815e9e98f2760c3f79ad0c73593b0ddd9aea28e82",
+      "bytes": 45044
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13446",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-assay-laboratory-bf7f5188.glb",
+      "sha256": "c779ac288873334018a0be54ae23b278ee2a520d5a1f82759eaad9df169ba346",
+      "bytes": 109512
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13451",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-electrical-mcc-buildi-adff0170.glb",
+      "sha256": "41d542f489c5f5471e4afb9b31ba59877fab827be7d706e17c2458018c543e26",
+      "bytes": 111228
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13452",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-maintenance-workshop-fb29c9f0.glb",
+      "sha256": "a952511729cdceffd8deea5d191ba6e2917a9e266fa526980669e789f353992c",
+      "bytes": 103660
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13453",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-lamp-room-260e550f.glb",
+      "sha256": "f43be536398266bd9ff46508691f6a4573bf4f8f60fee820e3899247a10ecb56",
+      "bytes": 59424
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13456",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-core-shed-eb72c65b.glb",
+      "sha256": "c313d64910373f68f57895f5bdc6a6399cecff94b8e20186843593bd495517cf",
+      "bytes": 34556
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13457",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-change-house-70f7554a.glb",
+      "sha256": "62e64a0246089d86980845116b9d55409f10e2fd515a284795e9c75a401e5e68",
+      "bytes": 99360
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13458",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-core-tray-rack-d58ec8a1.glb",
+      "sha256": "1aacb17516fbd716d0333ca318d22ef6a46430695c38461e0f4cf9a863c4015a",
+      "bytes": 118320
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13461",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-fuel-island-52c33a12.glb",
+      "sha256": "f35131696bf4a604697b9410b4ec513b955cb61f5d14e3787872852715131d39",
+      "bytes": 62812
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13462",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-site-office-a738f200.glb",
+      "sha256": "891de6b6f06529c607a7efc7742f8efcc8445ae2ff19dfb18685e4269145acf5",
+      "bytes": 60300
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13465",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-plant-o-5923954f-starter-scene.glb",
+      "sha256": "d147e7dd7f6fa4ce430990ae94e2638e75d7a0e874ea1cd4456fc791edc728e8",
+      "bytes": 2617448
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13467",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-tailings-and-site-ser-8dc1287d.glb",
+      "sha256": "aecc8804d7cd60e006c0b2eae6e094df44a9f6c17ad300598dbaf5adc62aa097",
+      "bytes": 887548
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13470",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-milling-and-separatio-2b5e0eff.glb",
+      "sha256": "e6d8e2fa76370a57d9a73a75e78851018cc1d2ca9dd397c5e32bbb5adaf48f09",
+      "bytes": 1757080
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13472",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-belt-connector-cases-e11f97e2.glb",
+      "sha256": "0a034d73c5483647279b8c3b3bf4cc7c7785c8db8a493fa403693d8192e87095",
+      "bytes": 1537512
+    },
+    {
+      "source_id": "mining-ore-processing-and-haulage-plant-13475",
+      "original_filename": "model.glb",
+      "renamed_path": "foundations-3d/mining/ore-processing-and-haulage-plant/models/ore-processing-and-haulage-plant-stacker-and-stockpile-4a1f44e4.glb",
+      "sha256": "5ff326484cf58f008b712f90e8c3f1efc0531ead70562d6bad95bdb9ea00c13c",
+      "bytes": 1094448
+    }
+  ]
+}
