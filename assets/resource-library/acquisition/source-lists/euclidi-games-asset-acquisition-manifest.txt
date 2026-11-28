@@ -1,0 +1,322 @@
+EUCLIDI GAMES — FREE ASSET ACQUISITION MANIFEST
+Agent-ready intake specification | Revision 1 | 2026-11-27
+Repository: https://github.com/euclidi/euclidi-games
+Destination: assets/resource-library/
+
+PURPOSE
+Build an expandable, legally redistributable, reusable source-asset library for
+Kinetic∆ and future Euclidi Games projects. This is an acquisition queue, not a
+claim that the assets have been downloaded, inspected or imported. A finite
+manifest cannot cover every possible future project; use the discovery sources
+and coverage matrix below to extend it without duplicating assets.
+
+BASELINE — DO NOT DOWNLOAD DUPLICATES
+Main branch tree inspected at commit 80327755dd31bd044ff044bcbd7584e93fc9ad85.
+Existing resource library: https://github.com/euclidi/euclidi-games/tree/main/assets/resource-library
+Existing inventory includes:
+- Kenney 19 GLB packs: castle, city commercial/roads/suburban, car, nature,
+  furniture, food, mini dungeon, graveyard, pirate, platformer, space,
+  tower defense, prototype, blaster, mini/blocky characters and cube pets.
+- KayKit ranger, bow, crossbows, arrows, selected movement/ranged animation
+  files; first-person WRAD arms; inspect their distinct licenses and rigs.
+- Quaternius base humanoids, hair, universal animation libraries v1/v2,
+  12 animated quadruped models; mannequin rigs and Kenney animated humanoids.
+- 2D Kenney Tiny, isometric miniature, map/arcade, platformer and particle packs;
+  Pixel Frog Pixel Adventure, 1-bit sheets, input prompts and crosshairs.
+- Kenney impact, digital, interface, RPG, sci-fi, UI sounds and music jingles.
+- Poly Haven concrete floor, cobblestone and plank flooring PBR sets.
+- Existing material grids, UI/control packs and foot IK/state-machine sources.
+Read README.md, SHA256SUMS.txt, manifests, source records and pack licenses first.
+Existing source and optimized copies may be identical; deduplicate by SHA-256
+and upstream identity, not just filename. Preserve version history and local
+changes. Check the current repository tree again before any actual acquisition.
+
+AGENT EXECUTION CONTRACT
+1. Resolve each source page to the original free archive, official release or
+   asset file. A product page is not a direct download URL. Never guess URLs,
+   scrape protected downloads, bypass logins or purchase a paid edition.
+2. Verify the exact edition, author, license and right to redistribute original
+   files publicly on GitHub. FREE TO USE IN A GAME is not the same as permission
+   to mirror a source library. CC0 is preferred. CC BY needs attribution and
+   change notices; OFL fonts need their license and reserved-name compliance.
+   MIT/Apache/BSD/ISC code licenses are not blanket licenses for bundled artwork.
+   Reject NC, ND, editorial-only, unclear provenance, ripped game assets,
+   assets using protected brands/characters, and unauthorized reuploads.
+   Do not mirror assets with a game-use-only or no-standalone-redistribution
+   license. CC BY-SA/GPL art and code require explicit compatibility review.
+3. Archive exact original license text and source-page URL; record download URL,
+   date, version, author, attribution, redistribution permission and SHA-256.
+   If source terms conflict, pause that entry and mark LICENSE_REVIEW.
+4. Prefer existing asset families; add new families only to fill a specific gap
+   or enable a genuinely different visual direction. Preserve independent art
+   grammars. Never combine 2D pixel scales or 3D rigs without validation.
+5. Before committing, validate safe archive paths, CRC/hash, MIME, file sizes,
+   dependencies, GLTF buffer/texture URIs, image transparency, audio loops,
+   model bounds/pivot/scale/axis, skeleton/clips and actual import in target engine.
+   No executable installers, macros, arbitrary scripts or nested archive bombs.
+6. Store original packs (where legally permitted) with licenses. Extract only
+   game-ready curated subsets; don't retain multiple full copies. Keep source
+   and runtime versions distinct. GLB preferred; retain original FBX/Blend only
+   where useful. Audio: source WAV, optimized OGG/Opus where supported. Textures:
+   1K default, 2K only when justified; use KTX2/Basis or WebP for runtime as useful.
+7. Public GitHub repository: do not indiscriminately clone every asset catalog.
+   Check GitHub limits and Pages deployment size before adding files. Keep raw
+   large source archives in a separate authorized asset store or manifest-only
+   queue if necessary; no single ordinary Git blob >=100 MiB. Do not place
+   Git LFS pointers in live runtime routes. Exclude raw archives, source files,
+   previews and acquisition scripts from deployed Pages artifact. Package only
+   used, optimized game assets. Do not reconfigure unrelated games or workflows.
+8. Use sequential small batches by asset family. Validate one representative
+   model/rig/texture combination before expanding. Respect the owner's visual
+   benchmark approval rule for newly generated asset families; downloading an
+   existing pack does not imply final art direction approval.
+9. Update library indexes, SHA256SUMS.txt, source-record.json and project credits.
+   Commit in a dedicated branch. Do not publish unfinished game or catalog art.
+10. Status per entry: QUEUED / DOWNLOADED / LICENSE_VERIFIED / IMPORT_VERIFIED /
+    VISUAL_REVIEW / INTEGRATED / BLOCKED / DUPLICATE. Never conflate these.
+
+RECORD FORMAT (one source-record.json per pack or individual source)
+{
+  "id": "publisher-pack-edition",
+  "source_page": "https://original-publisher/...",
+  "resolved_download_url": null,
+  "publisher": "...", "edition": "...", "version": "...",
+  "downloaded_utc": null, "license_spdx": "CC0-1.0",
+  "license_url": "...", "license_file": "LICENSE.txt",
+  "redistribution_allowed": null, "attribution": "...",
+  "sha256": null, "bytes": null, "formats": [],
+  "asset_categories": [], "style_family": "...",
+  "target_path": "assets/resource-library/...",
+  "import_tests": [], "known_limits": [], "status": "QUEUED"
+}
+
+PRIORITY KEY
+P0 = current Kinetic∆ blockers and immediate visual/gameplay coverage.
+P1 = broader medieval sandbox / likely expansion coverage.
+P2 = reusable future-game foundations across genres.
+P3 = discovery index or specialist gap; obtain only selected verified assets.
+License labels below describe source-page information or candidate status, not
+an executed license audit. All rows require the verification steps above.
+Each row is: ID | priority | license expectation | relative destination |
+source URL | intended content/decision notes.
+All destinations are relative to assets/resource-library/.
+
+==========================================================================
+A. KINETIC∆ IMMEDIATE 3D FOUNDATIONS — ACQUIRE FIRST
+==========================================================================
+A01 | P0 | CC0 | foundations-3d/quaternius/medieval-village-megakit | https://quaternius.itch.io/medieval-village-megakit | Primary town candidate: modular interior/exterior walls, roofs, doors, stairs and village architecture. Free standard edition only; check texture and GLTF format. Build a coherent street, interior and courtyard benchmark before mass placement.
+A02 | P0 | CC0 | foundations-3d/quaternius/fantasy-props-megakit | https://quaternius.itch.io/fantasy-props-megakit | Market, potions, furnishings, utensils, tools, containers, weapons and food. Prefer to fill medieval dressing gaps instead of modern furniture kit. If archive too large for Git, extract selected models with source license and hash; do not assume paid editions are free.
+A03 | P0 | CC0 | foundations-3d/quaternius/modular-character-outfits-fantasy | https://quaternius.itch.io/modular-character-outfits-fantasy | Modular clothing compatible with Universal Base Characters; outfit variety for citizens, trades, hunters and recruits. Check skinning, rig compatibility and clipping before use.
+A04 | P0 | CC0 (Kenney policy) | foundations-3d/kenney/fantasy-town-kit | https://kenney.nl/assets/fantasy-town-kit | Alternative medieval town exterior kit; compare against A01, don't mix without style audit.
+A05 | P0 | CC0 | foundations-3d/fps-and-archery/kaykit/adventurers-full | https://kaylousberg.itch.io/kaykit-adventurers | Obtain missing free standard characters and equipment only, preserve the existing Ranger and identical files. Alternative coherent stylized character family.
+A06 | P0 | CC0 | foundations-3d/fps-and-archery/kaykit/animation-completion | https://kaylousberg.itch.io/kaykit-character-animations | Audit existing partial 1.1 animation subsets and add missing free clips. Prioritize pick-up, idle, locomotion, jumping, crouch, tools, combat and ranged transitions. Do not assume every requested animation exists.
+A07 | P0 | CC0 | foundations-3d/kaykit/rpg-tools-bits | https://kaylousberg.itch.io/rpg-tools-bits | Crafting/gathering tools and workshop items; match to KayKit animation family only after retarget audit.
+A08 | P0 | CC0 | foundations-3d/kaykit/resource-bits | https://kaylousberg.itch.io/resource-bits | Wood, stone, ore, textiles, fuel, resource items for economy and crafting.
+A09 | P1 | CC0 | foundations-3d/kaykit/dungeon-pack | https://kaylousberg.itch.io/kaykit-dungeon-pack | Modular dungeon/interiors/props; select free standard, not paid extras.
+A10 | P1 | Verify exact free pack license | foundations-3d/kaykit/furniture-bits | https://kaylousberg.itch.io/furniture-bits | Life-simulation furnishings; select period-appropriate items, no modern props in Kinetic∆.
+A11 | P1 | CC0 | foundations-3d/kaykit/medieval-hexagon | https://kaylousberg.itch.io/kaykit-medieval-hexagon | Regional maps and distant settlements; hex scale not suitable for automatic first-person reuse.
+A12 | P1 | Verify legacy edition | foundations-3d/kaykit/medieval-builder | https://kaylousberg.itch.io/kaykit-medieval-builder-pack | Alternative settlement assets; legacy pack, use only if it covers a gap not covered by A01/A04.
+A13 | P1 | CC0 (Kenney policy) | foundations-3d/kenney/modular-cave-kit | https://kenney.nl/assets/modular-cave-kit | Caves, underground passages, mines and later region expansion.
+A14 | P1 | CC0 | foundations-3d/opengameart/medieval-weapon-pack | https://opengameart.org/content/medieval-weapon-pack | Candidate in-game weapon meshes; check actual model list, scale and format, not real-world functional designs.
+A15 | P1 | CC0 candidate | foundations-3d/opengameart/medieval-spear | https://opengameart.org/content/medieval-spear | Candidate spear/javelin game model. Confirm exact submission license and import.
+A16 | P1 | CC0 | foundations-3d/opengameart/potion-bottle | https://opengameart.org/content/potion-bottle-0 | Candidate bottle visual; verify it is 3D and meets mesh/UV needs; otherwise use as UI/reference.
+A17 | P1 | CC0 collection; per-item verify | foundations-3d/opengameart/medieval-props | https://opengameart.org/content/3d-assets-cc0 | Specific missing props (bottles, pottery, knives, furniture, containers). Follow links to original item pages; no blanket bulk import.
+A18 | P1 | Per-item CC0 verification | foundations-3d/opengameart/weapon-gapfill | https://opengameart.org/content/cc0-3d-weapons | Inspect game-art models for missing thrown projectiles and accessory meshes. Do not treat index as a verified pack.
+A19 | P1 | CC0 | foundations-3d/quaternius/animated-fish | https://quaternius.itch.io/lowpoly-animated-fish | Fishing, waterways, aquatic life; swimming clips only, other behavior must be implemented.
+A20 | P1 | CC0 | foundations-3d/quaternius/animated-easy-enemies | https://quaternius.itch.io/animated-easy-enemies | Animated small animals/creatures including frogs, snakes, spiders, rats and wasps; verify suitability for wildlife style.
+A21 | P1 | CC0 | foundations-3d/quaternius/animated-monsters | https://quaternius.itch.io/lowpoly-animated-monsters | Optional future fantasy creature encounters; not a change to current game scope.
+A22 | P1 | CC0 | foundations-3d/quaternius/animated-animals-extra | https://quaternius.itch.io/lowpoly-animated-animals | Compare species and animations against existing 12 animals; add missing species only.
+A23 | P1 | CC0 per marked object | foundations-3d/smithsonian/selected-props | https://3d.si.edu/collections/openaccesshighlights | Historic and natural object scans as visual references or decimated props; verify individual rights, cultural considerations, topology and file size. Not ready-made game assets.
+A24 | P1 | CC0 policy | foundations-3d/polyhaven/selected-props | https://polyhaven.com/models | Weathered crates, barrels, furniture, rocks, vegetation, tools and props selected for realistic/grounded projects. High-res source only as needed. Separate from stylized family.
+
+==========================================================================
+B. MATERIALS, LIGHTING, TERRAIN AND VFX
+==========================================================================
+B01 | P0 | CC0 | foundations-materials/polyhaven | https://polyhaven.com/textures | Expand with timber beams, wood bark, rough plaster, stone blocks, brick, roof tiles, packed earth, mud, grass, gravel, sand, leather, cloth, rust, metal, ceramics. Skip existing plank/concrete/cobblestone. Prefer 1K PBR. Select 1–3 coherent variants per surface.
+B02 | P0 | CC0 | foundations-materials/ambientcg | https://ambientcg.com/ | Alternate and gap-fill PBR terrain/architecture/materials, including fabric, paper, rope, glass, foliage, wood, stone, wet and dry surfaces. Use license https://docs.ambientcg.com/license/ and official API docs https://docs.ambientcg.com/ if automating; no blanket mirror.
+B03 | P0 | CC0 | foundations-materials/polyhaven/hdri | https://polyhaven.com/hdris | Overcast, sunny, dusk, forest, rural outdoor, indoor workshop lighting. 1K–2K sky/lighting probes; avoid giant HDRIs in browser bundles.
+B04 | P1 | CC0 | foundations-materials/kenney/retro-textures-fantasy | https://kenney.nl/assets/retro-textures-fantasy | Separate low-resolution fantasy texture grammar for PS1/retro games; not default Kinetic∆ look.
+B05 | P1 | Per-item verify | foundations-materials/opengameart/retro | https://opengameart.org/content/cc0-textures-0 | Retro surfaces, decals, water and terrain textures; verify individual submissions.
+B06 | P1 | CC0 | foundations-vfx/retro-flipbooks | https://cs5475.itch.io/free-retro-3d-effects | Compact fire, smoke and explosion flipbooks for retro projects. Source discloses AI-assisted code/text; inspect art and license, do not mix with stylized realism automatically.
+B07 | P1 | Per-item CC0 | foundations-vfx/opengameart | https://opengameart.org/content/cc0-resources | Look for particle masks, smoke, water splashes, dust, spark trails, embers, frost, energy, droplets, breakage. Existing Kenney particle pack first; use individual source URLs and licenses for new files.
+B08 | P3 | Discovery only | foundations-vfx/ | https://tmhsdigital.github.io/Free-Game-Dev-Assets/?cat=shaders-vfx | Effect/texture/shader source index. Check each asset and library license, obtain original source only.
+
+==========================================================================
+C. AUDIO AND MUSIC — REDISTRIBUTABLE SOURCE LIBRARY
+==========================================================================
+C01 | P0 | CC0 | foundations-audio/opengameart/medieval-weapon-textures | https://opengameart.org/content/medieval-sound-effects-weapon-textures | Bow handling, nocking and equipment foley; audition and check source files.
+C02 | P0 | CC0 | foundations-audio/opengameart/medieval-weapon-impacts | https://opengameart.org/content/medieval-sound-effects-weapon-impacts | Medieval impact variations, surface/armor response; use in-game audio only.
+C03 | P0 | CC0 | foundations-audio/opengameart/various-sfx | https://opengameart.org/content/various-sound-effects-0 | Small rock impacts, footsteps and other foley.
+C04 | P0 | CC0 | foundations-audio/opengameart/sound-effects-pack | https://opengameart.org/content/sound-effects-pack | Extra movement and impact sounds; dedup against Kenney.
+C05 | P0 | Mixed; CC0 individual files only or properly attributed CC BY | foundations-audio/freesound | https://freesound.org/ | Targeted foley: bow creak, arrow flight, wood/metal/stone hits, bottle breakage, footsteps on dirt/wood/stone, cloth, doors, market ambience, animals, wind, rain, fire, water, creaking wood, workshop and cooking. Filter by license; retain per-file author and URL. FAQ https://freesound.org/help/faq/. No whole-site mirroring, respect account/API terms.
+C06 | P1 | CC0 | foundations-audio/opengameart/50-rpg-sfx | https://opengameart.org/content/50-rpg-sound-effects | Supplemental inventory, RPG interactions, fantasy effects and footsteps.
+C07 | P1 | CC0 collection; verify each | foundations-audio/opengameart/fantasy-music | https://opengameart.org/content/cc0-fantasy-music-sounds | Medieval town, exploration, tavern, ambient and combat tracks. Check composition AND recording rights; no copyrighted song covers or ambiguous uploads.
+C08 | P2 | CC0 | foundations-audio/opengameart/subspace-retro | https://opengameart.org/content/512-sound-effects-8-bit-style | Juhani Junkala retro audio library for arcade/8-bit projects; verify original pack license before import.
+C09 | P2 | CC0 collection; verify individual | foundations-audio/opengameart/cc0-sfx | https://opengameart.org/content/cc0-sound-effects | Broad reusable ambience, UI, creature, vehicle, science fiction and effects library. Selected assets only.
+C10 | P2 | CC0 collection; verify individual | foundations-audio/opengameart/cc0-library | https://opengameart.org/content/cc0-sounds-library | Additional foley, doors, impacts and interaction sounds. Dedup C09.
+C11 | P2 | CC0 (Kenney policy) | foundations-audio/kenney | https://kenney.nl/assets | Filter Audio. Fill missing packs rather than downloading existing digital/impact/UI/RPG/sci-fi/interface/jingles twice. License https://kenney.nl/support.
+C12 | P3 | Discovery only | foundations-audio/ | https://tmhsdigital.github.io/Free-Game-Dev-Assets/category/audio/ | Locate additional audio publishers with exact license and original source links. Do not assume all entries allow raw redistribution.
+
+==========================================================================
+D. ADDITIONAL 3D CHARACTERS, ENVIRONMENTS AND GENRE PACKS
+==========================================================================
+D01 | P2 | CC0 | foundations-3d/quaternius/modular-sci-fi-megakit | https://quaternius.itch.io/modular-sci-fi-megakit | Space stations, modular sci-fi corridors, machinery, doors and interiors.
+D02 | P2 | CC0 | foundations-3d/quaternius/scifi-essentials | https://quaternius.itch.io/sci-fi-essentials-kit | Matching sci-fi props and characters/enemies; inspect rig and animation.
+D03 | P2 | CC0 | foundations-3d/quaternius/ultimate-platformer | https://quaternius.itch.io/ultimate-platformer-pack | 3D platformer environments, characters, obstacles and moving elements.
+D04 | P2 | CC0 | foundations-3d/kaykit/platformer | https://kaylousberg.itch.io/kaykit-platformer | Alternate coherent 3D platformer art and mechanics objects.
+D05 | P2 | Per-pack verify; free tiers only | foundations-3d/quaternius/ | https://quaternius.itch.io/ | Publisher catalog: search new nature, farms, creatures, city, props, rigs and modular packs; inspect each exact edition for licensing. Existing base characters, animation libraries and animals should not be duplicated.
+D06 | P2 | Per-pack verify; free tiers only | foundations-3d/kaykit/ | https://kaylousberg.itch.io/ | Find Forest Nature, Fantasy Weapons Bits, Skeletons, City Builder Bits, Restaurant Bits, Space Base Bits, Prototype Bits and other relevant free packs. Names are search targets, not claimed verified downloads. Do NOT buy Complete KayKit bundle; select free editions on original pages.
+D07 | P2 | CC0 (Kenney policy) | foundations-3d/kenney/ | https://kenney.nl/assets | Official catalog; fill categories not included in the existing 19 GLB packs, such as additional modular architecture, retro 3D, boats, aircraft, vehicles, sports, machinery, industry, space and nature where available. Download only verified missing packs.
+D08 | P2 | Per-file verify | foundations-3d/retro/ | https://github.com/Miziziziz/Retro3DGraphicsCollection | Retro PS1-like 3D art collection. Commercial use is not sufficient for raw mirror: inspect original per-file redistribution permissions. Useful for separate retro art grammar.
+D09 | P2 | CC0 | foundations-3d/zuujis | https://github.com/zuujis-cc0 | Aircraft and other 3D/2D asset repositories; inspect each repository/license and selected assets.
+D10 | P3 | Per-model CC0 or CC BY with attribution | foundations-3d/sketchfab | https://sketchfab.com/ | Targeted rare model discovery. Filter downloadable CC0/CC BY; inspect author/provenance and license of each model, avoid editorial/noncommercial/ripped IP. Not a general asset mirror.
+D11 | P3 | Per-item verify | foundations-3d/opengameart/ | https://opengameart.org/content/cc0-assets-3d-low-poly | Alternate coherent low-poly environment and model kits, dedup source records.
+D12 | P3 | Discovery only | foundations-3d/ | https://tmhsdigital.github.io/Free-Game-Dev-Assets/category/3d/ | Wide 3D source directory for future scope. Follow original sources and licenses; commercial-use label alone is insufficient for public redistribution.
+
+==========================================================================
+E. 2D, PIXEL ART, ISOMETRIC AND RETRO EXPANSION
+==========================================================================
+E01 | P2 | CC0 | foundations-2d/pixel-boy/ninja-adventure | https://pixel-boy.itch.io/ninja-adventure-asset-pack | Coherent top-down pixel RPG characters, environments, UI, effects, music and audio. Official project reference https://github.com/pixel-boy/NinjaAdventure; separate code licensing from art.
+E02 | P2 | CC0 | foundations-2d/0x72/dungeon-tileset | https://0x72.itch.io/16x16-dungeon-tileset | Dungeon tile/sprite family for future 2D projects.
+E03 | P2 | CC0 | foundations-2d/opengameart/medieval-rts | https://opengameart.org/content/medieval-rts-120 | Kenney 2D medieval RTS structures, units and terrain; verify not already present in map packs.
+E04 | P2 | CC0 | foundations-2d/opengameart/isometric-town | https://opengameart.org/node/128672 | Isometric town tile art; separate projection/pixel grid from existing isometric miniature sets.
+E05 | P2 | CC0 | foundations-2d/opengameart/sketch-town | https://opengameart.org/content/sketch-town | Sketch-style isometric city assets; separate art family.
+E06 | P2 | CC0 per item | foundations-2d/opengameart/tiles | https://opengameart.org/content/cc0-tiles-tilesets | Terrain, forest, interiors, RPG, platformers, city, farms, cave and retro graphics.
+E07 | P2 | CC0 per item | foundations-2d/opengameart/isometric | https://opengameart.org/content/cc0-isometric | Isometric and 2.5D assets; verify perspective, footprint and ownership.
+E08 | P2 | CC0 per item | foundations-2d/opengameart/pixel | https://opengameart.org/content/cc0-2d | Top-down/side-view arcade and RPG sprites, monsters, props, maps and items. Separate 8-bit, 16-bit and high-res styles.
+E09 | P2 | CC0 per item | foundations-2d/opengameart/icons | https://opengameart.org/content/cc0-artwork | Item icons, potion icons, fantasy inventory and decorative art. Keep sprite atlas metadata.
+E10 | P2 | CC0 per item | foundations-2d/opengameart/painted | https://opengameart.org/content/cc0-painted-assets | Painted UI, props and portraits for projects with compatible direction.
+E11 | P2 | CC0 (Kenney policy) | foundations-2d/kenney | https://kenney.nl/assets | Filter 2D, pixel, isometric, UI; acquire missing tilesets and sprite packs only. Target farming crops/seasons, city life, sports, racing, arcade, vehicles, underwater and puzzle graphics.
+E12 | P3 | Discovery only | foundations-2d/ | https://tmhsdigital.github.io/Free-Game-Dev-Assets/category/2d/ | Find source-verified packs for missing genres, including Pixel-Boy, retro tiles and sprites.
+E13 | P3 | CC0 discovery filter; verify per item | foundations-2d/itch-cc0 | https://itch.io/game-assets/assets-cc0/free/tag-cc0 | Free licensed packs across genres. Check individual page, included license, provenance, pay-what-you-want option and separate source files.
+
+==========================================================================
+F. UI, ICONS, TYPOGRAPHY AND ANIMATION SOURCES
+==========================================================================
+F01 | P1 | CC BY 3.0 | foundations-ui/game-icons | https://game-icons.net/ | Selected inventory, skill, status, faction, action and equipment icons; author attribution and changes required. SVG source and rasterized PNG game-ready versions; no vector art substitutes for world models.
+F02 | P2 | CC0 (Kenney policy) | foundations-ui/kenney | https://kenney.nl/assets | Additional UI, pixel fonts, input icons, menu frames and HUD assets; skip existing controls, cursor, board and pixel-adventure packs. Use project-specific design, not generic default UI.
+F03 | P3 | Per-font OFL/other open license | foundations-ui/fonts | https://fonts.google.com/ | Discovery only; choose fonts only if relevant, retain each exact license and font name restrictions. Avoid reusing decorative fonts in catalog contrary to approved typography. Verify redistribution and file source.
+F04 | P2 | CC0 | foundations-3d/quaternius/animation-library-completion | https://quaternius.itch.io/universal-animation-library | Compare current free editions and missing motion clips to existing v1/v2. Do not redownload identical libraries or claim compatibility with KayKit automatically.
+F05 | P3 | CC0 subset or CC BY; individual verification | foundations-3d/animation/kinemiq | https://kinemiq.itch.io/free-game-animations | Candidate motion library. Most relevant CC0 animations may duplicate Quaternius. Import only novel clips with explicit redistribution permission and original provenance.
+F06 | P3 | CC0 subset | foundations-3d/animation/kinemiq-open | https://github.com/Kinemiq/free-game-animations | Open subset mostly derived from existing animation library. Dedup by clip/source identity and retarget only if needed.
+
+==========================================================================
+G. INDEXES AND LICENSE REFERENCES — NOT DOWNLOAD QUEUES
+==========================================================================
+G01 | discovery | https://github.com/TMHSDigital/Free-Game-Dev-Assets | Broad structured catalog; use its original source links and license fields as leads, not conclusive permissions.
+G02 | discovery | https://github.com/ervin-macic/asset-commons | Agent-readable asset directory; avoid bulk rehosting until exact source licenses verified.
+G03 | discovery | https://assethoard.com/free-game-assets/cc0 | CC0-filtered source discovery, verify original asset page.
+G04 | discovery | https://opengameart.org/ | Original submissions and collections; mixed licenses, not every asset is CC0.
+G05 | discovery | https://kenney.nl/assets | Original free asset catalog, not the optional paid convenience bundle.
+G06 | license | https://kenney.nl/support | Kenney public-domain policy for asset pages.
+G07 | license | https://polyhaven.com/license | Poly Haven asset CC0 policy; API terms are separate.
+G08 | automation | https://polyhaven.com/our-api | Official API and usage rules; consult before batch acquisition. Avoid aggressive scraping/bulk mirror.
+G09 | license | https://docs.ambientcg.com/license/ | ambientCG official asset license.
+G10 | license | https://docs.ambientcg.com/ | ambientCG API and documentation.
+G11 | license | https://freesound.org/help/faq/ | Per-file sound licenses; commercial and public redistribution distinction.
+G12 | license | https://www.si.edu/openaccess/faq | Smithsonian marked CC0 assets and limitations.
+G13 | license | https://creativecommons.org/publicdomain/zero/1.0/ | CC0 public-domain dedication.
+G14 | license | https://creativecommons.org/licenses/by/4.0/ | CC BY 4.0 attribution rules; exact asset version may differ.
+G15 | discovery | https://github.com/Miziziziz/Retro3DGraphicsCollection | Retro model provenance leads; not site-wide permission to mirror everything.
+G16 | discovery | https://3dvalley.com/library | Additional searchable catalog. Prefer original author source and validate claims.
+G17 | discovery | https://itch.io/game-assets/assets-cc0/free/tag-cc0 | Search by genre, art style and format. Verify exact file rights.
+
+==========================================================================
+H. FREE FOR PROJECT USE BUT NOT AUTOMATIC PUBLIC LIBRARY INTAKE
+==========================================================================
+H01 | HOLD | https://sonniss.com/gameaudiogdc/ | Large professional SFX collections. License: https://sonniss.com/gdc-bundle-license/. Synchronization/game-use permission is not blanket raw redistribution permission. Do not bulk-upload these archives to public GitHub. Review current terms for runtime embedding as well; use an authorized local/private source store only when terms permit.
+H02 | HOLD | https://gdc.sonniss.com/ | Current free GDC audio bundle. Same review as H01.
+H03 | HOLD | https://www.rokoko.com/free-resources | Free motion-capture clips for creative projects; verify raw redistribution and any account restrictions before public repository use.
+H04 | HOLD | https://www.mixamo.com/ | Adobe Mixamo characters/animations. Useful for project motion workflows, but do not mirror source FBX libraries; review current terms and distribution format before game inclusion. No automatic download queue.
+H05 | HOLD | https://pixabay.com/ | Mixed stock audio/images and custom license. No standalone public asset mirror. Check per-item and Content ID risk; do not substitute stock previews for game art.
+H06 | HOLD | https://mixkit.co/ | Stock audio/video, custom licenses. Verify specific license and permitted use; no raw repackaging.
+H07 | HOLD | https://kaylousberg.itch.io/kaykit-complete | Paid convenience/source bundle is NOT a free download. Use individual free packs in A/D instead.
+H08 | HOLD | https://kenney.itch.io/kenney-game-assets | Optional convenience bundle. Use individual free official asset pages instead; never purchase or claim a bundle is free without checking.
+
+==========================================================================
+I. KINETIC∆ COVERAGE MATRIX — ASSETS REQUIRED, NOT AUTOMATIC SCOPE EXPANSION
+==========================================================================
+Area                         Existing or candidate sources            Remaining checks/gaps
+Town exteriors/interiors     A01 A04 A09; existing castle            actual timber buildings, thresholds, stairs, roofs, doors, shop interiors
+Citizens and clothing        A03 A05 A06; existing humanoids          consistent style; gender/body/clothing variants; faces; skinning
+Bow/crossbow equipment        existing KayKit; A05 A06 A14            model variants, draw/hold/nock/bolt alignment, quivers, contact
+Thrown object meshes         A02 A08 A14 A15 A17 A18                  stone, fruit, stick, pottery, knife, axe, darts, javelin, chakram
+Sling/boomerang/bolas         A18 + targeted original-source search   rare game-ready meshes and weapon-specific animations not verified
+Alchemy                      A02 A16 A17 B07 C05                    bottles, corks, glass shards, ingredients, fictional fluid visual effects
+Crafting/trade               A02 A07 A08 A10                        benches, tools, materials, inventory icons and animations
+Foliage and countryside      existing Nature; A22 B01 B02            crops at growth stages, trees, herbs, terrain, path, water edges
+Wildlife                     existing 12 animals; A19 A20 A22        birds, small game and livestock variants as needed; clips and behavior
+Training grounds             existing models; A02 A04                 targets, hanging props, obstacles, racks, recoverable gear
+Human motion                 A03 A05 A06 F04 F05                     foot placement, hand sockets, nock/draw/release, pickup, work, climbing, sitting
+Terrain and weather          B01 B02 B03 B07                          seasonal/wet variants, wind, rain, fog, dust, sky, water
+Environmental audio         C01–C07                                 foley, animals, market, indoor/outdoor ambience, cloth, impacts
+UI and skill trees           F01 F02 F03; existing UI                item icons, input prompts, maps, accessible menus, text
+Replay/diagnostics           existing UI and code                    no asset pack supplies the actual replay/analysis implementation
+NPC/economy/AI               character and prop packs                code and behavior work, not downloadable art
+
+Rare projectiles: source a lawful game-art mesh from the original author if
+available; don't assert an exact model exists before verification. If no suitable
+free, redistributable asset can be identified, record GAP, shortlist references,
+make a single representative visual benchmark for approval and create custom
+assets only after approval. Use fictional visual designs for experimental devices
+and alchemical effects. No real-world manufacturing specifications are required.
+
+ANIMATION CHECKLIST (coverage, not guaranteed clips)
+Idle variations, walk/jog/sprint, turn, strafe, crouch, jump/land, climb/vault,
+sit/stand, carry, interact, reach, pick up, throw, bow draw/hold/release, crossbow
+handling, sling rhythm, boomerang toss/catch, alchemical bottle use, craft/work,
+gather, eat/drink, injury/defeat and NPC gestures. Reuse and retarget responsibly;
+mark missing action coverage explicitly. Motion clips do not establish mechanics.
+
+==========================================================================
+J. FUTURE-PROOFING COVERAGE MATRIX — DISCOVERY ROUTES
+==========================================================================
+- Life/farm simulations: A01–A03, A07/A08/A10, A19/A22, E01/E11, existing farm.
+- Urban/traffic games: existing city/car/road kits, D05–D07, E11, C09/C11.
+- Fantasy RPG/dungeons: A01/A02/A09/A13/A21, E01/E02, F01.
+- Space/sci-fi: D01/D02/D06/D07, existing space/blaster, C09/C11.
+- Platformers/arcade: D03/D04, E02/E08/E11, existing Pixel Frog, C08.
+- Retro FPS/horror: B04–B06, D08, C05/C09, existing first-person arms and
+  project-specific assets. Respect original author licenses and art direction.
+- Ocean/fishing/ecosystem: A19/A20/A22, B01–B03, C05, D05/D07.
+- Aircraft/vehicle simulation: D09, existing car models, D07, C05/C09.
+- Strategy/city builder: A11/A12, E03–E07, existing tower-defense and city kits.
+- Experimental physics: A02/A08, B01/B07, F02 and existing prototype packs;
+  use real physics engine systems, not visual tricks masquerading as simulation.
+- Specialized sports, creatures, machinery, historical eras and unusual worlds:
+  G01–G05, D10–D12, E12/E13; create project-specific coverage requests.
+
+==========================================================================
+K. ACQUISITION BATCH ORDER AND ACCEPTANCE CRITERIA
+==========================================================================
+Batch 01 — A01 A02 A03 A05 A06 A07 A08: medieval core, characters and motion.
+  Exit: one actual imported street/interior plus a coherent dressed character
+  and representative equipped pose reviewed at desktop/mobile scale. No claims
+  of approval without user approval where required.
+Batch 02 — B01 B02 B03 C01 C02 C03 C04 C05: materials and environmental sound.
+  Exit: reusable asset records; PBR channel validation; correctly looped ambience;
+  representative surface/contact audio variations.
+Batch 03 — A14–A22, B07, F01: missing projectile/prop and wildlife families.
+  Exit: explicit mesh and animation coverage table for each in-game discipline;
+  any unfilled rare projectile gap remains marked, not silently substituted.
+Batch 04 — A04 A09–A13 A23 A24 C06/C07 and selected P1 gaps: world expansion.
+  Exit: approved compatible assets, deduplicated and optimized source subsets.
+Batch 05 — selected D/E/F/C P2 packs: broad Euclidi Games expansion.
+  Exit: at least one documented coherent art family per target genre, without
+  inflating the game runtime bundles or duplicating existing packs.
+Batch 06 — P3 discovery sources: ongoing, selective, scope-driven intake.
+  Exit: new exact source records only; no mass unverified mirrors.
+
+IMPORTANT: These batches are intake organization, not user-facing stage gates for
+complete game development. Game integration and asset acquisition may run in
+parallel when independent. This manifest does not authorize new gameplay scope,
+changes to existing projects, purchases, indiscriminate bulk downloading, or
+publication of unverified assets. A source page being accessible in search does
+not prove that its download, license file, import or visual test has succeeded.
+
+Final reporting to owner:
+- files/packs queued, verified, imported, blocked, deduplicated by category;
+- actual asset preview/contact sheet for each compatible family when available;
+- coverage gaps with original source links and next actions;
+- committed size vs optimized runtime size;
+- precise Git branch/commit and what has actually been tested.

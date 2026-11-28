@@ -12,6 +12,7 @@ This library collects reusable, licensed building blocks. Most entries are sourc
 - [Prototype grids and PBR surfaces](foundations-materials/README.md)
 - [Godot foot-grounding IK source](tech/godot-foot-ik-grounder-lite/README.md): MIT source subset for Godot 4.4+; upstream demo/tests omitted, so runtime integration is still required.
 - `tech/javascript-state-machine/`: browser-ready finite-state-machine library, history and visualization plugins, plus upstream README and MIT license. Upstream commit `2ae84bbbaad13103be43b3e0a24c077002e2301a`: [jakesgordon/javascript-state-machine](https://github.com/jakesgordon/javascript-state-machine). Evaluate maintenance and performance before integration.
+- [Acquisition intake](acquisition/README.md): 231 indexed records across the base, Kinetic∆ and billiards lists, with rights/access review, searchable records and resumable repo-local acquisition tooling. Unverified or restricted entries remain index-only.
 
 ## Use and iteration
 

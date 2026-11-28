@@ -1,0 +1,160 @@
+EUCLIDI GAMES — SHARED ASSET LIBRARY
+Agent acquisition manifest and operating instructions
+Version: 1.0 | 2026-11-27
+
+OBJECTIVE
+Build a reusable, searchable asset library for Euclidi Games and future interactive projects. Acquire actual source assets, not merely bookmarks. Prioritize coherent, high-quality, reusable collections covering 2D, pixel art, 3D, animation, materials, audio, UI, fonts, shaders and specialized simulation content. The immediate project is Harvest '96, a 16-bit rural life simulation; the library must also support unrelated future projects.
+
+DESTINATION
+Game repository: https://github.com/euclidi/euclidi-games
+The agent must inspect the existing repository and asset conventions before writing. Prefer a separate shared asset repository or a dedicated shared-assets directory if appropriate; do not assume authority to create a new repository. Preserve existing games and assets. Keep raw library assets outside deployed runtime bundles where feasible. Do not import entire massive collections into the game catalog's published site indiscriminately. If storage, repository quota, or bandwidth prevents a bulk acquisition, use a versioned source manifest plus selective downloads. Do not use Git LFS without confirming that deployment and retrieval consumers support it.
+
+LICENSE POLICY — REQUIRED
+1. CC0, verified public domain, and permissive redistribution licenses are preferred. Free-to-play, free-to-download and free-for-commercial-game-use do NOT establish standalone redistribution rights.
+2. Verify the original publisher's license for each pack and, when required, each file. Mirror claims are leads, not proof. Save original license and source URL alongside every acquisition. For CC BY, preserve creator, title, source, license URL, and modification notices. Keep font OFL notices, software notices and any share-alike obligations intact.
+3. Never mirror assets with standalone redistribution restrictions, proprietary game rips, unverified rights, noncommercial-only terms, or ambiguous licensing into the public library. Store their source link and restriction in the manifest only. Mixamo and non-CC0 Quaternius packs are examples of sources that may permit game integration but not raw redistribution; check current terms.
+4. Do not use a license label below as automatic permission; all sources are candidates and their current terms and URLs require verification. Do not bypass rate limits, logins, paywalls, or provider terms. If an official API requires permission for automated bulk access, use an authorized method or selective downloads.
+5. Never execute scripts from downloaded asset packs. Inspect archives for unsafe paths, executables, duplicate content and unexpected file types. Use trusted tools to validate images, audio and model files.
+
+ACQUISITION ORDER
+P0: Bulk CC0 2D collections, Kenney, Ninja Adventure, compatible farming assets, core audio, and pixel fonts.
+P1: Rigged characters, animation, modular 3D packs, environment props, textures, materials and HDRIs.
+P2: Specialized assets, additional audio, UI, shader sources, scientific/historical objects and reference collections.
+P3: Mixed-license directories and project-specific-only sources. Index first; acquire only individually verified eligible assets.
+
+SOURCE CATALOG
+Format: ID | source | URL | coverage | acquisition notes
+The source list consolidates all unique links from the previous asset-library response, plus relevant official license and API links. URLs are acquisition leads, not a claim of current accessibility or per-file license verification.
+
+[01 — BULK LIBRARIES AND DISCOVERY]
+B01 | Tiddybub 2d-assets | https://github.com/Tiddybub/2d-assets | large categorized 2D collection, previously reported 1,101 packs | P0; verify SOURCE.md records against original publishers; avoid blindly cloning entire library into deployed game folder
+B02 | Free Game Dev Assets | https://github.com/TMHSDigital/Free-Game-Dev-Assets | broad categorized discovery index | P3; follow links and verify original licenses
+B03 | Game Forge Assets | https://github.com/npmiaman/game-forge/tree/main/assets | collected 3D assets and textures | P3; verify manifest and original source
+B04 | AssetHoard CC0 | https://assethoard.com/free-game-assets/cc0 | CC0 discovery index | P3; verify originals
+B05 | AssetHoard pixel art | https://assethoard.com/free-game-assets/pixel-art | retro asset discovery | P3; verify originals
+B06 | 3D Valley | https://3dvalley.com/library | models, materials, animation and audio | P3; verify terms and availability
+B07 | Kenney | https://kenney.nl/assets | 2D, 3D, UI, environments, props, vehicles, audio | P0/P1; download official packs, generally CC0; preserve licenses
+B08 | OpenGameArt | https://opengameart.org/ | sprites, models, textures, sound, music | P3; license per asset
+B09 | itch.io free assets | https://itch.io/game-assets/free | independent asset packs | P3; free price is not a license
+B10 | Kitpile | https://kitpile.com/ | categorized 2D and 3D | P3; verify license per asset
+
+[02 — 2D, PIXEL ART, RPG AND FARMING]
+D01 | Ninja Adventure | https://pixel-boy.itch.io/ninja-adventure-asset-pack | directional characters, tiles, buildings, creatures, effects, music, sound, UI | P0; CC0 candidate; obtain canonical complete pack
+D02 | Ninja Adventure GitHub | https://github.com/pixel-boy/NinjaAdventure | repository acquisition candidate for D01 | P0; verify repository exists and matches canonical pack; avoid duplicate import
+D03 | Farming Set | https://opengameart.org/content/farming-set-pixel-art | crops, animals, farm props | P0; verify license before import
+D04 | Kenney RPG Base | https://kenney.nl/assets/rpg-base | general RPG tiles | P0; verify exact pack URL and CC0
+D05 | Kenney Tiny Farm | https://kenney.nl/assets/tiny-farm | farming and agriculture tiles | P0; CC0; already used in Harvest '96 development branch
+D06 | Kenney Tiny Town | https://kenney.nl/assets/tiny-town | terrain, village and buildings | P0; CC0; already used in Harvest '96 development branch
+D07 | Kenney Tiny Dungeon | https://kenney.nl/assets/tiny-dungeon | interiors, objects and characters | P0; CC0; already used in Harvest '96 development branch
+D08 | Liberated Pixel Cup collection | https://opengameart.org/content/lpc-collection | RPG tiles, props, sprites | P3; mixed licenses and attribution/share-alike; keep separated
+D09 | Universal LPC Spritesheet Generator | https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator | layered directional character animation | P3; preserve individual asset credits and license data; do not assume generator code license covers artwork
+D10 | 0x72 | https://0x72.itch.io/ | dungeon, RPG, adventure and retro sprites | P3; verify each pack
+D11 | Lospec palettes | https://lospec.com/palette-list | constrained pixel-art palettes | P0; check individual palette usage terms; preserve attribution
+
+[03 — 3D MODELS AND MODULAR ENVIRONMENTS]
+M01 | Quaternius | https://quaternius.com/ | rigged characters, creatures, buildings, vehicles, nature, environments | P1; import only explicitly redistribution-compatible packs; distinguish CC0 from QAL or other restrictive terms
+M02 | KayKit GitHub | https://github.com/KayKit-Game-Assets | coherent modular stylized models, character rigs and animations | P1; verify pack license and retain notices
+M03 | KayKit itch.io | https://kaylousberg.itch.io/ | canonical pack pages, previews and downloads | P1; deduplicate against M02
+M04 | Poly Pizza | https://poly.pizza/ | low-poly props and objects | P1; CC0/CC BY candidates; verify per model
+M05 | Poly Haven models | https://polyhaven.com/models | realistic models and photogrammetry | P1; prefer game-ready glTF and optimized textures; CC0 assets subject to provider access terms
+M06 | ambientCG | https://ambientcg.com/ | realistic scans, models and PBR materials | P1; CC0 assets; use official access methods
+M07 | Smithsonian Open Access | https://www.si.edu/openaccess | historical objects, specimens, artifacts | P2; only explicitly CC0 records, respect third-party restrictions
+M08 | NASA 3D Resources | https://github.com/nasa/NASA-3D-Resources | spacecraft, satellites, instruments, astronomy | P2; verify per resource, agency media rules and third-party rights
+M09 | Sketchfab | https://sketchfab.com/ | specialized models and scans | P3; individually verify downloadable license; never mirror restricted models
+M10 | BlenderKit | https://www.blenderkit.com/ | models and materials | P3; only explicitly CC0 assets eligible for raw redistribution; other assets index-only unless rights verified
+
+[04 — ANIMATION, RIGS AND MOTION]
+A01 | Quaternius Universal Animation Library | https://quaternius.com/packs/universalanimationlibrary.html | reusable humanoid motions | P1; verify version-specific CC0 license, skeleton and retargeting compatibility
+A02 | Quaternius packs | https://quaternius.com/ | animal, monster and humanoid animation | P1; same license filter as M01
+A03 | KayKit | https://github.com/KayKit-Game-Assets | consistent character rigs and animation | P1; reuse M02 acquisition, no duplicate files
+A04 | CMU Motion Capture | http://mocap.cs.cmu.edu/ | human motion-capture recordings | P2; verify redistribution terms; use documented retargeting and coordinate conversion
+A05 | Mixamo | https://www.mixamo.com/ | humanoid rigging and animation | P3; link only by default; project-use terms do not grant bulk standalone redistribution
+
+[05 — TEXTURES, PBR MATERIALS AND LIGHTING]
+T01 | Poly Haven textures | https://polyhaven.com/textures | PBR surfaces, walls, stone, wood, metal, ground | P1; CC0; obtain reasonable resolutions by default
+T02 | Poly Haven HDRIs | https://polyhaven.com/hdris | environment lighting, skies and indoor/outdoor HDRI | P1; CC0; prefer 1K/2K for browser use; keep higher-resolution originals only when useful
+T03 | Poly Haven API | https://polyhaven.com/our-api | programmatic discovery/download information | P1; obey API terms and rate limits; not a separate asset pack
+T04 | ambientCG API | https://docs.ambientcg.com/api/ | programmatic material discovery/download | P1; obey API and rate limits; deduplicate against M06
+T05 | CGBookcase | https://www.cgbookcase.com/ | seamless PBR materials | P1; verify current terms
+T06 | TextureCan | https://www.texturecan.com/ | seamless materials | P1; verify current terms
+T07 | Public Domain Textures | https://publicdomaintextures.com/ | environmental surfaces | P3; verify current availability and rights; avoid duplicate mirror of ambientCG or other sources
+
+[06 — AUDIO, MUSIC AND SOUND EFFECTS]
+S01 | 512 Retro Sound Effects | https://opengameart.org/content/512-sound-effects-8-bit-style | retro arcade, UI and gameplay SFX | P0; CC0 candidate, verify page
+S02 | 500 Free Game Sounds | https://untamedpixels.itch.io/gamesoundeffects | general game SFX | P0; CC0 candidate, verify page
+S03 | Kenney audio | https://kenney.nl/assets | UI, impacts, footsteps, environmental sounds | P0; reuse B07
+S04 | Meta Open Sound | https://github.com/facebookincubator/Meta-open-sound | instruments, ambience, sound effects | P1; inspect license records for CC0 or CC BY and keep required attribution
+S05 | Freesound | https://freesound.org/ | Foley, environmental recordings and effects | P2; select CC0 or eligible CC BY only; use official API/download methods
+S06 | OpenGameArt audio | https://opengameart.org/ | soundtracks, loops, music and SFX | P3; verify each track
+S07 | Free Sound Effects | https://github.com/hipdiscovery/Free-Sound-Effects | categorized sounds | P2; verify original file provenance and rights
+S08 | Musopen | https://musopen.org/ | classical music | P3; verify rights in both composition and specific recording
+
+[07 — UI, TYPOGRAPHY AND ICONS]
+U01 | Google Fonts | https://github.com/google/fonts | open-licensed typography | P1; preserve family-specific licenses; acquire useful subset before attempting full library
+U02 | Pixel Operator | https://www.dafont.com/pixel-operator.font | bitmap-style text | P0; verify redistribution license and canonical publisher
+U03 | Unscii | https://github.com/viznut/unscii | bitmap terminal typography | P0; verify variant-specific licenses
+U04 | Kenney UI | https://kenney.nl/assets | menus, icons and controller prompts | P0; reuse B07
+U05 | Game Icons | https://game-icons.net/ | inventory, equipment and skill icons | P1; preserve CC BY attribution as applicable
+U06 | Lucide | https://github.com/lucide-icons/lucide | general interface icons | P1; preserve software/icon license notices; avoid treating vector assets as substitutes for pixel art
+U07 | OpenMoji | https://github.com/hfg-gmuend/openmoji | pictograms | P3; preserve CC BY-SA terms and attribution where applicable
+
+[08 — SHADERS, VFX AND RENDERING TEST ASSETS]
+V01 | Libretro GLSL shaders | https://github.com/libretro/glsl-shaders | CRT, scaling and retro effects | P2; individual shader license checks, segregate copyleft and incompatible files
+V02 | Libretro Slang shaders | https://github.com/libretro/slang-shaders | advanced retro rendering effects | P2; same license filter; not all shaders browser compatible
+V03 | Godot Shaders | https://godotshaders.com/ | water, lighting, distortion, stylized effects | P3; verify each shader, engine compatibility and conversion requirements
+V04 | glslify | https://github.com/glslify/glslify | GLSL module infrastructure | P2; software dependency rather than art pack; pin compatible version and retain licenses
+V05 | Khronos glTF Sample Assets | https://github.com/KhronosGroup/glTF-Sample-Assets | model compatibility and rendering QA | P2; individual model licenses; use for QA rather than blindly redistributing all samples
+
+[09 — LICENSE REFERENCES]
+https://creativecommons.org/publicdomain/zero/1.0/
+https://creativecommons.org/licenses/by/4.0/
+https://creativecommons.org/licenses/by-sa/4.0/
+https://openfontlicense.org/
+
+HARVEST '96 IMMEDIATE ASSET TARGETS
+- Ground: grass, dirt, tilled soil, wet soil, paths, stone, water, shoreline, cliffs, fences and transitions, four seasons and weather variants.
+- Flora: trees, orchard stages, flowers, bushes, weeds, mushrooms, logs, stumps, grass, reeds, crop stages and diseased/wilted/harvestable variants.
+- Buildings: farmhouse, barn, coop, shops, carpentry workshop, bakery, public buildings and modular interiors.
+- Characters: consistent proportions, front/back/left/right idle and walk, tool use, watering, carrying, fishing, sleeping, sitting and interaction poses. Distinct villager clothing and hair.
+- Animals: cows, chickens, sheep, goats, pigs, ducks, rabbits, horse, dog, wildlife and juvenile variants; directional walk, idle, graze, sleep and relevant care animation.
+- Props/items: tools, seeds, produce, feed, furniture, bedding, crates, baskets, barrels, household items, signs, mining resources, artisan production equipment.
+- UI: bitmap fonts, inventory icons, dialogue boxes, calendars, journals, controller prompts and ledger widgets matching the visual era.
+- Audio: footsteps by surface, doors, tool impacts, water, animals, wind, rain, ambience, interface sounds, seasonal music loops.
+- Import matching assets first, not random isolated items. Assess one representative in-engine benchmark before scaling visual production. Existing Tiny Farm/Town/Dungeon imports are integration baselines, not proof of final SNES fidelity. Do not mix incompatible art styles just to maximize asset count. Do not use ripped Harvest Moon assets.
+
+GENERAL FUTURE PROJECT COVERAGE
+Index assets by use case: medieval/fantasy, urban, industrial, sci-fi, rural, historical, nature, underwater, space, horror, arcade, platformer, fighting, vehicles, architecture, indoor domestic, laboratory, creatures, humanoid anatomy, particles, decals, weather, typography, and UI. Track both high-fidelity realistic and distinct retro/low-poly/cel-shaded styles. For each new project, search this library before generating or sourcing new content. Match existing approved project style, technical constraints and licenses.
+
+PROPOSED DIRECTORY STRUCTURE (ADAPT TO EXISTING REPO)
+shared-assets/
+  manifests/sources.json
+  manifests/assets.jsonl
+  manifests/rejected.jsonl
+  manifests/credits.csv
+  2d/{pixel,tilesets,characters,creatures,items,ui,effects}/
+  3d/{characters,creatures,props,vehicles,architecture,nature}/
+  animation/{humanoid,animals,mocap}/
+  materials/{pbr,textures,decals,hdri}/
+  audio/{sfx,ambience,music,instruments}/
+  fonts/
+  shaders/
+  reference/
+  licenses/
+Keep publisher/pack boundaries intact, including original files, documentation and licenses. Avoid breaking relative texture/material dependencies. Separate source files from derived optimized game-ready assets. Use stable IDs and content hashes to prevent duplicate copies. Do not rearrange an existing library destructively.
+
+REQUIRED MACHINE-READABLE ASSET RECORD
+For each pack or asset, emit a JSON record containing:
+  id, title, creator, publisher, source_url, download_url (if verified), license_id, license_url, license_evidence_path, redistribution_allowed, attribution_text, local_path, sha256, bytes, format, categories, tags, style, dimensions_or_scale, animation_names, dependencies, original_or_derived, source_asset_id (for derived files), acquisition_date, verification_status.
+Use null for unknown fields, not invented values. Include optional pixel cell size, sprite frame map, rig/skeleton name, axis/units, triangle count, texture resolution, audio duration, channel count, and loop markers when available. Keep manifest version and source retrieval date. Record blocked sources with specific reason, including not-found, terms, rate limit, license ambiguity or file size.
+
+QUALITY AND RUNTIME VALIDATION
+- 2D: decode PNGs, check alpha, actual cell size, atlas margin/spacing, frame bounds, direction naming and animation counts. Do not infer frame semantics without visual inspection.
+- 3D: validate glTF/GLB, meshes, transforms, units, skeletons, animations and all texture references. Preserve originals; produce lower-poly/texture-size variants as needed without claiming equivalence.
+- Audio: verify decoding, duration, channels, loops and suitable compression. Keep original lossless data where reasonable.
+- Fonts: verify glyph coverage, font license, browser format and required attribution.
+- Shaders: verify syntax, target engine/backend and license; do not assume Godot or Libretro shaders run directly in Phaser/WebGL.
+- For browser projects, favor static-relative URLs, local runtime dependencies and optimized per-game bundles. Validate actual GitHub Pages deployment with no broken asset routes. Do not publish the entire raw asset collection as a game download.
+
+EXECUTION AND REPORTING
+Inspect repo state and existing asset storage; deduplicate. Process P0 through P3 in sensible batches, checkpointing each verified batch. Use official archives/releases/APIs when available. Commit assets plus manifests and license notices atomically; avoid overwriting concurrent changes. Preserve existing branches, game builds and catalog. Use a development branch for large imports. Only merge when validation passes and the intended destination is confirmed.
+Report actual downloaded pack/file counts, bytes, licenses verified, assets rejected, duplicates skipped, checks passed/failed, commit/PR links and remaining coverage gaps. Distinguish discovered links, acquired assets, integrated assets and tested assets. Do not claim a pack was imported solely because its page was found. Do not present a Play button until the specific game route and catalog entry are actually verified. Continue across available batches without asking for approval for every ordinary download; request authorization only for consequential repository/storage changes, uncertain redistribution rights, or required access.

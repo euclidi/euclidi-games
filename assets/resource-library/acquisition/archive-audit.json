@@ -1,0 +1,1518 @@
+{
+  "retrieved": "2026-11-28",
+  "archive_count": 67,
+  "archives": [
+    {
+      "path": "foundations-2d/kenney/1-bit-platformer-pack.zip",
+      "bytes": 402959,
+      "sha256": "ecd514634e68f00d0cb22369d069fbffc7861b9c0408e87e2ef2bc5174e3cbe5",
+      "entry_count": 815,
+      "uncompressed_bytes": 271618,
+      "formats": {
+        ".png": 806,
+        ".txt": 2,
+        ".url": 3,
+        "[no-extension]": 4
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney/new-platformer-pack.zip",
+      "bytes": 3276507,
+      "sha256": "553b907f3f0e505ab65f56f245ccaff3123c8fe3f3a0dfce9373b996bfc18cc2",
+      "entry_count": 1353,
+      "uncompressed_bytes": 4048473,
+      "formats": {
+        ".ogg": 10,
+        ".png": 879,
+        ".svg": 433,
+        ".txt": 1,
+        ".url": 2,
+        ".xml": 8,
+        "[no-extension]": 20
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney/particle-pack.zip",
+      "bytes": 15001764,
+      "sha256": "b631d4b07f7002549fdcf155f01141ad482f79f3440e4e301eed49ce5f1d8958",
+      "entry_count": 200,
+      "uncompressed_bytes": 15222316,
+      "formats": {
+        ".png": 193,
+        ".txt": 1,
+        ".unitypackage": 1,
+        "[no-extension]": 5
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney/pixel-platformer.zip",
+      "bytes": 260312,
+      "sha256": "d01a196dbe3cc964e00d83ba3b987df62f332dc9260c9f941b4fbcc9047130f4",
+      "entry_count": 258,
+      "uncompressed_bytes": 242025,
+      "formats": {
+        ".c3p": 1,
+        ".png": 240,
+        ".tmx": 2,
+        ".tsx": 2,
+        ".txt": 5,
+        ".url": 2,
+        "[no-extension]": 6
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney/roguelike-characters.zip",
+      "bytes": 63243,
+      "sha256": "05c4c0af7326584cfffbbb196571eb9e102981d2033e90e225c5ba8da8771284",
+      "entry_count": 9,
+      "uncompressed_bytes": 63617,
+      "formats": {
+        ".png": 4,
+        ".txt": 2,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-isometric/isometric-miniature-dungeon.zip",
+      "bytes": 14211485,
+      "sha256": "187a0888451317fe47caac5f26e984bb79c5ddce9b8630926f0f5d9c0247d343",
+      "entry_count": 758,
+      "uncompressed_bytes": 14114135,
+      "formats": {
+        ".png": 747,
+        ".txt": 1,
+        ".url": 3,
+        ".zip": 2,
+        "[no-extension]": 5
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-isometric/isometric-miniature-farm.zip",
+      "bytes": 10135825,
+      "sha256": "6dd0db7d26cb2999fd4a7a28e25b4727e61dafaf1662cac364eb97172a027268",
+      "entry_count": 466,
+      "uncompressed_bytes": 10069835,
+      "formats": {
+        ".png": 459,
+        ".txt": 1,
+        ".url": 1,
+        ".zip": 2,
+        "[no-extension]": 3
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-isometric/isometric-miniature-library.zip",
+      "bytes": 5819017,
+      "sha256": "e8ac573b289e04d06ae2feb174c526aeb6456c0655663cc4b3820942c8bd128f",
+      "entry_count": 300,
+      "uncompressed_bytes": 5786415,
+      "formats": {
+        ".png": 291,
+        ".txt": 1,
+        ".url": 3,
+        ".zip": 2,
+        "[no-extension]": 3
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-isometric/isometric-miniature-prototype.zip",
+      "bytes": 3538637,
+      "sha256": "8f35b991d0bad7ebad586c74522a8285cd33b2ef68b78429b0c9d254d22757a5",
+      "entry_count": 662,
+      "uncompressed_bytes": 3472310,
+      "formats": {
+        ".png": 651,
+        ".txt": 1,
+        ".url": 3,
+        ".zip": 2,
+        "[no-extension]": 5
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-map-arcade/map-pack.zip",
+      "bytes": 2347889,
+      "sha256": "6298e198de4e05e0d573bdca0c58198b6375bb0fed45f29d4f0ecf84abf49c49",
+      "entry_count": 202,
+      "uncompressed_bytes": 3064441,
+      "formats": {
+        ".png": 194,
+        ".svg": 1,
+        ".swf": 1,
+        ".txt": 1,
+        ".xml": 1,
+        "[no-extension]": 4
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-map-arcade/roguelike-rpg-pack.zip",
+      "bytes": 715373,
+      "sha256": "8e7d2378f8f794245645f6d7dc7aeeb246791410a7e512293c594b46a5a9524b",
+      "entry_count": 13,
+      "uncompressed_bytes": 725661,
+      "formats": {
+        ".png": 5,
+        ".tmx": 2,
+        ".txt": 2,
+        ".url": 2,
+        "[no-extension]": 2
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-map-arcade/space-shooter-redux.zip",
+      "bytes": 1108777,
+      "sha256": "0edbe0ab5cda6c44901d8c42f150268fdfa0c8d48492098669f37e9c296929b5",
+      "entry_count": 327,
+      "uncompressed_bytes": 1545744,
+      "formats": {
+        ".ogg": 7,
+        ".png": 301,
+        ".svg": 1,
+        ".swf": 1,
+        ".ttf": 2,
+        ".txt": 1,
+        ".xml": 1,
+        "[no-extension]": 13
+      },
+      "license_files": [
+        "license.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-map-arcade/top-down-shooter.zip",
+      "bytes": 2626248,
+      "sha256": "433a2aa4fd6b617cd143528bf12622811ebe9c56fe1975bb664461b58cd2f2f5",
+      "entry_count": 615,
+      "uncompressed_bytes": 3602382,
+      "formats": {
+        ".db": 8,
+        ".png": 587,
+        ".svg": 2,
+        ".swf": 2,
+        ".txt": 1,
+        ".xml": 1,
+        "[no-extension]": 14
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-tiny/tiny-battle.zip",
+      "bytes": 131452,
+      "sha256": "7751ec7d9a07e57baa9fa1174d6f78fcd779a050377227afee77993c73cb5f9e",
+      "entry_count": 211,
+      "uncompressed_bytes": 111005,
+      "formats": {
+        ".png": 202,
+        ".tmx": 1,
+        ".tsx": 1,
+        ".txt": 2,
+        ".url": 2,
+        "[no-extension]": 3
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-tiny/tiny-dungeon.zip",
+      "bytes": 98530,
+      "sha256": "c109438ab06f65fd80f9b2686a4cf9c7c11dc64444b47333ec71d602f8bb5fc7",
+      "entry_count": 145,
+      "uncompressed_bytes": 84748,
+      "formats": {
+        ".png": 136,
+        ".tmx": 1,
+        ".tsx": 1,
+        ".txt": 2,
+        ".url": 2,
+        "[no-extension]": 3
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-tiny/tiny-farm.zip",
+      "bytes": 191128,
+      "sha256": "a06f75f312c27eff15a2288475612e6f6699411be7259d408323cd15a790decc",
+      "entry_count": 143,
+      "uncompressed_bytes": 172234,
+      "formats": {
+        ".png": 136,
+        ".txt": 2,
+        ".url": 3,
+        "[no-extension]": 2
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/kenney-tiny/tiny-town.zip",
+      "bytes": 182243,
+      "sha256": "9768692dccff1d706408a5aedd6ca4f6cd1409506cbc84cb2f862919764be977",
+      "entry_count": 143,
+      "uncompressed_bytes": 163379,
+      "formats": {
+        ".png": 136,
+        ".txt": 2,
+        ".url": 3,
+        "[no-extension]": 2
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-2d/pixel-frog/pixel-adventure.zip",
+      "bytes": 209186,
+      "sha256": "efafdfc8ed44f2b0ade27c0246e11a2474ce3a793b4f8e16dbe7403824f6e77b",
+      "entry_count": 211,
+      "uncompressed_bytes": 185720,
+      "formats": {
+        ".png": 175,
+        "[no-extension]": 36
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-2d/pixel-frog/LICENSE-CC0.txt",
+        "foundations-2d/pixel-frog/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/fps-and-archery/kaykit/adventurers-full/adventurers.zip",
+      "bytes": 13024345,
+      "sha256": "abe48f4763fba0896bab486ee9e6d08ca6b5b3884b9601f235c8847ae94dc479",
+      "entry_count": 266,
+      "uncompressed_bytes": 23027118,
+      "formats": {
+        ".0_free": 1,
+        ".bin": 31,
+        ".fbx": 70,
+        ".glb": 8,
+        ".gltf": 31,
+        ".mtl": 31,
+        ".obj": 31,
+        ".png": 44,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 15
+      },
+      "license_files": [
+        "KayKit_Adventurers_2.0_FREE/License.txt"
+      ],
+      "adjacent_license_evidence": [
+        "foundations-3d/fps-and-archery/kaykit/License.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/fps-and-archery/kaykit/animation-completion/character-animations.zip",
+      "bytes": 14858957,
+      "sha256": "65882f31f905ad2e953819648a59287cdeab8f623908d5ef701971d3758be20f",
+      "entry_count": 48,
+      "uncompressed_bytes": 42942585,
+      "formats": {
+        ".1": 1,
+        ".fbx": 16,
+        ".glb": 16,
+        ".png": 1,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 10
+      },
+      "license_files": [
+        "KayKit_Character_Animations_1.1/License.txt"
+      ],
+      "adjacent_license_evidence": [
+        "foundations-3d/fps-and-archery/kaykit/License.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kaykit/dungeon-pack/dungeon-pack.zip",
+      "bytes": 32868755,
+      "sha256": "6acb859d1aefae074f937d1e6f13656a7312b2bdb6d9f1232ebdade8d93d6a1c",
+      "entry_count": 1311,
+      "uncompressed_bytes": 51591995,
+      "formats": {
+        ".1_free": 1,
+        ".bin": 211,
+        ".fbx": 422,
+        ".gltf": 211,
+        ".mtl": 216,
+        ".obj": 216,
+        ".png": 23,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 7
+      },
+      "license_files": [
+        "KayKit_Dungeon_Pack_1.1_FREE/License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kaykit/medieval-hexagon/medieval-hexagon.zip",
+      "bytes": 35251508,
+      "sha256": "4fbb374c45732c88522bd3439e9415bf568c683236ede336b4e61d161155ba12",
+      "entry_count": 1545,
+      "uncompressed_bytes": 64737317,
+      "formats": {
+        ".0_free": 1,
+        ".bin": 221,
+        ".fbx": 442,
+        ".gltf": 221,
+        ".jpg": 5,
+        ".mtl": 263,
+        ".obj": 263,
+        ".pdf": 1,
+        ".png": 53,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 71
+      },
+      "license_files": [
+        "KayKit_Medieval_Hexagon_Pack_1.0_FREE/License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kaykit/resource-bits/resource-bits.zip",
+      "bytes": 8520574,
+      "sha256": "7056f1310896a4612a67703fd6d5af389fcccdeb46df0a89e2322aa8e3bcfcf7",
+      "entry_count": 473,
+      "uncompressed_bytes": 17618275,
+      "formats": {
+        ".0_free": 1,
+        ".bin": 76,
+        ".fbx": 152,
+        ".gltf": 76,
+        ".mtl": 76,
+        ".obj": 76,
+        ".png": 6,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 6
+      },
+      "license_files": [
+        "KayKit_ResourceBits_1.0_FREE/License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kaykit/rpg-tools-bits/rpg-tools-bits.zip",
+      "bytes": 3885168,
+      "sha256": "a17c2a54df93d525e90d960baf3c68638defb4f424e204ceead6ea1f89e9c7dd",
+      "entry_count": 346,
+      "uncompressed_bytes": 7064764,
+      "formats": {
+        ".0_free": 1,
+        ".bin": 49,
+        ".fbx": 98,
+        ".gltf": 49,
+        ".mtl": 59,
+        ".obj": 59,
+        ".png": 21,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 6
+      },
+      "license_files": [
+        "KayKit_RPGToolsBits_1.0_FREE/License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney/fantasy-town-kit/fantasy-town-kit.zip",
+      "bytes": 3854691,
+      "sha256": "1a7530c09f4d2fa2cdee259876f089334f8b1f27fa86a0c4f54ef86cdd8676ef",
+      "entry_count": 856,
+      "uncompressed_bytes": 10647704,
+      "formats": {
+        ".fbx": 167,
+        ".glb": 167,
+        ".html": 1,
+        ".mtl": 167,
+        ".obj": 167,
+        ".png": 174,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 9
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney/furniture-kit/furniture-kit.zip",
+      "bytes": 5130729,
+      "sha256": "e67652d0932cee41683f74711c03d3e192a2af9979ef8e6b237711f5482d46b0",
+      "entry_count": 1557,
+      "uncompressed_bytes": 17671416,
+      "formats": {
+        ".dae": 140,
+        ".fbx": 140,
+        ".glb": 140,
+        ".mtl": 140,
+        ".obj": 140,
+        ".png": 702,
+        ".stl": 140,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 11
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney/modular-cave-kit/modular-cave-kit.zip",
+      "bytes": 7025078,
+      "sha256": "48f37a6d4f241124cd7da17da1c6d4ed1bf1820bb149dcb233fbd5ebdd8ba996",
+      "entry_count": 223,
+      "uncompressed_bytes": 17468800,
+      "formats": {
+        ".fbx": 40,
+        ".glb": 40,
+        ".html": 1,
+        ".mtl": 40,
+        ".obj": 40,
+        ".png": 49,
+        ".txt": 1,
+        ".url": 3,
+        "[no-extension]": 9
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-animated-humanoids/animated-characters-1.zip",
+      "bytes": 581441,
+      "sha256": "ec3787de70fa2200256848d74201b10f6b6c3126594e9857bf989753312c2b84",
+      "entry_count": 20,
+      "uncompressed_bytes": 2241633,
+      "formats": {
+        ".fbx": 4,
+        ".png": 5,
+        ".svg": 4,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 4
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-animated-humanoids/animated-characters-2.zip",
+      "bytes": 718027,
+      "sha256": "fdadced07a0454c9b7f0b46507be6144a072b4d03b4ffa37f225893c76c62845",
+      "entry_count": 21,
+      "uncompressed_bytes": 2388233,
+      "formats": {
+        ".fbx": 4,
+        ".png": 6,
+        ".svg": 4,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 4
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-animated-humanoids/animated-characters-3.zip",
+      "bytes": 706472,
+      "sha256": "1d03f1fb001f3cf629425b69c898df58261a316616220ea25b58bd35298e6882",
+      "entry_count": 15,
+      "uncompressed_bytes": 2269099,
+      "formats": {
+        ".fbx": 4,
+        ".png": 5,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 3
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/blaster-kit.zip",
+      "bytes": 571692,
+      "sha256": "fdc76d0f82c189468a65a4fa4ea4fcb55cb3abedefc670762ca7ff8676d0665e",
+      "entry_count": 40,
+      "uncompressed_bytes": 1674272,
+      "formats": {
+        ".glb": 40
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/blocky-characters.zip",
+      "bytes": 541428,
+      "sha256": "560636e121b0e45b43477e118bd176bc103fb1cb1bf40d94cea816ba41d336e5",
+      "entry_count": 18,
+      "uncompressed_bytes": 2310152,
+      "formats": {
+        ".glb": 18
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/car-kit.zip",
+      "bytes": 1686870,
+      "sha256": "97061d7560d67b486584e2603c041a823b72e50dd09e2422bf33caa5d9644de1",
+      "entry_count": 50,
+      "uncompressed_bytes": 6245544,
+      "formats": {
+        ".glb": 50
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/castle-kit.zip",
+      "bytes": 927694,
+      "sha256": "ea6b18fe4370ef4470d23891b8b3656396cd38c68c9fd3459623613b4cd85270",
+      "entry_count": 76,
+      "uncompressed_bytes": 2653880,
+      "formats": {
+        ".glb": 76
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/city-kit-commercial.zip",
+      "bytes": 904173,
+      "sha256": "9608f8740b02c2fe3469a1973db137013af4800616581ddb5d8f99b071fdd7f7",
+      "entry_count": 41,
+      "uncompressed_bytes": 4192244,
+      "formats": {
+        ".glb": 41
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/city-kit-roads.zip",
+      "bytes": 1317229,
+      "sha256": "2c1bac0eddea24510e09a5ffb6192bc0c7930b79c4e3f9e66cbd04f0b9cdc8d6",
+      "entry_count": 95,
+      "uncompressed_bytes": 2657536,
+      "formats": {
+        ".glb": 95
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/city-kit-suburban.zip",
+      "bytes": 930760,
+      "sha256": "95ddd80bd69c11a622be5bac8c1def4fc172a29f69d547d7f14044b9c1d11420",
+      "entry_count": 40,
+      "uncompressed_bytes": 3082288,
+      "formats": {
+        ".glb": 40
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/cube-pets.zip",
+      "bytes": 766649,
+      "sha256": "a53be102a17f6a08235a37cbcbd17cc55accebf63a0a0a11d7559e033a5b5863",
+      "entry_count": 24,
+      "uncompressed_bytes": 3584108,
+      "formats": {
+        ".glb": 24
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/food-kit.zip",
+      "bytes": 2935785,
+      "sha256": "dfff9c6072d127d9d01f48a2df45b8687c48c152cc08f95b67ef84a6093a3805",
+      "entry_count": 200,
+      "uncompressed_bytes": 5503128,
+      "formats": {
+        ".glb": 200
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/furniture-kit.zip",
+      "bytes": 503702,
+      "sha256": "6a86f4228e9764bca13c9f40c8b63ef57a507a9f1e88141305ed0d5f23d22035",
+      "entry_count": 140,
+      "uncompressed_bytes": 1960832,
+      "formats": {
+        ".glb": 140
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/graveyard-kit.zip",
+      "bytes": 1552309,
+      "sha256": "1fcf5dc875932df93815efcc32d520139c2057473039275228bf607fba71b981",
+      "entry_count": 91,
+      "uncompressed_bytes": 4339764,
+      "formats": {
+        ".glb": 91
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/mini-characters.zip",
+      "bytes": 759750,
+      "sha256": "c7a3bde685d8ef7017a5cdf3fbaa3557f59186079cad438b9d3150f375843a21",
+      "entry_count": 26,
+      "uncompressed_bytes": 3617048,
+      "formats": {
+        ".glb": 26
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/mini-dungeon.zip",
+      "bytes": 433377,
+      "sha256": "2f99c38b7934cb02fb1977fbf96d653ded30f9f2e32c149aa467fa3a43c6a1c4",
+      "entry_count": 30,
+      "uncompressed_bytes": 1218528,
+      "formats": {
+        ".glb": 30
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/nature-kit.zip",
+      "bytes": 961468,
+      "sha256": "7c636ad21c09251bde4a6cfcbb8712a003470fc3fa0b8982bf35b1de77244593",
+      "entry_count": 329,
+      "uncompressed_bytes": 3034372,
+      "formats": {
+        ".glb": 329
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/pirate-kit.zip",
+      "bytes": 1177057,
+      "sha256": "c6770af354903226572f712209a7cfbbef0d82088c54052555168aa16f894289",
+      "entry_count": 72,
+      "uncompressed_bytes": 3736360,
+      "formats": {
+        ".glb": 72
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/platformer-kit.zip",
+      "bytes": 2163273,
+      "sha256": "08b6438c9c2a93a028fe51f78d052c16a689f04ca1f808992d5f05a2311a50f9",
+      "entry_count": 153,
+      "uncompressed_bytes": 4911304,
+      "formats": {
+        ".glb": 153
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/prototype-kit.zip",
+      "bytes": 1602570,
+      "sha256": "61f502803cecf855bd8c659b5b04c0191aee6020e8d58003e3ad35047e65a0bc",
+      "entry_count": 145,
+      "uncompressed_bytes": 3132988,
+      "formats": {
+        ".glb": 145
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/space-kit.zip",
+      "bytes": 525027,
+      "sha256": "e334c5a537aa9bb2fa8c1f54f59d2978d9f5e87d6cb6f23d170d6da2777603e8",
+      "entry_count": 153,
+      "uncompressed_bytes": 2015564,
+      "formats": {
+        ".glb": 153
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/kenney-full/packs/tower-defense-kit.zip",
+      "bytes": 2970438,
+      "sha256": "15ec4ed7d271cf575ced785c167a7d047fd0a4ec94fb6247c169e5b57a91d61c",
+      "entry_count": 160,
+      "uncompressed_bytes": 7644448,
+      "formats": {
+        ".glb": 160
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [
+        "foundations-3d/kenney-full/LICENSE-CC0.txt"
+      ],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-3d/opengameart/medieval-spear/spear_PL-Ryba.zip",
+      "bytes": 91413,
+      "sha256": "bd426311600dc2b538e1d0d73cbe55d8150419de9c85a8e0df612200b839515b",
+      "entry_count": 1,
+      "uncompressed_bytes": 582880,
+      "formats": {
+        ".blend": 1
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-audio/kenney/digital-audio.zip",
+      "bytes": 990367,
+      "sha256": "24e6ce28b76a6d8c89cff4d331e0965ff5c3de8a73c612028e9d363cc64e4f06",
+      "entry_count": 68,
+      "uncompressed_bytes": 1064630,
+      "formats": {
+        ".ini": 1,
+        ".ogg": 63,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-audio/kenney/impact-sounds.zip",
+      "bytes": 800850,
+      "sha256": "029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8",
+      "entry_count": 134,
+      "uncompressed_bytes": 1035004,
+      "formats": {
+        ".ogg": 130,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-audio/kenney/interface-sounds.zip",
+      "bytes": 834536,
+      "sha256": "f2193d072726d6758a5f7871b2dcc54dcce0d5c35c6f0a62f92549b327c81232",
+      "entry_count": 104,
+      "uncompressed_bytes": 961273,
+      "formats": {
+        ".ogg": 100,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-audio/kenney/music-jingles.zip",
+      "bytes": 1239525,
+      "sha256": "b729ba57959bd58793d2c5cafa348aaf2655d354f3da35ec4729e03ec77197b8",
+      "entry_count": 95,
+      "uncompressed_bytes": 1433222,
+      "formats": {
+        ".ogg": 86,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 6
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-audio/kenney/rpg-audio.zip",
+      "bytes": 964837,
+      "sha256": "6dbeaf8544da958d8f2adcb4a4a4b76c1ade34a05f8ab9edccd327da7375f38b",
+      "entry_count": 56,
+      "uncompressed_bytes": 1049217,
+      "formats": {
+        ".ogg": 52,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-audio/kenney/sci-fi-sounds.zip",
+      "bytes": 5875104,
+      "sha256": "119340f351a5098ad814f78719438c0da355a9ce8a4c8a3af6a8d48aa3d49e04",
+      "entry_count": 78,
+      "uncompressed_bytes": 6009542,
+      "formats": {
+        ".ini": 1,
+        ".ogg": 73,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-audio/kenney/ui-audio.zip",
+      "bytes": 411949,
+      "sha256": "946fc23a63d535d693eb31b2eabb80c8c28d6351e2186b344ceb71b2cb1d5eb6",
+      "entry_count": 56,
+      "uncompressed_bytes": 487437,
+      "formats": {
+        ".ogg": 52,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-materials/ambientcg/Fabric034_1K-JPG.zip",
+      "bytes": 8219829,
+      "sha256": "10ce98f31a2fd336d2bcb82731d35502932f38da42446980bc91a08166d5fb53",
+      "entry_count": 10,
+      "uncompressed_bytes": 8217871,
+      "formats": {
+        ".blend": 1,
+        ".jpg": 5,
+        ".mtlx": 1,
+        ".png": 1,
+        ".tres": 1,
+        ".usdc": 1
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-materials/ambientcg/Leather002_1K-JPG.zip",
+      "bytes": 7033418,
+      "sha256": "b89254019445720ae96b1db684ddd0fe48264ceae4a39249178b9cfb1b6557c6",
+      "entry_count": 10,
+      "uncompressed_bytes": 7031616,
+      "formats": {
+        ".blend": 1,
+        ".jpg": 5,
+        ".mtlx": 1,
+        ".png": 1,
+        ".tres": 1,
+        ".usdc": 1
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-materials/ambientcg/Leather007_1K-JPG.zip",
+      "bytes": 7124812,
+      "sha256": "51cfcbdae2fb83ad3e339f79783a69850f5186a38552096e5a2b3d02845e5581",
+      "entry_count": 10,
+      "uncompressed_bytes": 7122954,
+      "formats": {
+        ".blend": 1,
+        ".jpg": 5,
+        ".mtlx": 1,
+        ".png": 1,
+        ".tres": 1,
+        ".usdc": 1
+      },
+      "license_files": [],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-materials/kenney/retro-textures-fantasy/retro-textures-fantasy.zip",
+      "bytes": 1203276,
+      "sha256": "46f30f2411dafa011f8e52e32d80be197f8ccfe1164818e664358ae6c78a38b9",
+      "entry_count": 123,
+      "uncompressed_bytes": 1183470,
+      "formats": {
+        ".png": 119,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-materials/kenney-prototype-grids.zip",
+      "bytes": 224735,
+      "sha256": "cc716ea3ed70548c619861e5d228898a77f84d4089873e654b857d30bd2f0169",
+      "entry_count": 79,
+      "uncompressed_bytes": 511026,
+      "formats": {
+        ".png": 78,
+        ".txt": 1
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-ui/kenney/board-game-icons.zip",
+      "bytes": 1039954,
+      "sha256": "05f4358381d8b16b303b2f056393b76ce3f6a58228599e88caa2eab11d4c2946",
+      "entry_count": 780,
+      "uncompressed_bytes": 1227074,
+      "formats": {
+        ".png": 513,
+        ".svg": 256,
+        ".swf": 1,
+        ".txt": 2,
+        ".url": 2,
+        "[no-extension]": 6
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-ui/kenney-controls/cursor-pack.zip",
+      "bytes": 746901,
+      "sha256": "baa87634f3cfd294b0c83e70222053aab2f56d19f78eca4067b9b38a555269cc",
+      "entry_count": 1106,
+      "uncompressed_bytes": 816586,
+      "formats": {
+        ".png": 729,
+        ".svg": 364,
+        ".txt": 1,
+        ".url": 2,
+        "[no-extension]": 10
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-ui/kenney-controls/input-prompts.zip",
+      "bytes": 5070075,
+      "sha256": "ac2fcf599080b0f3ba2d174c9474db6df1a0e96ff0662580e2da79a122ab78a1",
+      "entry_count": 4752,
+      "uncompressed_bytes": 5960296,
+      "formats": {
+        ".html": 1,
+        ".otf": 17,
+        ".png": 3056,
+        ".svg": 1504,
+        ".ttf": 17,
+        ".txt": 35,
+        ".url": 3,
+        ".xml": 34,
+        "[no-extension]": 85
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-ui/kenney-controls/mobile-controls.zip",
+      "bytes": 3146863,
+      "sha256": "7331c648651858fb3186a8c76e0e360e4d3ea71cfec9b502eb5cbb04a02e192b",
+      "entry_count": 1482,
+      "uncompressed_bytes": 3402668,
+      "formats": {
+        ".png": 948,
+        ".svg": 462,
+        ".txt": 1,
+        ".url": 2,
+        ".xml": 22,
+        "[no-extension]": 47
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    },
+    {
+      "path": "foundations-ui/kenney-controls/ui-pack-pixel-adventure.zip",
+      "bytes": 317032,
+      "sha256": "0b0ed4802ebcfff5e44e370f394baa1d751862a5a4a7612ac4ce84e85faa0627",
+      "entry_count": 533,
+      "uncompressed_bytes": 216004,
+      "formats": {
+        ".png": 514,
+        ".txt": 3,
+        ".url": 2,
+        "[no-extension]": 14
+      },
+      "license_files": [
+        "License.txt"
+      ],
+      "adjacent_license_evidence": [],
+      "executable_files": [],
+      "unsafe_paths": [],
+      "symlink_entries": [],
+      "crc_failure": null,
+      "status": "inspected"
+    }
+  ]
+}

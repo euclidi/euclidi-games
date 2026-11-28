@@ -1,0 +1,459 @@
+EUCLIDI GAMES | BILLIARDS FREE ASSET ACQUISITION MANIFEST
+Revision: 2026-11-27 | Format: agent-readable UTF-8 plain text
+Target: reusable browser-game asset repository, not a single disposable demo.
+
+PURPOSE
+Acquire a coherent, reusable collection for realistic 3D pool, 2D/retro pool,
+8-ball, 9-ball, 10-ball, blackball, snooker, carom, training and optional pool-hall
+expansion. No engine or visual style is approved by this manifest. Do not treat
+this file as an instruction to build or deploy a game.
+
+STATUS AND LICENSE KEY
+P0 = acquire first; P1 = acquire for visual/audio polish; P2 = optional expansion.
+CC0 = preferred for a public shared asset library. CC BY = attribution required;
+retain the exact license version, author, source and modification record.
+REVIEW = candidate only; verify actual file license, provenance and download
+terms before fetching. REF = reference or software, not a redistributable art
+asset by default. GPL = keep separate; do not incorporate without a compatible
+licensing decision. Free download is not proof of permission to redistribute.
+The URLs below are source/download pages, not guessed binary endpoints. Source
+listings were researched on the stated date; archives, model quality, individual
+files and runtime compatibility have not been downloaded or tested. Library and
+software links marked REVIEW/REF need further verification. No assets have been
+copied into the Euclidi Games repository by this task. This is a practical broad
+inventory, not a claim to enumerate every free asset on the internet.
+
+======================================================================
+01 | P0 | BILLIARDS-SPECIFIC 3D MODELS
+======================================================================
+BIL-001 | P0 | CC0 | mehrasaur / OpenGameArt | Billiards Pack
+https://opengameart.org/content/billiards-pack
+Acquire billiards_pack.zip (listed 11.2 MB). Contains Blender/OBJ sources,
+7-foot and 9-foot pool tables, 12-foot snooker table, pool solids/stripes,
+blackball and snooker balls, cue ball, triangle and diamond racks, cue and
+cross rest. Best first candidate for a consistent equipment family.
+Inspect the number textures, actual dimensions, pocket geometry and material
+quality. Export independent models, not a permanently assembled rack of balls.
+
+BIL-002 | P0 | CC0 | Innerscene | Pool table, sports equipment
+https://www.innerscene.com/tools/library/3d-parts/pool-table-sports-equipment-d28284c5
+GLB, listed 686 KB. Compare against BIL-001 for real-world scale and appearance.
+
+BIL-003 | P1 | CC0 | Innerscene | Alternate pool table
+https://www.innerscene.com/tools/library/3d-parts/pool-table-e6b56924
+3DXML source; conversion required if usable. Prefer BIL-002 for browser import.
+
+BIL-004 | P1 | CC0 (source claim) | Grab3D | Pool table
+https://grab3d.com/models/sports/pool-table/
+GLB/FBX candidate. Audit mesh separation, dimensions and authorship.
+
+BIL-005 | P1 | CC0 (source claim) | Grab3D | Billiard balls and triangle
+https://grab3d.com/models/sports/billiard-balls/
+Numberless balls; not sufficient alone for numbered pool. Separate instances
+and add correct permanent number/stripe textures if selected.
+
+BIL-006 | P1 | CC0 | STKRudy85 / OpenGameArt | Low-poly pool table
+https://opengameart.org/content/pool-table-low-poly
+Pool-table.zip; untextured. Reserve for alternate visual tiers or material work.
+
+BIL-007 | P1 | CC BY 3.0 | OpenGameArt | Pool Table 3D Model
+https://opengameart.org/content/pool-table-3d-model
+Alternative; retain actual author and credit instructions from page/archive.
+
+BIL-008 | P1 | CC BY 4.0 | vinish.dev | Billiards, Darts and Bowling
+https://vinish.dev/free-3d-models/billiards-darts-and-bowling
+Acquire individually: snooker table; pocketless carom table; racked balls;
+cue, bridge and chalk; wall-mounted cue rack; three-shade pendant light.
+Optional expansion: dartboard, dart machine, dart case, bowling lane,
+ball return and pub skittles. GLB/glTF/OBJ/STL; preserve credits per model.
+
+BIL-009 | P2 | CC0 (source claim) | Embossify | Billiard ball
+https://www.embossify.com/models/billiard-ball
+GLB/OBJ and print formats; inspect numbering, UVs and sphere topology.
+
+BIL-010 | REF / GPL-3.0 | dpapavas / OpenGameArt | Billiard tables
+https://opengameart.org/content/billiard-tables
+Blender source with pocketed and pocketless tables; author reports tournament
+specification-based geometry. No textures. Keep outside the shared permissive
+library unless GPL obligations have been expressly reviewed.
+
+BIL-011 | P2 | REVIEW | Sketchfab | Pool table search
+https://sketchfab.com/tags/pooltable
+Look for downloadable CC0 or CC BY models: full table, bridge, chalk, cue
+case, cue rack, lamps, table brush, ball tray and mechanical ball return.
+Exclude editorial-only, noncommercial, no-derivatives and restricted files.
+
+BIL-012 | P2 | REVIEW | Free3D | Billiards and cue searches
+https://free3d.com/3d-models/billiards
+https://free3d.com/3d-models/cue
+Discovery only. Some free models have personal-use restrictions; no bulk import.
+
+BIL-013 | P2 | REVIEW | Printable/CAD discovery
+https://polyzon.org/en/m/bilyard
+Use only to locate original licensed sources for missing rack, bridge, chalk
+holder and cue accessories. Printable geometry generally needs retopology,
+UVs and conversion. Never treat an aggregator's free label as a license.
+
+======================================================================
+02 | P0/P2 | 2D AND RETRO ALTERNATIVES
+======================================================================
+BIL-014 | P0 for retro only | CC0 | Chasersgaming / OpenGameArt
+https://opengameart.org/content/asset-pack-8-ball-pool
+SMS Pool Asset Pack FREE.zip. Sega Master System-inspired sprites: landscape
+and portrait tables, red/yellow balls, animation frames and interface art.
+Use this for a dedicated retro variant, not as overlay art in realistic 3D.
+The separately advertised premium version is not included.
+
+BIL-015 | P2 | REVIEW | OpenGameArt search
+https://opengameart.org/
+Search: billiards, pool ball, snooker, blackball, 8 ball, cue, top-down pub,
+arcade interior. Filter CC0 and CC BY; confirm every result individually.
+
+======================================================================
+03 | P0 | SURFACE MATERIALS (PBR)
+======================================================================
+MAT-001 | P0 | CC0 | ambientCG Fabric034 (felt)
+https://ambientcg.com/view?id=Fabric034
+Grey/white felt; tint toward green, tournament blue, burgundy or tan using a
+material parameter or derived base color. Use restrained normal detail.
+MAT-002 | P0 | CC0 | ambientCG Leather002 (smooth brown leather)
+https://ambientcg.com/view?id=Leather002
+Cue wrap, pocket lining or furniture.
+MAT-003 | P1 | CC0 | ambientCG Leather007 (worn dark leather)
+https://ambientcg.com/view?id=Leather007
+MAT-004 | P1 | CC0 | ambientCG LeatherSubstance001
+https://ambientcg.com/view?id=LeatherSubstance001
+MAT-005 | P0 | CC0 | Poly Haven wood materials
+https://polyhaven.com/textures/wood
+Select lacquer-compatible hardwood, light maple cue shaft, dark walnut or
+mahogany rails, and straight grain for furniture. Acquire only distinct sets.
+MAT-006 | P0 | CC0 | Poly Haven all texture categories
+https://polyhaven.com/textures
+Select textiles/leather, metal, plastic/rubber, stone, brick, flooring, paper.
+MAT-007 | P0 | CC0 | ambientCG surface library
+https://ambientcg.com/
+Search: felt, wool, fabric, leather, rubber, slate, polished wood, walnut,
+maple, brass, chrome, brushed steel, plastic, ceramic, chalk, plaster,
+carpet, parquet, concrete, brick, acoustic ceiling, painted drywall.
+License link is available on the source home page.
+MAT-008 | REF | Poly Haven asset license
+https://polyhaven.com/license
+CC0 asset redistribution explicitly permitted. Site UI/branding is separate.
+
+Required material coverage (acquire or derive, not separate verified links):
+- felt with realistic fine-scale weave; rubber cushion and pocket liner;
+- slate bed and underlying support; lacquered rails and cabinet;
+- polished phenolic-resin ball materials with correct numbered markings;
+- maple/ash shaft, ferrule, leather tip, linen/leather wrap, cue joint metal;
+- chalk cube, paper label (unbranded), chalk dust and wear masks;
+- pocket net, chrome or brass corner trim, plastic ball return tray;
+- room flooring, wall finish, wood, metal, upholstered seats, glass.
+Ball clearcoat and roughness should be shader/material parameters; do not apply
+arbitrary noisy photos to polished balls. Never bake lights into ball textures.
+
+======================================================================
+04 | P0/P1 | LIGHTING AND ENVIRONMENT MAPS
+======================================================================
+ENV-001 | P0 | CC0 | Poly Haven Billiard Hall HDRI
+https://polyhaven.com/a/billiard_hall
+Directly relevant indoor lighting/reflections. Use 1K-2K first; higher-res
+source optional. It is an HDRI, not a walkable 3D room.
+ENV-002 | P0 | CC0 | Poly Haven Wooden Lounge HDRI
+https://polyhaven.com/a/wooden_lounge
+Alternate warm lounge; compare ball highlights and cloth contrast.
+ENV-003 | P1 | CC0 | Poly Haven Wooden Studio 08
+https://polyhaven.com/a/wooden_studio_08
+Equipment/inspection lighting.
+ENV-004 | P1 | CC0 | Poly Haven Wooden Studio 04
+https://polyhaven.com/a/wooden_studio_04
+Soft product lighting.
+ENV-005 | P2 | CC0 | Poly Haven Wooden Studio 11
+https://polyhaven.com/a/wooden_studio_11
+Alternate showcase lighting; not a default gameplay environment.
+Use reflection prefiltering and physically sensible local table lights.
+
+======================================================================
+05 | P1/P2 | PLAYABLE POOL HALL, FURNITURE, CHARACTERS
+======================================================================
+ROOM-001 | P1 | CC0 | Poly Haven Bar Chair Round 01
+https://polyhaven.com/a/bar_chair_round_01
+ROOM-002 | P1 | CC0 | Poly Haven model library
+https://polyhaven.com/models
+Select matching stools, wooden chairs/tables, sofas, lamps, bar props,
+shelving and plants; verify visual harmony and simplify distant objects.
+ROOM-003 | P2 | CC0 expected; confirm archive | Kenney Furniture Kit
+https://kenney.nl/assets/furniture-kit
+Stylized furniture for a low-poly variant only; avoid mixing with scan assets.
+ROOM-004 | P2 | REVIEW | Quaternius Furniture Pack
+https://quaternius.com/packs/furniture.html
+Stylized furniture alternative. Verify the selected pack license.
+ROOM-005 | P2 | REVIEW | Quaternius character and animation library
+https://quaternius.com/
+Find Universal Base Characters, Universal Animation Library and appropriate
+casual adult characters; check per-pack license and rig compatibility. Generic
+locomotion/idle animations are not authentic pool strokes; pool-specific bridge,
+stance, chalking, aiming and follow-through require retargeting or custom work.
+ROOM-006 | P2 | REVIEW | Poly Pizza model discovery
+https://poly.pizza/
+Search bar stool, arcade cabinet, pendant lamp, pool cue, pub, furniture,
+dartboard. Verify creator, license and exact download per model.
+ROOM-007 | P2 | REVIEW | Kenney asset catalog
+https://kenney.nl/assets
+Optional additional modular interiors, decor, icons, arcade props and particles.
+
+Expansion inventory to fill from compatible sources:
+Pool hall modular walls/doors/windows/ceiling; trim; overhead table lamps;
+wall cue rack; spare cue and cue case; seating; scoreboards; ball trays;
+bar/counter, shelves, cups, unbranded bottles; vending/arcade props; signage;
+restroom furnishings; wall clock; trophy case; spectator characters; hands/rigs;
+ambient character animations; dart and bowling props (only if scope expands).
+Do not download unrelated catalog contents merely because they are free.
+
+======================================================================
+06 | P0 | BILLIARDS SOUND EFFECTS
+======================================================================
+SFX-001 | P0 | CC BY (check exact version) | KVV_Audio / Freesound
+https://freesound.org/people/KVV_Audio/sounds/851086/
+Cue strike recording.
+SFX-002 | P0 | REVIEW | KVV_Audio / Freesound
+https://freesound.org/people/KVV_Audio/sounds/851087/
+Single ball impact; verify per-sound attribution license.
+SFX-003 | P0 | CC BY (check exact version) | KVV_Audio / Freesound
+https://freesound.org/people/KVV_Audio/sounds/851088/
+Multiple ball impacts.
+SFX-004 | P0 | CC BY (check exact version) | KVV_Audio / Freesound
+https://freesound.org/people/KVV_Audio/sounds/851089/
+Ball entering an occupied pocket.
+SFX-005 | P0 | REVIEW per sound | KVV_Audio SPORTS collection
+https://freesound.org/people/KVV_Audio/packs/41187/
+Locate additional billiards clips including empty-pocket drop. Do not ingest
+unrelated sports clips by default. Freesound may require an account for files.
+SFX-006 | P0 | CC0 claimed by source; audit provenance | SFXMint billiard ball set
+https://sfxmint.com/sounds/billiard-ball
+Ten listed sounds. Relevant individual pages:
+https://sfxmint.com/sounds/billiard-ball-01  | break shot
+https://sfxmint.com/sounds/billiard-ball-02  | ball collision
+https://sfxmint.com/sounds/billiard-ball-03  | corner pocket
+https://sfxmint.com/sounds/billiard-ball-07  | return chute
+https://sfxmint.com/sounds/billiard-ball-08  | gentle cue contact and roll
+https://sfxmint.com/sounds/billiard-ball-09  | cue strike
+Review actual audio quality and source rights before adding to a public library.
+SFX-007 | P1 | REVIEW per sound | Freesound library
+https://freesound.org/
+Search: billiard cushion, pool rail, felt roll, chalk cue, rack scrape,
+pocket drop, ball return, bar ambience, crowd walla, footsteps, chair scrape.
+Prefer original field recordings and CC0 or CC BY. Reject NC and ND material.
+Example to exclude: https://freesound.org/people/Elsje_/sounds/655771/
+This listing specifies noncommercial use.
+
+Audio acceptance: dry isolated cues, multiple strengths and variants; avoid
+speech/music baked into one-shots. Maintain distinct cue-ball impact, ball-ball
+impact, rail hit, pocket drop, chute, rolling loop, chalk scrape, rack movement,
+ball placement, miscue, jump/landing, room tone and feedback sounds. Drive
+volume from collision energy, pitch variation within realistic limits, panning
+from location; avoid triggering sounds every physics tick. Preserve WAV source;
+encode compact browser runtime copies. Do not claim that every required sound
+has a verified dedicated recording yet.
+
+======================================================================
+07 | P1 | AMBIENCE, MUSIC, INTERFACE AUDIO
+======================================================================
+AUD-001 | P1 | CC0 claimed; audit source | SFXMint room tone
+https://sfxmint.com/sounds/ambience-room-tone
+AUD-002 | P2 | REVIEW provenance | Selekt crowd ambience index
+https://selektaudio.com/sound-lab/textures/crowd
+Find quiet bar/crowd loops; download original CC0 source when possible.
+AUD-003 | P1 | CC0 expected; confirm archive | Kenney Interface Sounds
+https://kenney.nl/assets/interface-sounds
+AUD-004 | P1 | CC0 expected; confirm archive | Kenney UI Audio
+https://kenney.nl/assets/ui-audio
+AUD-005 | P2 | CC0 claimed | Agavius Low-Pass Lounge Jazz
+https://agavius.itch.io/low-pass-lounge-jazz
+Listed large archive; verify free tier, track provenance and license. Select
+only appropriate tracks; do not load full archive into the game.
+AUD-006 | P2 | REVIEW per track | OpenGameArt CC0 music collection
+https://opengameart.org/content/cc0-music-0
+AUD-007 | P2 | CC0 claimed | OpenGameArt Funk Collection
+https://opengameart.org/content/funk-collection
+AUD-008 | P2 | REVIEW per track | nullrights music discovery
+https://nullrights.com/
+Jazz/lounge/ambient. Follow to original sources and confirm track licensing.
+Music should be optional, separately adjustable and never mask ball impacts.
+
+======================================================================
+08 | P1 | UI, FONTS AND TRAINING ASSETS
+======================================================================
+UI-001 | P1 | CC0 expected; confirm archive | Kenney Input Prompts
+https://kenney.nl/assets/input-prompts
+Keyboard, mouse and controller hints; adapt to touch controls.
+UI-002 | P2 | CC0 expected; confirm archive | Kenney UI Pack
+https://kenney.nl/assets/ui-pack
+Reusable elements if visual direction fits; not a mandate for generic panels.
+UI-003 | P1 | REVIEW per family | Google Fonts
+https://fonts.google.com/
+Candidates: Barlow Condensed, Oswald, IBM Plex Mono, Inter. Confirm SIL OFL
+or applicable license in family archive; retain license with WOFF2 subset.
+UI-004 | P2 | REVIEW | Lucide
+https://lucide.dev/
+Optional UI-only icons, not gameplay art; confirm license and use only if
+compatible with approved presentation. Rasterize if required by art direction.
+
+Required game UI assets: cue-ball spin contact diagram, cue elevation and shot
+power indicators, numbered ball/status atlas, target/sighting marker, foul and
+turn indicators, score/tournament boards, replay timeline, camera controls,
+training overlays, touch aiming and accessibility controls. Reuse ball textures
+for UI icons where possible. Aim guides and contact diagrams are functional
+rendering, not decorative art; generate from actual simulation data.
+
+======================================================================
+09 | REF | PHYSICS, RULES AND IMPLEMENTATION RESOURCES
+======================================================================
+These are optional technical resources, not a prescribed engine selection.
+TECH-001 | Apache-2.0 software | Pooltool
+https://github.com/ekiefl/pooltool
+https://pooltool.readthedocs.io/en/latest/autoapi/pooltool/physics/index.html
+https://pooltool.readthedocs.io/en/stable/autoapi/pooltool/index.html
+Python billiards simulator and research reference. Use for validation fixtures,
+collision/friction models, shot states, cushion interactions, parameters and
+trajectory comparisons. Python/Panda3D is not a drop-in GitHub Pages runtime.
+Audit any bundled 3D/audio assets separately from source-code licensing.
+TECH-002 | GPL software | tailuge/billiards
+https://github.com/tailuge/billiards
+https://tailuge.github.io/billiards/dist/about
+Browser billiards implementation in TypeScript/Three.js. Reference for browser
+architecture and game variants. Do not copy GPL code into a differently licensed
+project without a deliberate compatible licensing decision.
+TECH-003 | REVIEW | CueForge
+https://github.com/rockymount114/cueforge
+Rust cue-sports physics and training project. Evaluate maturity, reproducibility,
+license, build targets and browser/WASM feasibility before adopting anything.
+TECH-004 | REF | World Pool Association rules and equipment specifications
+https://wpapool.com/rules/
+Source for game rules and geometry. Use factual dimensions/requirements in
+original implementation; do not redistribute rulebook PDFs as free assets.
+TECH-005 | REF | Dr. Dave billiards physical properties
+https://billiards.colostate.edu/faq/physics/physical-properties/
+Referenced by Pooltool documentation; direct automated access was blocked during
+research. Verify manually. Parameter and physics reference, not art assets.
+TECH-006 | REVIEW | Three.js
+https://github.com/mrdoob/three.js
+TECH-007 | REVIEW | Babylon.js
+https://github.com/BabylonJS/Babylon.js
+TECH-008 | REVIEW | Rapier JS physics
+https://github.com/dimforge/rapier.js
+TECH-009 | REVIEW | Phaser (2D alternative)
+https://github.com/phaserjs/phaser
+TECH-010 | REVIEW | Howler.js audio
+https://github.com/goldfire/howler.js
+TECH-011 | REVIEW | Blender (offline conversion and authoring)
+https://www.blender.org/
+TECH-012 | REVIEW | glTF Transform
+https://github.com/donmccurdy/glTF-Transform
+TECH-013 | REVIEW | meshoptimizer
+https://github.com/zeux/meshoptimizer
+TECH-014 | REVIEW | Basis Universal texture compression
+https://github.com/BinomialLLC/basis_universal
+TECH-015 | REF/REVIEW per file | Khronos glTF Sample Assets
+https://github.com/KhronosGroup/glTF-Sample-Assets
+Use to validate GLB loader, PBR, clearcoat, compression, and animation support;
+individual sample model licenses vary. Do not bulk import as game content.
+
+Physics acceptance: generic rigid-body physics alone is not proof of accurate
+billiards. Test translational/angular coupling, slide-to-roll, rolling friction,
+spin decay, restitution, throw, cushion spin response, high-speed tunneling,
+pocket jaw geometry, simultaneous collisions, realistic breaks, cue offset,
+cue elevation, jump/massé (if included), deterministic replay and stable resting
+states. Separate the visual model from collision geometry. Calibrate against
+published properties and reference shots, not arbitrary game-feel constants.
+
+======================================================================
+10 | AGENT ACQUISITION AND INTEGRATION CONTRACT
+======================================================================
+1. Inspect the existing Euclidi Games asset folder before downloading. Deduplicate
+   by source URL, source ID and SHA-256. Reuse compatible existing assets first.
+2. Read source page and archive license. Capture source URL, author, license
+   version, access date, filename and required attribution. If terms are missing
+   or conflict, quarantine metadata only. Do not bypass logins or paywalls.
+3. Fetch P0 art and audio in priority order. Use source pages or official APIs,
+   avoid blind recursive mirrors and third-party download wrappers. Respect API
+   limits, site terms and practical storage limits. Preserve source files only
+   where redistribution is explicitly allowed. Where it is not, keep links only.
+4. Open representative models and sounds before bulk import. Record dimensions,
+   material maps, mesh count, UVs, topology, rig, format and quality issues.
+   Compare equipment variants visually and select a coherent family. Do not
+   equate free or high polygon count with quality. Obtain visual benchmark
+   approval before mass custom asset generation or expanding a generated set.
+5. Normalize to meters (SI internally), consistent axes, correct pivots and scale.
+   GLB/glTF 2.0 for browser 3D; PNG for pixel assets and alpha; WebP/KTX2 for
+   suitable runtime textures; WAV master, Ogg/MP3 runtime audio; WOFF2 fonts.
+   Preserve per-source licenses on converted files. Only use compression that the
+   actual selected runtime and target browsers support.
+6. Retain proper UV-mapped stripes and numbers attached to ball rotations.
+   For a missing ball marking or exact collision sphere, procedural generation
+   is justified by geometry/physics requirements. Do not substitute basic shapes
+   for complex table furniture, cushions, pockets, cues or player models.
+7. Build a coverage ledger: REQUIRED / AVAILABLE / IMPORTED / TESTED / MISSING.
+   Do not mark assets tested from a search result. Test with actual scene
+   lighting, runtime importer and touch/desktop camera distances.
+8. Add P1 assets selectively and P2 only where planned scope needs them.
+   Keep original sources separate from optimized runtime assets. Do not place
+   all high-resolution source archives in the public Pages build. Record size
+   budgets; avoid unnecessary Git history growth and duplicated variants.
+9. Generate credits and a machine-readable inventory. For CC BY, record creator,
+   title if supplied, source, license URL and indication of changes; preserve
+   other required notices. For CC0, keep provenance even though attribution
+   is generally not required. Keep code licenses separate from art licenses.
+10. Verify catalog entries and deploy only when the actual approved game is
+    implemented and tested; the asset manifest itself authorizes no deployment.
+
+Suggested logical asset structure (adapt to the actual repository conventions):
+assets/billiards/source/equipment/
+assets/billiards/source/materials/
+assets/billiards/source/audio/
+assets/billiards/runtime/models/tables/
+assets/billiards/runtime/models/balls/
+assets/billiards/runtime/models/cues/
+assets/billiards/runtime/models/accessories/
+assets/billiards/runtime/models/environment/
+assets/billiards/runtime/materials/
+assets/billiards/runtime/hdris/
+assets/billiards/runtime/sprites/
+assets/billiards/runtime/audio/sfx/
+assets/billiards/runtime/audio/ambience/
+assets/billiards/runtime/audio/music/
+assets/billiards/runtime/ui/
+assets/billiards/runtime/fonts/
+assets/billiards/metadata/manifest.json
+assets/billiards/metadata/LICENSES.txt
+assets/billiards/metadata/credits.txt
+assets/billiards/metadata/coverage.csv
+Reference documents/code links outside runtime assets.
+
+Recommended inventory fields:
+asset_id, category, variant, priority, title, creator, source_url, license_id,
+license_url, attribution_text, retrieved_date, source_filename, sha256,
+local_source_path, runtime_path, format, bytes, dimensions_m, triangles,
+texture_resolution, dependencies, modifications, validation_status, notes.
+
+======================================================================
+11 | COVERAGE GAPS TO RESOLVE BEFORE CLAIMING ASSET COMPLETENESS
+======================================================================
+- Confirm complete, correctly numbered 1-15 ball set, cue ball markings and
+  accurate snooker/carom/blackball variants. BIL-001 is the first candidate,
+  but actual textures have not been inspected.
+- Validate authentic table construction, dimensions, cushion profile, pocket
+  jaws, slate bed, ball return, and correct independent geometry. Existing
+  free meshes may only be decorative and need substantial adaptation.
+- Find/derive a complete chalk, brush, cue tip, cue case and rack accessory set.
+- Find authentic isolated rail rebounds, felt rolling and chalking recordings;
+  the cited audio candidates have not been auditioned.
+- Find a consistent, rigged pool-player character and billiards-specific motion
+  set if visible players are required. No verified dedicated motion pack found.
+- Build/select coherent room environment if walkable venues are required;
+  an HDRI alone does not satisfy a 3D room requirement.
+- Produce original unbranded signs, scoreboards, diagrams, number atlases and
+  functional interface art where source candidates do not meet the style.
+- Verify licenses and provenance for the exact files downloaded; newer source
+  claims are not independently validated. Reject any file with unclear rights.
+
+END OF MANIFEST
