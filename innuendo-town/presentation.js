@@ -206,9 +206,15 @@ function actor(c,ox,oy,id,dir,step){
  }else{
   put(5,19+(swing===1?1:0),['.ppp.','opPpo','opPpo','opppo','obBbo','oBBbo','.ooo.']);
   put(10,19+(swing===-1?1:0),['.ppp.','opPpo','opPpo','opppo','obBbo','oBBbo','.ooo.']);
-  put(4,10,['..oooooo..','.otTTTTto.','otTTTTTtto','otTTTTTtto','otTTTTttto','otTTTtttto','otttttttto','.oppppppo.','.opPPpppo.','.oppppppo.']);
-  put(2,11+(swing===1?1:0),['.oo.','otTo','otTo','oSSo','osSo','.oo.']);
-  put(14,11+(swing===-1?1:0),['.oo.','otTo','otTo','oSSo','osSo','.oo.']);
+  // Shoulders, sleeves and chest are a single connected silhouette.
+  put(3,10,['...oooooooo...','..ottTTTTtto..','.otTTTTTTTtto.','otTTTTTTTTttto','otTottTTTtoTto','oTSoottTtooSSo','oSsoottttooSso','.oo.oppppo.oo.','....opPPpo....','....oppppo....']);
+  // Swing the lower hands without disconnecting the upper sleeve.
+  if(swing===1){put(3,16,['oSso','.oo.']);put(13,14,['oSSo','osSo','.oo.'])}
+  else if(swing===-1){put(3,14,['oSSo','osSo','.oo.']);put(13,16,['oSso','.oo.'])}
+  if(id===0||id===5){rect(c,ox+7,oy+12,6,5,'#c2b29a');rect(c,ox+8,oy+12,4,1,'#ded0b3');rect(c,ox+8,oy+15,4,1,'#a18b71')}
+  else if(id===1||id===13){rect(c,ox+7,oy+12,1,5,L[4]);rect(c,ox+12,oy+12,1,5,L[4])}
+  else if(id===3||id===4){rect(c,ox+7,oy+13,6,4,L[5]);rect(c,ox+8,oy+14,4,1,L[6])}
+  else if(id===6||id===12){rect(c,ox+9,oy+11,2,5,'#c6b59a');rect(c,ox+9,oy+12,1,3,'#765b51')}
   if(back)put(5,2,['..hhhh..','.hHHHhh.','hHHHHHho','hHjjHHho','hHHHHHho','hHHHHHho','.hHHHho.','..hhhh..','...oo...']);
   else put(5,2,['..hhhh..','.hHHHhh.','hHHHHHho','hHSSSHho','hSffSfso','oSefeso.','oSSfSso.','.osSSo..','..ooo...']);
   if(L[7]===1){put(4,5,['hh.','hHh','hHh','hho','oo.']);put(13,5,['.hh','hHh','hHh','ohh','.oo'])}
