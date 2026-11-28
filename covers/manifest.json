@@ -83,13 +83,13 @@
     "file": "covers/innuendo-town-gameplay.webp",
     "kind": "gameplay",
     "original_size": [
-      951,
-      595
+      931,
+      582
     ],
     "route": "./innuendo-town/",
     "selector": "#canvas canvas",
-    "sha256": "0f2c900c5034c86330dbbc22bc90aa52e02ed595010bc1e5155d0f05e10a3ce1",
-    "source": "bcd33c04a34f0aa232b00a703104148224899bde",
+    "sha256": "f53d5cf857153293b0c7a9bea845acbc2c1bed3083ea76c71c2a5077fd324733",
+    "source": "d8bef6366bf254c0959241d2e193887c5c2b326b",
     "viewport": [
       1280,
       800
