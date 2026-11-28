@@ -3,8 +3,9 @@
 // Reuses the licensed Kenney atlas for vegetation and decorative sprites.
 // Never scale or rotate independently cropped vehicle fragments.
 import {characterFrame} from './sprite-art.js?v=051';
-export const ART_VERSION='070';
+export const ART_VERSION='080';
 const T=16;
+import {shipmentTile,shipmentRug,shipmentFixture,shipmentPlant} from './shipment-art.js?v=080';
 const C={ink:'#25292f',road:'#42464d',roadEdge:'#353a42',roadLit:'#4c5158',roadGrain:'#565a60',curb:'#a6a69b',curbLit:'#c5c0ac',curbShade:'#6c716c',pave:'#9a9788',paveShade:'#858376',paveLit:'#ada99a',grass:'#596c51',grass2:'#667957',grass3:'#4c604b',soil:'#665c49',shadow:'#293337',window:'#263d46',glass:'#506a70',glint:'#94b1ac',light:'#f4d2a0',steel:'#738181',steel2:'#49575a',wood:'#91694d',wood2:'#624a3e'};
 const B=[
  {wall:'#aa7764',shade:'#80574e',roof:'#76504e',roofHi:'#94665b',trim:'#d0b697',accent:'#93494b',sign:'#f2dfbd',type:'deli',awning:true},
@@ -101,7 +102,7 @@ function building(c,b){
  else if(f.type==='deli'||f.type==='gym'){hydrant(c,x+8,y+h+8);planter(c,x+w-33,y+h+6,22)}
 }
 export function installWorldBackdrop(scene,shops){
- const key='town-backdrop-'+ART_VERSION,atlas=scene.textures.get('urban').getSourceImage(),w=72*T,h=42*T;
+ const key='town-backdrop-'+ART_VERSION,atlas=scene.textures.get('urban').getSourceImage(),shipment=scene.textures.get('shipment-interior').getSourceImage(),w=72*T,h=42*T;
  const tex=texture(scene,key,w,h,c=>{
  for(let y=0;y<42;y++)for(let x=0;x<72;x++){
   const X=x*T,Y=y*T,v=[17,18,19,35,36,37,53,54,55].includes(x),r=[16,17,18,36,37,38].includes(y);
@@ -116,12 +117,13 @@ export function installWorldBackdrop(scene,shops){
  }
  for(let cx of [18,36,54])for(let cy of [17,37]){
   const X=cx*T,Y=cy*T;
-  for(let i=0;i<6;i++){rect(c,X-24+i*8,Y-23,5,10,'#b8b8a4');rect(c,X-24+i*8,Y+21,5,10,'#b8b8a4')}
-  for(let i=0;i<5;i++){rect(c,X-30,Y-14+i*8,9,5,'#b8b8a4');rect(c,X+22,Y-14+i*8,9,5,'#b8b8a4')}
+  // Crossings set back from the junction; lane markings stop at the intersection.
+  for(let i=0;i<6;i++){rect(c,X-23+i*8,Y-32,5,10,'#b8b8a4');rect(c,X-23+i*8,Y+32,5,10,'#b8b8a4')}
+  for(let i=0;i<6;i++){rect(c,X-39,Y-23+i*8,10,5,'#b8b8a4');rect(c,X+39,Y-23+i*8,10,5,'#b8b8a4')}
  }
  // Street furniture along the pedestrian edge, not pasted randomly over roads.
  for(const b of shops){building(c,b);const x=b.x*T,y=(b.y+b.h)*T,w=b.w*T;
-  if(b.id%2===0)bench(c,x+19,y+26);else planter(c,x+12,y+24,34);
+  if(b.id%2===0)bench(c,x+19,y+26);else{planter(c,x+12,y+24,38);shipmentPlant(c,shipment,x+15,y+15,b.id);shipmentPlant(c,shipment,x+31,y+15,b.id+1)}
   lamp(c,x+w-12,y+20);if(b.id%3===0)hydrant(c,x+w-22,y+38);
   if(b.id===4){rect(c,x+35,y+27,37,3,'#726d58');for(let j=0;j<3;j++){rect(c,x+37,y+24-j*3,32,3,'#866949');rect(c,x+38,y+24-j*3,30,1,'#c19e6a')}}
   if(b.id===5){for(let j=0;j<2;j++){rect(c,x+16+j*44,y+18,35,1,'#d1c7a7');rect(c,x+16+j*44,y+18,1,24,'#d1c7a7')}}
@@ -153,7 +155,7 @@ function fixture(c,x,y,w,h,room,i){
  shelf(c,x,y,w,h,room);
 }
 export function installRoomBackdrop(scene,room,shops,layouts){
- const key='room-backdrop-'+ART_VERSION+'-'+room,w=26*T,h=19*T,b=shops[room],f=B[room]||B[2];
+ const key='room-backdrop-'+ART_VERSION+'-'+room,w=26*T,h=19*T,b=shops[room],f=B[room]||B[2],shipment=scene.textures.get('shipment-interior').getSourceImage();
  const tex=texture(scene,key,w,h,c=>{
   let floor=room===7?'#776a72':room===5?'#8d9993':room===1?'#828b87':room===2||room===8?'#a88b69':'#a5a08c';
   rect(c,0,0,w,h,'#393e40');
@@ -168,9 +170,15 @@ export function installRoomBackdrop(scene,room,shops,layouts){
   rect(c,0,0,16,h,'#575c57');rect(c,w-16,0,16,h,'#575c57');rect(c,13,32,3,h-48,f.trim);rect(c,w-16,32,3,h-48,f.shade);
   rect(c,0,h-16,w,16,'#4f5754');rect(c,16,h-18,w-32,2,'#b3a791');
   rect(c,185,h-20,62,4,'#86775e');rect(c,193,h-17,46,17,'#666c63');rect(c,193,h-16,46,2,'#b5b6a3');
-  if(room===2||room===7||room===8){rect(c,141,139,135,92,'#79655a');rect(c,144,142,129,86,f.accent);rect(c,148,146,121,78,'#9d8776');rect(c,151,149,115,72,f.accent);for(let i=0;i<4;i++){rect(c,151+i*30,150,1,70,'#b4a18a')}}
+  // Source-backed rugs define distinct areas, without blocking the walkable aisle.
+  if([2,6,7,8].includes(room))shipmentRug(c,shipment,144,144,8,5,room);
+  else {shipmentRug(c,shipment,32,208,5,3,room);shipmentRug(c,shipment,304,208,5,3,room);}
+  // Wall-mounted pictures and shelves use complete cells, never adjacent fragments.
+  for(let i=0;i<3;i++){const xx=35+i*152;shipmentTile(c,shipment,29+(i+room)%3,10,xx,12,'warm');}
+  shipmentPlant(c,shipment,19,36,room);shipmentPlant(c,shipment,381,36,room+1);
   if(b){const name=b.sign;sign(c,110,38,196,name,f);cabinet(c,160,64,96,16,f.accent);rect(c,162,64,92,9,'#c2a989');rect(c,164,66,22,5,'#566c6e');rect(c,167,67,16,2,'#9fb9ae');rect(c,234,66,12,6,'#5d6057');rect(c,235,67,10,1,'#b8b49c')}
-  (layouts[room]||layouts[8]).forEach(([x,y,cc,r,ww,hh],i)=>fixture(c,x*T,y*T,ww*T,hh*T,room,i));
+  (layouts[room]||layouts[8]).forEach(([x,y,cc,r,ww,hh],i)=>{fixture(c,x*T,y*T,ww*T,hh*T,room,i);shipmentFixture(c,shipment,x*T,y*T,ww,hh,room,i)});
+  if(b){shipmentTile(c,shipment,28,0,164,64,'steel');shipmentTile(c,shipment,30,0,232,64,'steel')}
   if(room===5){for(let x of [42,330]){rect(c,x,194,40,47,'#7d8b87');rect(c,x,194,40,2,'#c0c5b1');rect(c,x,238,40,2,'#c0c5b1')}}
   if(room===1){for(let x of [45,326]){rect(c,x,189,34,37,'#616d68');rect(c,x+2,191,30,33,'#89958a');rect(c,x+2,191,30,1,'#afb4a1')}}
  });
