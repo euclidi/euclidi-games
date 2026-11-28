@@ -92,13 +92,13 @@ buildTown(){
   const shadow=this.add.image(v.x+2,v.y+2,this.effects.carShadow).setDepth(v.depth-1);
   this.vehicles.push({v,shadow,lane:lane*T,speed:36+i%3*5,dir,color:model});
  }
- for(const n of RESIDENTS){const a=S.townAI.agents[n.id],sp=this.person(a.x,a.y,n.look,n.id);sp.body.enable=false;sp.setVisible(a.place===-1);this.people.push({n,sprite:sp})}
+ for(const n of RESIDENTS){const a=S.townAI.agents[n.id],sp=this.person(a.x,a.y,n.look,n.id);sp.body.enable=false;sp.setVisible(a.place===-1);sp.shadow.setVisible(sp.visible);this.people.push({n,sprite:sp})}
  for(const b of SHOPS.filter(b=>b.id%2===0)){let p=door(b);this.prop(p.x-39,p.y+13)}
 }
 buildRoom(){
  const b=SHOPS[room];installRoomBackdrop(this,room,SHOPS,INTERIORS);
- if(b){let n=RESIDENTS[b.id];this.owner=this.person(216,112,n.look,n.id);this.owner.body.enable=false;this.owner.setVisible(S.townAI.agents[b.id].place===room);this.people.push({n,sprite:this.owner,owner:true});
- for(const visitor of RESIDENTS.filter(v=>v.id!==b.id)){const x=152+(visitor.id%4)*32,y=150+Math.floor(visitor.id/4)*22,sp=this.person(x,y,visitor.look,visitor.id);sp.body.enable=false;sp.setVisible(S.townAI.agents[visitor.id].place===room);this.people.push({n:visitor,sprite:sp,interiorX:x,interiorY:y})}
+ if(b){let n=RESIDENTS[b.id];this.owner=this.person(216,112,n.look,n.id);this.owner.body.enable=false;this.owner.setVisible(S.townAI.agents[b.id].place===room);this.owner.shadow.setVisible(this.owner.visible);this.people.push({n,sprite:this.owner,owner:true});
+ for(const visitor of RESIDENTS.filter(v=>v.id!==b.id)){const x=152+(visitor.id%4)*32,y=150+Math.floor(visitor.id/4)*22,sp=this.person(x,y,visitor.look,visitor.id);sp.body.enable=false;sp.setVisible(S.townAI.agents[visitor.id].place===room);sp.shadow.setVisible(sp.visible);this.people.push({n:visitor,sprite:sp,interiorX:x,interiorY:y})}
  }
  this.label(216,287,'EXIT',9000)
 }
@@ -150,7 +150,7 @@ const compact=window.matchMedia('(max-width:800px)').matches;game=new Phaser.Gam
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 document.querySelectorAll('[data-move]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);held[b.dataset.move]=true;world?.stop()};b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>held[b.dataset.move]=false});
-$('run').onclick=()=>{run=!run;$('run').textContent=run?'WALK':'RUN'};$('act').onclick=()=>world?.act();$('mute').onclick=()=>{muted=!muted;$('mute').textContent=muted?'SOUND OFF':'SOUND ON';beep()};
+$('run').onclick=()=>{run=!run;$('run').textContent=run?'WALK':'RUN'};$('act').onclick=()=>world?.act();$('mute').onclick=async()=>{muted=!muted;await soundscape.enable(!muted);muted=!soundscape.enabled;$('mute').textContent=muted?'Sound off':'Sound on';$('mute').setAttribute('aria-pressed',String(!muted));if(!muted)soundscape.play('switch')};
 let km={w:'up',a:'left',s:'down',d:'right',arrowup:'up',arrowdown:'down',arrowleft:'left',arrowright:'right'};
 window.addEventListener('keydown',e=>{let k=e.key.toLowerCase();if(km[k]){held[km[k]]=true;e.preventDefault();world?.stop()}if(k==='shift')held.shift=true;if(k==='e'&&!e.repeat)world?.act();if(k==='escape'&&!job)close()});window.addEventListener('keyup',e=>{let k=e.key.toLowerCase();if(km[k])held[km[k]]=false;if(k==='shift')held.shift=false});window.addEventListener('blur',()=>held={});window.addEventListener('pagehide',save);
 hud();showTab('directory');boot();
