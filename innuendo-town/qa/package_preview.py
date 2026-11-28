@@ -26,6 +26,6 @@ marker='</div><p id="empty" hidden>'
 assert s.count(marker)==1
 if 'data-name="innuendo town"' not in s: index.write_text(s.replace(marker,card+marker))
 else:
-    assert 'V0.5.1 · Playtest build' in s
+    assert 'V0.6 · Playtest build' in s
     print('Existing game card retained; refreshing gameplay cover only.')
 print('Packaged actual gameplay cover and one catalog card.')
