@@ -1,7 +1,7 @@
-# Remaining implementation and QA
+# Remaining development
 
-- Add a browser QA workflow and run real Chromium against pinned Phaser 4.2.1.
-- Audit visible atlas mappings; expand compatible animated character, animal, crop, environmental and UI assets. Replace simplistic map layout with authored world.
-- Expand simulation to complete approved feature depth: individual animal genetics, disease, household schedules and migration, economic production, ecology, property, professions and campaign.
-- Add audio, save migrations and recovery, mobile and gamepad tests, load/performance checks.
-- Capture real gameplay cover, add catalog entry, merge only after test results and verify direct live route.
+- Run v0.3 Chromium QA and inspect fresh desktop, portrait, landscape and gameplay screenshots; repair defects.
+- Improve directional animation, authored maps, seasons, crops, animals, interiors and interaction targets.
+- Expand community, genetics, animal health, economy, professions, ecology, land customization and campaign to approved depth.
+- Integrate music, save slots/migrations, mobile/gamepad checks and stress tests.
+- Capture verified gameplay cover, add catalog and documentation links, publish and verify route.
