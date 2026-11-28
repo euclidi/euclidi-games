@@ -1,0 +1,46 @@
+name: Kinetic Delta integration (development only)
+on:
+  push:
+    branches: [kinetic-development]
+    paths: ['kinetic/**', '.github/workflows/kinetic-integration.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+        working-directory: kinetic
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: kinetic
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run qa:prepare
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          npm run qa:serve > /tmp/kinetic-vite.log 2>&1 &
+          for i in $(seq 1 45); do curl -fsS http://127.0.0.1:8765/kinetic/qa/runtime.html > /dev/null && break; sleep 1; done
+          npm run qa:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kinetic-integration-evidence
+          path: |
+            kinetic/qa/results/
+            kinetic/package-lock.json
+            /tmp/kinetic-vite.log
+          if-no-files-found: warn
