@@ -1,7 +1,7 @@
 name: Innuendo Town browser QA
 on:
   push:
-    branches: [dev/innuendo-town, fix/innuendo-town-sprites, dev/innuendo-town-autonomy]
+    branches: [dev/innuendo-town, fix/innuendo-town-sprites, dev/innuendo-town-autonomy, dev/innuendo-town-art]
     paths: ['innuendo-town/**', '.github/workflows/innuendo-town-qa.yml']
   pull_request:
     branches: [main]

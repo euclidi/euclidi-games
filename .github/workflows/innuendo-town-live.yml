@@ -1,0 +1,44 @@
+name: Innuendo Town live route verification
+on:
+  push:
+    branches: [main]
+    paths: ['innuendo-town/index.html']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check exact live game revision and catalog entry
+        run: |
+          python3 - <<'PY'
+          import re,time,urllib.request
+          from pathlib import Path
+          source=Path('innuendo-town/index.html').read_text()
+          version=re.search(r'\./town\.js\?v=([0-9]+)',source).group(1)
+          root='https://euclidi.github.io/euclidi-games/'
+          def get(path):
+              req=urllib.request.Request(root+path,headers={'Cache-Control':'no-cache','User-Agent':'Euclidi Games release verification'})
+              with urllib.request.urlopen(req,timeout=10) as r:
+                  assert r.status==200
+                  return r.read()
+          for attempt in range(24):
+              try:
+                  html=get('innuendo-town/?qa='+version).decode()
+                  assert './town.js?v='+version in html
+                  assert 'data-catalog-return' in html
+                  catalog=get('?qa='+version).decode()
+                  assert 'data-name="innuendo town"' in catalog
+                  assert 'href="./innuendo-town/"' in catalog
+                  assert len(get('innuendo-town/town.js?v='+version))>10000
+                  assert get('innuendo-town/assets/shipment/interior-source.png').startswith(b'\x89PNG')
+                  print('Live game and catalog verified, asset and JS available; revision '+version)
+                  break
+              except Exception as exc:
+                  print('Deployment check',attempt+1,type(exc).__name__,str(exc),flush=True)
+                  if attempt==23: raise
+                  time.sleep(8)
+          PY
