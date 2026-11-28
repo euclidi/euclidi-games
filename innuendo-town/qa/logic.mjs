@@ -30,3 +30,27 @@ for(const r of Object.values(sprites.CAR_FRAMES)){assert.ok(r.x>=0&&r.y>=0&&r.x+
 assert.equal(sprites.vehiclePose('green',-1).frame,'green-left');
 assert.equal(sprites.vehiclePose('green',1).frame,'green-right');
 console.log('Character direction, walk-frame and complete-car bounds checks passed');
+
+const town=await load('../town-ai.js');
+let sim=town.ensureTownAI(null,540,m.SHOPS,m.RESIDENTS);
+const start=JSON.stringify(sim);
+assert.equal(sim.agents.length,16);assert.equal(sim.shops.length,8);
+town.advanceTownAI(sim,570,m.SHOPS,m.RESIDENTS,m.pathfind);
+assert.ok(sim.decisions>0);assert.notEqual(JSON.stringify(sim),start);
+for(let i=1;i<=7;i++){
+ town.advanceTownAI(sim,540+i*1440,m.SHOPS,m.RESIDENTS,m.pathfind);
+ for(const a of sim.agents){
+  assert.ok(Number.isFinite(a.x)&&Number.isFinite(a.y)&&a.x>=0&&a.y>=0&&a.x<1152&&a.y<672);
+  assert.ok(Number.isFinite(a.cash)&&a.cash>=0);
+  for(const v of Object.values(a.needs))assert.ok(Number.isFinite(v)&&v>=0&&v<=100);
+ }
+ for(const s of sim.shops){assert.ok(s.stock>=0&&s.cash>=0&&s.revenue>=0)}
+ sim=JSON.parse(JSON.stringify(sim));
+ assert.equal(town.ensureTownAI(sim,540+i*1440,m.SHOPS,m.RESIDENTS),sim);
+}
+assert.ok(sim.decisions>500&&sim.trades>100&&sim.conversations>100&&sim.completedShifts>100);
+assert.ok(Object.keys(sim.bonds).length>10);
+assert.ok(sim.shops.every(s=>s.ordersFulfilled>0&&s.cash>0));
+assert.ok(sim.shops.some(s=>s.restocks>0));
+assert.ok(sim.agents.every(a=>a.decisionCount>10));
+console.log('Seven-day autonomous town, route bounds, trade, wages, relationships and persistence checks passed:',sim.decisions,sim.trades,sim.conversations);
