@@ -1,5 +1,7 @@
 import {urbanAtlas} from './assets/urban-atlas.js';
-import {facing,characterFrame,CAR_FRAMES,vehiclePose} from './sprite-art.js?v=051';
+import {facing,characterFrame} from './sprite-art.js?v=051';
+import {ART_VERSION,installWorldBackdrop,installRoomBackdrop,installActor,actorPortrait,installVehicles,VEHICLES,installCrate,installEffects} from './presentation.js?v=070';
+import {TownSound} from './town-sound.js?v=070';
 import {FACADES,INTERIORS,MOOD_TINT} from './world-art.js';
 import {ensureTownAI,advanceTownAI,townContacts,residentStatus} from './town-ai.js?v=060';
 import {witnessIncident,spreadRumors,rumorText} from './social.js';
@@ -7,7 +9,8 @@ import {SHOPS,RESIDENTS,INCIDENTS,isOpen,moneyFor,pathfind} from './content.js';
 const $=id=>document.getElementById(id),T=16,KEY='euclidi.innuendo.v3',defaultState={version:3,cash:40,rep:0,calm:100,minute:540,day:0,x:264,y:232,look:0,style:'Witty',owned:[],home:false,relations:{},lastTalk:{},rumors:[],news:['Welcome to town. Find a job or meet your neighbors.'],shifts:0};
 let S={...defaultState};try{let s=JSON.parse(localStorage.getItem(KEY));if(s?.version===3&&Number.isFinite(s.cash)&&Array.isArray(s.owned))S={...defaultState,...s}}catch{}
 S.townAI=ensureTownAI(S.townAI,S.day*1440+S.minute,SHOPS,RESIDENTS);
-let world,room=-1,job=null,dialogue=false,muted=true,audio,run=false,held={},toastTimer,game,tab='directory',saveTimer=0,timeAcc=0,rumorTimer=0,bumpAt=0;
+const soundscape=new TownSound();
+let world,room=-1,job=null,dialogue=false,muted=true,run=false,held={},toastTimer,game,tab='directory',saveTimer=0,timeAcc=0,rumorTimer=0,bumpAt=0;
 const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),F=(x,y)=>y*27+x,door=b=>({x:(b.x+Math.floor(b.w/2)+.5)*T,y:(b.y+b.h+.5)*T});
 const clock=()=>String(Math.floor(S.minute/60)).padStart(2,'0')+':'+String(S.minute%60).padStart(2,'0');
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
@@ -19,16 +22,17 @@ function syncTown(){
 function registerText(n){const a=S.townAI.agents[n.id];return n.mood+' · '+residentStatus(S.townAI,n.id,SHOPS)+' · $'+a.cash+' · Hunger '+Math.round(a.needs.hunger)+' / Fatigue '+Math.round(a.needs.fatigue)+' / Social '+Math.round(a.needs.social)}
 function shopStatus(b){const a=S.townAI.shops[b.id];return (isOpen(b,S.minute)?'Open · '+b.owner:'Closed · '+clockAt(b.open))+' · Stock '+a.stock+' · Visits '+a.customers}
 function refreshRegister(){for(const e of document.querySelectorAll('[data-resident-status]'))e.textContent=registerText(RESIDENTS[+e.dataset.residentStatus]);for(const e of document.querySelectorAll('[data-shop-status]'))e.textContent=shopStatus(SHOPS[+e.dataset.shopStatus])}
-function beep(f=400){if(muted)return;try{audio=audio||new AudioContext();audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.12);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.13)}catch{}}
+function beep(f=400){soundscape.cue(f)}
+
 function toast(t){$('toast').textContent=t;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').textContent='',4200)}
 function hud(){ $('time').textContent=['MON','TUE','WED','THU','FRI','SAT','SUN'][S.day%7]+' '+clock();$('cash').textContent='$'+S.cash;$('reputation').textContent='REP '+S.rep+' / CALM '+Math.floor(S.calm)+'%'}
 function node(tag,text,cls){let e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e}
 function button(label,fn,disabled=false){let b=node('button',label);b.disabled=disabled;b.onclick=()=>{beep(320);fn()};return b}
 function close(){dialogue=false;$('dialogue').hidden=true}
 function modal(title,lines,options){dialogue=true;world?.stop();let box=$('dialogue');box.replaceChildren(node('h2',title));for(let line of lines)box.append(node('p',line));for(let op of options)box.append(button(...op));box.hidden=false}
-function showTab(name){tab=name;let p=$('panel');p.replaceChildren(node('h3',({directory:'TOWN DIRECTORY',contacts:'RESIDENT REGISTER',news:'LOCAL NEWS',style:'CHARACTER & PROPERTY'})[name]));
+function showTab(name){tab=name;for(const el of document.querySelectorAll('[data-tab]')){el.classList.toggle('selected',el.dataset.tab===name);el.setAttribute('aria-pressed',String(el.dataset.tab===name))}let p=$('panel');p.replaceChildren(node('h3',({directory:'TOWN DIRECTORY',contacts:'RESIDENT REGISTER',news:'LOCAL NEWS',style:'CHARACTER & PROPERTY'})[name]));
 if(name==='directory')for(let b of SHOPS){let e=node('div',undefined,'entry'),v=node('div',b.name);let detail=node('small',shopStatus(b));detail.dataset.shopStatus=b.id;v.append(detail);e.append(v,button('Go',()=>{if(!world){toast('Wait for the town to load.');return}if(job){toast('Finish the shift first.');return}close();if(room!==-1){switchRoom(-1,()=>world.navigateDoor(b))}else world.navigateDoor(b)}));p.append(e)}
-if(name==='contacts')for(let n of RESIDENTS){let e=node('div',undefined,'entry'),v=node('div',n.name);let detail=node('small',registerText(n));detail.dataset.residentStatus=n.id;v.append(detail);e.append(v,node('span',String(S.relations[n.id]||0)));p.append(e)}
+if(name==='contacts')for(let n of RESIDENTS){let e=node('div',undefined,'entry resident-entry'),v=node('div',n.name);let detail=node('small',registerText(n));detail.dataset.residentStatus=n.id;v.append(detail);if(world?.textures){let img=document.createElement('img');img.className='portrait';img.alt='';img.src=actorPortrait(world,n.look,n.id);e.append(img)}e.append(v,node('span',String(S.relations[n.id]||0)));p.append(e)}
 if(name==='news')for(let n of S.news)p.append(node('div',n,'entry'));
 if(name==='style'){p.append(node('p','Personality: '+S.style),button('Change personality',()=>{let a=['Witty','Deadpan','Outgoing','Reserved'];S.style=a[(a.indexOf(S.style)+1)%a.length];save();showTab(name)}),button('Next avatar',()=>{S.look=(S.look+1)%6;save()}),node('p','Owned: '+(S.owned.map(i=>SHOPS[i].product).join(', ')||'No outfits')),node('p',S.home?'Apartment owned.':'Apartment · $180'),S.home?button('Visit apartment',()=>{if(!job)switchRoom(8)}):button('Purchase',()=>{S.cash-=180;S.home=true;log('Purchased an apartment.');hud();showTab(name)},S.cash<180),node('p','Completed shifts: '+S.shifts))}
 }
@@ -45,7 +49,7 @@ S.relations[n.id]=clamp(r+a,-40,100);S.lastTalk[n.id]=S.day;S.rep+=rep;S.calm=cl
 if(fresh)log('Spoke to '+n.name+' ('+(a>=0?'+':'')+a+' rapport).');if(type==='pun'&&fresh&&room===-1){let witness=world.people.find(q=>q.sprite.visible&&q.n.id!==n.id&&d(q.sprite,world.player)<55);if(witness){S.rep++;witnessIncident(S,-1,witness.n.id,'remark');log(witness.n.name+' overheard the conversation.');line+=' A bystander snickers.'}}
 hud();save();modal(n.name,[line,'Rapport '+S.relations[n.id]],[['Keep talking',()=>talk(n)],['Walk away',close]])}
 function shopMenu(){let b=SHOPS[room];if(!b)return;const store=S.townAI.shops[b.id],owner=S.townAI.agents[b.id],present=owner.place===b.id;modal(b.name,[present?b.line:b.owner+' is '+residentStatus(S.townAI,b.id,SHOPS).toLowerCase()+'. Service counter is available.',b.task+' · Earn up to $'+b.pay,'Stock '+store.stock+' · Customer visits '+store.customers],[['Start shift',()=>startJob(b)],['Talk to '+b.owner,()=>talk(RESIDENTS[b.id]),!present],['Buy '+b.product+' · $'+b.price,()=>{if(store.stock<1||S.cash<b.price)return shopMenu();S.cash-=b.price;store.stock--;store.cash+=b.price;store.revenue+=b.price;S.owned.push(b.id);S.look=(b.id+1)%6;save();hud();shopMenu()},S.cash<b.price||S.owned.includes(b.id)||store.stock<1],['Leave',()=>switchRoom(-1)],['Continue exploring',close]])}
-function finishJob(score){if(!job)return;let b=job.b,pay=moneyFor(b,score);S.cash+=pay;S.rep+=score;S.shifts++;S.minute+=35;while(S.minute>=1440){S.minute-=1440;S.day++}job=null;world.clearCargo();syncTown();log('Finished '+b.task+' at '+b.name+'; earned $'+pay+'.');hud();modal('SHIFT COMPLETE',[score+'/3 objectives achieved. Wages: $'+pay],[['Back to shop',shopMenu],['Explore',close]])}
+function finishJob(score){if(!job)return;let b=job.b,pay=moneyFor(b,score);S.cash+=pay;S.rep+=score;S.shifts++;S.minute+=35;while(S.minute>=1440){S.minute-=1440;S.day++}job=null;world.clearCargo();soundscape.play('coins');syncTown();log('Finished '+b.task+' at '+b.name+'; earned $'+pay+'.');hud();modal('SHIFT COMPLETE',[score+'/3 objectives achieved. Wages: $'+pay],[['Back to shop',shopMenu],['Explore',close]])}
 function startJob(b){job={b,step:0,score:0,pressure:40,dirty:[1,1,1,1,1,1],orders:Array.from({length:3},()=>b.items?b.items[Math.floor(Math.random()*b.items.length)]:null),start:performance.now()};if(b.kind==='cargo'){close();world.spawnCargo();toast('Move the three crates to the delivery bay. ACT picks up or drops.');return}jobUI()}
 function cancelJob(){job=null;world.clearCargo();shopMenu()}
 function jobUI(){let j=job;if(!j)return;let b=j.b;
@@ -55,7 +59,7 @@ if(b.kind==='pressure'){let target=[60,75,45][j.step];modal('PRESSURE TEST',['Te
 if(b.kind==='wash'){let dirty=j.dirty.reduce((a,b)=>a+b,0);modal('DETAIL THE CAR',['Clean each of the six panels. Remaining: '+dirty],j.dirty.map((v,i)=>[['Hood','Roof','Left door','Right door','Trunk','Windshield'][i],()=>{j.dirty[i]=0;jobUI()},!v]).concat([['Finish',()=>finishJob(Math.floor((6-dirty)/2))],['Cancel',cancelJob]]))}
 }
 function nextJob(){job.step++;if(job.step===3)finishJob(job.score);else jobUI()}
-function switchRoom(id,cb){if(job||!world)return;close();if(room===-1&&world?.player){S.x=world.player.x;S.y=world.player.y}room=id;afterRoom=cb||null;world.scene.restart();save()}
+function switchRoom(id,cb){if(job||!world)return;soundscape.play('door');close();if(room===-1&&world?.player){S.x=world.player.x;S.y=world.player.y}room=id;afterRoom=cb||null;world.scene.restart();save()}
 let afterRoom=null;
 function enter(b){if(!isOpen(b,S.minute)){toast(b.name+' opens at '+clockAt(b.open));return}switchRoom(b.id)}
 function rest(){S.day++;S.minute=540;S.calm=100;syncTown();log('Rested at home.');hud();close()}
@@ -64,115 +68,48 @@ async function boot(){try{if(!window.Phaser){try{await loadScript('./vendor/phas
 function launch(){class Town extends Phaser.Scene{
 constructor(){super('Town')}
 preload(){if(!this.textures.exists('urban'))this.load.spritesheet('urban',urbanAtlas,{frameWidth:16,frameHeight:16});this.load.on('loaderror',()=>{$('boot').textContent='Local urban atlas failed to decode.'})}
-create(){world=this;const tex=this.textures.get('urban');for(const [name,r] of Object.entries(CAR_FRAMES)){if(!tex.has(name))tex.add(name,0,r.x,r.y,r.w,r.h)}this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blocked=new Set();this.walls=this.physics.add.staticGroup();this.props=this.physics.add.group();this.people=[];this.route=[];this.arrive=null;this.cargo=[];this.carry=null;this.goal=null;this.vehicles=[];this.owner=null;this.marker=null;this.lastLabel=null;this.lastLabelId=null;this.bay=null;this.bayMark=null;this.bayLabel=null;
+create(){world=this;this.effects=installEffects(this);this.crateKey=installCrate(this);this.carKey=installVehicles(this);this.shadows=[];this.cols=room===-1?72:26;this.rows=room===-1?42:19;this.blocked=new Set();this.walls=this.physics.add.staticGroup();this.props=this.physics.add.group();this.people=[];this.route=[];this.arrive=null;this.cargo=[];this.carry=null;this.goal=null;this.vehicles=[];this.owner=null;this.marker=null;this.lastLabel=null;this.lastLabelId=null;this.bay=null;this.bayMark=null;this.bayLabel=null;
 this.physics.world.setBounds(0,0,this.cols*T,this.rows*T);if(room===-1)this.buildTown();else this.buildRoom();
 let x=room===-1?clamp(S.x,10,this.cols*T-10):216,y=room===-1?clamp(S.y,10,this.rows*T-10):272;
 if(this.blocked.has(Math.floor(y/T)*this.cols+Math.floor(x/T))){x=264;y=232}
-this.player=this.person(x,y,S.look);this.player.setTint(0xf7e7d3);this.player.body.setMass(5);this.physics.add.collider(this.player,this.walls);this.physics.add.collider(this.player,this.props,(_,obj)=>{if(job||performance.now()-bumpAt<2500||Math.hypot(obj.body.velocity.x,obj.body.velocity.y)<10)return;let w=this.people.find(q=>q.sprite.visible&&d(q.sprite,obj)<42);if(w){bumpAt=performance.now();S.calm=Math.max(0,S.calm-4);witnessIncident(S,-1,w.n.id,'collision');log(w.n.name+' witnessed an awkward collision.');toast('Oops. '+w.n.name+' saw that.');hud()}});this.physics.add.collider(this.props,this.walls);this.physics.add.collider(this.props,this.props);
+this.player=this.person(x,y,S.look);this.player.body.setMass(5);this.physics.add.collider(this.player,this.walls);this.physics.add.collider(this.player,this.props,(_,obj)=>{if(job||performance.now()-bumpAt<2500||Math.hypot(obj.body.velocity.x,obj.body.velocity.y)<10)return;let w=this.people.find(q=>q.sprite.visible&&d(q.sprite,obj)<42);if(w){bumpAt=performance.now();S.calm=Math.max(0,S.calm-4);witnessIncident(S,-1,w.n.id,'collision');log(w.n.name+' witnessed an awkward collision.');toast('Oops. '+w.n.name+' saw that.');hud()}});this.physics.add.collider(this.props,this.walls);this.physics.add.collider(this.props,this.props);
 for(let n of this.people){this.physics.add.collider(n.sprite,this.walls)}
-this.cam=this.cameras.main;this.cam.roundPixels=true;const mobile=this.scale.width<600;if(room===-1){this.cam.setBounds(0,0,this.cols*T,this.rows*T);this.cam.setZoom(mobile?1.9:1.3);this.cam.startFollow(this.player,true,.18,.18)}else{this.cam.stopFollow();this.cam.removeBounds();this.cam.setZoom(Math.min(this.scale.width/(this.cols*T+12),this.scale.height/(this.rows*T+12)));this.cam.centerOn(this.cols*T/2,this.rows*T/2)}
-this.tint=this.add.rectangle(0,0,this.cols*T,this.rows*T,0x142844,0).setOrigin(0).setDepth(9999);
+this.cam=this.cameras.main;this.cam.roundPixels=true;this.cam.setBackgroundColor('#292d30');const mobile=this.scale.width<600;if(room===-1){this.cam.setBounds(0,0,this.cols*T,this.rows*T);this.cam.setZoom(mobile?2:1.65);this.cam.startFollow(this.player,true,.18,.18)}else{this.cam.stopFollow();this.cam.removeBounds();this.cam.setZoom(Math.min(this.scale.width/(this.cols*T+12),this.scale.height/(this.rows*T+12)));this.cam.centerOn(this.cols*T/2,this.rows*T/2)}
+this.tint=this.add.rectangle(0,0,this.cols*T,this.rows*T,0x24304f,0).setOrigin(0).setDepth(9999);this.lightMarks=[];if(room===-1){for(const b of SHOPS){let x=(b.x+Math.floor(b.w/2)+.5)*T,y=(b.y+b.h+.5)*T;let light=this.add.rectangle(x,y-5,25,13,0xd9ad64,0).setDepth(10001);this.lightMarks.push(light)}}
 this.input.on('pointerdown',p=>{if(dialogue)return;let v=this.cam.getWorldPoint(p.x,p.y);if(room===-1){let b=SHOPS.find(b=>v.x>=b.x*T&&v.x<(b.x+b.w)*T&&v.y>=b.y*T&&v.y<(b.y+b.h)*T);if(b){this.navigateDoor(b);return}let n=this.people.find(n=>n.sprite.visible&&d(n.sprite,v)<11);if(n){this.navigate(n.sprite.x,n.sprite.y+17,()=>{if(d(n.sprite,this.player)<32)talk(n.n);else toast('They have moved. Try again.')});return}}this.navigate(v.x,v.y)});
-$('district').textContent=room===-1?'MAIN STREET':room===8?'APARTMENT':SHOPS[room].name.toUpperCase();$('boot').hidden=true;if(new URLSearchParams(location.search).has('qa'))window.townQA=()=>({player:{x:this.player.x,y:this.player.y,dir:this.player.dir,frame:Number(this.player.frame.name),phase:this.player.phase,look:S.look},vehicles:this.vehicles.map(({v,dir,color})=>({frame:v.frame.name,width:v.frame.cutWidth,height:v.frame.cutHeight,angle:v.angle,x:v.x,y:v.y,dir,color,cutX:v.frame.cutX,cutY:v.frame.cutY})),room,town:{time:S.townAI.time,decisions:S.townAI.decisions,trades:S.townAI.trades,conversations:S.townAI.conversations,agents:S.townAI.agents.map(a=>({id:a.id,x:a.x,y:a.y,activity:a.activity,place:a.place,cash:a.cash,visits:a.visits,decisions:a.decisionCount,needs:{...a.needs}})),shops:S.townAI.shops.map(s=>({...s}))}});showTab(tab);hud();if(afterRoom){let cb=afterRoom;afterRoom=null;cb()}}
+$('district').textContent=room===-1?'MAIN STREET':room===8?'APARTMENT':SHOPS[room].name.toUpperCase();$('boot').hidden=true;soundscape.ambience(room===-1?(S.minute>=1200||S.minute<360?'night':'street'):'interior');if(new URLSearchParams(location.search).has('qa'))window.townQA=()=>({player:{x:this.player.x,y:this.player.y,dir:this.player.dir,frame:Number(this.player.frame.name),phase:this.player.phase,look:S.look},vehicles:this.vehicles.map(({v,dir,color})=>({frame:v.frame.name,width:v.frame.cutWidth,height:v.frame.cutHeight,angle:v.angle,x:v.x,y:v.y,dir,color,cutX:v.frame.cutX,cutY:v.frame.cutY})),room,art:{version:ART_VERSION,actorTexture:this.player.texture.key,actorWidth:this.player.frame.cutWidth,actorHeight:this.player.frame.cutHeight,backdrop:room===-1?'town-backdrop-'+ART_VERSION:'room-backdrop-'+ART_VERSION+'-'+room,sound:soundscape.info()},town:{time:S.townAI.time,decisions:S.townAI.decisions,trades:S.townAI.trades,conversations:S.townAI.conversations,agents:S.townAI.agents.map(a=>({id:a.id,x:a.x,y:a.y,activity:a.activity,place:a.place,cash:a.cash,visits:a.visits,decisions:a.decisionCount,needs:{...a.needs}})),shops:S.townAI.shops.map(s=>({...s}))}});showTab(tab);hud();if(afterRoom){let cb=afterRoom;afterRoom=null;cb()}}
 tile(x,y,c,r,z=0){return this.add.image(x*T+8,y*T+8,'urban',F(c,r)).setDepth(z)}
 rect(x,y,w,h,col,z=0,a=1){return this.add.rectangle(x,y,w,h,col,a).setOrigin(0).setDepth(z)}
 label(x,y,t,z=20){return this.add.text(x,y,t,{fontFamily:'monospace',fontSize:'7px',color:'#fff0cc',backgroundColor:'#242a2d',padding:{x:3,y:2}}).setOrigin(.5).setDepth(z)}
 solid(x,y,w,h){let a=this.add.zone((x+w/2)*T,(y+h/2)*T,w*T,h*T);this.physics.add.existing(a,true);this.walls.add(a);for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)this.blocked.add(yy*this.cols+xx)}
 // Composition uses the original atlas for roofs, props, actors and ground detail;
 // custom pixel-aligned structural trims provide continuous walls and shopfronts.
-tree(x,y,variant=0){let c=variant%2?17:16;this.rect(x*T+1,y*T+20,19,7,0x222d2a,2,.28);this.tile(x,y,c,8,8);this.tile(x,y+1,c,9,9)}
-windowAt(x,y,w=22){this.rect(x-2,y-2,w+4,19,0x343d40,7);this.rect(x,y,w,15,0x66808a,8);this.rect(x+1,y+1,w-2,2,0xadc0bc,9);this.rect(x+Math.floor(w/2),y,2,15,0x34474c,9);this.rect(x,y+10,w,2,0x445c61,9)}
-storefront(b){
- let f=FACADES[b.id],x=b.x*T,y=b.y*T,w=b.w*T,h=b.h*T,face=y+h-32,roofH=h-32;
- this.rect(x+5,y+6,w,h,0x20272d,2,.48);
- this.rect(x,y,w,h,0x30383a,3);
- this.rect(x+2,y+2,w-4,roofH-2,f.accent,4);
- // use the red/orange roof panel's continuous center tile, with custom parapet.
- for(let yy=0;yy<b.h-2;yy++)for(let xx=0;xx<b.w;xx++){
-  let roof=this.tile(b.x+xx,b.y+yy,18,b.id%3===1?4:1,4);
-  roof.setTint(b.id%3===1?0xb5c3c0:b.id%3===2?0xc7b7bd:0xc5ac9b);
- }
- this.rect(x,y,w,3,0x373a3a,5);this.rect(x+2,y+3,w-4,2,0xd5b894,5);
- this.rect(x,y,3,roofH,0x424547,5);this.rect(x+w-3,y,3,roofH,0x373d3e,5);
- this.rect(x+5,y+6,25,18,0x444b4c,6);this.rect(x+7,y+8,21,14,0x939b91,7);
- for(let i=0;i<4;i++)this.rect(x+9,y+9+i*3,17,1,0x5e6a66,8);
- this.rect(x,face,w,32,0xb9ac97,6);this.rect(x,face,w,8,f.accent,7);
- for(let xx=0;xx<w;xx+=16)this.rect(x+xx,face+8,1,23,0xa19582,7);
- let center=x+Math.floor(b.w/2)*T+8;
- for(let xx=x+10;xx<x+w-25;xx+=32){if(Math.abs(xx+11-center)>25)this.windowAt(xx,face+12,22)}
- this.rect(center-10,face+9,20,23,0x364248,8);
- this.rect(center-7,face+11,14,18,0x7c969c,9);this.rect(center+4,face+19,2,2,0xe7d1a1,10);
- this.rect(center-12,face+30,24,2,0x615f55,10);
- this.rect(x+3,face-3,w-6,8,f.accent,10);
- for(let xx=4;xx<w-8;xx+=10)this.rect(x+xx,face+5,5,3,f.awning,10);
- this.label(x+w/2,face-9,b.sign,20);
- this.label(x+w/2,y+11,f.text,12);
- this.solid(b.x,b.y,b.w,b.h);
- let p=door(b);this.add.circle(p.x,p.y+3,2,0xc4d99d).setDepth(20);
- // benches, bins, potted trees from complete single-cell or two-cell atlas art.
- this.tile(b.x,b.y+b.h,8,9,9);this.tile(b.x+b.w-1,b.y+b.h,9,9,9);
-}
 buildTown(){
- // Main carriageways are continuous asphalt, not tiled lane dashes.
- for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++){
- let vertical=[17,18,19,35,36,37,53,54,55].includes(x),horizontal=(y>=16&&y<=18)||(y>=36&&y<=38);
- let curb=[16,20,34,38,52,56].includes(x)||[15,19,35,39].includes(y);
- let pave=(y>=11&&y<=15)||(y>=19&&y<=23)||(y>=32&&y<=35)||y>=39||curb;
- if(vertical||horizontal){
- this.rect(x*T,y*T,T,T,0x51545d,0);
- if((y===17||y===37)&&!vertical&&x%3===0)this.rect(x*T+2,y*T+7,10,1,0xbfb289,1);
- if([18,36,54].includes(x)&&!horizontal&&y%3===0)this.rect(x*T+7,y*T+2,1,10,0xbfb289,1);
- if((x+y*3)%11===0)this.rect(x*T+3,y*T+4,2,1,0x696b70,1);
- }else if(pave){
- this.rect(x*T,y*T,T,T,curb?0xaaa697:0x96988d,0);
- this.rect(x*T,y*T,T,1,0x777f7a,1);this.rect(x*T+(y%2?8:0),y*T,1,T,0x80867e,1);
- if(curb)this.rect(x*T,y*T+13,T,2,0xc6c3b1,2);
- }else{this.tile(x,y,1,1).setTint(0x78978b)}
+ installWorldBackdrop(this,SHOPS);
+ for(let i=0;i<8;i++){
+  const dir=i%2?-1:1,model=VEHICLES[i%VEHICLES.length],lane=(i<4?16:36)+(dir<0?.75:2.25),x=(5+Math.floor(i/2)*18+(i%2)*7)%this.cols;
+  const v=this.add.image(x*T,lane*T,this.carKey,model+(dir<0?'-left':'-right')).setDepth(100+Math.floor(lane*T));
+  const shadow=this.add.image(v.x+2,v.y+2,this.effects.carShadow).setDepth(v.depth-1);
+  this.vehicles.push({v,shadow,lane:lane*T,speed:36+i%3*5,dir,color:model});
  }
- for(let cx of [18,36,54])for(let cy of [17,37])for(let i=0;i<5;i++){
- this.rect((cx-1.5)*T,cy*T-13+i*5,13,2,0xc3c2b3,3);
- this.rect((cx+1)*T,cy*T-13+i*5,13,2,0xc3c2b3,3);
- }
- for(let b of SHOPS){this.storefront(b);this.tree(b.x+b.w+1,b.y+1,b.id)}
- for(let x of [2,14,33,51,70])for(let y of [2,13,23,33,40]){if(y+1<this.rows)this.tree(x,y,0)}
- for(let i=0;i<8;i++){const dir=i%2?-1:1,color=['green','yellow','red','green'][i%4],pose=vehiclePose(color,dir),lane=(i<4?16:36)+(dir<0?.75:2.25),x=(5+Math.floor(i/2)*18+(i%2)*7)%this.cols;const v=this.add.image(x*T,lane*T,'urban',pose.frame).setAngle(pose.angle).setDepth(8);this.vehicles.push({v,lane:lane*T,speed:36+i%3*5,dir,color})}
- for(let n of RESIDENTS){const a=S.townAI.agents[n.id],sp=this.person(a.x,a.y,n.look);sp.setTint(MOOD_TINT[n.id%MOOD_TINT.length]);sp.body.enable=false;sp.setVisible(a.place===-1);this.people.push({n,sprite:sp})}
- for(let b of SHOPS.filter(b=>b.id%2===0)){let p=door(b);this.prop(p.x-39,p.y+13,F(4,10))}
+ for(const n of RESIDENTS){const a=S.townAI.agents[n.id],sp=this.person(a.x,a.y,n.look,n.id);sp.body.enable=false;sp.setVisible(a.place===-1);this.people.push({n,sprite:sp})}
+ for(const b of SHOPS.filter(b=>b.id%2===0)){let p=door(b);this.prop(p.x-39,p.y+13)}
 }
-buildRoom(){let b=SHOPS[room],accent=b?FACADES[b.id].accent:0x768376;
- for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++){
- let tile=this.tile(x,y,1,4);
- tile.setTint(room===7?0x8b8399:room===5?0xa5c0c3:room===2?0xdac5a3:0xc7c4b8);
+buildRoom(){
+ const b=SHOPS[room];installRoomBackdrop(this,room,SHOPS,INTERIORS);
+ if(b){let n=RESIDENTS[b.id];this.owner=this.person(216,112,n.look,n.id);this.owner.body.enable=false;this.owner.setVisible(S.townAI.agents[b.id].place===room);this.people.push({n,sprite:this.owner,owner:true});
+ for(const visitor of RESIDENTS.filter(v=>v.id!==b.id)){const x=152+(visitor.id%4)*32,y=150+Math.floor(visitor.id/4)*22,sp=this.person(x,y,visitor.look,visitor.id);sp.body.enable=false;sp.setVisible(S.townAI.agents[visitor.id].place===room);this.people.push({n:visitor,sprite:sp,interiorX:x,interiorY:y})}
  }
- let w=this.cols*T,h=this.rows*T;
- this.rect(0,0,w,32,0x353c40,2);this.rect(0,32,w,6,accent,3);
- this.rect(0,0,16,h,0x4b5050,2);this.rect(w-16,0,16,h,0x4b5050,2);this.rect(0,h-16,w,16,0x44494a,2);
- this.rect(16,h-18,w-32,2,0x7c7c71,3);
- this.solid(0,0,26,2);this.solid(0,2,1,16);this.solid(25,2,1,16);this.solid(0,18,26,1);
- this.label(208,17,b?b.sign:'PRIVATE RESIDENCE',50);
- // central walkway, separate furnishing bays, continuous wood counter or service desk.
- this.rect(128,42,160,215,accent,1,.16);
- for(let x of [32,304]){this.rect(x,44,80,126,0x353e40,2,.17);this.rect(x,44,80,2,accent,3)}
- let layout=INTERIORS[room]||INTERIORS[8];for(let [x,y,c,r,ww,hh] of layout){
- this.rect(x*T-2,y*T-2,ww*T+4,hh*T+6,0x665b4c,3);
- for(let j=0;j<ww;j++)for(let k=0;k<hh;k++)this.tile(x+j,y+k,c+j,r+k,4);this.solid(x,y,ww,hh)}
- if(b){
- this.rect(160,64,96,16,0x4c443b,5);this.rect(162,64,92,10,0xb49a72,6);this.rect(162,74,92,3,accent,7);
- for(let i=0;i<4;i++)this.tile(10+i,4,4+i%3,10,8);
- this.solid(10,4,6,1);let n=RESIDENTS[b.id];this.owner=this.person(216,112,n.look);this.owner.body.enable=false;this.owner.setVisible(S.townAI.agents[b.id].place===room);this.people.push({n,sprite:this.owner,owner:true});this.label(216,97,'SERVICE COUNTER',20);
- for(const visitor of RESIDENTS.filter(v=>v.id!==b.id)){const x=152+(visitor.id%4)*32,y=150+Math.floor(visitor.id/4)*22,sp=this.person(x,y,visitor.look);sp.body.enable=false;sp.setVisible(S.townAI.agents[visitor.id].place===room);this.people.push({n:visitor,sprite:sp,interiorX:x,interiorY:y})}
- this.label(72,190,b.task.toUpperCase(),20);this.label(344,190,'SERVICE AREA',20);
- }else{this.label(72,190,'LIVING AREA',20);this.label(344,190,'BEDROOM',20)}
- this.rect(190,h-18,48,5,0xbca98a,8);this.label(216,287,'EXIT',20)
+ this.label(216,287,'EXIT',9000)
 }
 
-person(x,y,look){let p=this.physics.add.sprite(x,y,'urban',characterFrame(look,'down'));p.body.setSize(8,8).setOffset(4,8);p.setCollideWorldBounds(true);p.dir='down';p.phase=0;p.look=look;p.previousX=x;p.previousY=y;return p}
-animate(p,dt,look=p.look){const dx=p.x-p.previousX,dy=p.y-p.previousY,distance=Math.hypot(dx,dy);p.previousX=p.x;p.previousY=p.y;if(distance>.08){p.dir=facing(dx,dy,p.dir);p.phase=(p.phase+distance/5)%4}else p.phase=0;p.setFrame(characterFrame(look,p.dir,p.phase));p.setDepth(100+Math.floor(p.y))}
-prop(x,y,frame){let p=this.props.create(x,y,'urban',frame);p.body.setSize(12,12).setOffset(2,4);p.setDrag(140).setMaxVelocity(90).setBounce(.15).setCollideWorldBounds(true);return p}
+person(x,y,look,id=null){const key=installActor(this,look,id);let p=this.physics.add.sprite(x,y,key,characterFrame(look,'down')).setOrigin(.5,22/28);p.body.setSize(8,8).setOffset(6,20);p.setCollideWorldBounds(true);p.dir='down';p.phase=0;p.look=look;p.actorId=id;p.previousX=x;p.previousY=y;p.shadow=this.add.image(x,y+5,this.effects.shadow).setDepth(100+Math.floor(y)-1);return p}
+animate(p,dt,look=p.look){const dx=p.x-p.previousX,dy=p.y-p.previousY,distance=Math.hypot(dx,dy);p.previousX=p.x;p.previousY=p.y;if(distance>.08){p.dir=facing(dx,dy,p.dir);p.phase=(p.phase+distance/5.5)%4}else p.phase=0;if(p.look!==look){p.look=look;p.setTexture(installActor(this,look,p.actorId),characterFrame(look,p.dir,p.phase));p.body.setSize(8,8).setOffset(6,20)}else p.setFrame(characterFrame(look,p.dir,p.phase));p.setDepth(100+Math.floor(p.y));p.shadow.setVisible(p.visible).setPosition(p.x,p.y+5).setDepth(p.depth-1);if(p===this.player)soundscape.walk(distance)}
+prop(x,y,frame){let p=this.props.create(x,y,this.crateKey);p.body.setSize(12,12).setOffset(2,4);p.setDrag(140).setMaxVelocity(90).setBounce(.15).setCollideWorldBounds(true);return p}
 findPath(p,x,y){let a={x:clamp(Math.floor(p.x/T),0,this.cols-1),y:clamp(Math.floor(p.y/T),0,this.rows-1)},e={x:clamp(Math.floor(x/T),0,this.cols-1),y:clamp(Math.floor(y/T),0,this.rows-1)};if(this.blocked.has(e.y*this.cols+e.x)){let best=Infinity,found=null;for(let yy=Math.max(0,e.y-4);yy<Math.min(this.rows,e.y+5);yy++)for(let xx=Math.max(0,e.x-4);xx<Math.min(this.cols,e.x+5);xx++){let z=Math.hypot(xx-e.x,yy-e.y);if(z<best&&!this.blocked.has(yy*this.cols+xx)){best=z;found={x:xx,y:yy}}}if(!found)return [];e=found}
 let route=pathfind(this.cols,this.rows,this.blocked,a,e).map(q=>({x:(q.x+.5)*T,y:(q.y+.5)*T}));if(!route.length&&a.x===e.x&&a.y===e.y)route.push({x:(e.x+.5)*T,y:(e.y+.5)*T});return route}
 stop(){this.route=[];this.arrive=null;this.player?.setVelocity(0);if(this.marker){this.marker.destroy();this.marker=null}}
-navigate(x,y,cb){this.stop();this.route=this.findPath(this.player,x,y);if(!this.route.length){toast('No route available.');return}this.arrive=cb;let t=this.route[this.route.length-1];this.marker=this.add.rectangle(t.x,t.y,8,8).setStrokeStyle(1,0xffd879).setDepth(8000)}
+navigate(x,y,cb){this.stop();this.route=this.findPath(this.player,x,y);if(!this.route.length){toast('No route available.');return}this.arrive=cb;let t=this.route[this.route.length-1];this.marker=this.add.image(t.x,t.y,this.effects.mark).setDepth(8000).setAlpha(.85)}
 navigateDoor(b){let p=door(b);this.navigate(p.x,p.y,()=>enter(b))}
 follow(p,path,speed){if(!path.length){p.setVelocity(0);return}let a=path[0],len=d(p,a);if(len<3){path.shift();p.setVelocity(0)}else p.setVelocity((a.x-p.x)/len*speed,(a.y-p.y)/len*speed)}
 spawnCargo(){this.clearCargo();this.bay={x:344,y:228};this.bayMark=this.add.rectangle(344,228,48,36,0x8bb767,.2).setStrokeStyle(1,0xbce594).setDepth(4);this.bayLabel=this.label(344,202,'DELIVERY BAY',25);for(let i=0;i<3;i++)this.cargo.push(this.prop(80+i*20,220,F(4,10)))}
@@ -183,12 +120,12 @@ else{let b=SHOPS.find(b=>d(p,door(b))<20);if(b)return {kind:'door',b};let n=this
 return null}
 act(){if(dialogue)return;let n=this.nearest();if(job?.b.kind==='cargo'){if(n?.kind==='cargo'){if(this.carry){let c=this.carry;this.carry=null;c.body.enable=true;c.body.reset(this.player.x,this.player.y+14)}else{this.carry=n.sprite;this.carry.body.enable=false}return}toast('Deliver the crates to the marked bay.');return}if(n?.kind==='door')enter(n.b);else if(n?.kind==='npc')talk(n.n);else if(n?.kind==='owner')shopMenu();else if(n?.kind==='exit')switchRoom(-1);else if(n?.kind==='rest')modal('YOUR APARTMENT',['Rest to recover composure.'],[['Sleep until morning',rest],['Continue',close]]);else toast('Approach a resident or doorway.')}
 updateResidents(dt){
- for(const q of this.people){const a=S.townAI.agents[q.n.id],sp=q.sprite,visible=room===-1?a.place===-1:a.place===room;const was=sp.visible;sp.setVisible(visible);if(!visible)continue;
+ for(const q of this.people){const a=S.townAI.agents[q.n.id],sp=q.sprite,visible=room===-1?a.place===-1:a.place===room;const was=sp.visible;sp.setVisible(visible);sp.shadow.setVisible(visible);if(!visible)continue;
  if(room===-1)sp.setPosition(a.x,a.y);
  else if(!q.owner){if(!was)sp.setPosition(q.interiorX,q.interiorY);else if(a.activity==='Shopping'||a.activity==='Browsing'||a.activity==='Exercising'){const t=S.townAI.time*.24+q.n.id*1.7;sp.setPosition(q.interiorX+Math.sin(t)*7,q.interiorY)}}
  if(!was){sp.previousX=sp.x;sp.previousY=sp.y;sp.phase=0}
  this.animate(sp,dt);
- if(d(sp,this.player)<42&&q.n.id!==this.lastLabelId){this.lastLabelId=q.n.id;this.lastLabel?.destroy();this.lastLabel=this.label(sp.x,sp.y-16,q.n.name,9000)}
+ if(d(sp,this.player)<42&&q.n.id!==this.lastLabelId){this.lastLabelId=q.n.id;this.lastLabel?.destroy();this.lastLabel=this.label(sp.x,sp.y-25,q.n.name,9000)}
  }
 }
 update(t,dt){dt=Math.min(dt,50);let sec=dt/1000,p=this.player;if(!p)return;
@@ -198,15 +135,15 @@ this.animate(p,dt,S.look);
 timeAcc+=sec;saveTimer+=sec;if(timeAcc>=1){timeAcc-=1;S.minute++;if(S.minute>=1440){S.minute=0;S.day++}if(!job)S.calm=Math.min(100,S.calm+.15);hud();refreshRegister()}
 syncTown();this.updateResidents(dt);
 if(room===-1){S.x=p.x;S.y=p.y;
-for(let v of this.vehicles){v.v.x+=v.speed*sec*v.dir;if(v.v.x>this.cols*T+32)v.v.x=-32;if(v.v.x< -32)v.v.x=this.cols*T+32}}
+for(let v of this.vehicles){v.v.x+=v.speed*sec*v.dir;if(v.v.x>this.cols*T+40)v.v.x=-40;if(v.v.x< -40)v.v.x=this.cols*T+40;v.shadow.setPosition(v.v.x+2,v.v.y+2)}}
 for(let obj of this.props.getChildren())if(obj.active)obj.setDepth(100+Math.floor(obj.y));
 if(this.carry){this.carry.setPosition(p.x,p.y-7);this.carry.setDepth(p.depth+1)}
 if(job?.b.kind==='cargo'&&this.bay){for(let c of this.cargo.slice()){if(c.active&&c!==this.carry&&d(c,this.bay)<19){this.cargo=this.cargo.filter(x=>x!==c);c.destroy();job.score++;beep(550);toast('Delivered '+job.score+'/3');if(job.score===3){finishJob(3);break}}}}
 if(job?.b.kind==='timing'&&$('needle'))$('needle').style.left=((1-Math.cos((performance.now()-job.start)/400))*50)+'%';
 rumorTimer+=sec;if(rumorTimer>=8){rumorTimer=0;let changed=spreadRumors(S,townContacts(S.townAI));for(let c of changed){let n=RESIDENTS[c.target];if(n){if(c.rumor.actor===-1){log(n.name+' heard a rumor about your public behavior.');S.rep++}else if(RESIDENTS[c.rumor.actor])log(n.name+' heard a rumor about '+RESIDENTS[c.rumor.actor].name+'.')}}}
 if(saveTimer>=7){saveTimer=0;save()}
-if(this.lastLabel){let q=this.people.find(q=>q.n.id===this.lastLabelId);if(!q||!q.sprite.visible||d(q.sprite,p)>48){this.lastLabel.destroy();this.lastLabel=null;this.lastLabelId=null}else this.lastLabel.setPosition(q.sprite.x,q.sprite.y-16)}
-this.tint.setAlpha(room===-1?(S.minute<360||S.minute>=1200?.32:S.minute>=1080?.14:0):0);
+if(this.lastLabel){let q=this.people.find(q=>q.n.id===this.lastLabelId);if(!q||!q.sprite.visible||d(q.sprite,p)>48){this.lastLabel.destroy();this.lastLabel=null;this.lastLabelId=null}else this.lastLabel.setPosition(q.sprite.x,q.sprite.y-25)}
+const darkness=S.minute<360||S.minute>=1200?.36:S.minute>=1080?.16:0;this.tint.setAlpha(room===-1?darkness:0);for(const light of this.lightMarks)light.setAlpha(darkness*.22);const ambient=room===-1?(darkness>=.3?'night':'street'):'interior';if(soundscape.desired!==ambient)soundscape.ambience(ambient);if(this.marker)this.marker.setAlpha(.72+Math.sin(t/190)*.12);
 let n=this.nearest();$('prompt').textContent=job?.b.kind==='cargo'?'DELIVERY '+job.score+'/3':n?.kind==='door'?'ACT · '+n.b.name:n?.kind==='npc'?'ACT · '+n.n.name:n?.kind==='owner'?'ACT · Business menu':n?.kind==='exit'?'ACT · Exit':n?.kind==='rest'?'ACT · Rest':'Tap a destination';
 }}
 const compact=window.matchMedia('(max-width:800px)').matches;game=new Phaser.Game({type:Phaser.AUTO,width:compact?480:640,height:compact?360:400,parent:'canvas',pixelArt:true,antialias:false,roundPixels:true,backgroundColor:'#252e31',banner:false,scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},physics:{default:'arcade',arcade:{gravity:{x:0,y:0},debug:false}},scene:[Town]});
