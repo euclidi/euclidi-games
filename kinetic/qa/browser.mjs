@@ -9,7 +9,7 @@ try{await page.goto('http://127.0.0.1:8765/kinetic/qa/runtime.html',{waitUntil:'
 const result=await page.evaluate(()=>window.kineticQA||null).catch(()=>null);
 await writeFile(new URL('report-'+viewport.width+'.json',output),JSON.stringify({result,errors,requests},null,2));
 await page.screenshot({path:new URL('capture-'+viewport.width+'.png',output).pathname}).catch(()=>{});
-if(!result||result.phase!=='ready'||!result.physics||result.assets.length!==4||errors.length||requests.length)throw Error(JSON.stringify({result,errors,requests}));}
+if(!result||result.phase!=='ready'||!result.physics||result.assets.length!==7||!result.session||errors.length||requests.length)throw Error(JSON.stringify({result,errors,requests}));}
 await page.close();
 }
 }finally{await browser.close();}

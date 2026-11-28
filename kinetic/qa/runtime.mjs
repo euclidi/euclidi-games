@@ -1,5 +1,7 @@
 import {Engine,Scene,Vector3,Color3,Color4,ArcRotateCamera,HemisphericLight,DirectionalLight,MeshBuilder,PhysicsAggregate,PhysicsShapeType,HavokPlugin,ImportMeshAsync} from '@babylonjs/core';
 import '@babylonjs/loaders/glTF';
+import {createSession} from '../src/session.mjs';
+import {saveSession,loadSession,deleteSession} from '../src/storage.mjs';
 import HavokPhysics from '@babylonjs/havok';
 const status=document.querySelector('#status'), canvas=document.querySelector('#view');
 const report={phase:'boot',assets:[],errors:[],physics:false};window.kineticQA=report;
@@ -21,11 +23,14 @@ async function run(){
     ['ranger','fps-and-archery/kaykit/Characters/gltf/Ranger.glb',-1.8],
     ['bow','fps-and-archery/kaykit/Assets/gltf/bow_withString.gltf',0],
     ['crossbow','fps-and-archery/kaykit/Assets/gltf/crossbow_2handed.gltf',1.5],
-    ['deer','quaternius/ultimate-animated-animals/Deer.gltf',3]
+    ['deer','quaternius/ultimate-animated-animals/Deer.gltf',3],
+    ['wall','@qa/castle-kit/wall.glb',-4],
+    ['tree','@qa/nature-kit/tree-default.glb',5],
+    ['barrel','@qa/food-kit/barrel.glb',1]
   ];
   engine.runRenderLoop(()=>scene.render());addEventListener('resize',()=>engine.resize());
   for(const [id,url,x] of list){
-    const imported=await ImportMeshAsync(lib+url,scene);
+    const imported=await ImportMeshAsync(url.startsWith('@qa/')?new URL('./generated/models/'+url.slice(4),import.meta.url).href:lib+url,scene);
     const visible=imported.meshes.filter(m=>m.getTotalVertices()>0);
     if(!visible.length)throw Error(id+' has no geometry');
     const root=imported.meshes[0];root.position.x=x;
@@ -33,10 +38,18 @@ async function run(){
     const data={id,meshes:visible.length,vertices:visible.reduce((a,m)=>a+m.getTotalVertices(),0),animations:groups.map(a=>a.name),skeletons:imported.skeletons.length};
     report.assets.push(data);if(groups.length)groups[0].start(true);
   }
-  const start=ball.position.y;
+  const start=3;
   await new Promise(resolve=>setTimeout(resolve,1500));
   report.physics=ball.position.y<2.9&&ball.position.y>-.5&&ball.position.y<=start+.1;
-  report.ballY=ball.position.y;report.engine=engine.webGLVersion;report.phase='ready';
+  report.ballY=ball.position.y;report.engine=engine.webGLVersion;
+  // Browser exercise of the same character session, including actual IndexedDB persistence.
+  const session=createSession();session.begin('hunter');session.aimShot({uid:'origin-0',position:[0,1,0],velocity:[10,3,0]});
+  const field={ground:-100,targets:[{id:'qa-target',center:[5,1.3,0],radius:1,score:true}]};
+  for(let i=0;i<200&&session.liveShots().length;i++)session.update(1/60,field);
+  const before=session.view();await saveSession('qa',session);const restored=createSession();const saved=await loadSession('qa',restored);await deleteSession('qa');
+  report.session=!!saved&&saved.character.skills.shortbow?.xp>0&&saved.world.items.arrow===7&&saved.character.coins===saved.world.coins&&saved.lastReplay.id===before.lastReplay.id;
+  if(!report.session)throw Error('Browser session save/restore failed');
+  report.phase='ready';
   status.textContent=JSON.stringify(report);
   if(!report.physics)throw Error('Havok probe did not settle near ground');
 }
