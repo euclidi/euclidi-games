@@ -36,6 +36,7 @@ jobs:
           npm run qa:serve > /tmp/kinetic-vite.log 2>&1 &
           for i in $(seq 1 45); do curl -fsS http://127.0.0.1:8765/kinetic/qa/runtime.html > /dev/null && break; sleep 1; done
           npm run qa:browser
+          npm run qa:gameplay
       - uses: actions/upload-artifact@v4
         if: always()
         with:

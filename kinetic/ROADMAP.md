@@ -1,9 +1,9 @@
-# Engineering dependency graph
-Not staged release gates; complete scope remains approved.
+# Engineering dependency graph — integrated-first revision
+Full approved SPEC remains unchanged; these are internal dependencies, not public partial-release gates.
 
-1. Core registries, mathematical flight/progression and deterministic tests (initial implementation committed).
-2. Pin and build approved runtime; validate Babylon/Havok/Recast import and fixed-step adapter. Test actual GLTF texture/rig/pivots, select representative coherent town and character benchmark. Extract only required archives, preserve credits.
-3. Implement all weapon handling and specialized flight/contact/constraint models, real physics contact event provenance, equipment individuality, ammo/crafting/invention/abilities, material reactions, replay. Connect progression to validated events and add anti-repeat/difficulty scoring.
-4. Construct town/countryside, controller/cameras and physical interactions, animation, NPC navigation/LOD and social/law/economy, professions, survival, consequences, inventory and persistent saves.
-5. Training areas, experimentation, records, adaptive HUD/controls, audio, accessibility and settings. Integrate all systems, no reduced public demo.
-6. Test every acceptance criterion in SPEC, real desktop/mobile browser, asset visual review and frame time profiling. Fix failures; document remaining limits. Register catalog entry/cover after passing required checks, commit/deploy and verify live route. No Play button before verification.
+1. Verify engine, physics runtime, asset imports and storage — prior integration run passed.
+2. Maintain an executable internal build. Connect camera/movement, representative bow and stone handling, physical shot events, ammunition, XP and saves in a small real-model courtyard. Use automated end-to-end browser input tests and screenshots; correct failures before expanding.
+3. Establish coherent visual benchmark, actual player/weapon alignment and animation, full world collision and specialized handling/physics for representative weapons. Expand registry into functional disciplines; never count registration as implementation.
+4. Parallel integration into same internal build: weapon/skill trees, equipment/crafting/abilities/replay; architecture/countryside/props/animation; NPC navigation and behavior/law/economy/alchemy. Integrate frequently and exercise actual gameplay instead of disconnected domain tests.
+5. Complete approved world, origins, professions, training, social systems, daily life, consequences, persistent state, experimental facilities, interface, adaptive input and audio.
+6. Test every SPEC acceptance criterion, real desktop/mobile and controller input, visual QA and profiling. Fix failures and document remaining limits. Register catalog entry/approved cover, commit/deploy and verify live route. No Play button before verified release.

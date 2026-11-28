@@ -8,3 +8,6 @@ Repository tree inspected at a755b10d0f41b2603e01924ae73f2d25eb4f8fb5; existence
 - `assets/resource-library/foundations-materials/polyhaven/` and foundations-audio: candidate materials and audio.
 
 Gaps: coherent medieval timber structures, clothing variants, weapon-specific animation and first-person hand alignment, slings/bolas/throwables/chakrams/boomerangs, alchemical bottles and effects, UI and sound. No generated assets, no borrowed visual approval, no arbitrary primitive placeholders. Actual representative preview and license review pending. Keep license/source records per imported file.
+
+## Internal courtyard
+Candidate CC0 castle walls/towers, nature trees/stone, food barrels, KayKit ranger, bow and arrow are referenced by the internal courtyard. The extraction script validates archive checksums before use. Actual assembled visual style and scale must be reviewed from browser captures; these are not approved final art. No new generated assets.

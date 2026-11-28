@@ -6,7 +6,8 @@
     "test": "node tests/core.test.mjs && node tests/world.test.mjs && node tests/session.test.mjs",
     "qa:prepare": "node qa/prepare.mjs",
     "qa:serve": "vite .. --host 127.0.0.1 --port 8765 --strictPort",
-    "qa:browser": "node qa/browser.mjs"
+    "qa:browser": "node qa/browser.mjs",
+    "qa:gameplay": "node qa/gameplay-browser.mjs"
   },
   "dependencies": {
     "@babylonjs/core": "9.37.2",
