@@ -1,0 +1,566 @@
+{
+  "record_version": 1,
+  "title": "OpenGameArt CC0 Mineral Icons",
+  "source_urls": [
+    "https://opengameart.org/content/cc0-mineral-icons"
+  ],
+  "publisher": "OpenGameArt contributors",
+  "license_ids": [
+    "CC0-1.0"
+  ],
+  "license_urls": [
+    "https://creativecommons.org/publicdomain/zero/1.0/"
+  ],
+  "license_verified": true,
+  "redistribution_allowed": true,
+  "license_evidence_path": "acquisition/evidence/source-review.md#mining-coverage",
+  "attribution_texts": [
+    "No attribution required under CC0; retain bundled source notices."
+  ],
+  "source_ids": [
+    "mining-opengameart-mineral-ocal_20210112",
+    "mining-opengameart-mineral-ocal-scalable_20210112",
+    "mining-opengameart-mineral-7soul1_20210112",
+    "mining-opengameart-mineral-dcss_20201230",
+    "mining-opengameart-mineral-thekingphoenix_20210112"
+  ],
+  "files": [
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/coal.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/coal.png",
+      "bytes": 338,
+      "sha256": "b1bcd896b5e738475d14c92c2f04eeb7ac183f83c798eee0a103844a4eed9b3f",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock.png",
+      "bytes": 330,
+      "sha256": "d726df54911151eeeaf500a44a5044de137d706328b1882205948035e80acaab",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_blue_01.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_blue_01.png",
+      "bytes": 416,
+      "sha256": "2c67bd23d5c561b4a71500e537f39184ab878bb6b43886c87dcc228a9009830f",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_blue_02.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_blue_02.png",
+      "bytes": 462,
+      "sha256": "3f1a88a81e199d7f4378ce6473dabf4a9e0a90eabe18b3952e624c26d437ea61",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_red_01.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_red_01.png",
+      "bytes": 416,
+      "sha256": "cc6d0c06ebb7b736fe8bb35118805cd008bc0a8b2d8b346ada4b5baf20195952",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_red_02.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/32x32/rock_mineral_red_02.png",
+      "bytes": 462,
+      "sha256": "ea26396843f79bfbeb97989d6426d62866a9898982d4694b25ea7e695c6eceae",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/mineral-7Soul1.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/mineral-7Soul1.png",
+      "bytes": 3286,
+      "sha256": "2365db366c4fc391ed3be98670142bc131703bd5753c16d750350491252c9bcf",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/mineral-7Soul1.txt",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112-extracted/mineral-7Soul1.txt",
+      "bytes": 56,
+      "sha256": "9fedbce6ae1cbbfd9f8ce17b6b542762da918a45e5b64e9c0efca3d348e08538",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112.zip",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112.zip",
+      "bytes": 7313,
+      "sha256": "aae8f5acecbd36aa728cb28c23b7d7c7994b0e2d1175597fea8a192ab5f329e0",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112.zip.source.json",
+      "bytes": 355,
+      "sha256": "7babaefeb4062987c7e1cd4d54207a2d48d622d00a994aff54059ee15d52f3b0",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/shadow/stone_01.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/shadow/stone_01.png",
+      "bytes": 144,
+      "sha256": "1098ce5b68aa9bc291ed2df8af848a234c4c7291168aa29509197273c53c4f23",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/shadow/stone_02.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/shadow/stone_02.png",
+      "bytes": 144,
+      "sha256": "311edf6f16ef471fa8dd9ec35baa7ea544b29130c1383d01f02a1df9acb5e168",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/stone_01.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/stone_01.png",
+      "bytes": 363,
+      "sha256": "06fb265de391b553274273e159a9c1dc0adff832dba34464bdc38940cbf682da",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/stone_01_inert.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/stone_01_inert.png",
+      "bytes": 365,
+      "sha256": "5683acb95f50cfd7ede8592875903d6e0a220b52446a082ff5c0aff9927200fe",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/stone_02.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/32x32/stone_02.png",
+      "bytes": 342,
+      "sha256": "3a3d390dd11ec86416da25a01b603b8dcf722cd7ade2d37f578934e98386a7f0",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/mineral-DCSS.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/mineral-DCSS.png",
+      "bytes": 2454,
+      "sha256": "41975b69ea140ca8565d9e6316079a0c65764099003cf9af48b89a2697194dbb",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/mineral-DCSS.txt",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/mineral-DCSS.txt",
+      "bytes": 43,
+      "sha256": "931980962fe3547df53dcb9447f56abfbdc4a4d73e8d121215646786bcc17d0b",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/mineral-DCSS.xcf",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230-extracted/mineral-DCSS.xcf",
+      "bytes": 11186,
+      "sha256": "dea717f639e931edf7ea73d6ae8e6da3d6ae917e288b098d04a0abcee48f218f",
+      "format": "xcf",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230.zip",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230.zip",
+      "bytes": 9049,
+      "sha256": "1a05e2962ee423073289b7d298572f9b0be30b2c5efc206ecf7f2eb02c397b24",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230.zip.source.json",
+      "bytes": 353,
+      "sha256": "a302d67cf153ca4bc753c66e24f3ebd5e36b0548462c6a978ee858064beb7755",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/mineral-OCAL.txt",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/mineral-OCAL.txt",
+      "bytes": 376,
+      "sha256": "9e25f877e9a287c877362fc25510c256a5b1d4834852b31c80c8e758c943b9d9",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/krohnkite.svg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/krohnkite.svg",
+      "bytes": 3537718,
+      "sha256": "9d78921897694aa05f2c32b59c491e3c365b1f77257a8d2640204b34820b3618",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_adamantite.svg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_adamantite.svg",
+      "bytes": 1861496,
+      "sha256": "aa28c5c4109e2b7aec745294c8ff6086581ed9da0d41bd515249822cb01d5b53",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_coal.svg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_coal.svg",
+      "bytes": 1859002,
+      "sha256": "8ebc1b9721e59d0faef23e9d8b76d4dec61295195b9982fa97c107ca66ccdc19",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_gold.svg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_gold.svg",
+      "bytes": 1861485,
+      "sha256": "18921e557bf23327c8bf67459f1c0bb778d106e3f1549a114cd9c3965e20831e",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_grayscale.svg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_grayscale.svg",
+      "bytes": 1926090,
+      "sha256": "898194343770c9aac8f09088322901131900acc4098f648a02268592ccf631b0",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_mithril.svg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_mithril.svg",
+      "bytes": 1860219,
+      "sha256": "55e91c208a29e46479446dc4d213c3f4d433bd89f5124dbeacfd8071d24e9924",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_silver.svg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112-extracted/scalable/ore_silver.svg",
+      "bytes": 1859313,
+      "sha256": "a6ab5aef94ebc914502da843a0b72b980610ab8a26a7c4376ff9d15db66c7cd9",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112.zip",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112.zip",
+      "bytes": 5671608,
+      "sha256": "0d141bc1adfac3b1c3b51b48b9cf74d6f4820560eb76f65325abcf2fe38b94b9",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112.zip.source.json",
+      "bytes": 367,
+      "sha256": "c05a6c563c521b8a183763a792f897f35145c699d43de72ad79ec30b7c89c822",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/256x256/krohnkite.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/256x256/krohnkite.png",
+      "bytes": 26872,
+      "sha256": "e27713b97cceac4c2d649ee5cb32bb7f80212f1f3b3916c70e414d7959fccdf7",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/krohnkite.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/krohnkite.png",
+      "bytes": 1421,
+      "sha256": "5a9be7d39c079aed71d27f55cb6363639f10c38279df0abacdca524fb0053b7b",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_adamantite.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_adamantite.png",
+      "bytes": 939,
+      "sha256": "3cabc3efab5e2111a1ac1c6ceb76331be1ebf510a242184adba1b7cee482b197",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_coal.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_coal.png",
+      "bytes": 982,
+      "sha256": "5a7552682c45be7d0e9a40550e0b40763c9b743b271e034b3748a7ea06c5caea",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_gold.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_gold.png",
+      "bytes": 931,
+      "sha256": "3b26ca11b93b5cd961833a03003cbe99f5ad393f1f1aa3551b2b1a8af014d85d",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_grayscale.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_grayscale.png",
+      "bytes": 671,
+      "sha256": "de1238b962d6df96b2b80f2a563c30e3c39a450bc5cf669e9879c92079df5f82",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_mithril.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_mithril.png",
+      "bytes": 954,
+      "sha256": "a44bdb197737347939721fc8db9e8ba1458c40b361f7d9ccd8e5ad976cc25bd2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_silver.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/32x32/ore_silver.png",
+      "bytes": 988,
+      "sha256": "f02cd67a4b1d82eab2221353ab89081b491d20f811ae639ddff77dcf89611134",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/mineral-OCAL.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/mineral-OCAL.png",
+      "bytes": 9758,
+      "sha256": "963a438bf74de48b74f4c74ae86a954b8c8129a4702ee77890cd5d4c222d2764",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/mineral-OCAL.txt",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/mineral-OCAL.txt",
+      "bytes": 376,
+      "sha256": "9e25f877e9a287c877362fc25510c256a5b1d4834852b31c80c8e758c943b9d9",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/orig/krohnkite.jpg",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/orig/krohnkite.jpg",
+      "bytes": 467306,
+      "sha256": "28425e751c6a195fcd0d13d21caa5108ab13beb13c28cc30c76ec85d88767602",
+      "format": "jpg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/orig/krohnkite_nobg.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112-extracted/orig/krohnkite_nobg.png",
+      "bytes": 692382,
+      "sha256": "90b29ef7c2a7e4f75a06b9c5396addf138a61802d0b34a9369902472f2d58a65",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112.zip",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112.zip",
+      "bytes": 1180399,
+      "sha256": "a842ff62027fd655ad430350796d748ad9093f6836a6069c2873941853ac6118",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112.zip.source.json",
+      "bytes": 358,
+      "sha256": "a2df364430827ed4a8f8d399734603bbe14b5e881276a15037d04c53f34ebdc9",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/coal.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/coal.png",
+      "bytes": 267,
+      "sha256": "9f7f32d69a2590b890adc175ae1c74702a2ed0ed497eaa15e303bf4e7a4f64c8",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_coal.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_coal.png",
+      "bytes": 267,
+      "sha256": "f2d87c0e869c4cba8b8662f2dfe9b29100c48dd44fbd1c276794a0cc788e3db5",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_01.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_01.png",
+      "bytes": 288,
+      "sha256": "ea7a8560e39970aa0dad0706feffad639ac6b74d6d617f647263031c746e7b08",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_02.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_02.png",
+      "bytes": 298,
+      "sha256": "0609dc2c7df53e9afc7dfdd1f66de6042480c05f34cf6b54cb7a4e9f06daab0c",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_03.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_03.png",
+      "bytes": 345,
+      "sha256": "031efb6fa7c7e77b527c4c223156cfbcc383c7b078785491418a33a4158ebf6b",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_04.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/32x32/rock_mineral_04.png",
+      "bytes": 233,
+      "sha256": "4f6fd1249ac575179748b6c9fdbecb8d929c31c1cb5fa28d58d36ea9e0ca090a",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/mineral-thekingphoenix.png",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/mineral-thekingphoenix.png",
+      "bytes": 2593,
+      "sha256": "16cb36a28f8a9ef4ff98c7160dea4baed6cee66417065c0614be754e7f19236e",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/mineral-thekingphoenix.txt",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112-extracted/mineral-thekingphoenix.txt",
+      "bytes": 43,
+      "sha256": "dd7c6734307b95b9ab227db5f0b19d4d30f31c3d66b73553da9d5700714e0bf0",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112.zip",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112.zip",
+      "bytes": 5874,
+      "sha256": "622f57eaee16a6e1f316e5d16ab5b98c0c72065700b7ebdb5c9afd32fb69f874",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112.zip.source.json",
+      "bytes": 363,
+      "sha256": "e6cdfed443ec60dc12eafb37c8c118b530949c53655f2232b21f79ce9a8f5f81",
+      "format": "json",
+      "role": "download-receipt"
+    }
+  ],
+  "file_count": 54,
+  "bytes_total": 22870459,
+  "note": "SHA-256 is recorded for each included archive, download receipt, extracted file, and local source note. Original archives are retained beside safe extractions where the publisher distributed a ZIP.",
+  "source_url": "https://opengameart.org/content/cc0-mineral-icons",
+  "license_id": "CC0-1.0",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+  "sources": [
+    {
+      "id": "mining-opengameart-mineral-ocal_20210112",
+      "title": "CC0 minerals — OCAL icon set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-mineral-icons",
+      "download_url": "https://opengameart.org/sites/default/files/mineral-ocal_20210112.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "a842ff62027fd655ad430350796d748ad9093f6836a6069c2873941853ac6118",
+      "bytes": 1180399,
+      "local_path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal_20210112.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 mineral-icon collection; original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-mineral-ocal-scalable_20210112",
+      "title": "CC0 minerals — scalable OCAL set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-mineral-icons",
+      "download_url": "https://opengameart.org/sites/default/files/mineral-ocal-scalable_20210112.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "0d141bc1adfac3b1c3b51b48b9cf74d6f4820560eb76f65325abcf2fe38b94b9",
+      "bytes": 5671608,
+      "local_path": "foundations-2d/mining/opengameart-mineral-icons/mineral-ocal-scalable_20210112.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 mineral-icon collection; original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-mineral-7soul1_20210112",
+      "title": "CC0 minerals — 7Soul1 set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-mineral-icons",
+      "download_url": "https://opengameart.org/sites/default/files/mineral-7soul1_20210112.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "aae8f5acecbd36aa728cb28c23b7d7c7994b0e2d1175597fea8a192ab5f329e0",
+      "bytes": 7313,
+      "local_path": "foundations-2d/mining/opengameart-mineral-icons/mineral-7soul1_20210112.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 mineral-icon collection; original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-mineral-dcss_20201230",
+      "title": "CC0 minerals — Dungeon Crawl Stone Soup set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-mineral-icons",
+      "download_url": "https://opengameart.org/sites/default/files/mineral-dcss_20201230.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "1a05e2962ee423073289b7d298572f9b0be30b2c5efc206ecf7f2eb02c397b24",
+      "bytes": 9049,
+      "local_path": "foundations-2d/mining/opengameart-mineral-icons/mineral-dcss_20201230.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 mineral-icon collection; original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-mineral-thekingphoenix_20210112",
+      "title": "CC0 minerals — thekingphoenix set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-mineral-icons",
+      "download_url": "https://opengameart.org/sites/default/files/mineral-thekingphoenix_20210112.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "622f57eaee16a6e1f316e5d16ab5b98c0c72065700b7ebdb5c9afd32fb69f874",
+      "bytes": 5874,
+      "local_path": "foundations-2d/mining/opengameart-mineral-icons/mineral-thekingphoenix_20210112.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 mineral-icon collection; original source artist names and licenses are retained in the archive where supplied."
+    }
+  ]
+}

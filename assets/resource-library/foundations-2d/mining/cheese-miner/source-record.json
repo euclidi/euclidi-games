@@ -1,0 +1,597 @@
+{
+  "record_version": 1,
+  "title": "Cheese Miner — Dirt Cave",
+  "source_urls": [
+    "https://raildogameart.itch.io/cheese-miner"
+  ],
+  "publisher": "Raildo GameArt",
+  "license_ids": [
+    "CC0-1.0"
+  ],
+  "license_urls": [
+    "https://creativecommons.org/publicdomain/zero/1.0/"
+  ],
+  "license_verified": true,
+  "redistribution_allowed": true,
+  "license_evidence_path": "acquisition/evidence/source-review.md#mining-coverage",
+  "attribution_texts": [
+    "No attribution required; optional credit to Raildo GameArt."
+  ],
+  "source_ids": [
+    "mining-cheese-miner-dirt-cave"
+  ],
+  "files": [
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/Action1.anim",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/Action1.anim",
+      "bytes": 12096,
+      "sha256": "f67a0ae0d44457dd2055fad55ae6c41f5311755e93b7b0b2e7f8ce88782102d3",
+      "format": "anim",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/Idle.anim",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/Idle.anim",
+      "bytes": 13068,
+      "sha256": "1c161267baca88eb1ccfdb3534aaf01eb53d3ba4928b8dcc1f668cf6c012b828",
+      "format": "anim",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/jump.anim",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/jump.anim",
+      "bytes": 2636,
+      "sha256": "2852e3747a5f263f0e30402d3c1af38ec7fc1c80cce5a6cdc8403eb395d72e1c",
+      "format": "anim",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/miner_animations.tres",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/miner_animations.tres",
+      "bytes": 179141,
+      "sha256": "3e887eade719db5bbb266a300246e6d24984a71d411cb76932dc65359c62c250",
+      "format": "tres",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/pickup.anim",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/pickup.anim",
+      "bytes": 11104,
+      "sha256": "6f3006a2205ece8aff4ee1a243a37a063c1a7ef020bb2ee17d1b5ac228faa55f",
+      "format": "anim",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/run.anim",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/Animations/run.anim",
+      "bytes": 9401,
+      "sha256": "0a74efe5b41556ec48b0573618b2dbccb8184355b41e7ce04dcf5215a67371c2",
+      "format": "anim",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/cheese_miner.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Characters/cheese_miner.tscn",
+      "bytes": 300285,
+      "sha256": "3748a1b1e347d89208b536cc828704bd5d174c06ef5b40b5c1ccd435da08d6f4",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Examples (delete this)/dc_example.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Examples (delete this)/dc_example.tscn",
+      "bytes": 6398,
+      "sha256": "be6e52b56ace33a80334d826ea3aa37b5d042b4ff06441a2cdb52d5f95559a56",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_bag.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_bag.material",
+      "bytes": 1081,
+      "sha256": "fff9ea9efe2cd7b1b60a6a1d61b7767c61e7f3869f3b1eab0fdd8393e835d4ea",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_cheese.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_cheese.material",
+      "bytes": 1084,
+      "sha256": "7dcf659bfac568bdd08606f26623399869f444e4915af59067d679f7c10f38ba",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_chest.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_chest.material",
+      "bytes": 1070,
+      "sha256": "ed90ad39352dfb6636932f531ecae27284869da628685aa256e2a4cf47bee445",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_crate.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_crate.material",
+      "bytes": 1077,
+      "sha256": "eb052f223776792c7412e3d7996795d2fde2fc794d3111ff1845cba7cc6196af",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_door.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_door.material",
+      "bytes": 1077,
+      "sha256": "43d6129a01aa487fa866699aad91cd023677fe1a1d2ac88ceeada8c15fa63e7f",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_miner.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_miner.material",
+      "bytes": 1076,
+      "sha256": "deabacc7032b9f03aeb2265f6a504def02eca5a05c8b4f69815796bdfe40df24",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_pickaxe.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_pickaxe.material",
+      "bytes": 1073,
+      "sha256": "a5854f090b929c64cea86c124d78710385af05a5e67cf5ec9018c8b15914017e",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_stone.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_stone.material",
+      "bytes": 1073,
+      "sha256": "eff1de9b7a40d9a9c45b06f8be947b2fb98bc60ee3825fc457684137177b53e1",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_tilemap_assets.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_tilemap_assets.material",
+      "bytes": 1096,
+      "sha256": "59f68d055b94beb033b4264bad29b17b457acecb3477f50750b8ecfae6f91503",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_tilemap_assets_holes.material",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Materials/dc_tilemap_assets_holes.material",
+      "bytes": 1099,
+      "sha256": "0978add0a16cefdc94a01748796c0d3d9bbd6acbb61a8f398d88dc82c83168aa",
+      "format": "material",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_bag.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_bag.tscn",
+      "bytes": 18395,
+      "sha256": "649cb88e79785d6add73b004cd3d5507f45d1bf60870e216b48bbacf545efe76",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_cheese.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_cheese.tscn",
+      "bytes": 5009,
+      "sha256": "367b28b353ea2c82085be06dc5ccd2f5a9a5f5bfbc69224371701128f0b38493",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_chest.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_chest.tscn",
+      "bytes": 25148,
+      "sha256": "a6a71c2563ce70e62b12c2d8b7d15af8e16f05e69a9374fa7d344c2faa2f19b3",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_crate_a.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_crate_a.tscn",
+      "bytes": 40495,
+      "sha256": "b4a18ec4a655cec5bca2cffee2b959cc3b81d79e83260de00dc0621f05fbabc5",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_crate_b.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_crate_b.tscn",
+      "bytes": 4402,
+      "sha256": "7d499420ad46c8e88da7f63f7b46378324909c6e2d49b0c790ba237ffe809f16",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_door.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_door.tscn",
+      "bytes": 16166,
+      "sha256": "3fcb47cf4eeef2f7a1d07fa3652eb4efbd7b00e61aa7022c703db56710d02639",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_pickaxe.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_pickaxe.tscn",
+      "bytes": 19595,
+      "sha256": "97f9efd59565b4f4c3899f092c7b91f4868ca1f7b7c479dc2cf124cf2803bd14",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_stone.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Objects/dc_stone.tscn",
+      "bytes": 93380,
+      "sha256": "a06fa17d60600b4e48c8ef2e9e77fe9b22d63e00b76505fac87e534e590eceb0",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_bag.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_bag.png",
+      "bytes": 1745,
+      "sha256": "6ada1760df04b7fab6f50d9c7f643289118959809f40bc521c6a4684c8c544c2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_bag.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_bag.png.import",
+      "bytes": 789,
+      "sha256": "c4256205dd66bb500bb88b39ca17ee5ed1bef2ffa735f466c38d965c5069968b",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_cheese.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_cheese.png",
+      "bytes": 1315,
+      "sha256": "6dad2b607b5fb42ab63c6e533f3c4cc5a97004cc8c5523997ce0368b36011216",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_cheese.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_cheese.png.import",
+      "bytes": 798,
+      "sha256": "234f48b68d314996129b288cff312cfb54e46cca7b40a7555de3b882d6efe8c0",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_chest.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_chest.png",
+      "bytes": 2619,
+      "sha256": "bc6944c03dfc0503fc4bc66e42f3f44745808b719636c467b791136c9dfa81b2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_chest.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_chest.png.import",
+      "bytes": 795,
+      "sha256": "26b80a3c77b0641f0553be61ea8a8e0cf3c6434aecc49182351557596f67d114",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_crate.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_crate.png",
+      "bytes": 2403,
+      "sha256": "867b78bbe80feff5128377b1cf9ceed7de7ef5012b200fe1f01ae272275dd6df",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_crate.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_crate.png.import",
+      "bytes": 795,
+      "sha256": "3ce16b05381ef98f48d0c1dfdc66135e62e6a1f90af6884483293d4cdc449843",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_miner.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_miner.png",
+      "bytes": 8691,
+      "sha256": "e0ccac435087114d5a9d721b2129a66c029f5f9aa139accb172a4f6b9e580931",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_miner.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_miner.png.import",
+      "bytes": 795,
+      "sha256": "5ad287090911d396eef126d2b12be1dc3fae1c156b084c24bf6c8dbec04ef9c1",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_pickaxe.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_pickaxe.png",
+      "bytes": 6155,
+      "sha256": "51504945e984d24618f87490c1215e47573a3a026b372442ba222ca042a084c1",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_pickaxe.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_pickaxe.png.import",
+      "bytes": 801,
+      "sha256": "e664526a9b576489d57c13a8f3abb25c9595cd430bb69a02a6e3bc35bdef1a52",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_stones.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_stones.png",
+      "bytes": 2809,
+      "sha256": "86f463998bcc7eddbbeacb5b26626e3d071d3bc968c41d249a526c7844abd041",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_stones.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tex_stones.png.import",
+      "bytes": 798,
+      "sha256": "879f7c33c670aed67b7bccbfee1795387b5f01d3b8982a245f6857fb24c994c8",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01.png",
+      "bytes": 8923,
+      "sha256": "e703e94ae4fd6dd0ee362d6819245cd659aed08e3640c798df6247d950b8a6aa",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01.png.import",
+      "bytes": 795,
+      "sha256": "c4e324d89b190865cdec997b0f22cc63448db8cff023cd6b89444ea4928887a0",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01_b.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01_b.png",
+      "bytes": 6220,
+      "sha256": "e4f652d18bcedc1b18c4286137493a9de71ea102dfdde2e869a0040f8ad7e3d3",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01_b.png.import",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Textures/dc_tileset01_b.png.import",
+      "bytes": 801,
+      "sha256": "95161af98746b79a7bc962b379583e723f7aff654f5cf066696c8601839bff66",
+      "format": "import",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Tilemaps/dc_gridmap.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Tilemaps/dc_gridmap.tscn",
+      "bytes": 323,
+      "sha256": "3a02e763da632a3b6f323373e1d9f40aa09a6a2092e263a5fb33d5b53dc20b29",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Tilemaps/dc_tilemap.meshlib",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Tilemaps/dc_tilemap.meshlib",
+      "bytes": 115651,
+      "sha256": "df6de11686623d7a788cb6fe73621a110b1a01571c195453486f5e026f2c5014",
+      "format": "meshlib",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Tilemaps/dc_tilemap_assets.tscn",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/godot4dragdrop/CheeseMineAssets/Tilemaps/dc_tilemap_assets.tscn",
+      "bytes": 271361,
+      "sha256": "61daa0e6d6469c3c43c305d56cd78dcfac66245d366df4bf713d9ca64d6800a4",
+      "format": "tscn",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/readme",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/readme",
+      "bytes": 894,
+      "sha256": "b52102b17d843f24137463f47159f8cf45b9ad578b4b8a97f3488461163bccce",
+      "format": "extensionless",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_bag.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_bag.fbx",
+      "bytes": 15804,
+      "sha256": "0d8db7c05a2009ee8aa0c2641c578db0feaef84aa39c97d4cd27d470737488df",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_cheese.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_cheese.fbx",
+      "bytes": 15052,
+      "sha256": "beb0db5a448e13e87e79d84c0f3a9bd1bdc7149d499f4551b4eb434306e7f75d",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_chest.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_chest.fbx",
+      "bytes": 54428,
+      "sha256": "d693b1ab5a146a960e911805df81a0d371cbdecac81586ea59a151fad7535c20",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_crate_a.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_crate_a.fbx",
+      "bytes": 108284,
+      "sha256": "40cb1957fa7a41e20219f65e1d6a987c5b74c6507560860c2ad055eca8cfda4d",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_door.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_door.fbx",
+      "bytes": 15468,
+      "sha256": "b2a9d3dab98df605f15c5fa19ec616d272b8e45fa5de19f8f4af1399cdd0d0e5",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_pickaxe.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_pickaxe.fbx",
+      "bytes": 15900,
+      "sha256": "476efaa44221cee465a1edee4e87d67598f00adacf3178a0985787005922a9f4",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_stone.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_stone.fbx",
+      "bytes": 148780,
+      "sha256": "e31e887ac091fe85cba1acb3474aa0faae72bd979c011e0efb5c77c97c0b957a",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_tilemap.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/dc_tilemap.fbx",
+      "bytes": 90524,
+      "sha256": "a586cd880af577d4319616917d70f7c95e25076976a88492428f8edf92058931",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/miner.fbx",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/miner.fbx",
+      "bytes": 1276220,
+      "sha256": "4a01bc25d7889b074dd3e5cffb2ba853d6ef517776e1f696b9baa93547145a77",
+      "format": "fbx",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_bag.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_bag.png",
+      "bytes": 1745,
+      "sha256": "6ada1760df04b7fab6f50d9c7f643289118959809f40bc521c6a4684c8c544c2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_cheese.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_cheese.png",
+      "bytes": 1315,
+      "sha256": "6dad2b607b5fb42ab63c6e533f3c4cc5a97004cc8c5523997ce0368b36011216",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_chest.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_chest.png",
+      "bytes": 2619,
+      "sha256": "bc6944c03dfc0503fc4bc66e42f3f44745808b719636c467b791136c9dfa81b2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_crate.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_crate.png",
+      "bytes": 2403,
+      "sha256": "867b78bbe80feff5128377b1cf9ceed7de7ef5012b200fe1f01ae272275dd6df",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_miner.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_miner.png",
+      "bytes": 8691,
+      "sha256": "e0ccac435087114d5a9d721b2129a66c029f5f9aa139accb172a4f6b9e580931",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_pickaxe.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_pickaxe.png",
+      "bytes": 6155,
+      "sha256": "51504945e984d24618f87490c1215e47573a3a026b372442ba222ca042a084c1",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_stones.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tex_stones.png",
+      "bytes": 2809,
+      "sha256": "86f463998bcc7eddbbeacb5b26626e3d071d3bc968c41d249a526c7844abd041",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tileset01.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tileset01.png",
+      "bytes": 8923,
+      "sha256": "e703e94ae4fd6dd0ee362d6819245cd659aed08e3640c798df6247d950b8a6aa",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tileset01_b.png",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack-extracted/source_files/textures/dc_tileset01_b.png",
+      "bytes": 6220,
+      "sha256": "e4f652d18bcedc1b18c4286137493a9de71ea102dfdde2e869a0040f8ad7e3d3",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack.zip",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack.zip",
+      "bytes": 784282,
+      "sha256": "0fc93df7a35eb10e51feb11b8d989325d117933f8999e7b6ece4d6ef1755c8ba",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/cheese-miner/dirt-cave-pack.zip.source.json",
+      "path": "foundations-2d/mining/cheese-miner/dirt-cave-pack.zip.source.json",
+      "bytes": 678,
+      "sha256": "5921644b239bc238be961d7198ffb350de975b11e981d044a38d6276fdb5145a",
+      "format": "json",
+      "role": "download-receipt"
+    }
+  ],
+  "file_count": 68,
+  "bytes_total": 3770101,
+  "note": "SHA-256 is recorded for each included archive, download receipt, extracted file, and local source note. Original archives are retained beside safe extractions where the publisher distributed a ZIP.",
+  "source_url": "https://raildogameart.itch.io/cheese-miner",
+  "license_id": "CC0-1.0",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attribution_text": "No attribution required; optional credit to Raildo GameArt.",
+  "sources": [
+    {
+      "id": "mining-cheese-miner-dirt-cave",
+      "title": "Cheese Miner Asset Pack — Dirt Cave free file",
+      "publisher": "Raildo GameArt",
+      "source_url": "https://raildogameart.itch.io/cheese-miner",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required; optional credit to Raildo GameArt.",
+      "sha256": "0fc93df7a35eb10e51feb11b8d989325d117933f8999e7b6ece4d6ef1755c8ba",
+      "bytes": 784282,
+      "local_path": "foundations-2d/mining/cheese-miner/dirt-cave-pack.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Free DirtCavePack only. The official page describes a miner character and animations, pickaxe, breakable stone/crate states, chest opening, and 25+ dirt tilemap pieces. Stone Mine UPGRADE is a separate paid download and is excluded."
+    }
+  ]
+}

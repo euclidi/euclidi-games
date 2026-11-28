@@ -1,0 +1,1250 @@
+{
+  "record_version": 1,
+  "title": "OpenGameArt CC0 Tool Icons",
+  "source_urls": [
+    "https://opengameart.org/content/cc0-tool-icons"
+  ],
+  "publisher": "OpenGameArt contributors",
+  "license_ids": [
+    "CC0-1.0"
+  ],
+  "license_urls": [
+    "https://creativecommons.org/publicdomain/zero/1.0/"
+  ],
+  "license_verified": true,
+  "redistribution_allowed": true,
+  "license_evidence_path": "acquisition/evidence/source-review.md#mining-coverage",
+  "attribution_texts": [
+    "No attribution required under CC0; retain bundled source notices."
+  ],
+  "source_ids": [
+    "mining-opengameart-tool-ocal_20230225",
+    "mining-opengameart-tool-ocal-scalable_20230225",
+    "mining-opengameart-tool-7soul1_20201222",
+    "mining-opengameart-tool-antumdeluge",
+    "mining-opengameart-tool-dcss_20201226",
+    "mining-opengameart-tool-facadegaikan",
+    "mining-opengameart-tool-fleurman_20201226",
+    "mining-opengameart-tool-thekingphoenix",
+    "mining-opengameart-tool-yd",
+    "mining-opengameart-tool-wikimedia_20240710"
+  ],
+  "files": [
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/clock.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/clock.png",
+      "bytes": 420,
+      "sha256": "0a6c71c9ae21ec6ca42fc4c2e1d00f8db033d0e4e349dd823e457d50fe9d4117",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/pack.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/pack.png",
+      "bytes": 431,
+      "sha256": "be686ae80c809c958b2596a9a28fc34710f8c29cc367e06bbfb3e46c82ff8b9e",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/rope.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/rope.png",
+      "bytes": 326,
+      "sha256": "280849b66cdf81065303ac367461d4d6488e66a53aeb28151218f4adf5d3e311",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/telescope.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/telescope.png",
+      "bytes": 321,
+      "sha256": "bbfbab5bb2a026b64eed86d26dc0b76ef05941c39b5190ccf93b8e9255b4891a",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/torch_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/torch_01.png",
+      "bytes": 307,
+      "sha256": "7104021cd98207ea922a8652f44c18bffecb714e889587c0970d508439016a2e",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/torch_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/32x32/torch_02.png",
+      "bytes": 377,
+      "sha256": "31fad1dffcee3c8ac417ddaeb20edeeb2df316c17f07907865ebbddcb6fdfb77",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/orig/pack.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/orig/pack.png",
+      "bytes": 429,
+      "sha256": "419c5f8cfc7d711327eda3927eca1e35a7fef02870b2217e159169d57ea18cd4",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/orig/torch_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/orig/torch_02.png",
+      "bytes": 429,
+      "sha256": "99d5a90e39b2f3be1f8fe753e8974d6cbc019092d55696661a6367694ecafab4",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/tool-7Soul1.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/tool-7Soul1.png",
+      "bytes": 3562,
+      "sha256": "9fc820cdddb6b84332eb4b5a7c3f1f5a4959c6aeb107685de57ee1c53c290ac5",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/tool-7Soul1.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222-extracted/tool-7Soul1.txt",
+      "bytes": 159,
+      "sha256": "5ddc1eae8e80031c412cf244044bc48a56eb2a4314cb533ea2e2705ca566590c",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222.zip",
+      "bytes": 8552,
+      "sha256": "4dfdd64ca9eda3cb81c37b7649fb4d5d31113934dd1436feaf338a4a007fd7fe",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222.zip.source.json",
+      "bytes": 349,
+      "sha256": "9bab476ae4a7e270a0c3a9670ce200e8ce8a01d08354db58849b19c2cc17dcae",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge-extracted/32x32/shovel_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge-extracted/32x32/shovel_01.png",
+      "bytes": 690,
+      "sha256": "3834435ac386de41da5c204f32174537ef67352df8578551a6f519904dc44209",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge-extracted/tool-AntumDeluge.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge-extracted/tool-AntumDeluge.png",
+      "bytes": 1362,
+      "sha256": "cb2babcce6be09521e859d6889e883ff1eb252bafb963d3474bb9b411fc3ea50",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge-extracted/tool-AntumDeluge.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge-extracted/tool-AntumDeluge.txt",
+      "bytes": 109,
+      "sha256": "8ffd2dac5c6624771b968ebe1c7961de62eb189e80b7d53606f91e4e4d4dd46c",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge.zip",
+      "bytes": 2817,
+      "sha256": "2d42e1f8e2f091e9a4d3455a6bd6a1746871f53982897e189dc092a09c6e1afa",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge.zip.source.json",
+      "bytes": 344,
+      "sha256": "57bb3ba29391bef6df6d95839f0e3029ed61a882cb629fe7a3cb1fae83d5f575",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/32x32/ankus.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/32x32/ankus.png",
+      "bytes": 324,
+      "sha256": "4b48098422c5a7d183b9e21bab544f886389a89af477aee79bc82a7e276c1265",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/32x32/shadow/ankus.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/32x32/shadow/ankus.png",
+      "bytes": 174,
+      "sha256": "19d2f9b150e4bbe9a915de3558189e62b1a277b0ab4a4b3da971027519b517b7",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/32x32/throwing_net.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/32x32/throwing_net.png",
+      "bytes": 283,
+      "sha256": "2aa46d2865fcd05812e2938d1af4fe3e5d1e8bdfa457c5495523402113163f82",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/tool-DCSS.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/tool-DCSS.png",
+      "bytes": 1385,
+      "sha256": "edc7a87117248d60be2bfd074134b40d52bd5da79a9cf7003e0936892a97043d",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/tool-DCSS.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/tool-DCSS.txt",
+      "bytes": 43,
+      "sha256": "931980962fe3547df53dcb9447f56abfbdc4a4d73e8d121215646786bcc17d0b",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/tool-DCSS.xcf",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226-extracted/tool-DCSS.xcf",
+      "bytes": 9318,
+      "sha256": "01e368a2297a0ac8ca11a2f1e34cead1c547284588bb7f6fbee775efa3df2e2e",
+      "format": "xcf",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226.zip",
+      "bytes": 6062,
+      "sha256": "f0aa53b723cdae3b26bf8f4341b29acd8e2fc5c36873ce65b22e92d783094102",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226.zip.source.json",
+      "bytes": 347,
+      "sha256": "e5dec0f107dd4e3b879ee43e7ebf6e3289e9c517e44a990212ba7f4d39c62e17",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/16x16/hoe.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/16x16/hoe.png",
+      "bytes": 263,
+      "sha256": "745072f28a57b041114ea66c6eef373a0c9f490d4d83f1074c4a09915c1764e2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/16x16/pick.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/16x16/pick.png",
+      "bytes": 274,
+      "sha256": "b9baa56efcb538344699d1fd88893c77302370cb1c55aa71e379fc2d46bd4287",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/16x16/shovel.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/16x16/shovel.png",
+      "bytes": 294,
+      "sha256": "2d86cb0822f4635212a6e43fc6ca5a1435fd1590eb35d4baf2beee70f6a43d88",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/hoe_metal.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/hoe_metal.png",
+      "bytes": 426,
+      "sha256": "bf3d6bd9472e5d2c9eae3aed1bdda8e84964d4efd88f7ea141aa41a064f33e2f",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/hoe_stone.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/hoe_stone.png",
+      "bytes": 512,
+      "sha256": "2a852ede9cf43ef39f5d9155eae463e27cae698250a98b56cb9073283e4c2be2",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/hoe_wood.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/hoe_wood.png",
+      "bytes": 468,
+      "sha256": "7f0d1558c93e69a7e2830390b8baaea80318ec68fceee538ced3b1e377228250",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/pick_metal.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/pick_metal.png",
+      "bytes": 415,
+      "sha256": "b39bbecf17c9ca90990cb3931153d7ed380491a968af676b52fc57ec02ec5ee9",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/pick_stone.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/pick_stone.png",
+      "bytes": 537,
+      "sha256": "e158c895561b1886b482298639d7bedfe1dee8d8f42bdc19db665844f06152de",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/pick_wood.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/pick_wood.png",
+      "bytes": 493,
+      "sha256": "2c9aa5b9a84c626f0f587c939605d54ee7b3cd362d4889f3de38377673d5f81c",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/shovel_metal.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/shovel_metal.png",
+      "bytes": 424,
+      "sha256": "b54de65c9f1ca91779391d598e9c3ad242ecba461958ff382a92c4693cad7e89",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/shovel_stone.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/shovel_stone.png",
+      "bytes": 534,
+      "sha256": "416eb9a549668fe9f7d8c9da55878e86755de5df36c675c5d5167acad94c3b18",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/shovel_wood.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/32x32/shovel_wood.png",
+      "bytes": 499,
+      "sha256": "f6650d5a22b3bf44e03a3f392e759c1d8f4f7849778efe3abd6d3464986aae03",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/hoe_metal.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/hoe_metal.png",
+      "bytes": 654,
+      "sha256": "5a10b5cccfd2130abc2755e3340a5543bb166a60ee690b6f94ac41b133b3a115",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/hoe_stone.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/hoe_stone.png",
+      "bytes": 755,
+      "sha256": "d69e4a546244ae50c9b1d324a99b307139950ac765e5e4f77f8978446dd6ff0a",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/hoe_wood.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/hoe_wood.png",
+      "bytes": 733,
+      "sha256": "9d5b36306fad34cf35a881ed3ed3dcfd3a8139503af58020d3f002b9943e245a",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/pick_metal.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/pick_metal.png",
+      "bytes": 694,
+      "sha256": "06fa70ab1a4c5784183af53e956eccee9e2159c82da93169167ccaa1193ec922",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/pick_stone.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/pick_stone.png",
+      "bytes": 812,
+      "sha256": "e4ec2a1070a7312669dd95aa4bf4d1ffbcd9e468832d19049a18f95504534ba5",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/pick_wood.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/pick_wood.png",
+      "bytes": 773,
+      "sha256": "821e39c400c8e92b6e60c0301b3b8c8a836fd45d074d7e4a977977f7e6b0761b",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/shovel_metal.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/shovel_metal.png",
+      "bytes": 695,
+      "sha256": "a27161e8e413a92df75e8a98c83fc375949e3a758576af60da96f5afe8a10e5b",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/shovel_stone.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/shovel_stone.png",
+      "bytes": 857,
+      "sha256": "ec6970aaada66cece69f606e75c37182dbb52e3b2aef53e5c30570cfab654161",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/shovel_wood.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/64x64/shovel_wood.png",
+      "bytes": 794,
+      "sha256": "cc2670ea2e5ef1707fffdf635b2d7e3ad1b76180d5e9444484bed982274d37b8",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/tool-FacadeGaikan.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/tool-FacadeGaikan.png",
+      "bytes": 6427,
+      "sha256": "30e10465bba15270c9a3c7f75474ff94a2ac4398fc67e19c135b1d2d5ab0e3f8",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/tool-FacadeGaikan.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan-extracted/tool-FacadeGaikan.txt",
+      "bytes": 43,
+      "sha256": "e34a092272dbfa8fbeee31b02a1857706acc1281b5ad962ee03545fe11f80b9a",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan.zip",
+      "bytes": 22611,
+      "sha256": "492086823b5a9fd44dd1465465e39920198b060ba924f4a0c59e4524076233ba",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan.zip.source.json",
+      "bytes": 347,
+      "sha256": "bef577fe6051737bb6032324bab666786063d57b67148cbdf67bb5770f10470c",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/24x24/bucket.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/24x24/bucket.png",
+      "bytes": 1066,
+      "sha256": "facc9307620c4d5f2a54ebee00565c91fb02e3d791566f2be6da22cb4281582d",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/24x24/rope_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/24x24/rope_01.png",
+      "bytes": 224,
+      "sha256": "70b8e7d9bb22d133401c729bdf8abc7b0387bc04e1bd9ef6881fce99f716c08b",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/24x24/rope_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/24x24/rope_02.png",
+      "bytes": 290,
+      "sha256": "c6ca073d54bab0bbc6246ff1690d100ad1a216371179742bf39a9edbf8cdf3ae",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/32x32/bucket.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/32x32/bucket.png",
+      "bytes": 1074,
+      "sha256": "ec75e784e6da057227f42afde33d2c58ad9914a3bcbb609a6ed07f462a21b7fd",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/32x32/rope_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/32x32/rope_01.png",
+      "bytes": 229,
+      "sha256": "ab13a87e4f2eac1ebf8b4b33456d0f4d151c3ed31b3e8b58dabb30ff28b4e225",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/32x32/rope_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/32x32/rope_02.png",
+      "bytes": 292,
+      "sha256": "cb5e32d45f0c5cb89923962c0f8a7d296d296e814c6dcc269566e4782eddd05f",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/tool-Fleurman.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/tool-Fleurman.png",
+      "bytes": 2361,
+      "sha256": "48fed5bfa0238132cbcd61d6bcaa8969b55a35e14f46b1201faadc98563f5efa",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/tool-Fleurman.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226-extracted/tool-Fleurman.txt",
+      "bytes": 43,
+      "sha256": "133ab4114c7eaf688e13b6e602d7bec8fafb79d93e35cfde0278ed9162d6d95e",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226.zip",
+      "bytes": 7159,
+      "sha256": "ad0df170307a056544f6ad2dac423bc9ab28ec993c096ca6f9d26b7c717c005a",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226.zip.source.json",
+      "bytes": 351,
+      "sha256": "0e290095b06cf03ebba631585c6302967c94960fee03690b537885f57368243c",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_01.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_01.svg",
+      "bytes": 46618,
+      "sha256": "fabfaff8171c2b2be99bddc24a42b2caa33e1148504f93f0f717c42ff255b514",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_02.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_02.svg",
+      "bytes": 20867,
+      "sha256": "05a573889d899516705f988ed1e9ef3dfcf2c2f6b69487a2798eeeea56d8136d",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_03.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_03.svg",
+      "bytes": 156449,
+      "sha256": "a64e2592fda56bfb1ea4083643b3b3fbd65404a14fd21db158dd880199bdae9c",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_04.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_04.svg",
+      "bytes": 15935,
+      "sha256": "88bfc36032b5c00318081f8b277c815b8cbb2a39758f3f25b8cdf88bd8699a92",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_geometric_01.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_geometric_01.svg",
+      "bytes": 35824,
+      "sha256": "21e95dfefc7aca21ded1b2b7424da8dd0d27b1299d8f23bb07034080f0114c4d",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_geometric_02.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/compass_geometric_02.svg",
+      "bytes": 22555,
+      "sha256": "e32c8eb2ecff9c606d3a4c0776b0a8238b0c56e1c54ae072a0973caf844ab1f3",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/ruler_01.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/ruler_01.svg",
+      "bytes": 29839,
+      "sha256": "a6f9a72cfb213af98242b046bb23a0f8a3ad7ed2cc990f34edd578fbfd9725a1",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/ruler_triangle_01.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/ruler_triangle_01.svg",
+      "bytes": 112287,
+      "sha256": "a0955deb3fcfc772997d67c6e07b087b5275c0ee8c43f43750d8c0cfe313d350",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/scissors_01.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/scissors_01.svg",
+      "bytes": 14591,
+      "sha256": "6471cb323aecbfa0264c5842cdc6d71c98010cb574f17fd4f00746d1b64705bf",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_01.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_01.svg",
+      "bytes": 65124,
+      "sha256": "fb042dc95661f0a89c62052b6e58ddf1851cfc590d0c72cb2f109d46196f8e39",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_02.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_02.svg",
+      "bytes": 31710,
+      "sha256": "b8337a34d5cb261b48ecb7ac0b26da5155a928da59e2d69d7d163579f4c95c93",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_03.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_03.svg",
+      "bytes": 21220,
+      "sha256": "ef093097dd6651f3b483bb4032a8ccea1ed5641255ff9f1d42386a66e304220b",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_04.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/tape_measure_04.svg",
+      "bytes": 53850,
+      "sha256": "14090d40e03e7583eecdfc9bd78ca2ba276f17caa0bda395b6424ccd256bd399",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/toolbox_01.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/toolbox_01.svg",
+      "bytes": 14357,
+      "sha256": "ffbfe1855b1d82589c0f75b4c8a40918b7f3fcaeb23247806da53a67aa656dfb",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/toolbox_02.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/toolbox_02.svg",
+      "bytes": 19233,
+      "sha256": "e24a48fe7e706a177d7c484fa525cde108e0bdb10a16abf02da1f1fba45f0f2c",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/wiresnips.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/scalable/wiresnips.svg",
+      "bytes": 11008,
+      "sha256": "dc05b633d1dfbe53b333946dc1d05e41935ff174ecabb80a37b1bda3415e7133",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/tool-OCAL.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225-extracted/tool-OCAL.txt",
+      "bytes": 869,
+      "sha256": "be8b18614e54baa12a2814d815c29a659136e9c87d60eedcfd5bcc65d0c3fcb1",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225.zip",
+      "bytes": 149588,
+      "sha256": "c7b2a37a44c9e3e8011bf4325c5afef013cf34599ba5cc8384bbc100962ded46",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225.zip.source.json",
+      "bytes": 359,
+      "sha256": "d67c15f359c80f9f7ca66855d9aae0467eeb3ee0b97b212c3b51dfeb61b37cd9",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_01.png",
+      "bytes": 488,
+      "sha256": "a5556317613fbad85328f4bf4a1fd53342ecd4287ac98db831b99fcc5aacb6a9",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_02.png",
+      "bytes": 1001,
+      "sha256": "b0e01b725cc6621ff408f5284b1d519b8f58c2614463bc711ace4783f578f3e1",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_03.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_03.png",
+      "bytes": 1208,
+      "sha256": "0b9f91a6438c7492645ad5f046a59684fcd417915ffccf32f22289b07175c7c6",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_04.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_04.png",
+      "bytes": 767,
+      "sha256": "487909715474969fbf691e0022c6aafcb1e27c005deec29ae8b1844e1c11fae5",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_geometric_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_geometric_01.png",
+      "bytes": 364,
+      "sha256": "750e673ff688cc595e455e7695f87f8d3138eb6e74cca50387684b194a8be600",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_geometric_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/compass_geometric_02.png",
+      "bytes": 343,
+      "sha256": "ee6499c1622e2962bb1ec526db339c8a1903550aff154923d2aa25c19610cfb5",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/ruler_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/ruler_01.png",
+      "bytes": 570,
+      "sha256": "94dee44698a8515b16f7fceaeee863d878a911cc846c6463f6a9e6b808e30ae7",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/ruler_triangle_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/ruler_triangle_01.png",
+      "bytes": 438,
+      "sha256": "9bfa0a777910f4710bbcf2bbb050392602ffc8e1123b499958aa98c99c8e869b",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/scissors_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/scissors_01.png",
+      "bytes": 434,
+      "sha256": "c0bcace5c7779ca23cb739a8f249a8a80cccd4918730764e4badb6b036c62657",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_01.png",
+      "bytes": 912,
+      "sha256": "0e46856a4ba7b0cffdb5168c2e17dbcf3587d28a0edd0c0d367cc512cacbd0f3",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_02.png",
+      "bytes": 409,
+      "sha256": "c16f03e6f6c2f2f41f82095434acc5bc73b2e8119080a5b6ae9911ef37255486",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_03.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_03.png",
+      "bytes": 647,
+      "sha256": "8b0e6b771a92fbde87d9d56e7a2e5b50bd996056287ae65bd135dd554ca35c19",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_04.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/tape_measure_04.png",
+      "bytes": 586,
+      "sha256": "93a29417c9e76e07d014c349c4e9d74e0d9f101747dc23ed978f9dc90c405723",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/toolbox_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/toolbox_01.png",
+      "bytes": 343,
+      "sha256": "5b6744887ff4767a9784d83d68c886282aa21795ead6f576536ba9d6d8dcf505",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/toolbox_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/toolbox_02.png",
+      "bytes": 1341,
+      "sha256": "510077e33565ff40725fa93889d9fe255479f52d98f49639a352539643a5d877",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/wiresnips.xcf.bz2",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/wiresnips.xcf.bz2",
+      "bytes": 2071,
+      "sha256": "3c00df1d86f226ea6ca5364a1cf74bf941f6a253cc240345273aa9f7c6361337",
+      "format": "bz2",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/wiresnips_blue.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/wiresnips_blue.png",
+      "bytes": 368,
+      "sha256": "27317d75ed4ad383734e9149f6fb4bb8aa131ca426e7de03ed298499404bf100",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/wiresnips_yellow.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/32x32/wiresnips_yellow.png",
+      "bytes": 368,
+      "sha256": "f2718d3363937eb52b294b589ee9940269f3cee0631b941f94972fde13260c39",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/tool-OCAL.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/tool-OCAL.png",
+      "bytes": 17002,
+      "sha256": "a5842225e6f60c24edef334f1872d90bd1381d8c189204355085e8f8d06adf18",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/tool-OCAL.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225-extracted/tool-OCAL.txt",
+      "bytes": 869,
+      "sha256": "be8b18614e54baa12a2814d815c29a659136e9c87d60eedcfd5bcc65d0c3fcb1",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225.zip",
+      "bytes": 33406,
+      "sha256": "dc5e13999c0d419f82b0addfd35ca3dfdceb1831160a86e44f057cf4737ee8f7",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225.zip.source.json",
+      "bytes": 348,
+      "sha256": "4498c2774c9a56cb85528bbb54f29262428d65ce9d562005717e47beef14d392",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/jackhammer_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/jackhammer_01.png",
+      "bytes": 309,
+      "sha256": "2b7f2ca3a5393a1f27551d58560707d7497e854895cee0483ad165884968116f",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/pack_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/pack_01.png",
+      "bytes": 316,
+      "sha256": "8374909e1a31cc9562c8af135dad4fd06c55e3dcfca29a79f9ff36695260254c",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/pickaxe_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/pickaxe_01.png",
+      "bytes": 255,
+      "sha256": "4227042594455d7c3d8b0ae63cad15cba80e87ef3e35eb1168803d62a2b5c5d7",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/pickaxe_02.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/pickaxe_02.png",
+      "bytes": 226,
+      "sha256": "7ce5422d77d8cafc10f65f7548b21fbfdde2d18e713882f949447582e41c8e8f",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/shovel_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/shovel_01.png",
+      "bytes": 268,
+      "sha256": "21a603b6103ce37cdfe8a0555aec723ff2fe284e95995254706b4393255efbf4",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/sledgehammer_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/sledgehammer_01.png",
+      "bytes": 232,
+      "sha256": "f0ac589e6d5f6fd2df8a3cf713f40c05e83af45ae61f22daaaecb5d0b4fd3b45",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/torch_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/32x32/torch_01.png",
+      "bytes": 287,
+      "sha256": "d1440bdff04e78cb9b93f556c11acf7e302d49457871f4e2c87cde2cc58440eb",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/tool-thekingphoenix.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/tool-thekingphoenix.png",
+      "bytes": 2388,
+      "sha256": "8b3d3946a487cd5151b31d7888dc6b3365b2e1dc6f9420fefbe87243117f94cf",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/tool-thekingphoenix.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix-extracted/tool-thekingphoenix.txt",
+      "bytes": 43,
+      "sha256": "dd7c6734307b95b9ab227db5f0b19d4d30f31c3d66b73553da9d5700714e0bf0",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix.zip",
+      "bytes": 5982,
+      "sha256": "9f93d9095994dcf3945ba63e88d4c1e430117226b8bf6019bffa8e1e88b74ba1",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix.zip.source.json",
+      "bytes": 348,
+      "sha256": "351cb677ccf7ea488e21a504099aac352fbec0f2dd06f9e6b25be65dbb21a6aa",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/32x32/sickle.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/32x32/sickle.png",
+      "bytes": 331,
+      "sha256": "65d8b58c8f5872845c812edd16f3b371ab9ac49962d9fb84a56f0c0138672845",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/orig/sickle.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/orig/sickle.png",
+      "bytes": 36856,
+      "sha256": "e03380053f54a66fe5fa6168fa7065bb6c00fa393367ccee51459e9180e35429",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/scalable/sickle.svg",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/scalable/sickle.svg",
+      "bytes": 18514,
+      "sha256": "b840a3b635313712c64375c36e13e36424f12f7d97aac5f19c0af2348110ce29",
+      "format": "svg",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/tool-Wikimedia.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/tool-Wikimedia.png",
+      "bytes": 575,
+      "sha256": "d0453873aa6451b62b8fb12eb2e6264f4fee5ffa4da5effca4b27fa0b91b30cf",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/tool-Wikimedia.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710-extracted/tool-Wikimedia.txt",
+      "bytes": 124,
+      "sha256": "34b6a48c524a2808ab5af7209cc919b9440b74d13e6e83f0543d51d5e11f188b",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710.zip",
+      "bytes": 46746,
+      "sha256": "fae8f9dd187fc1e560f99aa7d98489fdf96f8fc8958847abaa249567ce1f0f3d",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710.zip.source.json",
+      "bytes": 353,
+      "sha256": "3ca0eac5962b9780bdacbad2f1bb4f525733900bc94fcfdc3bf0acf7dd5deedf",
+      "format": "json",
+      "role": "download-receipt"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/hammer_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/hammer_01.png",
+      "bytes": 222,
+      "sha256": "ba0561b72b3b2c0f69b50a077f7e3da674e18424f0855b19133236f6aa8fec6d",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/lighter_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/lighter_01.png",
+      "bytes": 301,
+      "sha256": "222e83279f82e45d9297ed497beb118ffa4e670cd52a592ac12e7dc1356acf4b",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/matches_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/matches_01.png",
+      "bytes": 275,
+      "sha256": "95773a22f9b75be646764296cde5cb5eb00dcbd90816c2ee68c2771845a4fced",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/pack_01.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/32x32/pack_01.png",
+      "bytes": 397,
+      "sha256": "6c0ac3dd3fd14d97d2e5cb094fba32dc94b81e2537347fbe8e9c4ec9007d0f2d",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/tool-yd.png",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/tool-yd.png",
+      "bytes": 1980,
+      "sha256": "a42a11e12b510e9f5c6cffd1232df6fa2f6ea934e126a0163d45742c8a9698ad",
+      "format": "png",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/tool-yd.txt",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd-extracted/tool-yd.txt",
+      "bytes": 43,
+      "sha256": "abf41dbda1eef89e6edcc04d444a9de4830b9e679c447ef009b8c2bc1205b7e9",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd.zip",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd.zip",
+      "bytes": 4335,
+      "sha256": "5a1e2b0e105b617e309877b6b146a7b1c697b94080b616361a708d9ae24afba7",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-2d/mining/opengameart-tool-icons/tool-yd.zip.source.json",
+      "path": "foundations-2d/mining/opengameart-tool-icons/tool-yd.zip.source.json",
+      "bytes": 336,
+      "sha256": "a591738f6f7d5e84e96a4e70d95ec11ad8eec7a9c53f184cd72d5289dad2f099",
+      "format": "json",
+      "role": "download-receipt"
+    }
+  ],
+  "file_count": 127,
+  "bytes_total": 1101951,
+  "note": "SHA-256 is recorded for each included archive, download receipt, extracted file, and local source note. Original archives are retained beside safe extractions where the publisher distributed a ZIP.",
+  "source_url": "https://opengameart.org/content/cc0-tool-icons",
+  "license_id": "CC0-1.0",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+  "sources": [
+    {
+      "id": "mining-opengameart-tool-ocal_20230225",
+      "title": "CC0 tools — OCAL icon set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-ocal_20230225.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "dc5e13999c0d419f82b0addfd35ca3dfdceb1831160a86e44f057cf4737ee8f7",
+      "bytes": 33406,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal_20230225.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-ocal-scalable_20230225",
+      "title": "CC0 tools — scalable OCAL set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-ocal-scalable_20230225.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "c7b2a37a44c9e3e8011bf4325c5afef013cf34599ba5cc8384bbc100962ded46",
+      "bytes": 149588,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-ocal-scalable_20230225.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-7soul1_20201222",
+      "title": "CC0 tools — 7Soul1 set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-7soul1_20201222.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "4dfdd64ca9eda3cb81c37b7649fb4d5d31113934dd1436feaf338a4a007fd7fe",
+      "bytes": 8552,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-7soul1_20201222.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-antumdeluge",
+      "title": "CC0 tools — AntumDeluge set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-antumdeluge.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "2d42e1f8e2f091e9a4d3455a6bd6a1746871f53982897e189dc092a09c6e1afa",
+      "bytes": 2817,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-antumdeluge.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-dcss_20201226",
+      "title": "CC0 tools — Dungeon Crawl Stone Soup set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-dcss_20201226.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "f0aa53b723cdae3b26bf8f4341b29acd8e2fc5c36873ce65b22e92d783094102",
+      "bytes": 6062,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-dcss_20201226.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-facadegaikan",
+      "title": "CC0 tools — FacadeGaikan set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-facadegaikan.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "492086823b5a9fd44dd1465465e39920198b060ba924f4a0c59e4524076233ba",
+      "bytes": 22611,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-facadegaikan.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-fleurman_20201226",
+      "title": "CC0 tools — Fleurman set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-fleurman_20201226.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "ad0df170307a056544f6ad2dac423bc9ab28ec993c096ca6f9d26b7c717c005a",
+      "bytes": 7159,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-fleurman_20201226.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-thekingphoenix",
+      "title": "CC0 tools — thekingphoenix set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-thekingphoenix.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "9f93d9095994dcf3945ba63e88d4c1e430117226b8bf6019bffa8e1e88b74ba1",
+      "bytes": 5982,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-thekingphoenix.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-yd",
+      "title": "CC0 tools — yd set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-yd.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "5a1e2b0e105b617e309877b6b146a7b1c697b94080b616361a708d9ae24afba7",
+      "bytes": 4335,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-yd.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    },
+    {
+      "id": "mining-opengameart-tool-wikimedia_20240710",
+      "title": "CC0 tools — Wikimedia set",
+      "publisher": "AntumDeluge and listed CC0 source artists",
+      "source_url": "https://opengameart.org/content/cc0-tool-icons",
+      "download_url": "https://opengameart.org/sites/default/files/tool-wikimedia_20240710.zip",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "No attribution required under CC0; retain bundled source notices.",
+      "sha256": "fae8f9dd187fc1e560f99aa7d98489fdf96f8fc8958847abaa249567ce1f0f3d",
+      "bytes": 46746,
+      "local_path": "foundations-2d/mining/opengameart-tool-icons/tool-wikimedia_20240710.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "Part of the CC0 tool-icon collection, which includes pickaxe, pick, shovel, hammer and other tool icons. Original source artist names and licenses are retained in the archive where supplied."
+    }
+  ]
+}

@@ -1,0 +1,294 @@
+{
+  "record_version": 1,
+  "title": "Donnyko Crafting and Mining SFX Sampler",
+  "source_urls": [
+    "https://donnyko.itch.io/crafting-mining-sfx-free-sampler"
+  ],
+  "publisher": "Donnyko",
+  "license_ids": [
+    "CC0-1.0"
+  ],
+  "license_urls": [
+    "https://creativecommons.org/publicdomain/zero/1.0/"
+  ],
+  "license_verified": true,
+  "redistribution_allowed": true,
+  "license_evidence_path": "acquisition/evidence/source-review.md#mining-coverage",
+  "attribution_texts": [
+    "Attribution optional under CC0."
+  ],
+  "source_ids": [
+    "mining-donnyko-crafting-mining-sfx"
+  ],
+  "files": [
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/Inventory.csv",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/Inventory.csv",
+      "bytes": 4563,
+      "sha256": "e2a622ed754ccca276510f0bb75aa557d5a269be3f02f649f95a91439404b424",
+      "format": "csv",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/LICENSE.txt",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/LICENSE.txt",
+      "bytes": 813,
+      "sha256": "0102a0b0f19883973cc64222e1df6103ba2e4b2c8ef81a222c7afd324e0b7b36",
+      "format": "txt",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/Preview_Cues.csv",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/Preview_Cues.csv",
+      "bytes": 1008,
+      "sha256": "75cc9300f9071525e1561874f9ff7aaff6dea049672243abcc199ebdf09887dd",
+      "format": "csv",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/README.md",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/README.md",
+      "bytes": 2646,
+      "sha256": "0714a5cdff58cfd305a6e5856f32f50c13fe1923c4719816bbc39890b3b7a483",
+      "format": "md",
+      "role": "local-use-and-license-notes"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_01_Hover_Soft.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_01_Hover_Soft.wav",
+      "bytes": 22745,
+      "sha256": "7340d854d4442c68bd6b23288e4ec83040519bcd846a835b69a89d09eb377add",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_02_Select_Confirm.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_02_Select_Confirm.wav",
+      "bytes": 35189,
+      "sha256": "708e31164eeee8e2ae398055e768df9f92c68a0fb20396ce39b39b23eddca3b0",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_03_Back_Down.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_03_Back_Down.wav",
+      "bytes": 34604,
+      "sha256": "41ccb04c35fc923bb6f2d0ba4022e283467c8f658e120d71262127827bb8ee18",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_04_Toggle_Click.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/01_UI/UI_04_Toggle_Click.wav",
+      "bytes": 20387,
+      "sha256": "a536961e7dd303aaa17ad5832041a333adacef6994ef210f15dc24b43787daf6",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_01_Coin_Ping.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_01_Coin_Ping.wav",
+      "bytes": 97736,
+      "sha256": "5c7b74f37b8c7e64426bf18693e54229f1b4ee21fd7c551bccf310fee5951b4f",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_02_Coin_Cluster.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_02_Coin_Cluster.wav",
+      "bytes": 123872,
+      "sha256": "799dd3968433bbdf217e082c1506e0288220ca33970802fba1c211508852f734",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_03_Gem_Glint.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_03_Gem_Glint.wav",
+      "bytes": 120698,
+      "sha256": "19d44581d0f47a9fe4ab68e0008f5f64f0ae80beaf01032b2423eed16f182acd",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_04_Item_Pop.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/02_Loot/Loot_04_Item_Pop.wav",
+      "bytes": 46124,
+      "sha256": "fb06d4be9e7fb2ac9c23c5a3a88e5fbf52e326b9d5e4daa5e095216aae045fcd",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_01_Pick_Stone.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_01_Pick_Stone.wav",
+      "bytes": 36473,
+      "sha256": "54f10bac8988ee46b7591a2c4faff91db5f1c0c9f70991b78d3509e03f330a41",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_02_Rock_Crack.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_02_Rock_Crack.wav",
+      "bytes": 90734,
+      "sha256": "50e0acdc2701fa6300ccc98d247da9ffb9f77e3d19a9223c772703e74f41cba1",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_03_Rubble_Small.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_03_Rubble_Small.wav",
+      "bytes": 107054,
+      "sha256": "bf3a0bb1254d9d4fa60aef68f71893437d9454e928f0b9e8e25104e0b6991247",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_04_Crystal_Strike.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/03_Mining/Mining_04_Crystal_Strike.wav",
+      "bytes": 152684,
+      "sha256": "462999897971bebe95489d9d052d661968e48557711cd32953256cbf6cb36dc8",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_01_Hammer_Metal.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_01_Hammer_Metal.wav",
+      "bytes": 88949,
+      "sha256": "d86f08c5464d62042cf84fb1bd172fe603946b6afa5cce9fc114e12543dfede8",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_02_Wood_Saw.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_02_Wood_Saw.wav",
+      "bytes": 98045,
+      "sha256": "e004dae6b5a0755e051a2bf35b1105a1c377e985c9f61599c663ab7ed9b3ca2d",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_03_Assembly_Snap.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_03_Assembly_Snap.wav",
+      "bytes": 37244,
+      "sha256": "5ab4412a5bdc8e7ffdd56eeddd6f01e863f488050b55b3316a45002f7d44c561",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_04_Finished_Sparkle.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/04_Crafting/Crafting_04_Finished_Sparkle.wav",
+      "bytes": 124889,
+      "sha256": "43876df3014f8bb137d194e7cb8b4a9ff8c17f8679620a7ac27555ff30f4cb78",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_01_Lever_Engage.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_01_Lever_Engage.wav",
+      "bytes": 54329,
+      "sha256": "d5db8f901f047e933965910e8532f257fac7e22323449348fd7ca9240ebde9e2",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_02_Ratchet_Turn.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_02_Ratchet_Turn.wav",
+      "bytes": 75950,
+      "sha256": "d19c94520742f088c3e19205d1a9da84d85ca9801f52fe19bd844d471aac896e",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_03_Drill_Burst.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_03_Drill_Burst.wav",
+      "bytes": 140843,
+      "sha256": "5b8c545c643921d3198fa3147fe10c81d00057e9e7732864d8a3bb889ac9fb00",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_04_Power_Hum_LOOP.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/05_Machines/Machine_04_Power_Hum_LOOP.wav",
+      "bytes": 288044,
+      "sha256": "1cc629feee4183591b911f93fb6f57e00114c7a90dbf113761a57e880beff559",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Reward_01_Level_Up.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Reward_01_Level_Up.wav",
+      "bytes": 222089,
+      "sha256": "753d6515d119d80bc6c065c538202b75a4af53bca2c1af022dbb6eff5bb17a44",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Reward_02_Objective_Complete.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Reward_02_Objective_Complete.wav",
+      "bytes": 200489,
+      "sha256": "7c23a1bf41578beaed0c3d5fc940ee4c103cd77467e127d4a802d2545f738a4b",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Warning_03_Resource_Low.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Warning_03_Resource_Low.wav",
+      "bytes": 87101,
+      "sha256": "665ae2f91a3ccaeb2a74a528c25a1b58d3981061ed460c4ef9ebd34b7ff5a91d",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Warning_04_Hazard_Alert.wav",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler-extracted/Crafting_Mining_Sampler/WAV/06_Rewards_Warnings/Warning_04_Hazard_Alert.wav",
+      "bytes": 135653,
+      "sha256": "428d86dae38059e22caf852df946d3412b85b048e2408b26ba2ed779e20d2b3b",
+      "format": "wav",
+      "role": "downloaded-source-asset"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler.zip",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler.zip",
+      "bytes": 2251402,
+      "sha256": "ea639899a6e00483e74ae6f425a04374e560bcf2bf6b625c21e25090152b082a",
+      "format": "zip",
+      "role": "original-source-archive"
+    },
+    {
+      "file": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler.zip.source.json",
+      "path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler.zip.source.json",
+      "bytes": 694,
+      "sha256": "dc37993f4c7f249526aa02d41e4264a0d06b2c187cbda55b7cc22fe23ee86cb5",
+      "format": "json",
+      "role": "download-receipt"
+    }
+  ],
+  "file_count": 30,
+  "bytes_total": 4703051,
+  "note": "SHA-256 is recorded for each included archive, download receipt, extracted file, and local source note. Original archives are retained beside safe extractions where the publisher distributed a ZIP.",
+  "source_url": "https://donnyko.itch.io/crafting-mining-sfx-free-sampler",
+  "license_id": "CC0-1.0",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attribution_text": "Attribution optional under CC0.",
+  "sources": [
+    {
+      "id": "mining-donnyko-crafting-mining-sfx",
+      "title": "Crafting & Mining SFX — Free Sampler",
+      "publisher": "Donnyko",
+      "source_url": "https://donnyko.itch.io/crafting-mining-sfx-free-sampler",
+      "license_id": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_verified": true,
+      "redistribution_allowed": true,
+      "attribution_text": "Attribution optional under CC0.",
+      "sha256": "ea639899a6e00483e74ae6f425a04374e560bcf2bf6b625c21e25090152b082a",
+      "bytes": 2251402,
+      "local_path": "foundations-audio/mining/donnyko-crafting-mining-sfx/crafting-mining-sampler.zip",
+      "formats": [
+        "zip"
+      ],
+      "coverage": "24 WAV effects including pick-on-stone, rock crack, rubble, crystal strike, drill burst, lever, ratchet and mining machine hum. Procedurally synthesized; original archive includes CC0 notice and usage metadata.",
+      "acquisition_notes": "Free sampler only. The publisher also offers a separate paid full pack; not acquired."
+    }
+  ]
+}

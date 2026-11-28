@@ -1,0 +1,25 @@
+filename,category,description,duration_seconds,sample_rate_hz,bit_depth,channels,peak_dbfs,rms_dbfs,loop,sha256
+WAV/01_UI/UI_01_Hover_Soft.wav,UI,Subtle rounded hover tick,0.15765,48000,24,1,-9.0,-24.08,no,7340d854d4442c68bd6b23288e4ec83040519bcd846a835b69a89d09eb377add
+WAV/01_UI/UI_02_Select_Confirm.wav,UI,Two-note button confirmation,0.24406,48000,24,1,-7.0,-18.731,no,708e31164eeee8e2ae398055e768df9f92c68a0fb20396ce39b39b23eddca3b0
+WAV/01_UI/UI_03_Back_Down.wav,UI,Short descending back or close cue,0.24,48000,24,1,-7.0,-18.987,no,41ccb04c35fc923bb6f2d0ba4022e283467c8f658e120d71262127827bb8ee18
+WAV/01_UI/UI_04_Toggle_Click.wav,UI,Compact mechanical toggle,0.14127,48000,24,1,-7.0,-22.54,no,a536961e7dd303aaa17ad5832041a333adacef6994ef210f15dc24b43787daf6
+WAV/02_Loot/Loot_01_Coin_Ping.wav,Loot,Bright single coin pickup,0.67842,48000,24,1,-5.0,-23.524,no,5c7b74f37b8c7e64426bf18693e54229f1b4ee21fd7c551bccf310fee5951b4f
+WAV/02_Loot/Loot_02_Coin_Cluster.wav,Loot,Five staggered coins with a natural tail,0.85992,48000,24,1,-4.0,-19.174,no,799dd3968433bbdf217e082c1506e0288220ca33970802fba1c211508852f734
+WAV/02_Loot/Loot_03_Gem_Glint.wav,Loot,Airy three-tone gem pickup,0.83788,48000,24,1,-5.0,-19.54,no,19d44581d0f47a9fe4ab68e0008f5f64f0ae80beaf01032b2423eed16f182acd
+WAV/02_Loot/Loot_04_Item_Pop.wav,Loot,Soft item or ingredient collection pop,0.32,48000,24,1,-5.0,-18.312,no,fb06d4be9e7fb2ac9c23c5a3a88e5fbf52e326b9d5e4daa5e095216aae045fcd
+WAV/03_Mining/Mining_01_Pick_Stone.wav,Mining,Stylized pick impact against stone,0.25298,48000,24,1,-3.0,-22.693,no,54f10bac8988ee46b7591a2c4faff91db5f1c0c9f70991b78d3509e03f330a41
+WAV/03_Mining/Mining_02_Rock_Crack.wav,Mining,Layered brittle rock fracture,0.62979,48000,24,1,-3.0,-24.774,no,50e0acdc2701fa6300ccc98d247da9ffb9f77e3d19a9223c772703e74f41cba1
+WAV/03_Mining/Mining_03_Rubble_Small.wav,Mining,Eight irregular small debris tumbles,0.74313,48000,24,1,-4.0,-27.235,no,bf3a0bb1254d9d4fa60aef68f71893437d9454e928f0b9e8e25104e0b6991247
+WAV/03_Mining/Mining_04_Crystal_Strike.wav,Mining,Long bright crystal mining strike,1.06,48000,24,1,-4.0,-23.127,no,462999897971bebe95489d9d052d661968e48557711cd32953256cbf6cb36dc8
+WAV/04_Crafting/Crafting_01_Hammer_Metal.wav,Crafting,Small anvil or metalwork hammer hit,0.6174,48000,24,1,-3.0,-23.171,no,d86f08c5464d62042cf84fb1bd172fe603946b6afa5cce9fc114e12543dfede8
+WAV/04_Crafting/Crafting_02_Wood_Saw.wav,Crafting,Three short stylized wood-saw strokes,0.68056,48000,24,1,-5.0,-21.504,no,e004dae6b5a0755e051a2bf35b1105a1c377e985c9f61599c663ab7ed9b3ca2d
+WAV/04_Crafting/Crafting_03_Assembly_Snap.wav,Crafting,Two fitting parts that snap into place,0.25833,48000,24,1,-4.0,-19.171,no,5ab4412a5bdc8e7ffdd56eeddd6f01e863f488050b55b3316a45002f7d44c561
+WAV/04_Crafting/Crafting_04_Finished_Sparkle.wav,Crafting,Ascending four-note crafted-item cue,0.86698,48000,24,1,-5.0,-17.493,no,43876df3014f8bb137d194e7cb8b4a9ff8c17f8679620a7ac27555ff30f4cb78
+WAV/05_Machines/Machine_01_Lever_Engage.wav,Machines,Lever travel followed by a heavy latch,0.37698,48000,24,1,-4.0,-22.562,no,d5db8f901f047e933965910e8532f257fac7e22323449348fd7ca9240ebde9e2
+WAV/05_Machines/Machine_02_Ratchet_Turn.wav,Machines,Eight ratchet teeth slowing to a stop,0.52712,48000,24,1,-4.0,-21.492,no,d19c94520742f088c3e19205d1a9da84d85ca9801f52fe19bd844d471aac896e
+WAV/05_Machines/Machine_03_Drill_Burst.wav,Machines,Short motor spin-up with abrasive drill texture,0.97777,48000,24,1,-5.0,-18.118,no,5b8c545c643921d3198fa3147fe10c81d00057e9e7732864d8a3bb889ac9fb00
+WAV/05_Machines/Machine_04_Power_Hum_LOOP.wav,Machines,Seamless two-second powered-machine hum,2.0,48000,24,1,-9.0,-14.088,yes,1cc629feee4183591b911f93fb6f57e00114c7a90dbf113761a57e880beff559
+WAV/06_Rewards_Warnings/Reward_01_Level_Up.wav,Rewards_Warnings,Bright rising major arpeggio,1.54198,48000,24,1,-5.0,-18.178,no,753d6515d119d80bc6c065c538202b75a4af53bca2c1af022dbb6eff5bb17a44
+WAV/06_Rewards_Warnings/Reward_02_Objective_Complete.wav,Rewards_Warnings,Three-note success phrase with resolved chord,1.39198,48000,24,1,-5.0,-18.82,no,7c23a1bf41578beaed0c3d5fc940ee4c103cd77467e127d4a802d2545f738a4b
+WAV/06_Rewards_Warnings/Warning_03_Resource_Low.wav,Rewards_Warnings,Two gently dissonant low-resource pulses,0.60456,48000,24,1,-6.0,-20.835,no,665ae2f91a3ccaeb2a74a528c25a1b58d3981061ed460c4ef9ebd34b7ff5a91d
+WAV/06_Rewards_Warnings/Warning_04_Hazard_Alert.wav,Rewards_Warnings,Four alternating warning pulses,0.94173,48000,24,1,-6.0,-16.028,no,428d86dae38059e22caf852df946d3412b85b048e2408b26ba2ed779e20d2b3b
