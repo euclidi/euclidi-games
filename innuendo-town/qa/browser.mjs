@@ -11,6 +11,9 @@ try {
  await page.locator('#canvas canvas').screenshot({path:'town-cover.png'});
  const state=()=>page.evaluate(()=>window.townQA());
  const first=await state();
+ assert.equal(first.town.agents.length,16);
+ await page.waitForFunction(()=>window.townQA().town.decisions>0,null,{timeout:12000});
+ const autonomous=await state();assert.ok(autonomous.town.time>first.town.time);assert.equal(autonomous.player.x,first.player.x);assert.equal(autonomous.player.y,first.player.y);
  assert.equal(first.vehicles.length,8);
  const frames={'yellow-down':[272,234,16,22],'red-down':[272,266,16,22],'green-left':[336,256,32,16],'green-right':[336,272,32,16]};
  for(const c of first.vehicles){assert.deepEqual([c.cutX,c.cutY,c.width,c.height],frames[c.frame]);assert.equal(c.angle,c.color==='green'?0:c.dir<0?90:-90)}
@@ -29,6 +32,8 @@ try {
  assert.equal(await page.locator('#panel .entry').count(),8);
  await page.locator('#panel .entry').first().getByRole('button',{name:'Go'}).click();
  await page.waitForFunction(()=>document.querySelector('#district').textContent==='THE MEAT MARKET',{},{timeout:30000});
+ const indoorStart=(await state()).town;
+ await page.waitForFunction(t=>window.townQA().town.time>t+1,indoorStart.time,{timeout:5000});
  await page.screenshot({path:'town-interior.png'});
  await page.keyboard.down('w');await page.waitForTimeout(2200);await page.keyboard.up('w');await page.keyboard.press('e');
  assert.equal(await page.locator('#dialogue').isVisible(),true);
@@ -36,7 +41,10 @@ try {
  for(let i=0;i<3;i++){let order=(await page.locator('#dialogue p').nth(1).innerText()).replace('Requested: ','');await page.getByRole('button',{name:'Sort '+order,exact:true}).click()}
  assert.match(await page.locator('#dialogue').innerText(),/SHIFT COMPLETE/);
  assert.equal(await page.locator('#cash').innerText(),'$68');
+ const savedTown=await page.evaluate(()=>JSON.parse(localStorage.getItem('euclidi.innuendo.v3')).townAI);
+ assert.ok(savedTown.decisions>0);
  await page.reload();await page.locator('#boot').waitFor({state:'hidden',timeout:30000});
+ const resumed=(await state()).town;assert.ok(resumed.decisions>=savedTown.decisions&&resumed.trades>=savedTown.trades&&resumed.time>=savedTown.time-0.01);
  assert.equal(await page.locator('#cash').innerText(),'$68');
  const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  mobile.on('pageerror',e=>errors.push(e.message));
