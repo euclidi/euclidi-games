@@ -1,5 +1,5 @@
 # Innuendo Town
-A standalone top-down urban comedy sandbox for adult fictional characters. Development playtest build 0.6.
+A standalone top-down urban comedy sandbox for adult fictional characters. Development playtest build 0.7.
  
 Run from an HTTP server, not file://. The game uses Phaser 3.90 with native Arcade Physics, a vendored original 432×288 Kenney RPG Urban atlas, and separate simulation content. Controls: WASD/arrows, Shift, E; touch D-pad, ACT, and destination selection.
 
@@ -15,3 +15,6 @@ Run from an HTTP server, not file://. The game uses Phaser 3.90 with native Arca
 Sprite correction: source atlas columns verified at enlarged scale (left/front/back/right). Traffic uses named complete vehicle regions rather than adjacent cells. See STATUS.md for regression evidence.
 
 The town now has a persistent resident simulation. Residents pursue needs, commute, work, shop and converse independently of the player. The PEOPLE and TOWN registers show live activity and stock. Time advances while the game is active, including interiors; closing the game saves the town rather than simulating elapsed real-world time.
+
+## Presentation
+Native bitmap backgrounds, detailed storefronts and distinct interiors, 20×28 adult-character animation frames, 38×18 traffic sprites, contact shadows and dithered night lighting. The original Kenney urban atlas remains a locally bundled source for vegetation. New bitmap artwork is generated deterministically in `presentation.js`. Audio is sample-based; see [audio credits](assets/audio/CREDITS.md). The v0.6 autonomy build passed [browser QA](https://github.com/euclidi/euclidi-games/actions/runs/46091692069) and its seven-day simulation regression.
