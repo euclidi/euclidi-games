@@ -271,5 +271,7 @@ export function installCrate(scene){
 export function installEffects(scene){
  const key='shadow-'+ART_VERSION;texture(scene,key,20,7,c=>{cluster(c,0,0,['.....aaaaaaaaaa.....','...abbbbbbbbbbbba...','..abbbbbbbbbbbbbba..','..abbbbbbbbbbbbbba..','...abbbbbbbbbbbba...','.....aaaaaaaaaa.....','....................'],{a:'rgba(38,43,42,.13)',b:'rgba(35,41,41,.25)'})});
  const carKey='car-shadow-'+ART_VERSION;texture(scene,carKey,40,19,c=>{rect(c,4,3,32,13,'rgba(23,29,33,.17)');rect(c,2,6,36,8,'rgba(23,29,33,.2)')});
- const mark='route-'+ART_VERSION;texture(scene,mark,12,12,c=>{cluster(c,0,0,['.###....###.','#..........#','#..........#','#..........#','............','.....##.....','.....##.....','............','#..........#','#..........#','#..........#','.###....###.'],{'#':'#e2d6a7'})});return {shadow:key,carShadow:carKey,mark};
+ const mark='route-'+ART_VERSION;texture(scene,mark,12,12,c=>{cluster(c,0,0,['.###....###.','#..........#','#..........#','#..........#','............','.....##.....','.....##.....','............','#..........#','#..........#','#..........#','.###....###.'],{'#':'#e2d6a7'})});const light='lamp-pool-'+ART_VERSION;texture(scene,light,48,30,c=>{for(let y=0;y<30;y++)for(let x=0;x<48;x++){const d=Math.sqrt(((x-23.5)/23.5)**2+((y-14.5)/14.5)**2);if(d>=1)continue;const a=d<.45?.23:d<.7?.13:.055;if(d>.75&&((x+y)%2))continue;rect(c,x,y,1,1,'rgba(234,187,106,'+a+')')}});
+ const beam='car-light-'+ART_VERSION;texture(scene,beam,22,16,c=>{for(let y=0;y<16;y++)for(let x=0;x<22;x++){const edge=3+x*.21,dy=Math.abs(y-7.5);if(dy>edge)continue;const a=(1-x/22)*.19*(dy<edge-2?1:.45);if(a>.015)rect(c,x,y,1,1,'rgba(241,210,142,'+a+')')}});
+ return {shadow:key,carShadow:carKey,mark,light,beam};
 }
