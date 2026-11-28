@@ -88,8 +88,8 @@
     ],
     "route": "./innuendo-town/",
     "selector": "#canvas canvas",
-    "sha256": "f53d5cf857153293b0c7a9bea845acbc2c1bed3083ea76c71c2a5077fd324733",
-    "source": "d8bef6366bf254c0959241d2e193887c5c2b326b",
+    "sha256": "5308e06f3276479f2c7c2633a939a3a8cbed447647b5ce49d90b3b3b818b9f98",
+    "source": "38f7e0f120df6bb713fb2449d15a62bcd490f85f",
     "viewport": [
       1280,
       800
