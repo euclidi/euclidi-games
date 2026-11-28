@@ -19,7 +19,7 @@ function blockedCells(shops){
 export function ensureTownAI(old,now,shops,residents){
  if(old?.version===VERSION&&Number.isFinite(old.time)&&old.time<=now+2&&Array.isArray(old.agents)&&old.agents.length===residents.length&&Array.isArray(old.shops)&&old.shops.length===shops.length&&old.agents.every(a=>Number.isFinite(a.x)&&Number.isFinite(a.y)&&Array.isArray(a.route)&&a.needs&&Number.isFinite(a.cash)))return old;
  return {version:VERSION,time:now,decisions:0,trades:0,conversations:0,completedShifts:0,bonds:{},events:[],pairCooldown:{},
-  shops:shops.map(s=>({id:s.id,stock:18+s.id%4*3,cash:180,revenue:0,customers:0,restocks:0})),
+  shops:shops.map(s=>({id:s.id,stock:18+s.id%4*3,cash:180,revenue:0,customers:0,restocks:0,ordersFulfilled:0,contractRevenue:0})),
   agents:residents.map(n=>{const working=n.work!==undefined&&open(shops[n.work],minute(now));const place=working?n.work:-1;
     const p=door(shops[n.id%shops.length],n.id);
     return {id:n.id,x:p.x,y:p.y,place,activity:working?'Working':'Out walking',goal:null,route:[],until:now+(working?25:1+n.id%4),
@@ -100,7 +100,12 @@ function tick(ai,shops,residents,pathfind,out){
   need.social=clamp(need.social+(a.activity==='Socializing'?-1.4:.28),0,100);
   if(a.activity==='Working'&&a.place>=0){
    const s=ai.shops[a.place];a.workMinutes++;
-   if(a.workMinutes>=60){const wage=Math.min(s.cash,Math.max(3,Math.floor(shops[a.place].pay/3)));a.cash+=wage;s.cash-=wage;a.workMinutes-=60;ai.completedShifts++}
+   if(a.workMinutes>=60){
+    // Productive work completes a regional order, bringing money into the
+    // small town from customers outside the simulated resident population.
+    const order=Math.ceil(shops[a.place].pay*.55);s.cash+=order;s.revenue+=order;s.contractRevenue=(s.contractRevenue||0)+order;s.ordersFulfilled=(s.ordersFulfilled||0)+1;
+    const wage=Math.min(s.cash,Math.max(3,Math.floor(shops[a.place].pay/2)));a.cash+=wage;s.cash-=wage;a.workMinutes-=60;ai.completedShifts++;
+   }
    if(n.work===a.place&&s.stock<=6&&s.cash>=24){s.cash-=24;s.stock+=18;s.restocks++;event(ai,{kind:'business',text:n.name+' restocked '+shops[a.place].name+'.'},out)}
   }
   if(!a.goal&&(a.until<=ai.time||a.activity==='Working'&&!open(shops[a.place],minute(ai.time))||n.work!==undefined&&open(shops[n.work],minute(ai.time))&&ai.time>=(a.breakUntil||0)&&(a.activity!=='Working'||need.hunger>=68||need.fatigue>=78)))plan(ai,a,shops,residents,pathfind,out);
